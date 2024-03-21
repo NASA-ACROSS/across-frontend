@@ -1,0 +1,636 @@
+<html lang="en">
+  <body>
+    <!-- Page wrapper for sticky footer -->
+    <!-- Wraps everything except footer to push footer to the bottom of the page if there is little content -->
+    <main class="page-wrapper">
+      <!-- Page image (parallax) -->
+      <div
+        class="jarallax mb-lg-5 mb-4"
+        data-jarallax
+        data-speed="0.35"
+        style="height: 36.45vw; min-height: 300px;"
+      >
+        <div
+          class="jarallax-img"
+          style="background-image: url(assets/img/landing/conference/video-cover.jpg);"
+        ></div>
+      </div>
+
+      <!-- Breadcrumb -->
+      <nav class="container py-4 mb-2 my-lg-3" aria-label="breadcrumb">
+        <!-- <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item">
+            <a href="index.html"><i class="bx bx-home-alt fs-lg me-1"></i>Home</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Conferences</li>
+        </ol> -->
+      </nav>
+
+      <!-- Title -->
+      <section class="container pb-5 mb-md-2 mb-lg-4">
+        <div class="row gy-4">
+          <h1 class="border-bottom pb-4" id="Overview">Conferences</h1>
+        </div>
+      </section>
+
+      <!-- Featured Conferences -->
+      <section class="container pb-5 mb-2 mb-md-4 mb-lg-5 mt-n3 mt-lg-0">
+        <div class="row gy-4">
+          <div class="col-xl-5 col-lg-6 position-relative py-0">
+            <div
+              class="position-relative zindex-5 text-center text-lg-start px-3 px-lg-0 py-xl-0 py-xxl-0 mt-lg-0 mx-auto mx-lg-0"
+              style="max-width: 530px;"
+            >
+              <h2 class="h3 text-primary">Aug 22-24, 2022</h2>
+              <h2 class="h2 pb-lg-3 mb-3">
+                Time-Domain and Multimessenger (TDAMM) Workshop
+              </h2>
+              <div
+                class="d-flex justify-content-center justify-content-lg-start text-start mb-2"
+              >
+                <i class="bx bx-map fs-4 text-primary me-2"></i>
+                <div class="fs-xl">
+                  International Convention Centre,<br />Annapolis, MD
+                </div>
+              </div>
+              <div
+                class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start py-4 py-lg-5"
+              >
+                <a
+                  href="https://pcos.gsfc.nasa.gov/TDAMM"
+                  class="btn btn-primary shadow-primary btn-lg me-sm-3 me-xl-4 mb-3"
+                >
+                  Learn more
+                  <i class="bx bx-right-arrow-alt fs-xl ms-2 me-n1"></i>
+                </a>
+                <a href="#" class="btn btn-outline-primary btn-lg mb-3">
+                  <i class="bx bx-calendar-check fs-xl me-2 ms-n1"></i>
+                  Add to calendar
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-7 col-lg-6 pe-lg-5">
+            <div class="d-flex h-100 pe-xl-4">
+              <!-- Ticket card -->
+              <div class="position-relative">
+                <div
+                  class="position-relative overflow-hidden bg-gradient-primary rounded-3 zindex-5 py-5 px-4 p-sm-5"
+                >
+                  <span
+                    class="position-absolute top-50 start-0 translate-middle bg-light rounded-circle p-4"
+                  ></span>
+                  <span
+                    class="position-absolute top-0 start-0 w-100 h-100 bg-repeat-0 bg-position-center-end bg-size-cover"
+                    style="background-image: url(assets/img/landing/conference/price-card-pattern.png);"
+                  ></span>
+                  <div class="px-md-4 position-relative zindex-5">
+                    <div
+                      class="d-sm-flex align-items-start justify-content-between"
+                    >
+                      <div class="text-center text-sm-start me-sm-4">
+                        <div
+                          class="lead fw-semibold text-light text-uppercase mb-2"
+                        >
+                          Aug 22-24, 2022
+                        </div>
+                        <h3 class="h1 text-light">TDAMM Workshop</h3>
+                        <span class="fs-lg text-light me-2">Annapolis, MD</span>
+                      </div>
+                      <div
+                        class="d-table bg-white rounded-3 p-4 flex-shrink-0 mx-auto mx-sm-0"
+                      >
+                        <img
+                          src="assets/img/landing/conference/qr.png"
+                          width="102"
+                          alt="QR Code"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="d-flex flex-column flex-sm-row align-items-center pt-4 mt-2"
+                    >
+                      <!-- <a href="#" class="btn btn-light btn-lg mb-3 mb-sm-0 me-sm-3">Register</a> -->
+                      <div class="d-flex align-items-center">
+                        <span class="fs-lg text-light me-2"
+                          >Registation Deadline: July 30th, 2022</span
+                        >
+                        <span class="h4 text-light mb-0"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <span
+                    class="position-absolute top-50 end-0 translate-middle-y bg-light rounded-circle p-4 me-n4"
+                  ></span>
+                </div>
+                <span
+                  class="position-absolute bg-gradient-primary opacity-60 bottom-0 mb-n2 d-dark-mode-none"
+                  style="left: 1.5rem; width: calc(100% - 3rem); height: 5rem; filter: blur(.625rem);"
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Upcoming and past conferences -->
+      <section class="container pb-5 mb-2 mb-md-4 mb-lg-5 mt-n3 mt-lg-0">
+        <div>
+          <div id="upcoming"></div>
+          <h2 class="h2">Upcoming Conferences</h2>
+          <p class="mb-4 pb-2">
+            Although not exhaustive, below is a selected list of upcoming
+            conferences that are of particular interest to the multimessenger
+            community. Please feel free to contact us if you would like to see a
+            conference added to this list!
+          </p>
+
+          <!-- Dark table with striped rows -->
+          <div class="table-responsive">
+            <table class="table table-dark table-striped align-middle">
+              <thead>
+                <tr>
+                  <th style="max-width:20px">Conference</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                  <th>Registration Deadline</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th
+                    ><a
+                      href="https://pcos.gsfc.nasa.gov/TDAMM/"
+                      class="nav nav-link p-0">The TDAMM Workshop</a
+                    ></th
+                  >
+                  <td>Anapolis, MD</td>
+                  <td>August 22–24, 2022</td>
+                  <td>July 30, 2022</td>
+                </tr>
+                <tr>
+                  <th
+                    ><a
+                      href="https://conference.grbnanosats.net"
+                      class="nav nav-link p-0"
+                      >Monitoring the high-energy sky with small satellites</a
+                    ></th
+                  >
+                  <td>Brno, Czech Republic</td>
+                  <td>September 6-8, 2022</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row"
+                    ><a
+                      href="https://indico.cern.ch/event/1091305/"
+                      class="nav nav-link p-0"
+                      >The Tenth International Fermi Symposium</a
+                    ></th
+                  >
+                  <td>Johannesburg, South Africa</td>
+                  <td>October 9-15, 2022</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row"
+                    ><a
+                      href="https://aas.org/meetings/aas241"
+                      class="nav nav-link p-0">The 241st AAS meeting</a
+                    ></th
+                  >
+                  <td>Seattle, WA</td>
+                  <td>January 8-12, 2023</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row"
+                    ><a
+                      href="https://head.aas.org/meetings"
+                      class="nav nav-link p-0">The Twentieth AAS HEAD meeting</a
+                    ></th
+                  >
+                  <td>Hawaii</td>
+                  <td>March 26-30, 2023</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row"
+                    ><a href="https://april.aps.org/" class="nav nav-link p-0"
+                      >APS April meeting</a
+                    ></th
+                  >
+                  <td>Minneapolis, MN</td>
+                  <td>April 15-18, 2023</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="past"></div>
+          <h2 class="h2 mt-5">Past Conferences</h2>
+          <!-- <p class="mb-4 pb-2">Purus ornare nisl est nec. Nunc, enim tellus pretium viverra quisque id in metus volutpat. Urna eget velit venenatis, commodo eget massa. Magna donec dictum cras nullam platea. Diam rhoncus massa lectus pellentesque tristique. Amet commodo, egestas vitae bibendum. Volutpat elit condimentum integer tortor porttitor justo vel lobortis risus. Lacinia pellentesque fermentum tellus orci mauris, velit duis eget. Commodo justo, hac ligula molestie felis, iaculis. Vitae dui at ante orci, dictum fusce. Urna, sed urna fringilla faucibus euismod aliquet nec. Quis libero, fermentum amet eu, condimentum auctor. Sit vel ipsum sem tempus gravida et. Scelerisque blandit orci, est quis. Nisi, tellus amet est nascetur habitant faucibus ornare et vivamus.</p> -->
+
+          <!-- Dark table with striped rows -->
+          <div class="table-responsive">
+            <table class="table table-dark table-striped align-middle">
+              <thead>
+                <tr>
+                  <th>Conference</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                  <th>Registration Deadline</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th style="max-width: 275px;"
+                    ><a
+                      href="https://pulsarastronomy.net/IAUS369/"
+                      class="nav nav-link p-0"
+                      >The Dawn Of Cosmology & Multi-Messenger Studies With Fast
+                      Radio Bursts</a
+                    ></th
+                  >
+                  <td>South Korea</td>
+                  <td>Aug 2-4</td>
+                  <td>May 31st</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Resources -->
+      <section class="container pb-0 mb-2 mb-md-4 mb-lg-5 mt-n3 mt-lg-0">
+        <div>
+          <div id="resources"></div>
+          <h2 class="h2 mt-5">Presentation Resources</h2>
+          <p class="mb-4 pb-2">
+            NASA's <a class="btn-link" href="https://svs.gsfc.nasa.gov"
+              >Scientific Visualization Studio</a
+            >
+            and Goddard Media Studios have produced several
+            <a
+              class="btn-link"
+              href="https://svs.gsfc.nasa.gov/Gallery/Multimessengerastronomy.html"
+              >excellent resources</a
+            > on multimessenger discoveries over the years. These visualizations,
+            animations, and images are available to the community to help promote
+            a greater understanding of multimessenger astrophysics to the genereal
+            public and within the academic research community. Below is a selected
+            list of resources produced in recent years.
+          </p>
+        </div>
+      </section>
+
+      <!-- Portfolio grid -->
+      <section class="container pb-5 mb-2 mb-md-4 mb-lg-5">
+        <div class="row pb-lg-3">
+          <!-- GRB 170817 -->
+          <div class="col-md-5 mb-2">
+            <div class="card card-portfolio">
+              <div class="card-img">
+                <img
+                  src="assets/img/custom/AT2019dsg_prores_still_cropped2.jpg"
+                  alt="Image"
+                  style="height: 400px; min-height: 400px;"
+                />
+              </div>
+              <div class="card-body">
+                <h2 class="h5 mb-2">
+                  <a
+                    href="https://svs.gsfc.nasa.gov/13805"
+                    class="stretched-link"
+                    >Swift Links Neutrino to Star-destroying Black Hole</a
+                  >
+                </h2>
+                <div class="">
+                  <span class="text-muted">Feburary 22, 2021</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GRB 170817 -->
+          <div class="col-md-7 mb-2">
+            <div class="card card-portfolio">
+              <div class="card-img">
+                <img
+                  src="assets/img/custom/Neutron_Star_Merger_Still_2_new_print.jpg"
+                  alt="Image"
+                  style="height: 400px; min-height: 400px;"
+                />
+              </div>
+              <div class="card-body">
+                <h2 class="h5 mb-2">
+                  <a
+                    href="https://svs.gsfc.nasa.gov/12740"
+                    class="stretched-link"
+                    >Doomed Neutron Stars Create Blast of Light and
+                    Gravitational Waves</a
+                  >
+                </h2>
+                <div class="">
+                  <span class="text-muted">October 16, 2017</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item -->
+          <div class="col-md-7 mb-2">
+            <div class="card card-portfolio">
+              <div class="card-img">
+                <img
+                  src="assets/img/custom/UniverseHD1845_print.jpg"
+                  alt="Image"
+                  style="height: 400px; min-height: 400px;"
+                />
+              </div>
+              <div class="card-body">
+                <h2 class="h5 mb-2">
+                  <a
+                    href="https://svs.gsfc.nasa.gov/12218"
+                    class="stretched-link"
+                    >Fermi Helps Link a Cosmic Neutrino to a Blazar Outburst</a
+                  >
+                </h2>
+                <div class="">
+                  <span class="text-muted">April 28, 2016</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item -->
+          <div class="col-md-5 mb-2">
+            <div class="card card-portfolio">
+              <div class="card-img">
+                <img
+                  src="assets/img/custom/Fermi_neutrinos2.png"
+                  alt="Image"
+                  style="height: 400px; min-height: 400px;"
+                />
+              </div>
+              <div class="card-body">
+                <h2 class="h5 mb-2">
+                  <a
+                    href="https://svs.gsfc.nasa.gov/12994"
+                    class="stretched-link"
+                    >NASA's Fermi Links Cosmic Neutrino to Monster Black Hole</a
+                  >
+                </h2>
+                <div class="">
+                  <span class="text-muted">July 12, 2018</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item -->
+          <div class="col-md-5 mb-2">
+            <div class="card card-portfolio">
+              <div class="card-img">
+                <img
+                  src="assets/img/custom/chandra_sagittarius_a_20150105_print_cropped.png"
+                  alt="Image"
+                  style="height: 400px; min-height: 400px;"
+                />
+              </div>
+              <div class="card-body">
+                <h2 class="h5 mb-2">
+                  <a
+                    href="https://svs.gsfc.nasa.gov/30576"
+                    class="stretched-link"
+                    >X-ray Telescopes Find Black Hole May Be a Neutrino Factory</a
+                  >
+                </h2>
+                <div class="">
+                  <span class="text-muted">January 15, 2015</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item -->
+          <div class="col-md-7 mb-2">
+            <div class="card card-portfolio">
+              <div class="card-img">
+                <img
+                  src="assets/img/custom/Neutron_Star_Merger_Still_1_1024x576.jpg"
+                  alt="Image"
+                  style="height: 400px; min-height: 400px;"
+                />
+              </div>
+              <div class="card-body">
+                <h2 class="h5 mb-2">
+                  <a
+                    href="https://svs.gsfc.nasa.gov/12949"
+                    class="stretched-link">Star Collision</a
+                  >
+                </h2>
+                <div class="">
+                  <span class="text-muted">July 2, 2018</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contacts -->
+      <section
+        class="container pt-3 pb-4 pb-md-5 pb-5"
+        style="margin-top: -156px; margin-bottom: 220px; transform: translateY(156px);"
+      >
+        <div class="card border-0 bg-gradient-primary">
+          <div
+            class="card-body p-md-5 p-4 bg-size-cover"
+            style="background-image: url(assets/img/landing/digital-agency/contact-bg.png);"
+          >
+            <div class="py-md-5 py-4 text-center">
+              <h3 class="h4 fw-normal text-light opacity-75">
+                Want to see a conference added to this list?
+              </h3>
+              <a
+                href="mailto:daniel.kocevski@nasa.gov"
+                class="display-6 text-light">Contact us!</a
+              >
+              <div class="pt-md-5 pt-4 pb-md-2">
+                <!-- <a href="mailto:daniel.kocevski@nasa.gov" class="btn btn-lg btn-light">Contact us!</a> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer dark-mode bg-dark border-top border-light pt-5">
+      <div class="container pt-lg-4">
+        <div class="row pb-5">
+          <div class="col-lg-4 col-md-6">
+            <div class="navbar-brand text-dark p-0 me-0 mb-3 mb-lg-4">
+              <img
+                src="https://www1.grc.nasa.gov/wp-content/themes/nasapress/dist/images/logo-nasa.svg"
+                width="75"
+                alt="NASA logo"
+              />
+              <!-- <h6>National Aeronautics and Space Administration</h6> -->
+              <h5 class="mt-1 mb-0">
+                National Aeronautics and Space Administration
+              </h5>
+              <!-- <h6 class='mt-0 mb-0' style="line-height:25px">National Aeronautics<br> and Space Administration</h6> -->
+            </div>
+            <div
+              id="useful-links"
+              class="collapse d-lg-block"
+              data-bs-parent="#footer-links"
+            >
+              <ul class="nav flex-column pb-lg-1 mb-lg-0 mt-3">
+                <li><span class="h6">NASA Official: </span> Daniel Kocevski</li>
+                <li><span class="h6">Page Editor: </span> Daniel Kocevski</li>
+                <li>
+                  <span class="h6">Page Last Updated: </span> August 21st, 2022
+                </li>
+              </ul>
+              <!--  <div class="form-check form-switch mode-switch pt-1" data-bs-toggle="mode">
+                <input type="checkbox" class="form-check-input" id="theme-mode">
+                <label class="form-check-label d-none d-sm-block" for="theme-mode">Light</label>
+                <label class="form-check-label d-none d-sm-block" for="theme-mode">Dark</label>
+              </div> -->
+            </div>
+            <p class="pt-5">
+              <a href="https://www.nasa.gov/about/highlights/HP_Privacy.html"
+                >Privacy Policy</a
+              >
+              &nbsp;| &nbsp;
+              <a href="http://odeo.hq.nasa.gov/nofear.html">No Fear Act</a>
+              &nbsp;| &nbsp;
+              <a href="https://www.nasa.gov/FOIA/index.html">FOIA</a>
+              &nbsp;| &nbsp;
+              <a href="https://www.nasa.gov/about/highlights/HP_Privacy.html"
+                >Contact Us</a
+              >
+            </p>
+          </div>
+
+          <div
+            class="col-xl-6 col-lg-7 col-md-5 offset-xl-2 offset-md-1 pt-4 pt-md-1 pt-lg-0"
+          >
+            <div id="footer-links" class="row">
+              <div class="col-lg-4">
+                <h6 class="mb-2">
+                  <a
+                    href="#useful-links"
+                    class="d-block text-dark dropdown-toggle d-lg-none py-2"
+                    data-bs-toggle="collapse">Useful Links</a
+                  >
+                </h6>
+
+                <!-- Empty Column -->
+                <div
+                  id="useful-links"
+                  class="collapse d-lg-block"
+                  data-bs-parent="#footer-links"
+                ></div>
+              </div>
+
+              <!-- ACROSS Column -->
+              <div class="col-lg-4 col-lg-5 mt-5 pt-5 pt-lg-0 text-end">
+                <h5 class="mb-0 mt-4">
+                  <a
+                    class="nav nav-link d-inline-block px-0 pt-0 pb-0"
+                    href="about.html">ACROSS</a
+                  >
+                </h5>
+                <div
+                  id="useful-links"
+                  class="collapse d-lg-block"
+                  data-bs-parent="#footer-links"
+                >
+                  <ul class="nav flex-column pb-lg-1 mb-lg-0 mt-0">
+                    <li class="nav-item">
+                      <a
+                        href="index.html"
+                        class="nav-link d-inline-block px-0 pt-0 pb-0 mt-1"
+                        >multimessenger.nasa.gov</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="http://gsfc.nasa.gov"
+                        class="nav-link d-inline-block px-0 pt-0 pb-0"
+                        >Goddard Space Flight Center</a
+                      >
+                    </li>
+                    <li class="nav-item">
+                      <a
+                        href="http://mfsc.nasa.gov"
+                        class="nav-link d-inline-block px-0 pt-0 pb-0"
+                        >Marshall Space Flight Center</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="mb-4 pb-lg-3 mt-4 float-end">
+                  <div
+                    class="form-check form-switch mode-switch pt-1"
+                    data-bs-toggle="mode"
+                  >
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      id="theme-mode"
+                    />
+                    <label
+                      class="form-check-label d-none d-sm-block"
+                      for="theme-mode">Light</label
+                    >
+                    <label
+                      class="form-check-label d-none d-sm-block"
+                      for="theme-mode">Dark</label
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Back to top button -->
+    <a href="#top" class="btn-scroll-top" data-scroll>
+      <span class="btn-scroll-top-tooltip text-muted fs-sm me-2">Top</span>
+      <i class="btn-scroll-top-icon bx bx-chevron-up"></i>
+    </a>
+
+    <!-- Vendor Scripts -->
+    <script
+      src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"
+    ></script>
+    <script
+      src="assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"
+    ></script>
+    <!-- <script src="assets/vendor/jarallax/dist/jarallax.min.js"></script> -->
+    <script src="assets/vendor/lightgallery/lightgallery.min.js"></script>
+    <script
+      src="assets/vendor/lightgallery/plugins/zoom/lg-zoom.min.js"
+    ></script>
+    <script
+      src="assets/vendor/lightgallery/plugins/fullscreen/lg-fullscreen.min.js"
+    ></script>
+    <script
+      src="assets/vendor/lightgallery/plugins/video/lg-video.min.js"
+    ></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Main Theme Script -->
+    <script src="assets/js/theme.min.js"></script>
+  </body>
+</html>

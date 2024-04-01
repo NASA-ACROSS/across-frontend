@@ -131,3 +131,6 @@ dist
 
 # Sveltekit local files
 .svelte-kit/
+
+# Sveltekit production build files
+build/

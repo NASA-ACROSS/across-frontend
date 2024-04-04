@@ -311,6 +311,9 @@
                     <li class="nav-item">
                         <a href="about" class="nav-link">About</a>
                     </li>
+                    <li class="nav-item">
+                        <a href="api" class="nav-link">API</a>
+                    </li>
                 </ul>
             </div>
         </div>

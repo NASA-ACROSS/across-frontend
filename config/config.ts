@@ -1,3 +1,5 @@
+import { env } from '$env/dynamic/private'
+
 type Config = {
     API_URL: string;
 }
@@ -10,5 +12,5 @@ type Config = {
  * const apiUrl = CONFIG.API_URL; // "http://127.0.0.1:8000"
  */
 export const CONFIG: Config = {
-        API_URL: import.meta.env.VITE_API_URL,
-    }
+    API_URL: env.API_URL || "",
+}

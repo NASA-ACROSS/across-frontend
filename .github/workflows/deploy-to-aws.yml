@@ -6,12 +6,12 @@ on:
       - main
 
 env:
-  AWS_REGION: us-east-2                          # name of AWS region
-  ECR_REPOSITORY: across-frontend                # name of ECR repo
-  ECS_SERVICE: across-frontend-prod              # name of the service
-  ECS_CLUSTER: across-frontend                   # name of the cluster
-  ECS_TASK_DEFINITION: .aws/task-definition.json # path of the JSON task definition
-  CONTAINER_NAME: "across-frontend"              # name of the container name in the task definition
+  AWS_REGION: us-east-2                                 # name of AWS region
+  ECR_REPOSITORY: across-frontend                       # name of ECR repo
+  ECS_SERVICE: across-frontend-prod                     # name of the service
+  ECS_CLUSTER: across-frontend                          # name of the cluster
+  ECS_TASK_DEFINITION: .aws/deploy/task-definition.json # path of the JSON task definition
+  CONTAINER_NAME: "across-frontend"                     # name of the container name in the task definition
 
 jobs:
   deploy:

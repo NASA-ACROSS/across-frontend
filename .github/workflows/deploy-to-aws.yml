@@ -63,5 +63,5 @@ jobs:
             --build-arg GIT_VERSION=$GIT_VERSION \
             .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY-$IS_PROD_OR_DEV:$GIT_VERSION
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY-$IS_PROD_OR_DEV:$GIT_VERSION" >> $GITHUB_OUTPUT
+          echo "Published container image to ECR with URI: $ECR_REGISTRY/$ECR_REPOSITORY-$IS_PROD_OR_DEV:$GIT_VERSION"
           

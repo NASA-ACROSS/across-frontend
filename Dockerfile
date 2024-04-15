@@ -1,5 +1,10 @@
 FROM node:20.10-bookworm-slim as build
 
+ARG GIT_VERSION
+
+# internal public static env var for propagating version to frontend client
+ENV PUBLIC_BUILD_VERSION=$GIT_VERSION
+
 WORKDIR /app
 
 COPY package.json ./

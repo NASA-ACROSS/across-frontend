@@ -5,7 +5,7 @@ type Config = {
 }
 
 /**
- * Config abstraction for environment variables
+ * Config abstraction for dynamic environment variables
  * 
  * Usage:
  * import { CONFIG } from '$config/config';

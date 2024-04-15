@@ -1,3 +1,7 @@
+<script>
+    import { PUBLIC_CONFIG } from "$config/config.public";
+</script>
+
 <svelte:head>
     <meta charset="utf-8" />
     <title>ACROSS</title>
@@ -15,6 +19,8 @@
     <meta name="msapplication-TileColor" content="#080032" />
     <!-- <meta name="msapplication-config" content="assets/favicon/browserconfig.xml"> -->
     <meta name="theme-color" content="#ffffff" />
+
+    <meta name="build-version" content={PUBLIC_CONFIG.BUILD_VERSION} />
 
     <!-- Vendor Styles -->
     <link

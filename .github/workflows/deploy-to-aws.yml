@@ -1,17 +1,25 @@
 name: Deploy to AWS ECR
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      manual_version_tag:
+        description: "Manual Version String for Container"
+        required: false
+        default: ''
 
 env:
-  AWS_REGION: us-east-2                                 # name of AWS region
-  ECR_REPOSITORY: across-frontend                       # name of ECR repo
-  ECS_SERVICE: across-frontend-prod                     # name of the service
-  ECS_CLUSTER: across-frontend                          # name of the cluster
-  ECS_TASK_DEFINITION: .aws/deploy/task-definition.json # path of the JSON task definition
-  CONTAINER_NAME: "across-frontend"                     # name of the container name in the task definition
+  # Is this a production or development deployment?
+  # Production deployments are triggered by a release
+  # Dev deployments will use a manual version tag 
+  IS_PROD_OR_DEV: "${{ github.event_name == 'release'  && 'prod' || 'dev' }}"
+  # name of AWS region
+  AWS_REGION: us-east-2
+  # name of ECR repo
+  ECR_REPOSITORY: across-frontend                       
 
 jobs:
   deploy:
@@ -25,6 +33,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Git describe --tags
+        id: ghd
+        uses: proudust/gh-describe@v2
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -41,30 +53,15 @@ jobs:
         id: build-image-frontend
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
+          # use manual_version_tag for dev when it is present
+          GIT_VERSION: ${{ github.env.IS_PROD_OR_DEV == 'dev' && github.event.inputs.manual_version_tag != '' && github.event.inputs.manual_version_tag || steps.ghd.outputs.describe }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def-frontend
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-image-frontend.outputs.image }}
-          # if a second container image needs to be replaced
-          # we should chain another amazon-ecs-render-task-definition@v1 action after this
-          # using the output from this action as task-definition: ${{ steps.task-def-frontend.outputs.task-definition }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def-frontend.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY-$IS_PROD_OR_DEV:$GIT_VERSION \
+            --build-arg GIT_VERSION=$GIT_VERSION \
+            .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY-$IS_PROD_OR_DEV:$GIT_VERSION
+          echo "Published container image to ECR with URI: $ECR_REGISTRY/$ECR_REPOSITORY-$IS_PROD_OR_DEV:$GIT_VERSION"
+          

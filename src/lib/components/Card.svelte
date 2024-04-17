@@ -8,7 +8,7 @@
     <article class="card border-0 shadow-sm h-100">
         <div class="position-relative">
             <a
-                href="blog-single.html"
+                href={data.newsURL}
                 class="position-absolute top-0 start-0 w-100 h-100"
                 aria-label="Read more"
             ></a>
@@ -21,7 +21,7 @@
         <div class="card-body pb-4">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <a
-                    href="#"
+                    href={data.newsURL}
                     class="badge fs-sm text-nav bg-secondary text-decoration-none"
                     >{data.tag}</a
                 >

@@ -10,12 +10,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Favicon and Touch Icons -->
-    <!-- <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
-    <link rel="manifest" href="assets/favicon/site.webmanifest">
-    <link rel="mask-icon" href="assets/favicon/safari-pinned-tab.svg" color="#6366f1">
-    <link rel="shortcut icon" href="assets/favicon/favicon.ico"> -->
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/assets/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/assets/favicon/safari-pinned-tab.svg" color="#6366f1">
+    <link rel="shortcut icon" href="/assets/favicon/favicon.ico"> -->
     <meta name="msapplication-TileColor" content="#080032" />
     <!-- <meta name="msapplication-config" content="assets/favicon/browserconfig.xml"> -->
     <meta name="theme-color" content="#ffffff" />
@@ -26,21 +26,21 @@
     <link
         rel="stylesheet"
         media="screen"
-        href="assets/vendor/boxicons/css/boxicons.min.css"
+        href="/assets/vendor/boxicons/css/boxicons.min.css"
     />
     <link
         rel="stylesheet"
         media="screen"
-        href="assets/vendor/swiper/swiper-bundle.min.css"
+        href="/assets/vendor/swiper/swiper-bundle.min.css"
     />
     <link
         rel="stylesheet"
         media="screen"
-        href="assets/vendor/lightgallery/css/lightgallery-bundle.min.css"
+        href="/assets/vendor/lightgallery/css/lightgallery-bundle.min.css"
     />
 
     <!-- Main Theme Styles + Bootstrap -->
-    <link rel="stylesheet" media="screen" href="assets/css/theme.min.css" />
+    <link rel="stylesheet" media="screen" href="/assets/css/theme.min.css" />
 
     <!-- Page loading styles -->
     <style>
@@ -172,7 +172,7 @@
                     <li class="nav-item dropdown">
                         <a
                             data-sveltekit-reload
-                            href="missions"
+                            href="/missions"
                             class="nav-link dropdown-toggle"
                             aria-current="page">Missions</a
                         >
@@ -180,28 +180,28 @@
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="missions#overview"
+                                    href="/missions#overview"
                                     class="dropdown-item">Overview</a
                                 >
                             </li>
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="missions#timeline"
+                                    href="/missions#timeline"
                                     class="dropdown-item">Timeline</a
                                 >
                             </li>
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="missions#active"
+                                    href="/missions#active"
                                     class="dropdown-item">Active</a
                                 >
                             </li>
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="missions#development"
+                                    href="/missions#development"
                                     class="dropdown-item">Development</a
                                 >
                             </li>
@@ -210,7 +210,7 @@
                     <li class="nav-item dropdown">
                         <a
                             data-sveltekit-reload
-                            href="tools"
+                            href="/tools"
                             class="nav-link dropdown-toggle"
                             aria-current="page">Tools</a
                         >
@@ -218,14 +218,14 @@
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="tools#overview"
+                                    href="/tools#overview"
                                     class="dropdown-item">Overview</a
                                 >
                             </li>
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="tools#reporting"
+                                    href="/tools#reporting"
                                     class="dropdown-item"
                                     >Rapid Reporting Resources</a
                                 >
@@ -233,7 +233,7 @@
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="tools#analysis"
+                                    href="/tools#analysis"
                                     class="dropdown-item"
                                     >Data Analysis Toolkits</a
                                 >
@@ -241,7 +241,7 @@
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="tools#planning"
+                                    href="/tools#planning"
                                     class="dropdown-item"
                                     >Observations Planning Tools</a
                                 >
@@ -249,7 +249,7 @@
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="tools#archives"
+                                    href="/tools#archives"
                                     class="dropdown-item"
                                     >Data Archives & Repositories</a
                                 >
@@ -259,7 +259,7 @@
                     <li class="nav-item dropdown">
                         <a
                             data-sveltekit-reload
-                            href="proposals"
+                            href="/proposals"
                             class="nav-link dropdown-toggle"
                             aria-current="page">Proposals</a
                         >
@@ -267,7 +267,7 @@
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="proposals#proposals"
+                                    href="/proposals#proposals"
                                     class="dropdown-item"
                                     >Proposal Opportunities</a
                                 >
@@ -275,7 +275,7 @@
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="proposals#programs"
+                                    href="/proposals#programs"
                                     class="dropdown-item"
                                     >Guest Observer & Investigator Programs</a
                                 >
@@ -283,7 +283,7 @@
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="proposals#joint"
+                                    href="/proposals#joint"
                                     class="dropdown-item"
                                     >Joint Observing Opportunities</a
                                 >
@@ -291,7 +291,7 @@
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="proposals#resources"
+                                    href="/proposals#resources"
                                     class="dropdown-item"
                                     >Complementary Opportunities</a
                                 >
@@ -301,7 +301,7 @@
                     <li class="nav-item dropdown">
                         <a
                             data-sveltekit-reload
-                            href="conferences"
+                            href="/conferences"
                             class="nav-link dropdown-toggle"
                             aria-current="page">Conferences</a
                         >
@@ -309,21 +309,21 @@
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="conferences#upcoming"
+                                    href="/conferences#upcoming"
                                     class="dropdown-item">Upcoming Meetings</a
                                 >
                             </li>
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="conferences#past"
+                                    href="/conferences#past"
                                     class="dropdown-item">Past Meetings</a
                                 >
                             </li>
                             <li>
                                 <a
                                     data-sveltekit-reload
-                                    href="conferences#resources"
+                                    href="/conferences#resources"
                                     class="dropdown-item"
                                     >Presentation Resources</a
                                 >
@@ -331,12 +331,12 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a data-sveltekit-reload href="about" class="nav-link"
+                        <a data-sveltekit-reload href="/about" class="nav-link"
                             >About</a
                         >
                     </li>
                     <li class="nav-item">
-                        <a data-sveltekit-reload href="api" class="nav-link"
+                        <a data-sveltekit-reload href="/api" class="nav-link"
                             >API</a
                         >
                     </li>

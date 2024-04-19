@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import Card from "$lib/components/Card.svelte";
+  import { base } from "$app/paths";
 
   export let data: PageData;
 
@@ -54,7 +55,7 @@
     <!-- Parallax img -->
     <div
       class="jarallax-img bg-dark opacity-100"
-      style="background-image: url(./assets/img/custom/bli_grc_sm.jpg);"
+      style="background-image: url({base}/assets/img/custom/bli_grc_sm.jpg);"
     ></div>
 
     <!-- Overlay bg -->
@@ -141,27 +142,27 @@
         <div class="parallax" style="max-width: 648px;">
           <div class="parallax-layer" data-depth="0.1">
             <img
-              src="assets/img/landing/online-courses/hero/layer01.png"
+              src="{base}/assets/img/landing/online-courses/hero/layer01.png"
               alt="Layer"
             />
           </div>
           <div class="parallax-layer" data-depth="0.13">
             <img
-              src="assets/img/landing/online-courses/hero/layer02.png"
+              src="{base}/assets/img/landing/online-courses/hero/layer02.png"
               alt="Layer"
             />
           </div>
           <div class="parallax-layer zindex-5" data-depth="-0.12">
-            <img src="assets/img/custom/layer03.png" alt="Layer" />
+            <img src="{base}/assets/img/custom/layer03.png" alt="Layer" />
           </div>
           <div class="parallax-layer zindex-3" data-depth="0.27">
-            <img src="assets/img/custom/layer04_02.png" alt="Layer" />
+            <img src="{base}/assets/img/custom/layer04_02.png" alt="Layer" />
           </div>
           <div class="parallax-layer zindex-1" data-depth="-0.18">
-            <img src="assets/img/custom/layer05.png" alt="Layer" />
+            <img src="{base}/assets/img/custom/layer05.png" alt="Layer" />
           </div>
           <div class="parallax-layer zindex-1" data-depth="0.1">
-            <img src="assets/img/custom/layer06.png" alt="Layer" />
+            <img src="{base}/assets/img/custom/layer06.png" alt="Layer" />
           </div>
         </div>
       </div>
@@ -236,7 +237,7 @@
                     class="card-footer border-0 d-flex align-items-center w-100 pb-2"
                   >
                     <img
-                      src="assets/img/custom/Astro2020.png"
+                      src="{base}/assets/img/custom/Astro2020.png"
                       width="60"
                       class="rounded-circle"
                       alt="Ralph Edwards"
@@ -269,7 +270,7 @@
                     class="card-footer border-0 d-flex align-items-center w-100 pb-2"
                   >
                     <img
-                      src="assets/img/custom/Astro2020.png"
+                      src="{base}/assets/img/custom/Astro2020.png"
                       width="60"
                       class="rounded-circle"
                       alt="Ralph Edwards"
@@ -569,15 +570,15 @@
 <div id="index-scripts">
   <!-- Vendor Scripts -->
   <script
-    src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"
+    src="{base}/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"
   ></script>
   <script
-    src="assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"
+    src="{base}/assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"
   ></script>
-  <script src="assets/vendor/jarallax/dist/jarallax.min.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/parallax-js/dist/parallax.min.js"></script>
+  <script src="{base}/assets/vendor/jarallax/dist/jarallax.min.js"></script>
+  <script src="{base}/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="{base}/assets/vendor/parallax-js/dist/parallax.min.js"></script>
 
   <!-- Main Theme Script -->
-  <script src="assets/js/theme.min.js"></script>
+  <script src="{base}/assets/js/theme.min.js"></script>
 </div>

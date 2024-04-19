@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { base } from "$app/paths";
+</script>
+
 <!-- Page wrapper for sticky footer -->
 <!-- Wraps everything except footer to push footer to the bottom of the page if there is little content -->
 <main class="page-wrapper">
@@ -10,7 +14,7 @@
   >
     <div
       class="jarallax-img"
-      style="background-image: url(assets/img/custom/Fermi_Earth_GWs.jpg);"
+      style="background-image: url({base}/assets/img/custom/Fermi_Earth_GWs.jpg);"
     ></div>
   </div>
 
@@ -62,7 +66,7 @@
 
         <!-- Image -->
         <div class="gallery mb-4 pb-2">
-          <img src="assets/img/custom/AstrophysicsFleet2.jpg" />
+          <img src="{base}/assets/img/custom/AstrophysicsFleet2.jpg" />
         </div>
 
         <p class="mb-4 pb-2">
@@ -120,7 +124,7 @@
 
         <!-- Image -->
         <div class="gallery mb-4 pb-2">
-          <img src="assets/img/custom/mission-timeline.png" />
+          <img src="{base}/assets/img/custom/mission-timeline.png" />
         </div>
 
         <div id="capabilities"></div>
@@ -244,7 +248,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/fermi.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/fermi.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -296,7 +300,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/swift.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/swift.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -363,7 +367,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/hubble.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/hubble.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -428,7 +432,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/chandra2.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/chandra2.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -482,7 +486,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/xmm2.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/xmm2.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -537,7 +541,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/nustar.png); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/nustar.png); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -589,7 +593,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/nicer.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/nicer.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -641,7 +645,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/ixpe2.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/ixpe2.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -692,7 +696,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/tess.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/tess.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -750,7 +754,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/BurstCube.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/BurstCube.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -784,7 +788,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/bli_grc_sm.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/bli_grc_sm.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -821,7 +825,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/bli_grc_sm.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/bli_grc_sm.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -857,7 +861,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/bli_grc_sm.jpg); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/bli_grc_sm.jpg); min-height: 15rem;"
             >
               <a
                 href="blog-single.html"
@@ -894,7 +898,7 @@
           <div class="row g-0">
             <div
               class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url(assets/img/custom/cosi.png); min-height: 15rem;"
+              style="background-image: url({base}/assets/img/custom/cosi.png); min-height: 15rem;"
             >
               <a
                 href="https://cosi.ssl.berkeley.edu"
@@ -1024,7 +1028,7 @@
     <div class="card border-0 bg-gradient-primary">
       <div
         class="card-body p-md-5 p-4 bg-size-cover"
-        style="background-image: url(assets/img/landing/digital-agency/contact-bg.png);"
+        style="background-image: url({base}/assets/img/landing/digital-agency/contact-bg.png);"
       >
         <div class="py-md-5 py-4 text-center">
           <h3 class="h4 fw-normal text-light opacity-75">
@@ -1187,22 +1191,22 @@
 <div>
   <!-- Vendor Scripts -->
   <script
-    src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"
+    src="{base}/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"
   ></script>
   <script
-    src="assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"
+    src="{base}/assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"
   ></script>
-  <!-- <script src="assets/vendor/jarallax/dist/jarallax.min.js"></script> -->
-  <script src="assets/vendor/lightgallery/lightgallery.min.js"></script>
-  <script src="assets/vendor/lightgallery/plugins/zoom/lg-zoom.min.js"></script>
+  <!-- <script src="{base}/assets/vendor/jarallax/dist/jarallax.min.js"></script> -->
+  <script src="{base}/assets/vendor/lightgallery/lightgallery.min.js"></script>
+  <script src="{base}/assets/vendor/lightgallery/plugins/zoom/lg-zoom.min.js"></script>
   <script
-    src="assets/vendor/lightgallery/plugins/fullscreen/lg-fullscreen.min.js"
+    src="{base}/assets/vendor/lightgallery/plugins/fullscreen/lg-fullscreen.min.js"
   ></script>
   <script
-    src="assets/vendor/lightgallery/plugins/video/lg-video.min.js"
+    src="{base}/assets/vendor/lightgallery/plugins/video/lg-video.min.js"
   ></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="{base}/assets/vendor/swiper/swiper-bundle.min.js"></script>
 
   <!-- Main Theme Script -->
-  <script src="assets/js/theme.min.js"></script>
+  <script src="{base}/assets/js/theme.min.js"></script>
 </div>

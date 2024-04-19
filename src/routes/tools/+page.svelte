@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { base } from "$app/paths";
+</script>
+
 <!-- Page wrapper for sticky footer -->
 <!-- Wraps everything except footer to push footer to the bottom of the page if there is little content -->
 <main class="page-wrapper">
@@ -43,7 +47,7 @@
         >
           <a href="portfolio-single-project.html">
             <img
-              src="assets/img/custom/gcn-diagram.jpg"
+              src="{base}/assets/img/custom/gcn-diagram.jpg"
               class="rounded-3"
               width="600"
               alt="Image"
@@ -111,7 +115,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/services/icons/web-search.svg"
+                  src="{base}/assets/img/services/icons/web-search.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -140,7 +144,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/about/icons/chat-light.svg"
+                  src="{base}/assets/img/about/icons/chat-light.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -169,7 +173,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/about/icons/chat-light.svg"
+                  src="{base}/assets/img/about/icons/chat-light.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -210,7 +214,7 @@
         >
           <a href="portfolio-single-project.html">
             <img
-              src="assets/img/custom/gdt_logo.png"
+              src="{base}/assets/img/custom/gdt_logo.png"
               class="rounded-3 pt-5 mt-5"
               width="600"
               alt="Image"
@@ -297,7 +301,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/services/icons/analytics.svg"
+                  src="{base}/assets/img/services/icons/analytics.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -326,7 +330,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/services/icons/cms.svg"
+                  src="{base}/assets/img/services/icons/cms.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -354,7 +358,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/services/icons/cms.svg"
+                  src="{base}/assets/img/services/icons/cms.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -382,7 +386,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/services/icons/cms.svg"
+                  src="{base}/assets/img/services/icons/cms.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -424,7 +428,7 @@
         >
           <a href="portfolio-single-project.html">
             <img
-              src="assets/img/custom/TreasureMap.png"
+              src="{base}/assets/img/custom/TreasureMap.png"
               class="rounded-3 pt-0"
               width="600"
               alt="Image"
@@ -511,7 +515,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/services/icons/rocket.svg"
+                  src="{base}/assets/img/services/icons/rocket.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -562,7 +566,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/services/icons/rocket.svg"
+                  src="{base}/assets/img/services/icons/rocket.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -591,7 +595,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/services/icons/web-search.svg"
+                  src="{base}/assets/img/services/icons/web-search.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -620,7 +624,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/services/icons/web-search.svg"
+                  src="{base}/assets/img/services/icons/web-search.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -649,7 +653,7 @@
                 class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
                 <img
-                  src="assets/img/services/icons/web-search.svg"
+                  src="{base}/assets/img/services/icons/web-search.svg"
                   class="d-block m-1"
                   width="40"
                   alt="Icon"
@@ -748,7 +752,7 @@
               /></svg
             >
             <img
-              src="assets/img/about/cta.png"
+              src="{base}/assets/img/about/cta.png"
               class="position-relative zindex-3 mb-2 my-lg-4"
               width="382"
               alt="Illustration"
@@ -905,23 +909,23 @@
 <div>
   <!-- Vendor Scripts -->
   <script
-    src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"
+    src="{base}/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"
   ></script>
   <script
-    src="assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"
+    src="{base}/assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"
   ></script>
-  <script src="assets/vendor/jarallax/dist/jarallax.min.js "></script>
-  <script src="assets/vendor/lightgallery/lightgallery.min.js"></script>
-  <script src="assets/vendor/lightgallery/plugins/zoom/lg-zoom.min.js"></script>
+  <script src="{base}/assets/vendor/jarallax/dist/jarallax.min.js "></script>
+  <script src="{base}/assets/vendor/lightgallery/lightgallery.min.js"></script>
+  <script src="{base}/assets/vendor/lightgallery/plugins/zoom/lg-zoom.min.js"></script>
   <script
-    src="assets/vendor/lightgallery/plugins/fullscreen/lg-fullscreen.min.js"
+    src="{base}/assets/vendor/lightgallery/plugins/fullscreen/lg-fullscreen.min.js"
   ></script>
   <script
-    src="assets/vendor/lightgallery/plugins/video/lg-video.min.js"
+    src="{base}/assets/vendor/lightgallery/plugins/video/lg-video.min.js"
   ></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/rellax/rellax.min.js"></script>
+  <script src="{base}/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="{base}/assets/vendor/rellax/rellax.min.js"></script>
 
   <!-- Main Theme Script -->
-  <script src="assets/js/theme.min.js"></script>
+  <script src="{base}/assets/js/theme.min.js"></script>
 </div>

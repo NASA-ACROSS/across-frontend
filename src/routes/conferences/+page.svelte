@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { base } from "$app/paths";
+</script>
+
 <!-- Page wrapper for sticky footer -->
 <!-- Wraps everything except footer to push footer to the bottom of the page if there is little content -->
 <main class="page-wrapper">
@@ -10,7 +14,7 @@
   >
     <div
       class="jarallax-img"
-      style="background-image: url(assets/img/landing/conference/video-cover.jpg);"
+      style="background-image: url({base}/assets/img/landing/conference/video-cover.jpg);"
     ></div>
   </div>
 
@@ -80,7 +84,7 @@
               ></span>
               <span
                 class="position-absolute top-0 start-0 w-100 h-100 bg-repeat-0 bg-position-center-end bg-size-cover"
-                style="background-image: url(assets/img/landing/conference/price-card-pattern.png);"
+                style="background-image: url({base}/assets/img/landing/conference/price-card-pattern.png);"
               ></span>
               <div class="px-md-4 position-relative zindex-5">
                 <div
@@ -99,7 +103,7 @@
                     class="d-table bg-white rounded-3 p-4 flex-shrink-0 mx-auto mx-sm-0"
                   >
                     <img
-                      src="assets/img/landing/conference/qr.png"
+                      src="{base}/assets/img/landing/conference/qr.png"
                       width="102"
                       alt="QR Code"
                     />
@@ -292,7 +296,7 @@
         <div class="card card-portfolio">
           <div class="card-img">
             <img
-              src="assets/img/custom/AT2019dsg_prores_still_cropped2.jpg"
+              src="{base}/assets/img/custom/AT2019dsg_prores_still_cropped2.jpg"
               alt="Image"
               style="height: 400px; min-height: 400px;"
             />
@@ -315,7 +319,7 @@
         <div class="card card-portfolio">
           <div class="card-img">
             <img
-              src="assets/img/custom/Neutron_Star_Merger_Still_2_new_print.jpg"
+              src="{base}/assets/img/custom/Neutron_Star_Merger_Still_2_new_print.jpg"
               alt="Image"
               style="height: 400px; min-height: 400px;"
             />
@@ -339,7 +343,7 @@
         <div class="card card-portfolio">
           <div class="card-img">
             <img
-              src="assets/img/custom/UniverseHD1845_print.jpg"
+              src="{base}/assets/img/custom/UniverseHD1845_print.jpg"
               alt="Image"
               style="height: 400px; min-height: 400px;"
             />
@@ -362,7 +366,7 @@
         <div class="card card-portfolio">
           <div class="card-img">
             <img
-              src="assets/img/custom/Fermi_neutrinos2.png"
+              src="{base}/assets/img/custom/Fermi_neutrinos2.png"
               alt="Image"
               style="height: 400px; min-height: 400px;"
             />
@@ -385,7 +389,7 @@
         <div class="card card-portfolio">
           <div class="card-img">
             <img
-              src="assets/img/custom/chandra_sagittarius_a_20150105_print_cropped.png"
+              src="{base}/assets/img/custom/chandra_sagittarius_a_20150105_print_cropped.png"
               alt="Image"
               style="height: 400px; min-height: 400px;"
             />
@@ -408,7 +412,7 @@
         <div class="card card-portfolio">
           <div class="card-img">
             <img
-              src="assets/img/custom/Neutron_Star_Merger_Still_1_1024x576.jpg"
+              src="{base}/assets/img/custom/Neutron_Star_Merger_Still_1_1024x576.jpg"
               alt="Image"
               style="height: 400px; min-height: 400px;"
             />
@@ -436,7 +440,7 @@
     <div class="card border-0 bg-gradient-primary">
       <div
         class="card-body p-md-5 p-4 bg-size-cover"
-        style="background-image: url(assets/img/landing/digital-agency/contact-bg.png);"
+        style="background-image: url({base}/assets/img/landing/digital-agency/contact-bg.png);"
       >
         <div class="py-md-5 py-4 text-center">
           <h3 class="h4 fw-normal text-light opacity-75">
@@ -599,21 +603,21 @@
 <div>
   <!-- Vendor Scripts -->
   <script
-    src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"
+    src="{base}/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"
   ></script>
   <script
-    src="assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"
+    src="{base}/assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"
   ></script>
-  <script src="assets/vendor/lightgallery/lightgallery.min.js"></script>
-  <script src="assets/vendor/lightgallery/plugins/zoom/lg-zoom.min.js"></script>
+  <script src="{base}/assets/vendor/lightgallery/lightgallery.min.js"></script>
+  <script src="{base}/assets/vendor/lightgallery/plugins/zoom/lg-zoom.min.js"></script>
   <script
-    src="assets/vendor/lightgallery/plugins/fullscreen/lg-fullscreen.min.js"
+    src="{base}/assets/vendor/lightgallery/plugins/fullscreen/lg-fullscreen.min.js"
   ></script>
   <script
-    src="assets/vendor/lightgallery/plugins/video/lg-video.min.js"
+    src="{base}/assets/vendor/lightgallery/plugins/video/lg-video.min.js"
   ></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="{base}/assets/vendor/swiper/swiper-bundle.min.js"></script>
 
   <!-- Main Theme Script -->
-  <script src="assets/js/theme.min.js"></script>
+  <script src="{base}/assets/js/theme.min.js"></script>
 </div>

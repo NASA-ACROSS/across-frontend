@@ -1,10 +1,8 @@
 import { CONFIG } from '../../../config/config.js';
 import { fail } from '@sveltejs/kit'
 
-const KNOWN_ERRORS = ["500", "400", "ECONNREFUSED"]
-
 export const actions = {
-    default: async ({ cookies, request }) => {
+    default: async ({ request }) => {
         const data = await request.formData();
 
         const email = data.get('email') as string;

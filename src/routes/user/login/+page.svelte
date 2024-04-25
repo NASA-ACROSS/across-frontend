@@ -1,6 +1,4 @@
 <script lang="ts">
-    let emailInput = "";
-
     /** @type {import('./$types').ActionData} */
     export let form;
 </script>

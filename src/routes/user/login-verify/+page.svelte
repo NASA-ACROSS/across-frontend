@@ -23,7 +23,7 @@
                 able to retrieve it again using this link.
             </p>
         {:else}
-            <h1>Login Error</h1>
+            <h1>Email Login Error</h1>
             <h4>Invalid ACROSS user verification key</h4>
             <h4>
                 <a href="{base}/user/login" class=".text-decoration"

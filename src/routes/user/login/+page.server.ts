@@ -19,6 +19,11 @@ export const actions = {
             return fail(500, { error: error.message, fail: true });
         }
 
+        if (response.status == 500) {
+            console.log(`ERROR: logging in user [${email}] at [${Date.now()}]`, JSON.stringify(error))
+            return fail(500, { error: error.message, fail: true });
+        }
+
         if (response.status == 400) {
             const errorResponse = await response.json();
             console.log(`ERROR: logging in user NOT FOUND [${email}] at [${Date.now()}]`)

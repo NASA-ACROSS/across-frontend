@@ -4,7 +4,7 @@ import { CONFIG } from '../../../config/config.js';
 export const actions = {
     default: async ({ url }) => {
         const verificationKey = url.searchParams.get('verification_key');
-        console.log("verificationKey", verificationKey)
+
         const options = {
             method: 'POST',
         }
@@ -16,6 +16,12 @@ export const actions = {
         } catch (error) {
             console.log(`ERROR: login-verify for verificationKey [${verificationKey}] at [${Date.now()}]`, JSON.stringify(error))
             return fail(500, { error: error?.message, fail: true });
+        }
+
+        // short circuit for error status
+        if (response.status != 200) {
+            console.log(`ERROR: login-verify for verificationKey [${verificationKey}] at time [${Date.now()}] with status code [${response.status}] with status text ${response.statusText}`, response)
+            return {}
         }
 
         const credentials = await response?.json();

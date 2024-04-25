@@ -14,6 +14,7 @@
                 <div class="input-group me-sm-3 mb-sm-0 mb-3">
                     <input
                         class="form-control form-control-lg rounded-3 ps-5"
+                        required
                         value={form?.email ?? ""}
                         disabled={form?.success}
                         autocomplete="off"

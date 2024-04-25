@@ -4,7 +4,7 @@
     import { page } from "$app/stores";
     import BackToTopButton from "$lib/components/BackToTopButton.svelte";
     import Footer from "$lib/components/Footer.svelte";
-    import { onMount, afterUpdate, beforeUpdate } from "svelte";
+    import { onMount } from "svelte";
 
     $: DOM_MOUNTED = false;
 

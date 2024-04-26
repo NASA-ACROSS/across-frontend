@@ -162,69 +162,114 @@
             <tr>
               <th
                 ><a
-                  href="https://pcos.gsfc.nasa.gov/TDAMM/"
-                  class="nav nav-link p-0">The TDAMM Workshop</a
+                  href="https://www.dunlap.utoronto.ca/hotwired7/ "
+                  class="nav nav-link p-0">Hot-Wiring the Transient Universe</a
                 ></th
               >
-              <td>Anapolis, MD</td>
-              <td>August 22–24, 2022</td>
-              <td>July 30, 2022</td>
+              <td>Toronto, Canada</td>
+              <td>May 13-16, 2024</td>
+              <td>May 10, 2024 (online attendance)</td>
             </tr>
             <tr>
               <th
                 ><a
-                  href="https://conference.grbnanosats.net"
+                  href="https://spie.org/conferences-and-exhibitions/astronomical-telescopes-and-instrumentation"
                   class="nav nav-link p-0"
-                  >Monitoring the high-energy sky with small satellites</a
+                  >SPIE Astronomical Telescopes + Instrumentation</a
                 ></th
               >
-              <td>Brno, Czech Republic</td>
-              <td>September 6-8, 2022</td>
-              <td></td>
+              <td>Yokohama , Japan</td>
+              <td>June 15-18, 2024</td>
+              <td>May 31, 2024</td>
             </tr>
             <tr>
               <th scope="row"
                 ><a
-                  href="https://indico.cern.ch/event/1091305/"
+                  href="https://pcos.gsfc.nasa.gov/sags/figsag/events/workshops/June-2024/June-2024.php"
                   class="nav nav-link p-0"
-                  >The Tenth International Fermi Symposium</a
+                  >Future Innovations in Gamma Rays (FIG SAG) Workshop</a
                 ></th
               >
-              <td>Johannesburg, South Africa</td>
-              <td>October 9-15, 2022</td>
-              <td></td>
+              <td>Houghton, Michigan</td>
+              <td>June 24-28, 2024</td>
+              <td>April 30, 2024 (abstracts)</td>
             </tr>
             <tr>
               <th scope="row"
                 ><a
-                  href="https://aas.org/meetings/aas241"
-                  class="nav nav-link p-0">The 241st AAS meeting</a
+                  href="https://sites.google.com/view/grbforum2024/overview"
+                  class="nav nav-link p-0">Gamma Ray Burst Forum 2024</a
                 ></th
               >
-              <td>Seattle, WA</td>
-              <td>January 8-12, 2023</td>
-              <td></td>
+              <td>Athens, Greece</td>
+              <td>July 8-12, 2024</td>
+              <td>May 15, 2024 (abstracts due April 30)</td>
             </tr>
             <tr>
               <th scope="row"
                 ><a
-                  href="https://head.aas.org/meetings"
-                  class="nav nav-link p-0">The Twentieth AAS HEAD meeting</a
+                  href="https://www.cospar2024.org/"
+                  class="nav nav-link p-0">45th COSPAR Scientific Assembly</a
                 ></th
               >
-              <td>Hawaii</td>
-              <td>March 26-30, 2023</td>
-              <td></td>
+              <td>Busan, South Korea</td>
+              <td>July 13-21, 2024</td>
+              <td>June 3, 2024 (July 5 for late registration)</td>
             </tr>
             <tr>
               <th scope="row"
-                ><a href="https://april.aps.org/" class="nav nav-link p-0"
-                  >APS April meeting</a
+                ><a href="https://astronomy2024.org/" class="nav nav-link p-0"
+                  >32nd IAU General Assembly</a
                 ></th
               >
-              <td>Minneapolis, MN</td>
-              <td>April 15-18, 2023</td>
-              <td></td>
+              <td>Cape Town, South Africa</td>
+              <td>August 6-15, 2024</td>
+              <td>May 31, 2024 (Aug 15 for late registration)</td>
+            </tr>
+	    <tr>
+              <th scope="row"
+                ><a
+                  href="https://indico.uchicago.edu/event/427/overview"
+                  class="nav nav-link p-0">TeV Particle Astrophysics</a
+                ></th
+              >
+              <td>Chicago, Illnois</td>
+              <td>August 26-30, 2024</td>
+              <td>June 1, 2024</td>
+            </tr>
+	    <tr>
+              <th scope="row"
+                ><a
+                  href="https://indico.ict.inaf.it/event/2661/overview"
+                  class="nav nav-link p-0">Gamma 2024</a
+                ></th
+              >
+              <td>Milan, Italy</td>
+              <td>September 2-6, 2024</td>
+              <td>August 1, 2024 (abstracts due June 1)</td>
+            </tr>
+	    <tr>
+              <th scope="row"
+                ><a
+                  href="https://fermi.gsfc.nasa.gov/science/mtgs/symposia/eleventh/"
+                  class="nav nav-link p-0">11th International Fermi Symposium</a
+                ></th
+              >
+              <td>College Park, Maryland</td>
+              <td>September 9-13, 2024</td>
+              <td>Augst 1, 2024 (abstracts due May 1)</td>
+            </tr>
+	    <tr>
+              <th scope="row"
+                ><a
+                  href="https://sites.google.com/view/3rd-tdamm-workshop/home"
+                  class="nav nav-link p-0">Multidisciplinary Science
+      in the Multimessenger Era (3rd TDAMM Workshop)</a
+                ></th
+              >
+              <td>Baton Rouge, Louisiana</td>
+              <td>September 23-26, 2024</td>
+              <td>July 23, 2024</td>
             </tr>
           </tbody>
         </table>
@@ -249,15 +294,27 @@
             <tr>
               <th style="max-width: 275px;"
                 ><a
-                  href="https://pulsarastronomy.net/IAUS369/"
+                  href="https://noirlab.edu/science/events/websites/MMA2023"
                   class="nav nav-link p-0"
-                  >The Dawn Of Cosmology & Multi-Messenger Studies With Fast
-                  Radio Bursts</a
+                  >Windows on the Universe: Establishing the
+      Infrastructure for a Collaborative Multi-messenger Ecosystem (2st TDAMM Workshop)</a
                 ></th
               >
-              <td>South Korea</td>
-              <td>Aug 2-4</td>
-              <td>May 31st</td>
+              <td>Tucson, Arizona</td>
+              <td>October 16-18, 2023</td>
+              <td></td>
+            </tr>	    
+            <tr>
+              <th style="max-width: 275px;"
+                ><a
+                  href="https://pcos.gsfc.nasa.gov/TDAMM/"
+                  class="nav nav-link p-0"
+                  >The 1st TDAMM Workshop</a
+                ></th
+              >
+              <td>Anapolis, Maryland</td>
+              <td>August 22–24, 2022</td>
+              <td>July 30, 2022</td>
             </tr>
           </tbody>
         </table>

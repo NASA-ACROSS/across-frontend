@@ -149,7 +149,7 @@
 
       <!-- Dark table with striped rows -->
       <div class="table-responsive">
-        <table class="table table-dark table-striped align-middle">
+        <table class="table table-striped align-middle">
           <thead>
             <tr>
               <th style="max-width:20px">Conference</th>
@@ -207,9 +207,8 @@
             </tr>
             <tr>
               <th scope="row"
-                ><a
-                  href="https://www.cospar2024.org/"
-                  class="nav nav-link p-0">45th COSPAR Scientific Assembly</a
+                ><a href="https://www.cospar2024.org/" class="nav nav-link p-0"
+                  >45th COSPAR Scientific Assembly</a
                 ></th
               >
               <td>Busan, South Korea</td>
@@ -226,7 +225,7 @@
               <td>August 6-15, 2024</td>
               <td>May 31, 2024 (Aug 15 for late registration)</td>
             </tr>
-	    <tr>
+            <tr>
               <th scope="row"
                 ><a
                   href="https://indico.uchicago.edu/event/427/overview"
@@ -237,7 +236,7 @@
               <td>August 26-30, 2024</td>
               <td>June 1, 2024</td>
             </tr>
-	    <tr>
+            <tr>
               <th scope="row"
                 ><a
                   href="https://indico.ict.inaf.it/event/2661/overview"
@@ -248,7 +247,7 @@
               <td>September 2-6, 2024</td>
               <td>August 1, 2024 (abstracts due June 1)</td>
             </tr>
-	    <tr>
+            <tr>
               <th scope="row"
                 ><a
                   href="https://fermi.gsfc.nasa.gov/science/mtgs/symposia/eleventh/"
@@ -259,12 +258,13 @@
               <td>September 9-13, 2024</td>
               <td>Augst 1, 2024 (abstracts due May 1)</td>
             </tr>
-	    <tr>
+            <tr>
               <th scope="row"
                 ><a
                   href="https://sites.google.com/view/3rd-tdamm-workshop/home"
-                  class="nav nav-link p-0">Multidisciplinary Science
-      in the Multimessenger Era (3rd TDAMM Workshop)</a
+                  class="nav nav-link p-0"
+                  >Multidisciplinary Science in the Multimessenger Era (3rd
+                  TDAMM Workshop)</a
                 ></th
               >
               <td>Baton Rouge, Louisiana</td>
@@ -281,7 +281,7 @@
 
       <!-- Dark table with striped rows -->
       <div class="table-responsive">
-        <table class="table table-dark table-striped align-middle">
+        <table class="table table-striped align-middle">
           <thead>
             <tr>
               <th>Conference</th>
@@ -296,20 +296,19 @@
                 ><a
                   href="https://noirlab.edu/science/events/websites/MMA2023"
                   class="nav nav-link p-0"
-                  >Windows on the Universe: Establishing the
-      Infrastructure for a Collaborative Multi-messenger Ecosystem (2st TDAMM Workshop)</a
+                  >Windows on the Universe: Establishing the Infrastructure for
+                  a Collaborative Multi-messenger Ecosystem (2st TDAMM Workshop)</a
                 ></th
               >
               <td>Tucson, Arizona</td>
               <td>October 16-18, 2023</td>
               <td></td>
-            </tr>	    
+            </tr>
             <tr>
               <th style="max-width: 275px;"
                 ><a
                   href="https://pcos.gsfc.nasa.gov/TDAMM/"
-                  class="nav nav-link p-0"
-                  >The 1st TDAMM Workshop</a
+                  class="nav nav-link p-0">The 1st TDAMM Workshop</a
                 ></th
               >
               <td>Anapolis, Maryland</td>

@@ -6,6 +6,10 @@ on:
       - published
   workflow_dispatch:
     inputs:
+      ref_to_containerize:
+        description: "Ref to containerize (branch, tag, or sha)"
+        required: false
+        default: 'main'
       manual_version_tag:
         description: "Manual Version String for Container"
         required: false
@@ -33,6 +37,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{github.event.inputs.ref_to_containerize}}
+
 
       - name: Git describe --tags
         id: ghd

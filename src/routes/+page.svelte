@@ -132,8 +132,8 @@
         </p>
 
         <p>
-          Multimessenger.nasa.gov aims to support this emerging field by
-          consolidating important information on resources available to
+          Multimessenger.across.smce.nasa.gov aims to support this emerging
+          field by consolidating important information on resources available to
           scientists around the world to enable future discoveries.
         </p>
       </div>

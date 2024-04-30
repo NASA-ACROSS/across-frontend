@@ -12,7 +12,7 @@
 <div class="footer-container">
     <Identifier
         description="Identifier description"
-        domain="multimessenger.nasa.gov"
+        domain="multimessenger.across.smce.nasa.gov"
         disclaimer="An official website of the National Aeronautics and Space Administration"
     >
         <div slot="logos" let:props {...props}>

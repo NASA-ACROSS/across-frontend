@@ -46,12 +46,12 @@ export const actions = {
 
         if (response.status == 409) {
             const errorResponse = await response.json();
-            console.log(`ERROR: logging in user NOT FOUND [${email}] at [${Date.now()}] with status code [409]`)
+            console.log(`ERROR: user already exists  [${email}, ${username}] at [${Date.now()}] with status code [409]`)
             return fail(500, { error: errorResponse.detail, userAlreadyExists: true });
         }
 
         if (response.status == 500) {
-            console.log(`ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`)
+            console.log(`ERROR: register user with [${email}, ${username}] at [${Date.now()}] with status code [500]`)
             return fail(500, { fail: true });
         }
 

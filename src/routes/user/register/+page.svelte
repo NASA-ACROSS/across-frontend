@@ -17,7 +17,7 @@
                         disabled={form?.success}
                         autocomplete="off"
                         name="firstname"
-                        type="firstname"
+                        type="text"
                         placeholder="First"
                     />
                 </div>
@@ -29,7 +29,7 @@
                         disabled={form?.success}
                         autocomplete="off"
                         name="lastname"
-                        type="lastname"
+                        type="text"
                         placeholder="Last"
                     />
                 </div>
@@ -44,7 +44,7 @@
                         disabled={form?.success}
                         autocomplete="off"
                         name="username"
-                        type="username"
+                        type="text"
                         placeholder="Username"
                     />
                 </div>

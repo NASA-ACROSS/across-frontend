@@ -7,5 +7,8 @@
         <h1>{$page.status}</h1>
         <h2>{$page.error.message}</h2>
         <h3>{$page.url}</h3>
+        {#if $page.error.errorId}
+            <p>{$page.error.errorId}</p>
+        {/if}
     </div>
 </section>

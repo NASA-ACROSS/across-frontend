@@ -63,9 +63,6 @@
                         placeholder="Please enter your email"
                     />
                 </div>
-                <!-- <button class="btn btn-lg btn-primary" disabled={form?.success}
-                    >Login</button
-                > -->
             </div>
             <button class="btn btn-lg btn-primary" disabled={form?.success}
                 >Register</button

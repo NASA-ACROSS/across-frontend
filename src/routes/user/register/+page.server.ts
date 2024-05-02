@@ -18,7 +18,6 @@ export const actions = {
             'roles': "user"
         }
 
-
         const options = {
             method: 'POST',
             headers: {
@@ -27,9 +26,6 @@ export const actions = {
             },
             body: new URLSearchParams(user_post_data)
         }
-
-        console.log(options)
-        console.log(CONFIG.API_URL)
 
         let response;
         try {

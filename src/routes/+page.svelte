@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import Card from "$lib/components/Card.svelte";
+  import Hero from "$lib/components/Hero.svelte";
   import { base } from "$app/paths";
 
   export let data: PageData;
@@ -44,62 +45,10 @@
 <!-- Page wrapper for sticky footer -->
 <!-- Wraps everything except footer to push footer to the bottom of the page if there is little content -->
 <main class="page-wrapper">
-  <!-- Hero -->
-  <!-- <section class="dark-mode position-relative jarallax pb-xl-3" data-jarallax data-speed="0.4" style="min-height: 900px;"> -->
-  <section
-    class="dark-mode position-relative jarallax pb-xl-3"
-    data-jarallax
-    data-speed="0.4"
-    style="min-height: 900px;"
-  >
-    <!-- Parallax img -->
-    <div
-      class="jarallax-img bg-dark opacity-100"
-      style="background-image: url({base}/assets/img/custom/bli_grc_sm.jpg);"
-    ></div>
-
-    <!-- Overlay bg -->
-    <span
-      class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25 zindex-1"
-    ></span>
-
-    <!-- Overlay content -->
-    <div class="container position-relative pb-5 zindex-5">
-      <!-- Featured article -->
-      <div class="row mb-xxl-5 py-md-4 py-lg-5">
-        <div
-          class="col-lg-6 col-md-7 pb-3 pb-md-0 mb-4 mb-md-5 mt-5 position-absolute top-55 start-0"
-        >
-          <div class="mb-3 fs-lg text-light mt-5 pt-0">
-            <!-- <img src="assets/img/blog/flame.svg" width="24" alt="Flame icon" class="mt-n1 me-1"> -->
-            <h5>The Dawn of a New Era in Astronomy</h5>
-          </div>
-          <!-- <h1 class="pb-2 pb-md-3">About Silicon</h1> -->
-          <!-- <p class="fs-xl pb-4 mb-1 mb-md-2 mb-lg-3" style="max-width: 526px;">Multimessenger and time-domain astrophysics are opening entirely new windows on the Universe. The Multimessenger Operational Science Support & Astrophysical Information Collaboration (MOSSAIC) is an initiative to facilitate communication, coordination, and collaboration in this new era of astronomy.</p> -->
-          <p class="fs-xl pb-4 mb-1 mb-md-2 mb-lg-3" style="max-width: 526px;">
-            Multimessenger and time-domain astrophysics are opening entirely new
-            windows on the Universe. The Astrophysics Cross-Observatory Science
-            Support (ACROSS) center is an initiative to facilitate
-            communication, coordination, and collaboration in this new era of
-            astronomy.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Breadcrumb -->
-  <nav class="container py-4 mb-2 my-lg-3" aria-label="breadcrumb">
-    <!-- <ol class="breadcrumb mb-0">
-          <li class="breadcrumb-item">
-            <a href="index.html"><i class="bx bx-home-alt fs-lg me-1"></i>Home</a>
-          </li>
-          <li class="breadcrumb-item active" aria-current="page">About v.2</li>
-        </ol> -->
-  </nav>
+  <Hero></Hero>
 
   <!-- Overview -->
-  <section class="container pb-5 mb-md-2 mb-lg-4">
+  <section class="container pb-5 mb-md-2 mb-lg-4 mt-5">
     <h1 class="border-bottom pb-4">Overview</h1>
     <div class="row pt-2 pt-md-3">
       <div class="col-md-6">

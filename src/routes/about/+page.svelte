@@ -22,7 +22,7 @@
     </div>
 
     <!-- Content -->
-    <div class="container position-relative zindex-5 pt-5">
+    <div class="container position-relative zindex-5 pt-lg-5">
       <div class="row">
         <div class="col-lg-6">
           <!-- Breadcrumb -->

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { base } from "$app/paths";
+  import HorizontalCard from "$lib/components/HorizontalCard.svelte";
 </script>
 
 <!-- Page wrapper for sticky footer -->
@@ -243,57 +244,11 @@
           using JWST for multimessenger follow-up in the next decade.
         </p>
 
-        <!-- Fermi -->
-        <article class="card border-0 bg-transparent me-xl-5 mb-4 pt-4">
-          <div class="row g-0">
-            <div
-              class="col-sm-5 position-relative bg-position-center bg-repeat-0 bg-size-cover rounded-3"
-              style="background-image: url({base}/assets/img/custom/fermi.jpg); min-height: 15rem;"
-            >
-              <a
-                href="blog-single.html"
-                class="position-absolute top-0 start-0 w-100 h-100"
-                aria-label="Read more"
-              ></a>
-            </div>
-            <div class="col-sm-7">
-              <div class="card-body px-0 pt-sm-0 ps-sm-4 pb-0 pb-sm-4">
-                <a
-                  href="#"
-                  class="badge fs-sm text-white bg-primary shadow-primary text-decoration-none mb-3"
-                  >Gamma-rays</a
-                >
-                <h3 class="h4">
-                  <a href="blog-single.html"
-                    >The Fermi Gamma-ray Space Telescope</a
-                  >
-                </h3>
-                <p class="mb-4">
-                  Fermi provides an unprecedented energy coverage of the
-                  gamma-ray spectrum. Its two instruments collective cover an
-                  energy range from 8 keV to over 200 GeV, with an extremely
-                  large field of view, making it indispensable as a gamma-ray
-                  monitor.
-                </p>
-                <div class="d-flex align-items-center text-muted">
-                  <div class="d-flex flex-column flex-sm-row">
-                    <a
-                      href="#"
-                      class="btn btn-outline-primary btn-md mb-3 mb-sm-0 me-sm-3"
-                    >
-                      <i class="bx bx-planet fs-xl me-xl-2"></i>
-                      Science Support Center
-                    </a>
-                    <a href="#" class="btn btn-outline-primary btn-md">
-                      <i class="bx bx-data fs-xl me-xl-2"></i>
-                      Data Archive
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
+        <HorizontalCard
+          title="The Fermi Gamma-ray Space Telescope"
+          tags={["Gamma-Rays"]}
+          buttons={[{ href: "#" }]}
+        ></HorizontalCard>
 
         <!-- Swift -->
         <article class="card border-0 bg-transparent me-xl-5 mb-4 pt-5">
@@ -343,10 +298,10 @@
                   wavebands.
                 </p>
                 <div class="d-flex align-items-center text-muted">
-                  <div class="d-flex flex-column flex-sm-row">
+                  <div class="d-flex flex-column flex-md-row">
                     <a
                       href="#"
-                      class="btn btn-outline-primary btn-md mb-3 mb-sm-0 me-sm-3"
+                      class="btn btn-outline-primary btn-md mb-sm-2 mb-md-0 me-md-3"
                     >
                       <i class="bx bx-planet fs-xl me-xl-2"></i>
                       Science Support Center
@@ -405,10 +360,10 @@
                   near-infrared regions of the electromagnetic spectrum.
                 </p>
                 <div class="d-flex align-items-center text-muted">
-                  <div class="d-flex flex-column flex-sm-row">
+                  <div class="d-flex flex-column flex-md-row">
                     <a
                       href="https://www.stsci.edu"
-                      class="btn btn-outline-primary btn-md mb-3 mb-sm-0 me-sm-3"
+                      class="btn btn-outline-primary btn-md mb-sm-2 mb-md-0 me-md-3"
                     >
                       <i class="bx bx-planet fs-xl me-xl-2"></i>
                       Science Support Center
@@ -459,10 +414,10 @@
                   target of opportunity program.
                 </p>
                 <div class="d-flex align-items-center text-muted">
-                  <div class="d-flex flex-column flex-sm-row">
+                  <div class="d-flex flex-column flex-md-row">
                     <a
                       href="https://cxc.harvard.edu/index.html"
-                      class="btn btn-outline-primary btn-md mb-3 mb-sm-0 me-sm-3"
+                      class="btn btn-outline-primary btn-md mb-sm-2 mb-md-0 me-md-3"
                     >
                       <i class="bx bx-planet fs-xl me-xl-2"></i>
                       Science Support Center
@@ -514,10 +469,10 @@
                   sensitive observations.
                 </p>
                 <div class="d-flex align-items-center text-muted">
-                  <div class="d-flex flex-column flex-sm-row">
+                  <div class="d-flex flex-column flex-md-row">
                     <a
                       href="https://cxc.harvard.edu/index.html"
-                      class="btn btn-outline-primary btn-md mb-3 mb-sm-0 me-sm-3"
+                      class="btn btn-outline-primary btn-md mb-sm-2 mb-md-0 me-md-3"
                     >
                       <i class="bx bx-planet fs-xl me-xl-2"></i>
                       Science Support Center
@@ -566,10 +521,10 @@
                   arcsec.
                 </p>
                 <div class="d-flex align-items-center text-muted">
-                  <div class="d-flex flex-column flex-sm-row">
+                  <div class="d-flex flex-column flex-md-row">
                     <a
                       href="https://heasarc.gsfc.nasa.gov/docs/nustar/"
-                      class="btn btn-outline-primary btn-md mb-3 mb-sm-0 me-sm-3"
+                      class="btn btn-outline-primary btn-md mb-sm-2 mb-md-0 me-md-3"
                     >
                       <i class="bx bx-planet fs-xl me-xl-2"></i>
                       Science Support Center
@@ -618,10 +573,10 @@
                   keV.
                 </p>
                 <div class="d-flex align-items-center text-muted">
-                  <div class="d-flex flex-column flex-sm-row">
+                  <div class="d-flex flex-column flex-md-row">
                     <a
                       href="https://heasarc.gsfc.nasa.gov/docs/nicer/"
-                      class="btn btn-outline-primary btn-md mb-3 mb-sm-0 me-sm-3"
+                      class="btn btn-outline-primary btn-md mb-sm-2 mb-md-0 me-md-3"
                     >
                       <i class="bx bx-planet fs-xl me-xl-2"></i>
                       Science Support Center
@@ -669,10 +624,10 @@
                   objects such as neutron stars and pulsar wind nebulae
                 </p>
                 <div class="d-flex align-items-center text-muted">
-                  <div class="d-flex flex-column flex-sm-row">
+                  <div class="d-flex flex-column flex-md-row">
                     <a
                       href="https://ixpe.msfc.nasa.gov/for_scientists/index.html"
-                      class="btn btn-outline-primary btn-md mb-3 mb-sm-0 me-sm-3"
+                      class="btn btn-outline-primary btn-md mb-sm-2 mb-md-0 me-md-3"
                     >
                       <i class="bx bx-planet fs-xl me-xl-2"></i>
                       Science Support Center
@@ -723,10 +678,10 @@
                   to a number of time-domain transient sources.
                 </p>
                 <div class="d-flex align-items-center text-muted">
-                  <div class="d-flex flex-column flex-sm-row">
+                  <div class="d-flex flex-column flex-md-row">
                     <a
                       href="https://heasarc.gsfc.nasa.gov/docs/tess/"
-                      class="btn btn-outline-primary btn-md mb-3 mb-sm-0 me-sm-3"
+                      class="btn btn-outline-primary btn-md mb-sm-2 mb-md-0 me-md-3"
                     >
                       <i class="bx bx-planet fs-xl me-xl-2"></i>
                       Science Support Center

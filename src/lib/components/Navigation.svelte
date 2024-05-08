@@ -2,7 +2,7 @@
     import { base } from "$app/paths";
 </script>
 
-<header
+<nav
     class="header navbar navbar-expand-lg bg-light navbar-sticky border-bottom"
 >
     <div class="container px-3">
@@ -196,7 +196,7 @@
                             class="nav-link dropdown-toggle"
                             aria-current="page">API</a
                         >
-                        <ul class="dropdown-menu show">
+                        <ul class="dropdown-menu">
                             <li>
                                 <a
                                     data-sveltekit-reload
@@ -216,4 +216,4 @@
             </div>
         </div>
     </div>
-</header>
+</nav>

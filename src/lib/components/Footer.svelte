@@ -9,7 +9,7 @@
                         width="75"
                         alt="NASA logo"
                     />
-                    <h5 class="mt-1 mb-0 d-lg-block">
+                    <h5 class="mt-1 mb-0 d-lg-block text-wrap">
                         National Aeronautics and Space Administration
                     </h5>
                 </div>

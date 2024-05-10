@@ -2,6 +2,7 @@ import { env } from '$env/dynamic/private'
 
 type Config = {
     API_URL: string;
+    API_TOKEN: string;
 }
 
 /**
@@ -13,4 +14,5 @@ type Config = {
  */
 export const CONFIG: Config = {
     API_URL: env.API_URL || "",
+    API_TOKEN: env.ACROSS_ADMIN_TOKEN || "",
 }

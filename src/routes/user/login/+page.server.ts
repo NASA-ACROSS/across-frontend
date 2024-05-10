@@ -9,12 +9,16 @@ export const actions = {
 
         const options = {
             method: 'POST',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": `Bearer ${CONFIG.API_TOKEN}`
+            },
         }
 
         let response;
         try {
             response = await fetch(`${CONFIG.API_URL}/api/v1/across/user/login/${email}`, options)
-        } catch (error) {
+        } catch (error: any) {
             console.log(`ERROR: logging in user [${email}] at [${Date.now()}]`, JSON.stringify(error))
             return fail(500, { error: error.message, fail: true });
         }

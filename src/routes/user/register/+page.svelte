@@ -68,17 +68,22 @@
                 >Register</button
             >
             {#if form?.success}
-                <p class="form-text fs-sm text-sm-start text-center">
+                <p class="form-text fs-sm text-sm-start text-center text-success">
                     Please check your email for a verification link!
                 </p>
             {/if}
             {#if form?.userAlreadyExists}
-                <p class="form-text fs-sm text-sm-start text-center">
+                <p class="form-text fs-sm text-sm-start text-center text-danger">
                     Invalid Email or Username Specified. Account already exists.
                 </p>
             {/if}
+            {#if form?.rateLimit}
+                <p class="form-text fs-sm text-sm-start text-center text-danger">
+                    You are being rate limited, please retry after {form?.retryAfter} seconds.
+                </p>
+            {/if}
             {#if form?.fail}
-                <p class="form-text fs-sm text-sm-start text-center">
+                <p class="form-text fs-sm text-sm-start text-center text-danger">
                     Something went wrong, please try again. If this error
                     persists, contact support.
                 </p>

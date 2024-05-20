@@ -22,6 +22,9 @@
                 Please store this API key in a secure location. You will not be
                 able to retrieve it again using this link.
             </p>
+        {:else if form?.rateLimit}
+            <h1>Email Login Error</h1>
+            <h4>You are being rate-limited, please retry after {form?.retryAfter} seconds.</h4>
         {:else}
             <h1>Email Login Error</h1>
             <h4>Invalid ACROSS user verification key</h4>

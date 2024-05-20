@@ -35,6 +35,11 @@
                     Invalid Email Specified. User not found.
                 </p>
             {/if}
+            {#if form?.rateLimit}
+                <p class="form-text fs-sm text-sm-start text-center">
+                    You are being rate limited, please retry after {form.retryAfter} seconds.
+                </p>
+            {/if}
             {#if form?.fail}
                 <p class="form-text fs-sm text-sm-start text-center">
                     Something went wrong, please try again. If this error

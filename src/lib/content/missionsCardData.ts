@@ -92,11 +92,11 @@ export const missionsCardData: MissionsCardDataType[] = [
         href: 'https://www.cosmos.esa.int/web/xmm-newton',
         buttons: [
             {
-                href: 'https://cxc.harvard.edu/index.html',
+                href: 'https://www.cosmos.esa.int/web/xmm-newton',
                 text: 'Science Support Center',
             },
             {
-                href: 'https://cxc.harvard.edu/cda/',
+                href: 'https://www.cosmos.esa.int/web/xmm-newton',
                 text: 'Data Archive',
             },
         ],

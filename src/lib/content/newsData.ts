@@ -1,4 +1,4 @@
-export type newsDataType = {
+export type NewsDataType = {
     tag: string,
     title: string,
     imgURL: string,
@@ -15,7 +15,7 @@ export type newsDataType = {
  * Add newest content to the top of the stack.
  * 
  */
-export const newsData: newsDataType[] = [
+export const newsData: NewsDataType[] = [
     {
         tag: "Mission Selections",
         title: "NASA Selects Proposals to Study Stellar Explosions, Galaxies, Stars",

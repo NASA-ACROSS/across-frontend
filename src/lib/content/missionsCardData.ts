@@ -19,20 +19,32 @@ export const missionsCardData: MissionsCardDataType[] = [
         imgURL: '/assets/img/custom/fermi.jpg',
         href: 'https://fermi.gsfc.nasa.gov/',
         buttons: [
-            { href: '#', text: 'Science Support Center' },
-            { href: '#', text: 'Data Archive' },
+            {
+                href: 'https://fermi.gsfc.nasa.gov/',
+                text: 'Science Support Center',
+            },
+            {
+                href: 'https://fermi.gsfc.nasa.gov/',
+                text: 'Data Archive',
+            },
         ],
     },
     {
         tags: ['Gamma-Rays', 'X-rays', 'Ultraviolet', 'Optical'],
         title: 'The Neil Gehrels Swift Observatory',
         description:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vitae nunc id ipsum sollicitudin viverra non non dui. Nulla faucibus tellus non eros finibus vehicula. Curabitur sed diam vel odio vehicula consectetur. Nam a lacinia erat. Vestibulum sagittis commodo nulla, porta malesuada risus rutrum ut. Fusce libero dui, ultrices id hendrerit eget, tincidunt quis velit. Phasellus molestie erat eget aliquam lacinia.',
+            'Swift is a multi-wavelength space observatory and has long been a workhorse for time-domain and multimessenger astronomy. Its three instruments work together to observe GRBs and their afterglows in the gamma-ray, X-ray, ultraviolet, and optical wavebands.',
         imgURL: '/assets/img/custom/swift.jpg',
         href: 'https://swift.gsfc.nasa.gov/',
         buttons: [
-            { href: '#', text: 'Science Support Center' },
-            { href: '#', text: 'Data Archive' },
+            {
+                href: 'https://swift.gsfc.nasa.gov/',
+                text: 'Science Support Center',
+            },
+            {
+                href: 'https://swift.gsfc.nasa.gov/',
+                text: 'Data Archive',
+            },
         ],
     },
     {
@@ -43,8 +55,14 @@ export const missionsCardData: MissionsCardDataType[] = [
         imgURL: '/assets/img/custom/hubble.jpg',
         href: 'https://hubblesite.org',
         buttons: [
-            { href: '#', text: 'Science Support Center' },
-            { href: '#', text: 'Data Archive' },
+            {
+                href: 'https://www.stsci.edu',
+                text: 'Science Support Center',
+            },
+            {
+                href: 'https://archive.stsci.edu/missions',
+                text: 'Data Archive',
+            },
         ],
     },
     {
@@ -55,8 +73,14 @@ export const missionsCardData: MissionsCardDataType[] = [
         imgURL: '/assets/img/custom/chandra2.jpg',
         href: 'https://chandra.harvard.edu',
         buttons: [
-            { href: '#', text: 'Science Support Center' },
-            { href: '#', text: 'Data Archive' },
+            {
+                href: 'https://cxc.harvard.edu/index.html',
+                text: 'Science Support Center',
+            },
+            {
+                href: 'https://cxc.harvard.edu/cda/',
+                text: 'Data Archive',
+            },
         ],
     },
     {
@@ -67,8 +91,14 @@ export const missionsCardData: MissionsCardDataType[] = [
         imgURL: '/assets/img/custom/xmm2.jpg',
         href: 'https://www.cosmos.esa.int/web/xmm-newton',
         buttons: [
-            { href: '#', text: 'Science Support Center' },
-            { href: '#', text: 'Data Archive' },
+            {
+                href: 'https://cxc.harvard.edu/index.html',
+                text: 'Science Support Center',
+            },
+            {
+                href: 'https://cxc.harvard.edu/cda/',
+                text: 'Data Archive',
+            },
         ],
     },
     {
@@ -79,8 +109,14 @@ export const missionsCardData: MissionsCardDataType[] = [
         imgURL: '/assets/img/custom/nustar.png',
         href: 'https://www.nustar.caltech.edu',
         buttons: [
-            { href: '#', text: 'Science Support Center' },
-            { href: '#', text: 'Data Archive' },
+            {
+                href: 'https://heasarc.gsfc.nasa.gov/docs/nustar/',
+                text: 'Science Support Center',
+            },
+            {
+                href: 'https://heasarc.gsfc.nasa.gov/docs/nustar/archive/nustar_archive.html',
+                text: 'Data Archive',
+            },
         ],
     },
     {
@@ -91,8 +127,14 @@ export const missionsCardData: MissionsCardDataType[] = [
         imgURL: '/assets/img/custom/nicer.jpg',
         href: 'https://www.nasa.gov/nicer',
         buttons: [
-            { href: '#', text: 'Science Support Center' },
-            { href: '#', text: 'Data Archive' },
+            {
+                href: 'https://heasarc.gsfc.nasa.gov/docs/nicer/',
+                text: 'Science Support Center',
+            },
+            {
+                href: 'https://heasarc.gsfc.nasa.gov/docs/nicer/nicer_archive.html',
+                text: 'Data Archive',
+            },
         ],
     },
     {
@@ -103,8 +145,14 @@ export const missionsCardData: MissionsCardDataType[] = [
         imgURL: '/assets/img/custom/ixpe2.jpg',
         href: 'https://ixpe.msfc.nasa.gov',
         buttons: [
-            { href: '#', text: 'Science Support Center' },
-            { href: '#', text: 'Data Archive' },
+            {
+                href: 'https://ixpe.msfc.nasa.gov/for_scientists/index.html',
+                text: 'Science Support Center',
+            },
+            {
+                href: 'https://heasarc.gsfc.nasa.gov/docs/ixpe/',
+                text: 'Data Archive',
+            },
         ],
     },
     {
@@ -115,8 +163,14 @@ export const missionsCardData: MissionsCardDataType[] = [
         imgURL: '/assets/img/custom/tess.jpg',
         href: 'https://exoplanets.nasa.gov/tess/',
         buttons: [
-            { href: '#', text: 'Science Support Center' },
-            { href: '#', text: 'Data Archive' },
+            {
+                href: 'https://heasarc.gsfc.nasa.gov/docs/tess/',
+                text: 'Science Support Center',
+            },
+            {
+                href: 'https://archive.stsci.edu/missions-and-data/tess',
+                text: 'Data Archive',
+            },
         ],
     },
 ];

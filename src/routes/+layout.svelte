@@ -1,14 +1,14 @@
 <script lang="ts">
-    import { PUBLIC_CONFIG } from "../config/config.public";
-    import { onMount } from "svelte";
+    import { PUBLIC_CONFIG } from '../config/config.public';
+    import { onMount } from 'svelte';
 
-    import { base } from "$app/paths";
-    import { page } from "$app/stores";
+    import { base } from '$app/paths';
+    import { page } from '$app/stores';
 
     // components
-    import Navigation from "$lib/components/Navigation.svelte";
-    import Footer from "$lib/components/Footer.svelte";
-    import BackToTopButton from "$lib/components/BackToTopButton.svelte";
+    import Navigation from '$lib/components/Navigation.svelte';
+    import Footer from '$lib/components/Footer.svelte';
+    import BackToTopButton from '$lib/components/BackToTopButton.svelte';
 
     $: DOM_MOUNTED = false;
 
@@ -59,14 +59,14 @@
     {#key $page.url}
         <script>
             // must run every navigation change asap to prevent flashing
-            mode = window.localStorage.getItem("mode");
-            root = document.getElementsByTagName("html")[0];
+            mode = window.localStorage.getItem('mode');
+            root = document.getElementsByTagName('html')[0];
             if (mode == null) {
-                mode = "dark";
-            } else if (mode !== null && mode === "dark") {
-                root.classList.add("dark-mode");
+                mode = 'dark';
+            } else if (mode !== null && mode === 'dark') {
+                root.classList.add('dark-mode');
             } else {
-                root.classList.remove("dark-mode");
+                root.classList.remove('dark-mode');
             }
         </script>
 

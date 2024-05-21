@@ -1,5 +1,5 @@
 <script>
-    import { base } from "$app/paths";
+    import { base } from '$app/paths';
 </script>
 
 <nav
@@ -202,6 +202,12 @@
                                     data-sveltekit-reload
                                     href="{base}/api/v1/docs"
                                     class="dropdown-item">Documentation</a
+                                >
+                            </li>
+                            <li>
+                                <a
+                                    href="{base}/user/register"
+                                    class="dropdown-item">Register</a
                                 >
                             </li>
                             <li>

@@ -13,7 +13,7 @@
                     <input
                         class="form-control form-control-lg rounded-3 ps-5"
                         required
-                        value={form?.email ?? ""}
+                        value={form?.email ?? ''}
                         disabled={form?.success}
                         autocomplete="off"
                         name="email"
@@ -26,22 +26,31 @@
                 >
             </div>
             {#if form?.success}
-                <p class="form-text fs-sm text-sm-start text-center">
+                <p
+                    class="form-text fs-sm text-sm-start text-center text-success"
+                >
                     Please check your email for a login link!
                 </p>
             {/if}
             {#if form?.invalidEmail}
-                <p class="form-text fs-sm text-sm-start text-center">
+                <p
+                    class="form-text fs-sm text-sm-start text-center text-danger"
+                >
                     Invalid Email Specified. User not found.
                 </p>
             {/if}
             {#if form?.rateLimit}
-                <p class="form-text fs-sm text-sm-start text-center">
-                    You are being rate limited, please retry after {form.retryAfter} seconds.
+                <p
+                    class="form-text fs-sm text-sm-start text-center text-danger"
+                >
+                    You are being rate limited, please retry after {form.retryAfter}
+                    seconds.
                 </p>
             {/if}
             {#if form?.fail}
-                <p class="form-text fs-sm text-sm-start text-center">
+                <p
+                    class="form-text fs-sm text-sm-start text-center text-danger"
+                >
                     Something went wrong, please try again. If this error
                     persists, contact support.
                 </p>

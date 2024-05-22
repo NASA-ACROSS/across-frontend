@@ -2,12 +2,14 @@ import { CONFIG } from '../../../config/config.js';
 import { fail } from '@sveltejs/kit'
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 
+// TODO: manage logged in state and redirect to profile
+
 // rate limit is defined as [number, unit]
 // see documentation for more info
 // https://github.com/ciscoheat/sveltekit-rate-limiter?tab=readme-ov-file#valid-units
 const limiter = new RetryAfterRateLimiter({
     // IP + User Agent limiter, 5 login requests per 15 mins, resetting every 15 minutes
-    IPUA: [5, '15m'], 
+    IPUA: [5, '15m'],
     // IP address limiter, triple the limit to ensure multiple users from the same IP don't become limited
     IP: [15, '15m'],
 });
@@ -22,10 +24,10 @@ export const actions = {
         // Rate limit user login
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
-        if (rateStatus.limited){
+        if (rateStatus.limited) {
             console.error(`ERROR: rate-limiting at /login for user email [${email}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`)
             return fail(429, { rateLimit: true, retryAfter: rateStatus.retryAfter });
-        } 
+        }
 
         const options = {
             method: 'POST',

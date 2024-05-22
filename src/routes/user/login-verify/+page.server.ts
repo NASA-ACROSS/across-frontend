@@ -1,4 +1,6 @@
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
+import { base } from "$app/paths";
+import { loggedIn } from "$lib/stores/login"
 import { CONFIG } from '../../../config/config.js';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 
@@ -7,24 +9,23 @@ import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 // https://github.com/ciscoheat/sveltekit-rate-limiter?tab=readme-ov-file#valid-units
 const limiter = new RetryAfterRateLimiter({
     // IP + User Agent limiter, 5 login requests per 15 mins, resetting every 15 minutes
-    IPUA: [5, '15m'], 
+    IPUA: [5, '15m'],
     // IP address limiter, triple the limit to ensure multiple users from the same IP don't become limited
     IP: [15, '15m'],
 });
 
 export const actions = {
     default: async (event) => {
-        const { url } = event;
+        const { url, request, cookies } = event;
         const verificationKey = url.searchParams.get('verification_key');
 
         // Rate limit user login-verify
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
-        if (rateStatus.limited){
+        if (rateStatus.limited) {
             console.error(`ERROR: rate-limiting at /login-verify for verificationKey [${verificationKey}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`)
             return fail(429, { rateLimit: true, retryAfter: rateStatus.retryAfter });
-        } 
-
+        }
 
         const options = {
             method: 'POST',
@@ -49,7 +50,25 @@ export const actions = {
             return {}
         }
 
+        // clear current login cookie
+        cookies.delete('user-login', { path: '/' })
+
         const credentials = await response?.json();
+
+        if (credentials) {
+            const data = await request.formData();
+            const rememberMe = data.get('rememberMe')
+            if (rememberMe) {
+                // store login cookie
+                cookies.set('user-login', JSON.stringify(credentials), { path: '/', sameSite: true, secure: true, httpOnly: true })
+
+                // set svelte store value accessible in other places, such as navigation component
+                loggedIn.set(true);
+
+                // redirect to profile when remember me is checked
+                throw redirect(303, `${base}/user/profile`)
+            }
+        }
 
         return {
             credentials

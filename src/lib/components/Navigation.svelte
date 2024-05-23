@@ -2,6 +2,11 @@
     import { base } from '$app/paths';
 
     import { loggedIn } from '$lib/stores/login';
+
+    let isLoggedIn = false;
+    loggedIn.subscribe((value)=>{
+        isLoggedIn = value
+    });
 </script>
 
 <nav
@@ -206,7 +211,7 @@
                                     class="dropdown-item">Documentation</a
                                 >
                             </li>
-                            {#if loggedIn}
+                            {#if isLoggedIn}
                                 <li>
                                     <a
                                         href="{base}/user/profile"
@@ -215,6 +220,7 @@
                                 </li>
                                 <li>
                                     <a
+                                        data-sveltekit-preload-data="false"
                                         href="{base}/user/logout"
                                         class="dropdown-item">Logout</a
                                     >

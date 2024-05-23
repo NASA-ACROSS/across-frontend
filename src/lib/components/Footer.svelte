@@ -1,3 +1,6 @@
+<script lang="ts">
+    import { base } from "$app/paths"
+</script>
 <!-- Footer -->
 <footer class="footer bg-light border-top pt-4">
     <div class="container pt-lg-4">
@@ -5,7 +8,7 @@
             <div class="col-xl-6 col-lg-6 col-md-12">
                 <div class="navbar-brand text-dark p-0 me-0 mb-3 mb-lg-4">
                     <img
-                        src="https://www1.grc.nasa.gov/wp-content/themes/nasapress/dist/images/logo-nasa.svg"
+                        src="{base}/assets/img/custom/logo-nasa.svg"
                         width="75"
                         alt="NASA logo"
                     />

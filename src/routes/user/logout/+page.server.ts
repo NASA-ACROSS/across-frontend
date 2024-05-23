@@ -1,8 +1,8 @@
 import { loggedIn } from '$lib/stores/login.js';
 
-export function load({ cookies }) {
+export function load({ locals, cookies }) {
     cookies.delete('user-login', {
-        path: '/'
+        path: '/',
     });
-    loggedIn.set(false);
+    locals.user = undefined;
 }

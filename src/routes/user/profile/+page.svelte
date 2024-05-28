@@ -1,19 +1,27 @@
 <script lang="ts">
+    import { base } from '$app/paths'
     import _ from 'lodash';
+    /** @type {import('./$types').ActionData} */
+    export let form;
+
     import type { PageData } from './$types';
     export let data: PageData;
+
     const originalUserData = structuredClone(data.user);
     let userData = data.user;
     $: isUserDataUnchanged = _.isEqual(originalUserData, userData)
-    /** @type {import('./$types').ActionData} */
-    export let form;
 </script>
 
 <section class="pt-5 pb-2 bg-secondary">
     <div class="container py-md-3">
-        <h1>Profile</h1>
+        <div class="d-flex justify-content-between align-items-end">
+            <h1>Profile</h1>
+            <form action="{base}/user/logout">
+                <button class="btn btn-lg btn-danger">Logout</button>
+            </form>
+        </div>
         <h3>User Information</h3>
-        <form method="post">
+        <form method="post" action="?/updateUserInformation">
             <label for="firstname">Name</label>
             <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
                 <div class="input-group me-sm-3 mb-sm-0 mb-3">
@@ -70,6 +78,21 @@
             <button class="btn btn-lg btn-primary" disabled={isUserDataUnchanged}
                 >Update</button
             >
+            {#if form?.success}
+                <p
+                    class="form-text fs-sm text-sm-start text-center text-success"
+                >
+                    Successfully updated user information!
+                </p>
+            {/if}
+            {#if form?.fail}
+                <p
+                    class="form-text fs-sm text-sm-start text-center text-danger"
+                >
+                    Something went wrong, please try again. If this error
+                    persists, contact support.
+                </p>
+            {/if}
         </form>
     </div>
 </section>
@@ -89,9 +112,9 @@
     </div>
 </section>
 
-<section class="py-2 bg-secondary">
+<section class="py-2 pb-5 bg-secondary">
     <div class="container py-md-3">
-        <h3>Roles</h3>
+        <h3>Roles ({userData.roles.length}/{userData.roles.length})</h3>
             <div class="password-toggle d-flex flex-sm-row flex-column mb-3 needs-validation">
                 <div class="input-group me-sm-3 mb-sm-0 mb-3">
                     <ul class="list-group">

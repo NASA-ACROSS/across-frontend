@@ -1,8 +1,16 @@
 import { CONFIG } from '../../../config/config.js';
-import { fail } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
+import { base } from '$app/paths';
 
-// TODO: manage logged in state and redirect to profile
+export function load({ cookies }) {
+    const user = cookies.get('user-login');
+    // Redirect on load when user is logged in
+    if (user) {
+        throw redirect(303, `${base}/user/profile`);
+    }
+    return {};
+}
 
 // rate limit is defined as [number, unit]
 // see documentation for more info

@@ -5,6 +5,15 @@ import { CONFIG } from '../../../config/config.js';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import type { CookieSerializeOptions } from 'cookie';
 
+export function load({ cookies }) {
+    const user = cookies.get('user-login');
+    // Redirect on load when user is logged in
+    if (user) {
+        throw redirect(303, `${base}/user/profile`);
+    }
+    return {};
+}
+
 // rate limit is defined as [number, unit]
 // see documentation for more info
 // https://github.com/ciscoheat/sveltekit-rate-limiter?tab=readme-ov-file#valid-units
@@ -84,6 +93,7 @@ export const actions = {
                 // add an expiration to the cookie so it lasts longer than one browser session
                 const ONE_YEAR_IN_MS = 31536000;
                 cookieOptions.maxAge = ONE_YEAR_IN_MS;
+                credentials.rememberMe = true;
             }
 
             cookies.set(

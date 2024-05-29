@@ -7,7 +7,7 @@ import { handleLogin } from '$lib/handles/handleLogin';
  */
 export const handle: Handle = async ({ event, resolve }) => {
     event = handleLogout(event);
-    event = handleLogin(event);
+    event = await handleLogin(event);
     return await resolve(event);
 };
 

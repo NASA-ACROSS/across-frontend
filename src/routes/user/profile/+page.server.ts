@@ -3,16 +3,19 @@ import { base } from '$app/paths';
 import { loggedIn } from '$lib/stores/login';
 import { CONFIG } from '../../../config/config.js';
 import type { CookieSerializeOptions } from 'cookie';
+import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
 
-export function load({ cookies }) {
-    const user = cookies.get('user-login');
+export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
+    const user = locals.user;
     // Redirect on load when user is not logged in
     if (!user) {
         loggedIn.set(false);
         throw redirect(303, `${base}/user/login`);
     }
+
+    loggedIn.set(true);
     // Respond with user cookie data
-    return { user: JSON.parse(user) };
+    return { user };
 }
 
 export const actions = {

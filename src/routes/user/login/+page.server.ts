@@ -2,9 +2,10 @@ import { CONFIG } from '../../../config/config.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { base } from '$app/paths';
+import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
 
-export function load({ cookies }) {
-    const user = cookies.get('user-login');
+export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
+    const user = locals.user;
     // Redirect on load when user is logged in
     if (user) {
         throw redirect(303, `${base}/user/profile`);

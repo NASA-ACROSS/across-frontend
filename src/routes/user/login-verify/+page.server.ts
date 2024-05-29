@@ -1,6 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { base } from "$app/paths";
-import { loggedIn } from "$lib/stores/login"
 import { CONFIG } from '../../../config/config.js';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import type { CookieSerializeOptions } from 'cookie';

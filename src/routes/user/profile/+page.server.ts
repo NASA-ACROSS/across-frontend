@@ -67,7 +67,7 @@ export const actions = {
 
         if (response.status == 500) {
             console.error(
-                `ERROR: register user with [${email}, ${username}] at [${Date.now()}] with status code [500]`
+                `ERROR: updating user information with [${email}, ${username}] at [${Date.now()}] with status code [500]`
             );
             return fail(500, { fail: true });
         }

@@ -5,11 +5,21 @@
     export let form;
 
     import type { PageData } from './$types';
+    import { browser } from '$app/environment';
     export let data: PageData;
 
     const originalUserData = structuredClone(data.user);
     let userData = data.user;
     $: isUserDataUnchanged = _.isEqual(originalUserData, userData);
+
+    // safari browser should force a reload on cached navigation using back button
+    if (browser) {
+        window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+    }
 </script>
 
 <section class="pt-5 pb-2 bg-secondary">

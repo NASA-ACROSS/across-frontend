@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { base } from '$app/paths'
+    import { base } from '$app/paths';
     import _ from 'lodash';
     /** @type {import('./$types').ActionData} */
     export let form;
@@ -9,7 +9,7 @@
 
     const originalUserData = structuredClone(data.user);
     let userData = data.user;
-    $: isUserDataUnchanged = _.isEqual(originalUserData, userData)
+    $: isUserDataUnchanged = _.isEqual(originalUserData, userData);
 </script>
 
 <section class="pt-5 pb-2 bg-secondary">
@@ -75,8 +75,9 @@
                     />
                 </div>
             </div>
-            <button class="btn btn-lg btn-primary" disabled={isUserDataUnchanged}
-                >Update</button
+            <button
+                class="btn btn-lg btn-primary"
+                disabled={isUserDataUnchanged}>Update</button
             >
             {#if form?.success}
                 <p
@@ -100,14 +101,24 @@
 <section class="py-2 bg-secondary">
     <div class="container py-md-3">
         <h3>API Key</h3>
-            <div class="password-toggle d-flex flex-sm-row flex-column mb-3 needs-validation">
-                <div class="input-group me-sm-3 mb-sm-0 mb-3">
-                    <input class="form-control form-control-lg rounded-3 ps-5" type="password" value={userData.api_token}>
-                    <label class="password-toggle-btn" aria-label="Show/hide password">
-                        <input class="password-toggle-check" type="checkbox">
-                        <span class="password-toggle-indicator"></span>
-                    </label>
-                </div>
+        <div
+            class="password-toggle d-flex flex-sm-row flex-column mb-3 needs-validation"
+        >
+            <div class="input-group me-sm-3 mb-sm-0 mb-3">
+                <input
+                    class="form-control form-control-lg rounded-3 ps-5 default-cursor"
+                    type="password"
+                    disabled={true}
+                    value={userData.api_token}
+                />
+                <label
+                    class="password-toggle-btn"
+                    aria-label="Show/hide password"
+                >
+                    <input class="password-toggle-check" type="checkbox" />
+                    <span class="password-toggle-indicator"></span>
+                </label>
+            </div>
         </div>
     </div>
 </section>
@@ -115,14 +126,23 @@
 <section class="py-2 pb-5 bg-secondary">
     <div class="container py-md-3">
         <h3>Roles ({userData.roles.length}/{userData.roles.length})</h3>
-            <div class="password-toggle d-flex flex-sm-row flex-column mb-3 needs-validation">
-                <div class="input-group me-sm-3 mb-sm-0 mb-3">
-                    <ul class="list-group">
-                        {#each userData.roles as role}
-                            <li class="list-group-item">{role}</li>
-                        {/each}
-                      </ul>
-                </div>
+        <div
+            class="password-toggle d-flex flex-sm-row flex-column mb-3 needs-validation"
+        >
+            <div class="input-group me-sm-3 mb-sm-0 mb-3">
+                <ul class="list-group">
+                    {#each userData.roles as role}
+                        <li class="list-group-item">{role}</li>
+                    {/each}
+                </ul>
+            </div>
         </div>
     </div>
 </section>
+
+<style>
+    input[disabled].default-cursor {
+        cursor: default;
+        pointer-events: none;
+    }
+</style>

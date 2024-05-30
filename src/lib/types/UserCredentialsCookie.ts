@@ -4,6 +4,7 @@ export type UserCredentialsCookie = {
     lastname: string,
     username: string,
     api_token: string,
-    rememeberMe: boolean,
+    rememberMe: boolean,
     message: string,
+    roles: string[]
 }

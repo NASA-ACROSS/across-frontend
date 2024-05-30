@@ -4,6 +4,7 @@ import { loggedIn } from '$lib/stores/login';
 import { CONFIG } from '../../../config/config.js';
 import type { CookieSerializeOptions } from 'cookie';
 import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
+import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
@@ -20,8 +21,8 @@ export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
 
 export const actions = {
     updateUserInformation: async (event: any) => {
-        const { request, cookies } = event;
-        const user = JSON.parse(cookies.get('user-login'));
+        const { request, locals, cookies } = event;
+        const user: UserCredentialsCookie = locals.user;
         const data = await request.formData();
 
         const firstname = data.get('firstname') as string;
@@ -29,12 +30,11 @@ export const actions = {
         const username = data.get('username') as string;
         const email = data.get('email') as string;
 
-        const user_put_data = {
+        const userPutData = {
             firstname,
             lastname,
             username,
             email,
-            roles: user.roles,
         };
 
         const USER_API_TOKEN = event.locals.user.api_token;
@@ -47,7 +47,7 @@ export const actions = {
             },
         };
 
-        const requestParams = new URLSearchParams(user_put_data);
+        const requestParams = new URLSearchParams(userPutData);
 
         let response;
         try {
@@ -75,7 +75,7 @@ export const actions = {
             return fail(500, { fail: true });
         }
 
-        const cookieUserData = { ...user, ...user_put_data };
+        const cookieUserData = { ...user, ...userPutData };
         const cookieOptions: CookieSerializeOptions & { path: string } = {
             path: '/',
             sameSite: true,
@@ -89,9 +89,12 @@ export const actions = {
             cookieOptions.maxAge = ONE_YEAR_IN_MS;
         }
 
+        locals.user = cookieUserData;
+        const encryptedCredentials = await aesGcmEncrypt(JSON.stringify(cookieUserData), CONFIG.API_TOKEN);
+
         cookies.set(
             'user-login',
-            JSON.stringify(cookieUserData),
+            encryptedCredentials,
             cookieOptions
         );
 

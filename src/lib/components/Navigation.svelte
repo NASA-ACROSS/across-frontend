@@ -1,5 +1,12 @@
 <script>
     import { base } from '$app/paths';
+
+    import { loggedIn } from '$lib/stores/login';
+
+    let isLoggedIn = false;
+    loggedIn.subscribe((value)=>{
+        isLoggedIn = value
+    });
 </script>
 
 <nav
@@ -204,18 +211,34 @@
                                     class="dropdown-item">Documentation</a
                                 >
                             </li>
-                            <li>
-                                <a
-                                    href="{base}/user/register"
-                                    class="dropdown-item">Register</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/user/login"
-                                    class="dropdown-item">Login</a
-                                >
-                            </li>
+                            {#if isLoggedIn}
+                                <li>
+                                    <a
+                                        href="{base}/user/profile"
+                                        class="dropdown-item">Profile</a
+                                    >
+                                </li>
+                                <li>
+                                    <a
+                                        data-sveltekit-preload-data="false"
+                                        href="{base}/user/logout"
+                                        class="dropdown-item">Logout</a
+                                    >
+                                </li>
+                            {:else}
+                                <li>
+                                    <a
+                                        href="{base}/user/register"
+                                        class="dropdown-item">Register</a
+                                    >
+                                </li>
+                                <li>
+                                    <a
+                                        href="{base}/user/login"
+                                        class="dropdown-item">Login</a
+                                    >
+                                </li>
+                            {/if}
                         </ul>
                     </li>
                 </ul>

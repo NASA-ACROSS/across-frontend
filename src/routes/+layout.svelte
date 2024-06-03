@@ -10,6 +10,12 @@
     import Footer from '$lib/components/Footer.svelte';
     import BackToTopButton from '$lib/components/BackToTopButton.svelte';
 
+    import { loggedIn } from '$lib/stores/login';
+    import type {PageData } from './$types';
+    export let data: PageData;
+
+    $: { loggedIn.set(data.user) };
+
     $: DOM_MOUNTED = false;
 
     onMount(() => {

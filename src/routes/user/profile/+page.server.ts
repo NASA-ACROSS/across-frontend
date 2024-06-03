@@ -4,9 +4,14 @@ import { loggedIn } from '$lib/stores/login';
 import { CONFIG } from '../../../config/config.js';
 import type { CookieSerializeOptions } from 'cookie';
 import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
+import type { UserRequestRoles } from '$lib/types/UserRequestRoles.js';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
 
-export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
+export async function load({
+    locals,
+}: {
+    locals: { user: UserCredentialsCookie };
+}) {
     const user = locals.user;
     // Redirect on load when user is not logged in
     if (!user) {
@@ -15,11 +20,73 @@ export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     }
 
     loggedIn.set(true);
+
+    const options = {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${user.api_token}`,
+        },
+    };
+
+    const queryString = '?' + new URLSearchParams({ id: user.id.toString() });
+    console.log(queryString.toString());
+
+    let response;
+    try {
+        response = await fetch(
+            `${CONFIG.API_URL}/api/v1/across/user_request_roles/${queryString}`,
+            options
+        );
+    } catch (error: any) {
+        console.error(
+            `ERROR: catch getting user roles [${user.email}] at [${Date.now()}]`,
+            JSON.stringify(error)
+        );
+        return fail(500, { error: error.message, fail: true });
+    }
+
+    // catch known errors from api and hide error from user
+    const errorCodes = [500, 404];
+    if (errorCodes.includes(response.status)) {
+        console.error(
+            `ERROR: getting user roles [${user.email}] at [${Date.now()}] with status code [500]`
+        );
+        return fail(500, { fail: true });
+    }
+
+    const roles: UserRequestRoles = await response.json();
+    console.log(roles);
+
     // Respond with user cookie data
-    return { user };
+    return { user, roles };
 }
 
 export const actions = {
+    cancelRequestedRole: async (event: any) => {
+        const { request, locals, cookies } = event;
+        const user: UserCredentialsCookie = locals.user;
+        const data = await request.formData();
+
+        const requestedRole = JSON.parse(data.get('requested_role'));
+
+        console.log('cancel', requestedRole);
+    },
+    requestRole: async (event: any) => {
+        const { request, locals, cookies } = event;
+        const user: UserCredentialsCookie = locals.user;
+        const data = await request.formData();
+
+        const role = data.get('role') as string;
+        const reason = data.get('reason') as string;
+
+        const userPutData = {
+            role,
+            reason,
+        };
+
+        console.log(userPutData);
+        return { success: true };
+    },
     updateUserInformation: async (event: any) => {
         const { request, locals, cookies } = event;
         const user: UserCredentialsCookie = locals.user;
@@ -90,13 +157,12 @@ export const actions = {
         }
 
         locals.user = cookieUserData;
-        const encryptedCredentials = await aesGcmEncrypt(JSON.stringify(cookieUserData), CONFIG.API_TOKEN);
-
-        cookies.set(
-            'user-login',
-            encryptedCredentials,
-            cookieOptions
+        const encryptedCredentials = await aesGcmEncrypt(
+            JSON.stringify(cookieUserData),
+            CONFIG.API_TOKEN
         );
+
+        cookies.set('user-login', encryptedCredentials, cookieOptions);
 
         return { success: true, firstname, lastname, username, email };
     },

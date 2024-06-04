@@ -6,7 +6,10 @@
 
     import type { PageData } from './$types';
     import { browser } from '$app/environment';
+    import { applyAction, enhance } from '$app/forms';
+    import { goto, invalidateAll } from '$app/navigation';
     export let data: PageData;
+    let roles = data.roles;
 
     const originalUserData = structuredClone(data.user);
     let userData = data.user;
@@ -89,14 +92,14 @@
                 class="btn btn-lg btn-primary"
                 disabled={isUserDataUnchanged}>Update</button
             >
-            {#if form?.success}
+            {#if form?.successUpdateUserInformation}
                 <p
                     class="form-text fs-sm text-sm-start text-center text-success"
                 >
                     Successfully updated user information!
                 </p>
             {/if}
-            {#if form?.fail}
+            {#if form?.failUpdateUserInformation}
                 <p
                     class="form-text fs-sm text-sm-start text-center text-danger"
                 >
@@ -135,14 +138,121 @@
 
 <section class="py-2 pb-5 bg-secondary">
     <div class="container py-md-3">
-        <h3>Roles ({userData.roles.length}/{userData.roles.length})</h3>
+        <h3>Roles</h3>
         <div
-            class="password-toggle d-flex flex-sm-row flex-column mb-3 needs-validation"
+            class="password-toggle d-flex flex-sm-row flex-row mb-3 needs-validation"
         >
-            <div class="input-group me-sm-3 mb-sm-0 mb-3">
+            <div
+                class="input-group me-sm-3 mb-sm-0 mb-3 d-flex flex-column justify-content-start"
+            >
+                <h4 class="ms-1">Active Roles</h4>
+                <div>
+                    <ul class="list-group">
+                        {#each roles.approved_roles as role}
+                            <li class="list-group-item my-1">{role}</li>
+                        {/each}
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                class="input-group me-sm-3 mb-sm-0 mb-3 d-flex flex-column justify-content-start"
+            >
+                <h4 class="ms-1">Pending Roles</h4>
+                <div>
+                    <ul class="list-group">
+                        {#if roles.requested_roles.length == 0}
+                            <p class="mx-1 mt-3">Nothing Pending</p>
+                        {/if}
+                        {#each roles.requested_roles as role}
+                            <form
+                                method="post"
+                                id={role.name + 'form'}
+                                action="?/cancelRequestedRole"
+                            >
+                                <li class="card my-1">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{role.name}</h5>
+                                        <p class="card-text fs-sm">
+                                            reason: {role.request_reason}
+                                        </p>
+                                        <p class="card-text fs-sm">
+                                            status: {role.status}
+                                        </p>
+                                        <p class="card-text fs-sm">
+                                            status reason: {role.status_reason}
+                                        </p>
+                                        <input
+                                            class="d-none"
+                                            readonly
+                                            name="role"
+                                            value={JSON.stringify(role)}
+                                        />
+                                        <button
+                                            type="submit"
+                                            formaction="?/cancelRequestedRole"
+                                            class="btn btn-sm btn-danger"
+                                            >Cancel Request</button
+                                        >
+                                    </div>
+                                </li>
+                            </form>
+                        {/each}
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                class="input-group me-sm-3 mb-sm-0 mb-3 d-flex flex-column justify-content-start"
+            >
+                <h4 class="ms-1">Request Roles</h4>
                 <ul class="list-group">
-                    {#each userData.roles as role}
-                        <li class="list-group-item">{role}</li>
+                    {#if roles.requestable_roles.length == 0}
+                        <p class="mx-1 mt-3">No Roles to Request</p>
+                    {/if}
+                    {#each roles.requestable_roles as role}
+                        <form
+                            method="post"
+                            id={role + 'form'}
+                            action="?/requestRole"
+                        >
+                            <div class="input-group my-1">
+                                <button
+                                    class="btn btn-primary dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown">Request</button
+                                >
+                                <div class="dropdown-menu dropdown">
+                                    <label class="px-3" for="reason"
+                                        >Reason</label
+                                    >
+                                    <div class="px-3">
+                                        <input
+                                            class="form-control"
+                                            type="text"
+                                            name="reason"
+                                            placeholder="Please specify"
+                                            required
+                                            autocomplete="off"
+                                        />
+                                        <button
+                                            class="btn btn-primary"
+                                            type="submit"
+                                            formaction="?/requestRole"
+                                            >Submit</button
+                                        >
+                                    </div>
+                                </div>
+                                <input
+                                    readonly={true}
+                                    class="form-control list-group-item rounded-end"
+                                    name="role"
+                                    type="text"
+                                    placeholder=""
+                                    value={role}
+                                />
+                            </div>
+                        </form>
                     {/each}
                 </ul>
             </div>

@@ -4,9 +4,14 @@ import { loggedIn } from '$lib/stores/login';
 import { CONFIG } from '../../../config/config.js';
 import type { CookieSerializeOptions } from 'cookie';
 import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
+import type { UserRequestRoles } from '$lib/types/UserRequestRoles';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
 
-export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
+export async function load({
+    locals,
+}: {
+    locals: { user: UserCredentialsCookie };
+}) {
     const user = locals.user;
     // Redirect on load when user is not logged in
     if (!user) {
@@ -15,11 +20,136 @@ export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     }
 
     loggedIn.set(true);
+
+    const options = {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${user.api_token}`,
+        },
+    };
+
+    const queryString = '?' + new URLSearchParams({ id: user.id.toString() });
+
+    let response;
+    try {
+        response = await fetch(
+            `${CONFIG.API_URL}/api/v1/across/user_request_roles/${queryString}`,
+            options
+        );
+    } catch (error: any) {
+        console.error(
+            `ERROR: catch getting user roles [${user.email}] at [${Date.now()}]`,
+            JSON.stringify(error)
+        );
+        return fail(500, { error: error.message, fail: true });
+    }
+
+    // catch known errors from api and hide error from user
+    const errorCodes = [500, 404];
+    if (errorCodes.includes(response.status)) {
+        console.error(
+            `ERROR: getting user roles [${user.email}] at [${Date.now()}] with status code [500]`
+        );
+        return fail(500, { fail: true });
+    }
+
+    let roles: UserRequestRoles = await response.json();
+    // remove these roles from self-service list
+    const rolesToRemove = ['admin']
+    roles.requestable_roles = roles.requestable_roles.filter((role) => !rolesToRemove.includes(role))
+
     // Respond with user cookie data
-    return { user };
+    return { user, roles };
 }
 
 export const actions = {
+    cancelRequestedRole: async (event: any) => {
+        const { request, locals, cookies } = event;
+        const user: UserCredentialsCookie = locals.user;
+        const data = await request.formData();
+
+        const requestedRole = JSON.parse(data.get('role'));
+
+        const userData = {
+            id: requestedRole.id,
+        };
+
+        const USER_API_TOKEN = user.api_token;
+
+        const options: RequestInit = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${USER_API_TOKEN}`,
+            },
+        };
+
+        const requestParams = new URLSearchParams(userData);
+
+        let response;
+        try {
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user_request_roles?${requestParams.toString()}`,
+                options
+            );
+        } catch (error: any) {
+            console.error(
+                `ERROR: catch profile cancel requested role for [${user.email}] at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
+            return fail(500, {
+                error: error.message,
+                failRequestRole: true,
+            });
+        }
+
+        return { successCancelRequestedRole: true };
+    },
+    requestRole: async (event: any) => {
+        const { request, locals, cookies } = event;
+        const user: UserCredentialsCookie = locals.user;
+        const data = await request.formData();
+
+        const roles = data.get('role') as string;
+        const reasons = data.get('reason') as string;
+
+        const userData = {
+            roles,
+            reasons,
+            id: user.id.toString(),
+        };
+
+        const USER_API_TOKEN = user.api_token;
+
+        const options: RequestInit = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${USER_API_TOKEN}`,
+            },
+        };
+
+        const requestParams = new URLSearchParams(userData);
+
+        let response;
+        try {
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user_request_roles?${requestParams.toString()}`,
+                options
+            );
+        } catch (error: any) {
+            console.error(
+                `ERROR: catch profile requesting role for [${user.email}] at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
+            return fail(500, {
+                error: error.message,
+                failRequestRole: true,
+            });
+        }
+
+        return { successRequestRole: true };
+    },
     updateUserInformation: async (event: any) => {
         const { request, locals, cookies } = event;
         const user: UserCredentialsCookie = locals.user;
@@ -60,19 +190,22 @@ export const actions = {
                 `ERROR: updating user information [${email}] at [${Date.now()}]`,
                 JSON.stringify(error)
             );
-            return fail(500, { error: error.message, fail: true });
+            return fail(500, {
+                error: error.message,
+                failUpdateUserInformation: true,
+            });
         }
 
         if (response.status == 403) {
             console.error(`ERROR: API not accessible or API TOKEN not valid`);
-            return fail(500, { fail: true });
+            return fail(500, { failUpdateUserInformation: true });
         }
 
         if (response.status == 500) {
             console.error(
                 `ERROR: updating user information with [${email}, ${username}] at [${Date.now()}] with status code [500]`
             );
-            return fail(500, { fail: true });
+            return fail(500, { failUpdateUserInformation: true });
         }
 
         const cookieUserData = { ...user, ...userPutData };
@@ -90,14 +223,19 @@ export const actions = {
         }
 
         locals.user = cookieUserData;
-        const encryptedCredentials = await aesGcmEncrypt(JSON.stringify(cookieUserData), CONFIG.API_TOKEN);
-
-        cookies.set(
-            'user-login',
-            encryptedCredentials,
-            cookieOptions
+        const encryptedCredentials = await aesGcmEncrypt(
+            JSON.stringify(cookieUserData),
+            CONFIG.API_TOKEN
         );
 
-        return { success: true, firstname, lastname, username, email };
+        cookies.set('user-login', encryptedCredentials, cookieOptions);
+
+        return {
+            successUpdateUserInformation: true,
+            firstname,
+            lastname,
+            username,
+            email,
+        };
     },
 };

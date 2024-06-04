@@ -53,7 +53,10 @@ export async function load({
         return fail(500, { fail: true });
     }
 
-    const roles: UserRequestRoles = await response.json();
+    let roles: UserRequestRoles = await response.json();
+    // remove these roles from self-service list
+    const rolesToRemove = ['admin']
+    roles.requestable_roles = roles.requestable_roles.filter((role) => !rolesToRemove.includes(role))
 
     // Respond with user cookie data
     return { user, roles };

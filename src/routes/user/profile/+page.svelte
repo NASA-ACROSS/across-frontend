@@ -142,7 +142,9 @@
         <div
             class="password-toggle d-flex flex-sm-row flex-row mb-3 needs-validation"
         >
-            <div class="input-group me-sm-3 mb-sm-0 mb-3 d-flex flex-column justify-content-start">
+            <div
+                class="input-group me-sm-3 mb-sm-0 mb-3 d-flex flex-column justify-content-start"
+            >
                 <h4 class="ms-1">Active Roles</h4>
                 <div>
                     <ul class="list-group">
@@ -153,20 +155,45 @@
                 </div>
             </div>
 
-            <div class="input-group me-sm-3 mb-sm-0 mb-3 d-flex flex-column justify-content-start">
+            <div
+                class="input-group me-sm-3 mb-sm-0 mb-3 d-flex flex-column justify-content-start"
+            >
                 <h4 class="ms-1">Pending Roles</h4>
                 <div>
                     <ul class="list-group">
+                        {#if roles.requested_roles.length == 0}
+                            <p class="mx-1 mt-3">Nothing Pending</p>
+                        {/if}
                         {#each roles.requested_roles as role}
-                            <form method="post" id={role.name+"form"} action="?/cancelRequestedRole">
+                            <form
+                                method="post"
+                                id={role.name + 'form'}
+                                action="?/cancelRequestedRole"
+                            >
                                 <li class="card my-1">
                                     <div class="card-body">
                                         <h5 class="card-title">{role.name}</h5>
-                                        <p class="card-text fs-sm">reason: {role.request_reason}</p>
-                                        <p class="card-text fs-sm">status: {role.status}</p>
-                                        <p class="card-text fs-sm">status reason: {role.status_reason}</p>
-                                        <input class="d-none" readonly name="role" value={JSON.stringify(role)}>
-                                        <button type="submit" formaction="?/cancelRequestedRole" class="btn btn-sm btn-danger">Cancel Request</button>
+                                        <p class="card-text fs-sm">
+                                            reason: {role.request_reason}
+                                        </p>
+                                        <p class="card-text fs-sm">
+                                            status: {role.status}
+                                        </p>
+                                        <p class="card-text fs-sm">
+                                            status reason: {role.status_reason}
+                                        </p>
+                                        <input
+                                            class="d-none"
+                                            readonly
+                                            name="role"
+                                            value={JSON.stringify(role)}
+                                        />
+                                        <button
+                                            type="submit"
+                                            formaction="?/cancelRequestedRole"
+                                            class="btn btn-sm btn-danger"
+                                            >Cancel Request</button
+                                        >
                                     </div>
                                 </li>
                             </form>
@@ -175,23 +202,57 @@
                 </div>
             </div>
 
-            <div class="input-group me-sm-3 mb-sm-0 mb-3 d-flex flex-column justify-content-start">
+            <div
+                class="input-group me-sm-3 mb-sm-0 mb-3 d-flex flex-column justify-content-start"
+            >
                 <h4 class="ms-1">Request Roles</h4>
                 <ul class="list-group">
+                    {#if roles.requestable_roles.length == 0}
+                        <p class="mx-1 mt-3">No Roles to Request</p>
+                    {/if}
                     {#each roles.requestable_roles as role}
-                    <form method="post" id={role+"form"} action="?/requestRole">
-                        <div class="input-group my-1">
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Request</button>
-                            <div class="dropdown-menu dropdown">
-                                <label class="px-3" for="reason">Reason</label>
-                                <div class="px-3">
-                                    <input class="form-control" type="text" name="reason" placeholder="Please specify" required autocomplete="off">
-                                    <button class="btn btn-primary" type="submit" formaction="?/requestRole">Submit</button>
+                        <form
+                            method="post"
+                            id={role + 'form'}
+                            action="?/requestRole"
+                        >
+                            <div class="input-group my-1">
+                                <button
+                                    class="btn btn-primary dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown">Request</button
+                                >
+                                <div class="dropdown-menu dropdown">
+                                    <label class="px-3" for="reason"
+                                        >Reason</label
+                                    >
+                                    <div class="px-3">
+                                        <input
+                                            class="form-control"
+                                            type="text"
+                                            name="reason"
+                                            placeholder="Please specify"
+                                            required
+                                            autocomplete="off"
+                                        />
+                                        <button
+                                            class="btn btn-primary"
+                                            type="submit"
+                                            formaction="?/requestRole"
+                                            >Submit</button
+                                        >
+                                    </div>
                                 </div>
+                                <input
+                                    readonly={true}
+                                    class="form-control list-group-item rounded-end"
+                                    name="role"
+                                    type="text"
+                                    placeholder=""
+                                    value={role}
+                                />
                             </div>
-                            <input readonly={true} class="form-control list-group-item rounded-end" name="role" type="text" placeholder="" value={role}>
-                        </div>
-                    </form>
+                        </form>
                     {/each}
                 </ul>
             </div>

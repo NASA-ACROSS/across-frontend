@@ -1,4 +1,4 @@
-type RequestedRoles = {
+export type UserRequestedRole = {
     id: number;
     name: string;
     status: string;
@@ -8,6 +8,6 @@ type RequestedRoles = {
 
 export type UserRequestRoles = {
     approved_roles: string[];
-    requested_roles: RequestedRoles[];
+    requested_roles: UserRequestedRole[];
     requestable_roles: string[];
 };

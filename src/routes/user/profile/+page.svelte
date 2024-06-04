@@ -6,7 +6,8 @@
 
     import type { PageData } from './$types';
     import { browser } from '$app/environment';
-    import { enhance } from '$app/forms';
+    import { applyAction, enhance } from '$app/forms';
+    import { goto, invalidateAll } from '$app/navigation';
     export let data: PageData;
     let roles = data.roles;
 
@@ -91,14 +92,14 @@
                 class="btn btn-lg btn-primary"
                 disabled={isUserDataUnchanged}>Update</button
             >
-            {#if form?.success}
+            {#if form?.successUpdateUserInformation}
                 <p
                     class="form-text fs-sm text-sm-start text-center text-success"
                 >
                     Successfully updated user information!
                 </p>
             {/if}
-            {#if form?.fail}
+            {#if form?.failUpdateUserInformation}
                 <p
                     class="form-text fs-sm text-sm-start text-center text-danger"
                 >
@@ -146,7 +147,7 @@
                 <div>
                     <ul class="list-group">
                         {#each roles.approved_roles as role}
-                            <li class="list-group-item">{role}</li>
+                            <li class="list-group-item my-1">{role}</li>
                         {/each}
                     </ul>
                 </div>
@@ -157,15 +158,14 @@
                 <div>
                     <ul class="list-group">
                         {#each roles.requested_roles as role}
-                            <form method="post" use:enhance={({formData})=>{formData = new FormData(); formData.append('requested_role', JSON.stringify(role)); return async ({ result, update }) => {
-                                console.log(result, update);
-                              };}}>
-                                <li class="card m-1">
+                            <form method="post" id={role.name+"form"} action="?/cancelRequestedRole">
+                                <li class="card my-1">
                                     <div class="card-body">
                                         <h5 class="card-title">{role.name}</h5>
                                         <p class="card-text fs-sm">reason: {role.request_reason}</p>
                                         <p class="card-text fs-sm">status: {role.status}</p>
                                         <p class="card-text fs-sm">status reason: {role.status_reason}</p>
+                                        <input class="d-none" readonly name="role" value={JSON.stringify(role)}>
                                         <button type="submit" formaction="?/cancelRequestedRole" class="btn btn-sm btn-danger">Cancel Request</button>
                                     </div>
                                 </li>
@@ -180,12 +180,12 @@
                 <ul class="list-group">
                     {#each roles.requestable_roles as role}
                     <form method="post" id={role+"form"} action="?/requestRole">
-                        <div class="input-group p-1">
+                        <div class="input-group my-1">
                             <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">Request</button>
                             <div class="dropdown-menu dropdown">
                                 <label class="px-3" for="reason">Reason</label>
                                 <div class="px-3">
-                                    <input class="form-control" type="text" name="reason" placeholder="Please specify" required={true}>
+                                    <input class="form-control" type="text" name="reason" placeholder="Please specify" required autocomplete="off">
                                     <button class="btn btn-primary" type="submit" formaction="?/requestRole">Submit</button>
                                 </div>
                             </div>

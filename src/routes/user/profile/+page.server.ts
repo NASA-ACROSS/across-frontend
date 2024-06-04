@@ -4,7 +4,7 @@ import { loggedIn } from '$lib/stores/login';
 import { CONFIG } from '../../../config/config.js';
 import type { CookieSerializeOptions } from 'cookie';
 import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
-import type { UserRequestRoles } from '$lib/types/UserRequestRoles.js';
+import type { UserRequestRoles } from '$lib/types/UserRequestRoles';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
 
 export async function load({
@@ -29,7 +29,6 @@ export async function load({
     };
 
     const queryString = '?' + new URLSearchParams({ id: user.id.toString() });
-    console.log(queryString.toString());
 
     let response;
     try {
@@ -55,7 +54,6 @@ export async function load({
     }
 
     const roles: UserRequestRoles = await response.json();
-    console.log(roles);
 
     // Respond with user cookie data
     return { user, roles };
@@ -67,25 +65,87 @@ export const actions = {
         const user: UserCredentialsCookie = locals.user;
         const data = await request.formData();
 
-        const requestedRole = JSON.parse(data.get('requested_role'));
+        const requestedRole = JSON.parse(data.get('role'));
 
-        console.log('cancel', requestedRole);
+        const userData = {
+            id: requestedRole.id,
+        };
+
+        const USER_API_TOKEN = user.api_token;
+
+        const options: RequestInit = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${USER_API_TOKEN}`,
+            },
+        };
+
+        const requestParams = new URLSearchParams(userData);
+
+        let response;
+        try {
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user_request_roles?${requestParams.toString()}`,
+                options
+            );
+        } catch (error: any) {
+            console.error(
+                `ERROR: catch profile cancel requested role for [${user.email}] at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
+            return fail(500, {
+                error: error.message,
+                failRequestRole: true,
+            });
+        }
+
+        return { successCancelRequestedRole: true };
     },
     requestRole: async (event: any) => {
         const { request, locals, cookies } = event;
         const user: UserCredentialsCookie = locals.user;
         const data = await request.formData();
 
-        const role = data.get('role') as string;
-        const reason = data.get('reason') as string;
+        const roles = data.get('role') as string;
+        const reasons = data.get('reason') as string;
 
-        const userPutData = {
-            role,
-            reason,
+        const userData = {
+            roles,
+            reasons,
+            id: user.id.toString(),
         };
 
-        console.log(userPutData);
-        return { success: true };
+        const USER_API_TOKEN = user.api_token;
+
+        const options: RequestInit = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${USER_API_TOKEN}`,
+            },
+        };
+
+        const requestParams = new URLSearchParams(userData);
+
+        let response;
+        try {
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user_request_roles?${requestParams.toString()}`,
+                options
+            );
+        } catch (error: any) {
+            console.error(
+                `ERROR: catch profile requesting role for [${user.email}] at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
+            return fail(500, {
+                error: error.message,
+                failRequestRole: true,
+            });
+        }
+
+        return { successRequestRole: true };
     },
     updateUserInformation: async (event: any) => {
         const { request, locals, cookies } = event;
@@ -127,19 +187,22 @@ export const actions = {
                 `ERROR: updating user information [${email}] at [${Date.now()}]`,
                 JSON.stringify(error)
             );
-            return fail(500, { error: error.message, fail: true });
+            return fail(500, {
+                error: error.message,
+                failUpdateUserInformation: true,
+            });
         }
 
         if (response.status == 403) {
             console.error(`ERROR: API not accessible or API TOKEN not valid`);
-            return fail(500, { fail: true });
+            return fail(500, { failUpdateUserInformation: true });
         }
 
         if (response.status == 500) {
             console.error(
                 `ERROR: updating user information with [${email}, ${username}] at [${Date.now()}] with status code [500]`
             );
-            return fail(500, { fail: true });
+            return fail(500, { failUpdateUserInformation: true });
         }
 
         const cookieUserData = { ...user, ...userPutData };
@@ -164,6 +227,12 @@ export const actions = {
 
         cookies.set('user-login', encryptedCredentials, cookieOptions);
 
-        return { success: true, firstname, lastname, username, email };
+        return {
+            successUpdateUserInformation: true,
+            firstname,
+            lastname,
+            username,
+            email,
+        };
     },
 };

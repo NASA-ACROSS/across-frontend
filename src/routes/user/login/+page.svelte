@@ -1,25 +1,24 @@
 <script lang="ts">
-    import { enhance } from "$app/forms";
-    
+    import { enhance } from '$app/forms';
+
     /** @type {import('./$types').ActionData} */
     export let form;
 
     let isLoggingIn = false;
     // submit function to toggle ui state while waiting for response
-    function enhancedLogin(){
+    function enhancedLogin() {
         isLoggingIn = true;
 
         return async ({ update }) => {
             await update();
             isLoggingIn = false;
-        }
+        };
     }
-    
 </script>
 
 <section class="py-5 bg-secondary">
     <div class="container py-md-3">
-        <h1>API Login</h1>
+        <h1>API User Login</h1>
         <form method="post" use:enhance={enhancedLogin}>
             <label for="email">Email</label>
             <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
@@ -35,14 +34,20 @@
                         placeholder="Please enter your email"
                     />
                 </div>
-                <button class="btn btn-lg btn-primary" disabled={isLoggingIn || form?.success}>
+                <button
+                    class="btn btn-lg btn-primary"
+                    disabled={isLoggingIn || form?.success}
+                >
                     {#if isLoggingIn && !form?.success}
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            role="status"
+                            aria-hidden="true"
+                        ></span>
                     {:else}
                         Login
                     {/if}
-                </button
-                >
+                </button>
             </div>
             {#if form?.success}
                 <p

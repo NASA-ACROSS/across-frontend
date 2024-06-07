@@ -7,6 +7,8 @@ import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js'
 import type { UserRequestRoles } from '$lib/types/UserRequestRoles';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
 
+const ROLES_TO_HIDE = ['admin', 'frontend'];
+
 export async function load({
     locals,
 }: {
@@ -55,8 +57,7 @@ export async function load({
 
     let roles: UserRequestRoles = await response.json();
     // remove these roles from self-service list
-    const rolesToRemove = ['admin']
-    roles.requestable_roles = roles.requestable_roles.filter((role) => !rolesToRemove.includes(role))
+    roles.requestable_roles = roles.requestable_roles.filter((role) => !ROLES_TO_HIDE.includes(role))
 
     // Respond with user cookie data
     return { user, roles };
@@ -112,6 +113,15 @@ export const actions = {
 
         const roles = data.get('role') as string;
         const reasons = data.get('reason') as string;
+
+        if (ROLES_TO_HIDE.includes(roles)) {
+            console.error(
+                `ERROR: profile requesting hidden role [${roles}] for [${user.email}] at [${Date.now()}]`
+            );
+            return fail(500, {
+                failRequestRole: true,
+            });
+        }
 
         const userData = {
             roles,

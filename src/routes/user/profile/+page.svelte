@@ -149,7 +149,7 @@
                 <div>
                     <ul class="list-group">
                         {#each roles.approved_roles as role}
-                            <li class="list-group-item my-1">{role}</li>
+                            <li class="list-group-item">{role}</li>
                         {/each}
                     </ul>
                 </div>

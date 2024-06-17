@@ -6,6 +6,7 @@ import type { CookieSerializeOptions } from 'cookie';
 import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
 import type { UserRequestRoles } from '$lib/types/UserRequestRoles';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
+import { getUserRoles } from '$lib/utils/user/getUserRoles.js';
 
 const ROLES_TO_HIDE = ['admin', 'frontend'];
 
@@ -23,41 +24,11 @@ export async function load({
 
     loggedIn.set(true);
 
-    const options = {
-        method: 'GET',
-        headers: {
-            Authorization: `Bearer ${user.api_token}`,
-        },
-    };
+    const roles: UserRequestRoles = await getUserRoles(user);
 
-    const queryString = '?' + new URLSearchParams({ id: user.id.toString() });
-
-    let response;
-    try {
-        response = await fetch(
-            `${CONFIG.API_URL}/api/v1/across/user_request_roles/${queryString}`,
-            options
-        );
-    } catch (error: any) {
-        console.error(
-            `ERROR: catch getting user roles [${user.email}] at [${Date.now()}]`,
-            JSON.stringify(error)
-        );
-        return fail(500, { error: error.message, fail: true });
-    }
-
-    // catch known errors from api and hide error from user
-    const errorCodes = [500, 404];
-    if (errorCodes.includes(response.status)) {
-        console.error(
-            `ERROR: getting user roles [${user.email}] at [${Date.now()}] with status code [500]`
-        );
-        return fail(500, { fail: true });
-    }
-
-    let roles: UserRequestRoles = await response.json();
     // remove these roles from self-service list
     roles.requestable_roles = roles.requestable_roles.filter((role) => !ROLES_TO_HIDE.includes(role))
+    user.roles = roles.approved_roles;
 
     // Respond with user cookie data
     return { user, roles };

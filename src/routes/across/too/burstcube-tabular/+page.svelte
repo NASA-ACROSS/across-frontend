@@ -2,10 +2,11 @@
     import { Table } from 'svelte-tabular-table';
     import type { PageData } from './$types';
     import Modal from '$lib/components/Modal.svelte';
-    import { json } from '@sveltejs/kit';
+    import type { CellClickCallbackInput } from '$lib/types/svelte-tabular-table/CellClickCallbackInput';
+    import BurstcubeTooTableCellComponentRender from './BurstcubeTooTableCellComponentRender.svelte';
 
     export let data: PageData;
-    $: tableData = data.table;
+    $: tableData = data.table || [];
 
     $: showModal = false;
     $: triggerInfoData = {};
@@ -27,7 +28,7 @@
         rowIndex,
         cellIndex,
         event,
-    }) => {
+    }: CellClickCallbackInput) => {
         console.log(
             JSON.stringify(
                 { id, item, key, value, rowIndex, cellIndex, event },
@@ -61,8 +62,12 @@
             click: {
                 cell: cellClick,
             },
+            render: {
+                cell: BurstcubeTooTableCellComponentRender,
+                key: BurstcubeTooTableCellComponentRender,
+            },
         },
-    };
+    } as any;
 </script>
 
 <section class="pt-5 pb-2 bg-secondary">
@@ -72,13 +77,13 @@
         </div>
     </div>
     <Modal bind:showModal>
-        <h2 slot="header" class="dark">Trigger Info</h2>
+        <h5 slot="header" class="modal-title">Trigger Info</h5>
         {#each Object.entries(triggerInfoData) as [key, value]}
             <div><b>{key}</b>: {value}</div>
         {/each}
     </Modal>
     <div class="container">
-        {#if tableData.length}
+        {#if tableData?.length}
             <Table {...config} class="table table-hover" />
         {:else}
             <p>No data currently unavailable</p>

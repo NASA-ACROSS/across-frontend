@@ -2,14 +2,19 @@
     import { Table } from 'svelte-tabular-table';
     import type { PageData } from './$types';
     import Modal from '$lib/components/Modal.svelte';
+    import Spinner from '$lib/components/Spinner.svelte';
     import type { CellClickCallbackInput } from '$lib/types/svelte-tabular-table/CellClickCallbackInput';
     import BurstcubeTooTableCellComponentRender from './BurstcubeTooTableCellComponentRender.svelte';
+    import { onMount } from 'svelte';
 
     export let data: PageData;
-    $: tableData = data.table || [];
 
+    $: tableData = data.table || [];
+    $: showTable = false;
     $: showModal = false;
     $: triggerInfoData = {};
+
+    const ADMIN_PAGE_ROLES = ['put_burstcube_too', 'delete_burstcube_too'];
 
     const columns = [
         'id',
@@ -19,6 +24,11 @@
         'status',
         'too_info',
     ];
+
+    // add admin actions column to table when the user has appropriate roles
+    if (data.userRoles.some((val: string) => ADMIN_PAGE_ROLES.includes(val))) {
+        columns.push('actions');
+    }
 
     const cellClick = ({
         id,
@@ -50,7 +60,7 @@
             name: 'burstcube-too-tabular',
             nohead: false,
             nodiv: false,
-            data: tableData,
+            data: [],
         },
         features: {
             sortable: {
@@ -62,18 +72,23 @@
             click: {
                 cell: cellClick,
             },
-            render: {
-                cell: BurstcubeTooTableCellComponentRender,
-                key: BurstcubeTooTableCellComponentRender,
-            },
         },
     } as any;
+
+    onMount(() => {
+        showTable = true;
+        config.init.data = tableData;
+        config.callbacks.render = {
+            cell: BurstcubeTooTableCellComponentRender,
+            key: BurstcubeTooTableCellComponentRender,
+        };
+    });
 </script>
 
 <section class="pt-5 pb-2 bg-secondary">
     <div class="container py-md-3">
         <div class="d-flex justify-content-between align-items-end">
-            <h1>{data?.slug?.toUpperCase()} TOO</h1>
+            <h1>{data?.slug?.toUpperCase()} Download of Opportunity</h1>
         </div>
     </div>
     <Modal bind:showModal>
@@ -83,10 +98,10 @@
         {/each}
     </Modal>
     <div class="container">
-        {#if tableData?.length}
+        {#if showTable}
             <Table {...config} class="table table-hover" />
         {:else}
-            <p>No data currently unavailable</p>
+            <Spinner />
         {/if}
     </div>
 </section>

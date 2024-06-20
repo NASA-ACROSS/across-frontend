@@ -52,7 +52,7 @@ export async function load({ locals }) {
 
     const resJson = await response.json();
     const table = resJson.entries.filter((obj) =>
-        Object.entries(obj).every(
+        Object.entries(obj).some(
             (item: any) => item != undefined && item != null && item != ''
         )
     );

@@ -6,13 +6,21 @@ import { CONFIG } from '../../../../config/config';
 const OBSERVATORY = 'burstcube';
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ locals }) {
-    const user = locals.user;
+export async function load({ url, locals }) {
+    const userPage = url.searchParams.get('page') || 1;
+    const userLimit = url.searchParams.get('limit') || 20;
+    let page = userPage;
+    if (+page < 1) page = 1;
+    let limit = userLimit;
+    if (+limit > 100) limit = 100;
+    if (+limit < 10) limit = 10;
+
     // Redirect on load when user is not logged in
+    const user = locals.user;
     if (!user) {
         throw redirect(303, `${base}/user/login`);
     }
-
+    // Get roles and store them
     const roles = await getUserRoles(user);
     user.roles = roles.approved_roles;
 
@@ -23,12 +31,19 @@ export async function load({ locals }) {
         },
     };
 
+    const params = {
+        limit,
+        offset: ((+page - 1) * +limit).toString(),
+    };
+
+    const requestParams = new URLSearchParams(params);
+
     // const queryString = '?' + new URLSearchParams({ id: user.id.toString() });
-    const url = `${CONFIG.API_URL}/api/v1/${OBSERVATORY.toLowerCase()}/too`;
+    const targetUrl = `${CONFIG.API_URL}/api/v1/${OBSERVATORY.toLowerCase()}/too?${requestParams}`;
 
     let response;
     try {
-        response = await fetch(url, options);
+        response = await fetch(targetUrl, options);
     } catch (e: any) {
         console.error(
             `ERROR: catch getting TOO data for [${OBSERVATORY}] by [${user.email}] at [${Date.now()}]`,
@@ -51,7 +66,7 @@ export async function load({ locals }) {
     }
 
     const resJson = await response.json();
-    const table = resJson.entries.filter((obj) =>
+    const table = resJson?.entries?.filter((obj) =>
         Object.entries(obj).some(
             (item: any) => item != undefined && item != null && item != ''
         )
@@ -61,5 +76,7 @@ export async function load({ locals }) {
         slug: OBSERVATORY,
         userRoles: user.roles,
         table,
+        page,
+        limit,
     };
 }

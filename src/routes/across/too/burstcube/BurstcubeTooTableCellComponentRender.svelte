@@ -18,12 +18,12 @@
                     .split(required_delimiters[1])[0] || '0'
             );
             if (percent >= 90) color = 'rgb(0,200,0)';
-            if (percent >= 70 && percent < 90) color = 'rgb(255,255,0)';
+            if (percent >= 70 && percent < 90) color = 'rgb(255,225,0)';
             if (percent < 70) color = 'rgb(255,0,0)';
         }
 
         // yellow when partially inside SAA
-        if (text.includes('partially inside SAA')) color = 'rgb(255,255,0)';
+        if (text.includes('partially inside SAA')) color = 'rgb(255,225,0)';
 
         return color;
     };
@@ -41,10 +41,14 @@
     {:else if key == 'id'}
         <div style="color:rgb(160,160,255)">{value}</div>
     {:else if key == 'trigger_info'}
-        <button class="btn btn-primary">Show Info</button>
+        <button
+            class="btn btn-sm btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#triggerInfoModal">Show Trigger Info</button
+        >
     {:else if key == 'status'}
         {#if value == 'Requested'}
-            <div style="color:rgb(255,255,0)">{value}</div>
+            <div style="color:rgb(255,225,0)">{value}</div>
         {:else if value == 'Rejected'}
             <div style="color:rgb(255,50,50)">{value}</div>
         {:else if value == 'Approved'}

@@ -1,5 +1,6 @@
 <script lang="ts">
     export let showModal: boolean; // boolean
+    export let centered = false;
 
     let dialog; // HTMLDialogElement
 
@@ -10,13 +11,17 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
-    id="dialog-modal"
+    id="triggerInfoModal"
     bind:this={dialog}
     on:close={() => (showModal = false)}
     on:click|self={() => dialog.close()}
-    class="modal"
+    class="modal fade"
 >
-    <div class="modal-dialog" role="document" on:click|stopPropagation>
+    <div
+        class="modal-dialog {centered ? 'modal-dialog-centered' : ''}"
+        role="document"
+        on:click|stopPropagation
+    >
         <div class="modal-content">
             <div class="modal-header">
                 <slot name="header" />
@@ -29,6 +34,7 @@
             <div class="modal-footer">
                 <button
                     class="btn btn-primary btn-sm"
+                    data-bs-dismiss="modal"
                     autofocus
                     on:click={() => dialog.close()}>Close</button
                 >
@@ -39,11 +45,10 @@
 
 <style>
     dialog {
-        max-width: 42em;
         border-radius: 0.2em;
         border: none;
         padding: 0;
-        background: black;
+        background: rgba(0, 0, 0, 0);
         color: white;
     }
     dialog::backdrop {

@@ -5,7 +5,9 @@
     import Spinner from '$lib/components/Spinner.svelte';
     import type { CellClickCallbackInput } from '$lib/types/svelte-tabular-table/CellClickCallbackInput';
     import BurstcubeTooTableCellComponentRender from './BurstcubeTooTableCellComponentRender.svelte';
-    import { onMount } from 'svelte';
+    import { afterUpdate, onMount } from 'svelte';
+    import { base } from '$app/paths';
+    import { invalidateAll } from '$app/navigation';
 
     export let data: PageData;
 
@@ -13,6 +15,9 @@
     $: showTable = false;
     $: showModal = false;
     $: triggerInfoData = {};
+    $: triggerInfoDataRow = {};
+    $: page = +data.page;
+    $: limit = +data.limit;
 
     const ADMIN_PAGE_ROLES = ['put_burstcube_too', 'delete_burstcube_too'];
 
@@ -49,6 +54,7 @@
         // key is column name
         if (key === 'trigger_info') {
             triggerInfoData = tableData[rowIndex].trigger_info;
+            triggerInfoDataRow = tableData[rowIndex];
             showModal = true;
         }
     };
@@ -83,18 +89,67 @@
             key: BurstcubeTooTableCellComponentRender,
         };
     });
+
+    afterUpdate(() => {
+        config.init.data = tableData;
+        config.callbacks.render = {
+            cell: BurstcubeTooTableCellComponentRender,
+            key: BurstcubeTooTableCellComponentRender,
+        };
+    });
 </script>
 
 <section class="pt-5 pb-2 bg-secondary">
     <div class="container py-md-3">
         <div class="d-flex justify-content-between align-items-end">
             <h1>{data?.slug?.toUpperCase()} Download of Opportunity</h1>
+            <form action="{base}/user/logout">
+                <div class="btn-toolbar" role="toolbar" aria-label="Pagination">
+                    <div
+                        class="btn-group me-2 mb-2"
+                        role="group"
+                        aria-label="First group"
+                    >
+                        <a
+                            type="button"
+                            class="btn btn-lg btn-outline-primary {page == 1
+                                ? 'disabled'
+                                : ''}"
+                            data-sveltekit-preload-data
+                            href="{base}/across/too/burstcube?page={page -
+                                1}&limit={limit}"
+                        >
+                            <i class="bx bx-left-arrow" />
+                        </a>
+                        <button type="button" class="btn btn-outline-primary"
+                            >Page {page}</button
+                        >
+                        <a
+                            type="button"
+                            class="btn btn-lg btn-outline-primary"
+                            data-sveltekit-preload-data
+                            href="{base}/across/too/burstcube?page={page +
+                                1}&limit={limit}"
+                        >
+                            <i class="bx bx-right-arrow" />
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-    <Modal bind:showModal>
-        <h5 slot="header" class="modal-title">Trigger Info</h5>
+    <Modal bind:showModal centered={true}>
+        <h5 slot="header" class="modal-title">
+            Trigger Info Details {triggerInfoDataRow.id
+                ? `#${triggerInfoDataRow.id}`
+                : ''}
+        </h5>
         {#each Object.entries(triggerInfoData) as [key, value]}
-            <div><b>{key}</b>: {value}</div>
+            {#if key === 'justification'}
+                <div class="text-warning"><b>{key}</b>: {value}</div>
+            {:else}
+                <div><b>{key}</b>: {value}</div>
+            {/if}
         {/each}
     </Modal>
     <div class="container">

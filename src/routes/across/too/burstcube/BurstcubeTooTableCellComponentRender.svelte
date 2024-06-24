@@ -6,7 +6,8 @@
     export let index;
     export let type;
 
-    const probabilityColor = (text) => {
+    // given a string, parse the % and set a color, override color with yellow if in SAA
+    const probabilityColor = (text: string) => {
         let color = 'rgb(210,210,210)';
         // test that the required characters are present
         const required_delimiters = [':', '%'];
@@ -40,6 +41,8 @@
         {/if}
     {:else if key == 'id'}
         <div style="color:rgb(160,160,255)">{value}</div>
+    {:else if key == 'created_on' || key == 'trigger_time'}
+        <div>{value.split('T').join('\n')}</div>
     {:else if key == 'trigger_info'}
         <button
             class="btn btn-sm btn-outline-primary"

@@ -25,7 +25,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <slot name="header" />
-                <button type="button" class="btn-close" aria-label="Close"
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                    on:click={() => dialog.close()}
                 ></button>
             </div>
             <div class="modal-body">

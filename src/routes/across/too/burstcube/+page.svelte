@@ -17,7 +17,7 @@
     $: triggerInfoData = {};
     $: triggerInfoDataRow = {};
     $: page = +data.page;
-    $: limit = +data.limit;
+    let limit = +data.limit;
 
     const ADMIN_PAGE_ROLES = ['put_burstcube_too', 'delete_burstcube_too'];
 
@@ -44,14 +44,7 @@
         cellIndex,
         event,
     }: CellClickCallbackInput) => {
-        console.log(
-            JSON.stringify(
-                { id, item, key, value, rowIndex, cellIndex, event },
-                null,
-                2
-            )
-        );
-        // key is column name
+        // key is the column name
         if (key === 'trigger_info') {
             triggerInfoData = tableData[rowIndex].trigger_info;
             triggerInfoDataRow = tableData[rowIndex];
@@ -103,39 +96,64 @@
     <div class="container py-md-3">
         <div class="d-flex justify-content-between align-items-end">
             <h1>{data?.slug?.toUpperCase()} Download of Opportunity</h1>
-            <form action="{base}/user/logout">
-                <div class="btn-toolbar" role="toolbar" aria-label="Pagination">
-                    <div
-                        class="btn-group me-2 mb-2"
-                        role="group"
-                        aria-label="First group"
-                    >
-                        <a
-                            type="button"
-                            class="btn btn-lg btn-outline-primary {page == 1
-                                ? 'disabled'
-                                : ''}"
-                            data-sveltekit-preload-data
-                            href="{base}/across/too/burstcube?page={page -
-                                1}&limit={limit}"
-                        >
-                            <i class="bx bx-left-arrow" />
-                        </a>
-                        <button type="button" class="btn btn-outline-primary"
-                            >Page {page}</button
-                        >
-                        <a
-                            type="button"
-                            class="btn btn-lg btn-outline-primary"
-                            data-sveltekit-preload-data
-                            href="{base}/across/too/burstcube?page={page +
-                                1}&limit={limit}"
-                        >
-                            <i class="bx bx-right-arrow" />
-                        </a>
+            <div
+                class="btn-toolbar"
+                role="toolbar"
+                aria-label="Results per page toolbar"
+            >
+                <div
+                    class="btn-group me-2 mb-2"
+                    role="group"
+                    aria-label="Results per page group"
+                >
+                    <div class="btn btn-outline-secondary">
+                        Results Per Page
                     </div>
+                    <select
+                        class="form-select btn btn-outline-primary pe-5"
+                        id="select-input"
+                        aria-label="Results per page"
+                        bind:value={limit}
+                    >
+                        {#each data.limits as lim}
+                            <option
+                                value={lim}
+                                selected={data.limits.includes(lim)}
+                                >{lim}</option
+                            >
+                        {/each}
+                    </select>
                 </div>
-            </form>
+            </div>
+            <div class="btn-toolbar" role="toolbar" aria-label="Pagination">
+                <div
+                    class="btn-group me-2 mb-2"
+                    role="group"
+                    aria-label="First group"
+                >
+                    <a
+                        type="button"
+                        class="btn btn-lg btn-outline-secondary {page == 1
+                            ? 'disabled'
+                            : ''}"
+                        href="{base}/across/too/burstcube?page={page -
+                            1}&limit={limit}"
+                    >
+                        <i class="bx bx-left-arrow" />
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary"
+                        >Page {page}</button
+                    >
+                    <a
+                        type="button"
+                        class="btn btn-lg btn-outline-secondary"
+                        href="{base}/across/too/burstcube?page={page +
+                            1}&limit={limit}"
+                    >
+                        <i class="bx bx-right-arrow" />
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
     <Modal bind:showModal centered={true}>

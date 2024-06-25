@@ -8,29 +8,54 @@ const LIMITS = [10, 25, 50, 100];
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ url, locals }) {
+    // Redirect on load when user is not logged in
+    const user = locals.user;
+    if (!user) {
+        throw redirect(303, `${base}/user/login`);
+    }
+
+    // parse and set min/max bounds for page and limit params
     const userPage = +url.searchParams.get('page') || 1;
     const userLimit = +url.searchParams.get('limit') || LIMITS[1];
 
+    let refresh = false;
+
     let page = userPage;
-    if (+page < 1) page = 1;
+    if (+page < 1) {
+        page = 1;
+        refresh = true;
+    }
 
     let limit = userLimit;
-    if (+limit > 100) limit = 100;
-    if (+limit < 10) limit = 10;
+    if (+limit > 100) {
+        limit = 100;
+        refresh = true;
+    }
+    if (+limit < 10) {
+        limit = 10;
+        refresh = true;
+    }
 
-    // handle custom user input number for limit in address bar as part of request
+    // rewrite user input to within bounds and redirect the browser
+    if (refresh) {
+        const searchParams = new URLSearchParams({
+            limit: limit.toString(),
+            page: page.toString(),
+        });
+        searchParams.set('page', page.toString());
+        searchParams.set('limit', limit.toString());
+        redirect(303, url.origin + url.pathname + '?' + searchParams);
+    }
+
+    // handle custom user input number for limit in address bar not in LIMITS list as part of request
     const userLimits = structuredClone(LIMITS);
     if (!userLimits.includes(limit)) {
         userLimits.push(limit);
         userLimits.sort((a, b) => a - b);
     }
 
-    // Redirect on load when user is not logged in
-    const user = locals.user;
-    if (!user) {
-        throw redirect(303, `${base}/user/login`);
-    }
-    // Get roles and store them
+    // Update user roles and store on request locals
+    // This makes a separate request instead of implicitly trusting cookie value for roles
     const roles = await getUserRoles(user);
     user.roles = roles.approved_roles;
 
@@ -47,8 +72,6 @@ export async function load({ url, locals }) {
     };
 
     const requestParams = new URLSearchParams(params);
-
-    // const queryString = '?' + new URLSearchParams({ id: user.id.toString() });
     const targetUrl = `${CONFIG.API_URL}/api/v1/${OBSERVATORY.toLowerCase()}/too?${requestParams}`;
 
     let response;
@@ -76,11 +99,7 @@ export async function load({ url, locals }) {
     }
 
     const resJson = await response.json();
-    const table = resJson?.entries?.filter((obj) =>
-        Object.entries(obj).some(
-            (item: any) => item != undefined && item != null && item != ''
-        )
-    );
+    const table = resJson.entries;
 
     return {
         slug: OBSERVATORY,

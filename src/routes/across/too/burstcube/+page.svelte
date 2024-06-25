@@ -7,7 +7,7 @@
     import BurstcubeTooTableCellComponentRender from './BurstcubeTooTableCellComponentRender.svelte';
     import { afterUpdate, onMount } from 'svelte';
     import { base } from '$app/paths';
-    import { invalidateAll } from '$app/navigation';
+    import { goto } from '$app/navigation';
 
     export let data: PageData;
 
@@ -18,6 +18,7 @@
     $: triggerInfoDataRow = {};
     $: page = +data.page;
     let limit = +data.limit;
+    let showPageInput = false;
 
     const ADMIN_PAGE_ROLES = ['put_burstcube_too', 'delete_burstcube_too'];
 
@@ -34,6 +35,17 @@
     if (data.userRoles.some((val: string) => ADMIN_PAGE_ROLES.includes(val))) {
         columns.push('actions');
     }
+
+    const focus = (element: any) => {
+        element.focus();
+    };
+
+    const refresh = () => {
+        return goto(
+            `${base}/across/too/burstcube?page=${page}&limit=${limit}`,
+            { invalidateAll: true, noScroll: true }
+        );
+    };
 
     const cellClick = ({
         id,
@@ -92,10 +104,12 @@
     });
 </script>
 
-<section class="pt-5 pb-2 bg-secondary">
+<section class="py-5 bg-secondary">
     <div class="container py-md-3">
         <div class="d-flex justify-content-between align-items-end">
             <h1>{data?.slug?.toUpperCase()} Download of Opportunity</h1>
+        </div>
+        <div class="d-flex justify-content-end align-items-end">
             <div
                 class="btn-toolbar"
                 role="toolbar"
@@ -114,6 +128,9 @@
                         id="select-input"
                         aria-label="Results per page"
                         bind:value={limit}
+                        on:change={() => {
+                            return refresh();
+                        }}
                     >
                         {#each data.limits as lim}
                             <option
@@ -141,13 +158,40 @@
                     >
                         <i class="bx bx-left-arrow" />
                     </a>
-                    <button type="button" class="btn btn-outline-secondary"
-                        >Page {page}</button
-                    >
+
+                    {#if showPageInput}
+                        <input
+                            class="form-control rounded-0"
+                            use:focus
+                            bind:value={data.page}
+                            on:focusout={() => {
+                                showPageInput = false;
+                                return refresh();
+                            }}
+                            on:keyup={(key) => {
+                                if (key.code == 'Enter') {
+                                    return refresh();
+                                }
+                            }}
+                            autocomplete="off"
+                            name="page"
+                            type="text"
+                            placeholder={page.toString()}
+                        />
+                    {:else}
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            on:click={() => (showPageInput = true)}
+                        >
+                            Page {page}
+                        </button>
+                    {/if}
+
                     <a
                         type="button"
                         class="btn btn-lg btn-outline-secondary"
-                        href="{base}/across/too/burstcube?page={page +
+                        href="{base}/across/too/burstcube?page={+page +
                             1}&limit={limit}"
                     >
                         <i class="bx bx-right-arrow" />
@@ -182,5 +226,9 @@
 <style>
     .table {
         font-size: 12px;
+    }
+
+    input {
+        max-width: 5em;
     }
 </style>

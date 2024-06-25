@@ -14,11 +14,21 @@ export async function load({ url, locals }) {
         throw redirect(303, `${base}/user/login`);
     }
 
-    // parse and set min/max bounds for page and limit params
-    const userPage = +url.searchParams.get('page') || 1;
-    const userLimit = +url.searchParams.get('limit') || LIMITS[1];
-
+    // when limit or page go out of bounds, use this boolean to trigger redirect to rewrite params
     let refresh = false;
+
+    // parse and set min/max bounds for page and limit params
+    let userPage = parseInt(url?.searchParams?.get('page') as string);
+    let userLimit = parseInt(url?.searchParams?.get('limit') as string);
+
+    if (Number.isNaN(userPage)) {
+        userPage = 1;
+        refresh = true;
+    }
+    if (Number.isNaN(userLimit)) {
+        userLimit = 1;
+        refresh = true;
+    }
 
     let page = userPage;
     if (+page < 1) {
@@ -39,8 +49,8 @@ export async function load({ url, locals }) {
     // rewrite user input to within bounds and redirect the browser
     if (refresh) {
         const searchParams = new URLSearchParams({
-            limit: limit.toString(),
             page: page.toString(),
+            limit: limit.toString(),
         });
         searchParams.set('page', page.toString());
         searchParams.set('limit', limit.toString());
@@ -59,6 +69,13 @@ export async function load({ url, locals }) {
     const roles = await getUserRoles(user);
     user.roles = roles.approved_roles;
 
+    // prepare the data table request
+    const params = {
+        limit,
+        offset: ((+page - 1) * +limit).toString(),
+    };
+    const requestParams = new URLSearchParams(params);
+    const targetUrl = `${CONFIG.API_URL}/api/v1/${OBSERVATORY.toLowerCase()}/too?${requestParams}`;
     const options = {
         method: 'GET',
         headers: {
@@ -66,14 +83,7 @@ export async function load({ url, locals }) {
         },
     };
 
-    const params = {
-        limit,
-        offset: ((+page - 1) * +limit).toString(),
-    };
-
-    const requestParams = new URLSearchParams(params);
-    const targetUrl = `${CONFIG.API_URL}/api/v1/${OBSERVATORY.toLowerCase()}/too?${requestParams}`;
-
+    // make the data table request
     let response;
     try {
         response = await fetch(targetUrl, options);
@@ -98,6 +108,7 @@ export async function load({ url, locals }) {
         );
     }
 
+    // decode data table response and format return object
     const resJson = await response.json();
     const table = resJson.entries;
 

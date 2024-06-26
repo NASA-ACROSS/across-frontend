@@ -15,9 +15,9 @@
     $: showTable = false;
     $: showModal = false;
     $: triggerInfoData = {};
-    $: triggerInfoDataRow = {};
+    $: dataRow = {};
     $: page = +data.page;
-    let limit = +data.limit;
+    $: limit = +data.limit;
     let showPageInput = false;
 
     const ADMIN_PAGE_ROLES = ['put_burstcube_too', 'delete_burstcube_too'];
@@ -56,10 +56,10 @@
         cellIndex,
         event,
     }: CellClickCallbackInput) => {
+        dataRow = tableData[rowIndex];
         // key is the column name
         if (key === 'trigger_info') {
             triggerInfoData = tableData[rowIndex].trigger_info;
-            triggerInfoDataRow = tableData[rowIndex];
             showModal = true;
         }
     };
@@ -127,7 +127,7 @@
                         class="form-select btn btn-outline-primary pe-5"
                         id="select-input"
                         aria-label="Results per page"
-                        bind:value={limit}
+                        bind:value={data.limit}
                         on:change={() => {
                             return refresh();
                         }}
@@ -202,9 +202,7 @@
     </div>
     <Modal bind:showModal centered={true}>
         <h5 slot="header" class="modal-title">
-            Trigger Info Details {triggerInfoDataRow.id
-                ? `#${triggerInfoDataRow.id}`
-                : ''}
+            Trigger Info Details {dataRow.id ? `#${dataRow.id}` : ''}
         </h5>
         {#each Object.entries(triggerInfoData) as [key, value]}
             {#if key === 'justification'}

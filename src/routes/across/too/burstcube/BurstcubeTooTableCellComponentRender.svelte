@@ -105,6 +105,8 @@
             <div style="color:rgb(255,50,50)">{value}</div>
         {:else if value == 'Approved'}
             <div style="color:rgb(0,200,0)">{value}</div>
+        {:else if value == 'Executed'}
+            <div style="color:rgb(160,160,255)">{value}</div>
         {:else}
             <div>{value}</div>
         {/if}
@@ -123,7 +125,7 @@
             >
                 <button
                     type="submit"
-                    class="btn btn-outline-success btn-icon me-1"
+                    class="btn btn-outline-success btn-icon"
                     aria-label="Approve"
                     title="Approve"
                     on:click={() => {
@@ -140,7 +142,24 @@
             >
                 <button
                     type="submit"
-                    class="btn btn-outline-warning btn-icon me-1"
+                    class="btn btn-outline-danger btn-icon"
+                    aria-label="Decline"
+                    title="Decline"
+                    on:click={() => {
+                        status = 'Declined';
+                    }}
+                >
+                    <i class="bx bx-trash"></i>
+                </button>
+            </form>
+            <form
+                method="post"
+                action="?/modifyStatus"
+                use:enhance={enhancedForm}
+            >
+                <button
+                    type="submit"
+                    class="btn btn-outline-warning btn-icon"
                     aria-label="Reset"
                     title="Reset"
                     on:click={() => {
@@ -157,14 +176,14 @@
             >
                 <button
                     type="submit"
-                    class="btn btn-outline-danger btn-icon me-1"
-                    aria-label="Decline"
-                    title="Decline"
+                    class="btn btn-outline-primary btn-icon"
+                    aria-label="Executed"
+                    title="Executed"
                     on:click={() => {
-                        status = 'Declined';
+                        status = 'Executed';
                     }}
                 >
-                    <i class="bx bx-trash"></i>
+                    <i class="bx bx-rocket"></i>
                 </button>
             </form>
         </div>

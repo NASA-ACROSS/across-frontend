@@ -145,7 +145,7 @@ export const actions = {
             });
         }
 
-        const VALID_ACTIONS = ['Approved', 'Declined', 'Requested'];
+        const VALID_ACTIONS = ['Approved', 'Declined', 'Requested', 'Executed'];
         if (!VALID_ACTIONS.includes(action)) {
             console.error(
                 `ERROR: [${OBSERVATORY}]  ${action} ToO failed, invalid action [${action}] specified in request for [${user.email}] at [${Date.now()}]`

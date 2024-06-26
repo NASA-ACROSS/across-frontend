@@ -9,10 +9,7 @@ const LIMITS = [10, 25, 50, 100];
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ url, locals }) {
     // Redirect on load when user is not logged in
-    const user = locals.user;
-    if (!user) {
-        throw redirect(303, `${base}/user/login`);
-    }
+    const user = locals.user || { roles: ['user'], email: 'unregistered user' };
 
     // when limit or page go out of bounds, use this boolean to trigger redirect to rewrite params
     let refresh = false;
@@ -66,8 +63,10 @@ export async function load({ url, locals }) {
 
     // Update user roles and store on request locals
     // This makes a separate request instead of implicitly trusting cookie value for roles
-    const roles = await getUserRoles(user);
-    user.roles = roles.approved_roles;
+    if (user.id) {
+        const roles = await getUserRoles(user);
+        user.roles = roles.approved_roles;
+    }
 
     // prepare the data table request
     const params = {
@@ -79,7 +78,7 @@ export async function load({ url, locals }) {
     const options = {
         method: 'GET',
         headers: {
-            Authorization: `Bearer ${user.api_token}`,
+            Authorization: `Bearer ${user.api_token ?? CONFIG.API_TOKEN}`,
         },
     };
 
@@ -126,6 +125,9 @@ export const actions = {
     modifyStatus: async (event) => {
         const { request, locals } = event;
         const user: UserCredentialsCookie = locals.user;
+        if (!user) {
+            throw redirect(303, `${base}/user/login`);
+        }
         const data = await request.formData();
 
         const id = data.get('id') as string;

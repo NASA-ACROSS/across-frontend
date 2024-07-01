@@ -1,3 +1,5 @@
+import { base } from '$app/paths';
+
 export type MissionsCardDataType = {
     tags: string[];
     title: string;
@@ -11,6 +13,20 @@ export type MissionsCardDataType = {
 };
 
 export const missionsCardData: MissionsCardDataType[] = [
+    {
+        tags: ['Gamma-rays'],
+        title: 'BurstCube',
+        description:
+            'BurstCube is a wide-field gamma-ray monitor designed to fit in a cubeSat profile to detect gamma-ray bursts and will test new gamma-ray detector technology.',
+        imgURL: '/assets/img/custom/BurstCube.jpg',
+        href: 'https://asd.gsfc.nasa.gov/burstcube/',
+        buttons: [
+            {
+                href: `${base}/across/too/burstcube`,
+                text: 'ACROSS Download of Opportunity (Beta)',
+            },
+        ],
+    },
     {
         tags: ['Gamma-Rays'],
         title: 'The Fermi Gamma-ray Space Telescope',

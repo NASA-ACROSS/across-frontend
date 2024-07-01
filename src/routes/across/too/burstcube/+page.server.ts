@@ -23,7 +23,7 @@ export async function load({ url, locals }) {
         refresh = true;
     }
     if (Number.isNaN(userLimit)) {
-        userLimit = 1;
+        userLimit = 10;
         refresh = true;
     }
 

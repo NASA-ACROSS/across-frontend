@@ -1,10 +1,8 @@
-import type { UserCredentialsCookie } from "$lib/types/UserCredentialsCookie";
-import { error, fail } from "@sveltejs/kit";
-import { CONFIG } from "../../../config/config";
-import type { UserRequestRoles } from "$lib/types/UserRequestRoles";
+import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie';
+import { CONFIG } from '../../../config/config';
+import type { UserRequestRoles } from '$lib/types/UserRequestRoles';
 
 export const getUserRoles = async (user: UserCredentialsCookie) => {
-
     const options = {
         method: 'GET',
         headers: {
@@ -17,7 +15,7 @@ export const getUserRoles = async (user: UserCredentialsCookie) => {
     let response;
     try {
         response = await fetch(
-            `${CONFIG.API_URL}/api/v1/across/user_request_roles/${queryString}`,
+            `${CONFIG.API_URL}/api/v1/across/user_request_roles${queryString}`,
             options
         );
     } catch (e: any) {
@@ -25,7 +23,7 @@ export const getUserRoles = async (user: UserCredentialsCookie) => {
             `ERROR: catch getting user roles [${user.email}] at [${Date.now()}]`,
             JSON.stringify(e)
         );
-        throw new Error("Unexpeted Error while fetching user roles");
+        throw new Error('Unexpeted Error while fetching user roles');
     }
 
     // catch known errors from api and hide error from user
@@ -34,9 +32,9 @@ export const getUserRoles = async (user: UserCredentialsCookie) => {
         console.error(
             `ERROR: getting user roles [${user.email}] at [${Date.now()}] with status code [${response.status}]`
         );
-        throw new Error("Unexpeted Error while fetching user roles");
+        throw new Error('Unexpeted Error while fetching user roles');
     }
 
-    let roles: UserRequestRoles = await response.json();
+    const roles: UserRequestRoles = await response.json();
     return roles;
-}
+};

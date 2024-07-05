@@ -1,12 +1,15 @@
 import { redirect, fail } from '@sveltejs/kit';
 import { base } from '$app/paths';
 import { loggedIn } from '$lib/stores/login';
-import { CONFIG } from '../../../config/config.js';
+import { CONFIG } from '../../../config/config';
 import type { CookieSerializeOptions } from 'cookie';
-import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
+import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie';
 import type { UserRequestRoles } from '$lib/types/UserRequestRoles';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
-import { getUserRoles } from '$lib/utils/user/getUserRoles.js';
+import { getUserRoles } from '$lib/utils/user/getUserRoles';
+import { validate } from '$lib/utils/regex/validate';
+import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
+import { emailRegex } from '$lib/utils/regex/emailRegex';
 
 const ROLES_TO_HIDE = ['admin', 'frontend'];
 
@@ -27,7 +30,9 @@ export async function load({
     const roles: UserRequestRoles = await getUserRoles(user);
 
     // remove these roles from self-service list
-    roles.requestable_roles = roles.requestable_roles.filter((role) => !ROLES_TO_HIDE.includes(role))
+    roles.requestable_roles = roles.requestable_roles.filter(
+        (role) => !ROLES_TO_HIDE.includes(role)
+    );
     user.roles = roles.approved_roles;
 
     // Respond with user cookie data
@@ -36,7 +41,7 @@ export async function load({
 
 export const actions = {
     cancelRequestedRole: async (event: any) => {
-        const { request, locals, cookies } = event;
+        const { request, locals } = event;
         const user: UserCredentialsCookie = locals.user;
         const data = await request.formData();
 
@@ -58,9 +63,8 @@ export const actions = {
 
         const requestParams = new URLSearchParams(userData);
 
-        let response;
         try {
-            response = await fetch(
+            await fetch(
                 `${CONFIG.API_URL}/api/v1/across/user_request_roles?${requestParams.toString()}`,
                 options
             );
@@ -78,7 +82,7 @@ export const actions = {
         return { successCancelRequestedRole: true };
     },
     requestRole: async (event: any) => {
-        const { request, locals, cookies } = event;
+        const { request, locals } = event;
         const user: UserCredentialsCookie = locals.user;
         const data = await request.formData();
 
@@ -112,9 +116,8 @@ export const actions = {
 
         const requestParams = new URLSearchParams(userData);
 
-        let response;
         try {
-            response = await fetch(
+            await fetch(
                 `${CONFIG.API_URL}/api/v1/across/user_request_roles?${requestParams.toString()}`,
                 options
             );
@@ -136,10 +139,23 @@ export const actions = {
         const user: UserCredentialsCookie = locals.user;
         const data = await request.formData();
 
-        const firstname = data.get('firstname') as string;
-        const lastname = data.get('lastname') as string;
-        const username = data.get('username') as string;
-        const email = data.get('email') as string;
+        // validate and sanitize input
+        const firstname = validate(
+            data.get('firstname'),
+            backendAlphaNumRegex,
+            'firstname'
+        );
+        const lastname = validate(
+            data.get('lastname'),
+            backendAlphaNumRegex,
+            'lastname'
+        );
+        const username = validate(
+            data.get('username'),
+            backendAlphaNumRegex,
+            'username'
+        );
+        const email = validate(data.get('email'), emailRegex, 'email');
 
         const userPutData = {
             firstname,
@@ -147,6 +163,20 @@ export const actions = {
             username,
             email,
         };
+
+        // reject if any inputs are null after sanitization, this should never happen
+        if (
+            firstname === null ||
+            lastname === null ||
+            username === null ||
+            email === null
+        ) {
+            console.error(
+                `ERROR: could not validate user input to update user info, something is null.`,
+                JSON.stringify(userPutData, null, 2)
+            );
+            return fail(500, { failValidation: true });
+        }
 
         const USER_API_TOKEN = event.locals.user.api_token;
 

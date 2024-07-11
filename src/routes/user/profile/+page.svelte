@@ -6,8 +6,7 @@
 
     import type { PageData } from './$types';
     import { browser } from '$app/environment';
-    import { applyAction, enhance } from '$app/forms';
-    import { goto, invalidateAll } from '$app/navigation';
+    import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
     export let data: PageData;
     let roles = data.roles;
 
@@ -39,22 +38,30 @@
             <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
                 <div class="input-group me-sm-3 mb-sm-0 mb-3">
                     <input
-                        class="form-control form-control-lg rounded-3 ps-5"
+                        class="{!isUserDataUnchanged
+                            ? 'validation-border-color'
+                            : ''} form-control form-control-lg rounded-3 ps-5"
                         required
                         bind:value={userData.firstname}
+                        pattern={frontendAlphaNumRegex}
                         autocomplete="off"
                         name="firstname"
+                        title="First name (alphanumeric, 25 character max)"
                         type="text"
                         placeholder="First"
                     />
                 </div>
                 <div class="input-group me-sm-3 mb-sm-0 mb-3">
                     <input
-                        class="form-control form-control-lg rounded-3 ps-5"
+                        class="{!isUserDataUnchanged
+                            ? 'validation-border-color'
+                            : ''} form-control form-control-lg rounded-3 ps-5"
                         required
                         bind:value={userData.lastname}
+                        pattern={frontendAlphaNumRegex}
                         autocomplete="off"
                         name="lastname"
+                        title="Last name (alphanumeric, 25 character max)"
                         type="text"
                         placeholder="Last"
                     />
@@ -64,11 +71,15 @@
             <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
                 <div class="input-group me-sm-3 mb-sm-0 mb-3">
                     <input
-                        class="form-control form-control-lg rounded-3 ps-5"
+                        class="{!isUserDataUnchanged
+                            ? 'validation-border-color'
+                            : ''} form-control form-control-lg rounded-3 ps-5"
                         required
                         bind:value={userData.username}
+                        pattern={frontendAlphaNumRegex}
                         autocomplete="off"
                         name="username"
+                        title="Username (alphanumeric, 25 character max)"
                         type="text"
                         placeholder="Username"
                     />
@@ -78,11 +89,14 @@
             <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
                 <div class="input-group me-sm-3 mb-sm-0 mb-3">
                     <input
-                        class="form-control form-control-lg rounded-3 ps-5"
+                        class="{!isUserDataUnchanged
+                            ? 'validation-border-color'
+                            : ''} form-control form-control-lg rounded-3 ps-5"
                         required
                         bind:value={userData.email}
                         autocomplete="off"
                         name="email"
+                        title="Please enter a valid email"
                         type="email"
                         placeholder="Please enter your email"
                     />
@@ -107,6 +121,14 @@
                     persists, contact support.
                 </p>
             {/if}
+            {#if form?.failValidation}
+                <p
+                    class="form-text fs-sm text-sm-start text-center text-danger"
+                >
+                    Form validation failed. Please try again. If this error
+                    persists, contact support.
+                </p>
+            {/if}
         </form>
     </div>
 </section>
@@ -126,7 +148,7 @@
                 />
                 <label
                     class="password-toggle-btn"
-                    aria-label="Show/hide password"
+                    aria-label="Show/hide API key"
                 >
                     <input class="password-toggle-check" type="checkbox" />
                     <span class="password-toggle-indicator"></span>
@@ -261,8 +283,16 @@
 </section>
 
 <style>
-    input[disabled].default-cursor {
+    input:disabled.default-cursor.validation-border-color {
         cursor: default;
         pointer-events: none;
+    }
+
+    input:valid:not(:placeholder-shown).validation-border-color {
+        border: 1px solid rgba(160, 160, 255, 1);
+    }
+
+    input:invalid:not(:placeholder-shown).validation-border-color {
+        border: 1px solid rgba(255, 0, 0, 1);
     }
 </style>

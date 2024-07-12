@@ -69,9 +69,7 @@
          * `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
          */
         return async ({ result, update }) => {
-            console.log(result);
             if (result.type === 'success') {
-                console.log('in');
                 // rerun all `load` functions, following the successful update
                 await invalidateAll();
                 await applyAction(result);

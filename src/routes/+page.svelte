@@ -45,81 +45,268 @@
 <!-- Page wrapper for sticky footer -->
 <!-- Wraps everything except footer to push footer to the bottom of the page if there is little content -->
 <main class="page-wrapper">
-  <Hero></Hero>
+  <!-- <Hero></Hero> -->
 
-  <!-- Overview -->
-  <section class="container pb-5 mb-md-2 mb-lg-4 mt-5">
-    <h1 class="border-bottom pb-4">Overview</h1>
-    <div class="row pt-2 pt-md-3">
-      <div class="col-md-6">
-        <p class="pe-lg-4 mb-1 mb-lg-4">
-          The emerging field of multimessenger astronomy combines the
-          observation of disparate messenger signals to reveal unique
-          information about astrophysical sources. The four extrasolar
-          messengers that make up multimessenger astronomy are electromagnetic
-          radiation, gravitational waves, neutrinos, and cosmic rays and the
-          primary multimessenger sources outside the heliosphere are expected to
-          be compact binary pairs (black holes and neutron stars), supernovae,
-          irregular neutron stars, gamma-ray bursts, active galactic nuclei, and
-          relativistic jets. The present study of the these multimessenger
-          sources has become one of the most promising discovery areas of modern
-          astronomy. Identified as one of the central themes of the 2020 Decadal
-          Review, the full realization of time-domain and multi-messenger
-          astronomy now stands to open an entirely new window on the Universe.
-        </p>
+  <!-- Hero -->
+  <section class="dark-mode bg-dark bg-size-cover bg-repeat-0 bg-position-center position-relative overflow-hidden py-5 mb-4" style="background-image: url(assets/img/landing/saas-3/hero/hero-bg.jpg);">
+    <div class="container position-relative zindex-2 pt-5 pb-md-2 pb-lg-4 pb-xl-5">
+      <div class="row pt-3 pb-2 py-md-4">
 
-        <p>
-          The first joint detection of two merging neutron stars in
-          gravitational waves and electromagnetic radiation on August 17, 2017
-          was a watershed moment for the field of multimessenger astronomy. The
-          information gained from the detection of both messengers enable
-          science that would have been impossible to perform with either signal
-          alone. The discovery demonstrated that multimessenger astrophysics
-          offers a powerful methodology of growing importance, as astronomers
-          combine electromagnetic radiation, gravitational wave radiation, and
-          particle astrophysics observations of cosmic events.
-        </p>
+        <!-- Text -->
+        <div class="col-xl-5 col-md-6 pt-lg-5 text-center text-md-start mb-4 mb-md-0">
+          <h5 class="display-6 pb-2 pb-md-3">Enabling Time Domain and Multimessenger Astrophysics</h5>
+          <p class="fs-lg d-md-none d-xl-block pb-2 pb-md-0 mb-4 mb-md-5">Time domain and multimessenger astrophysics are opening entirely new windows on the Universe. The <strong class="text-white">Astrophysics Cross-Observatory Science Support (ACROSS)</strong> center focuses on the coordination of NASA resources to help facilitate this new era of astronomy.</p>
+          
+          <!-- Buttons -->
+          <div class="d-flex justify-content-center justify-content-md-start pb-2 pt-lg-2 pt-xl-0">
+            <a href="#stats" class="btn btn-lg btn-primary shadow-primary me-3 me-sm-4">Get Started</a>
+            <a href="#" class="btn btn-lg btn-outline-secondary">Learn More</a>
+          </div>
 
-        <p>
-          Multimessenger.across.smce.nasa.gov aims to support this emerging
-          field by consolidating important information on resources available to
-          scientists around the world to enable future discoveries.
-        </p>
-      </div>
-      <div class="col-md-6">
-        <!-- Cursor position parallax -->
-        <div class="parallax" style="max-width: 648px;">
-          <div class="parallax-layer" data-depth="0.1">
-            <img
-              src="{base}/assets/img/landing/online-courses/hero/layer01.png"
-              alt="Layer"
-            />
+          <!-- Stats -->
+          <div id="stats" class="row row-cols-3 pt-4 pt-md-5 mt-2 mt-xl-4">
+            <div class="col">
+              <h3 class="h2 mb-2">2,480</h3>
+              <p class="mb-0">API Queries</p>
+            </div>
+            <div class="col">
+              <h3 class="h2 mb-2">760</h3>
+              <p class="mb-0">ToO Submissions</p>
+            </div>
+            <div class="col">
+              <h3 class="h2 mb-2">130</h3>
+              <p class="mb-0">Coordinated Obs</p>
+            </div>
           </div>
-          <div class="parallax-layer" data-depth="0.13">
-            <img
-              src="{base}/assets/img/landing/online-courses/hero/layer02.png"
-              alt="Layer"
-            />
-          </div>
-          <div class="parallax-layer zindex-5" data-depth="-0.12">
-            <img src="{base}/assets/img/custom/layer03.png" alt="Layer" />
-          </div>
-          <div class="parallax-layer zindex-3" data-depth="0.27">
-            <img src="{base}/assets/img/custom/layer04_02.png" alt="Layer" />
-          </div>
-          <div class="parallax-layer zindex-1" data-depth="-0.18">
-            <img src="{base}/assets/img/custom/layer05.png" alt="Layer" />
-          </div>
-          <div class="parallax-layer zindex-1" data-depth="0.1">
-            <img src="{base}/assets/img/custom/layer06.png" alt="Layer" />
-          </div>
+
         </div>
+
+        <!-- Cursor position parallax -->
+        <div class="col-xl-7 col-md-6 d-md-flex justify-content-end">
+
+          <div class="parallax" style="max-width: 648px;">
+            <div class="parallax-layer" data-depth="0.1">
+              <img src="assets/img/landing/online-courses/hero/layer01.png" alt="Layer">
+            </div>
+            <div class="parallax-layer" data-depth="0.13">
+              <img src="assets/img/landing/online-courses/hero/layer02.png" alt="Layer">
+            </div>
+            <div class="parallax-layer zindex-5" data-depth="-0.12">
+              <img src="assets/img/custom/layer03.png" alt="Layer">
+            </div>
+            <div class="parallax-layer zindex-3" data-depth="0.27">
+              <img src="assets/img/custom/layer04_02.png" alt="Layer">
+            </div>
+            <div class="parallax-layer zindex-1" data-depth="-0.18">
+              <img src="assets/img/custom/layer05.png" alt="Layer">
+            </div>
+            <div class="parallax-layer zindex-1" data-depth="0.1">
+              <img src="assets/img/custom/layer06.png" alt="Layer">
+            </div>
+          </div>
+
+        </div>
+
       </div>
     </div>
   </section>
 
+  <!-- Services -->
+  <section id="services" class="container">
+    <h2 class="h1 text-center pt-1 pt-xl-2 mb-4">ACROSS Support Overview</h2>
+    <p class="fs-lg text-muted text-center pb-4 mb-2 mb-lg-3">How does ACROSS coordinate NASA resources and support the TDAMM community?</p>
+    <div class="row mb-3">
+      <div class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4">
+          <div class="d-inline-block bg-secondary rounded-circle p-3 mb-4">
+            <img src="assets/img/landing/saas-1/features/chat.svg" width="32" alt="Icon">
+          </div>
+        <h3 class="h5 pb-1 mb-2"><a href="#">Mission APIs</a></h3>
+        <p class="fs-sm">APIs to obtain mission state and status, observing plans, observability constraints, and submit target of opportunity requests</p>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4">
+        <div class="d-inline-block bg-secondary rounded-circle p-3 mb-4">
+          <img src="assets/img/landing/saas-1/features/analytics.svg" width="32" alt="Icon">
+        </div>
+        <h3 class="h5 pb-1 mb-2"><a href="#">Situational Awarness</a></h3>
+        <p class="fs-sm">Mission dashboards that provide situational awareness and multi-observatory follow-up planning and feasibility.
+        </p>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4">
+        <div class="d-inline-block bg-secondary rounded-circle p-3 mb-4">
+          <img src="assets/img/landing/saas-1/features/bell.svg" width="32" alt="Icon">
+        </div>
+        <h3 class="h5 pb-1 mb-2"><a href="#">Community News</a></h3>
+        <p class="fs-sm">Mattis urna ultricies non amet, purus in auctor non. Odio vulputate ac nibh. Sapien fermentum, fringilla molestie lorem nec.</p>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4">
+        <div class="d-inline-block bg-secondary rounded-circle p-3 mb-4">
+          <img src="assets/img/landing/saas-1/features/tasks.svg" width="32" alt="Icon">
+        </div>
+        <h3 class="h5 pb-1 mb-2"><a href="#">Conferences</a></h3>
+        <p class="fs-sm">A elementum, imperdiet enim, pretium etiam facilisi in aenean quam mauris.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4">
+        <div class="d-inline-block bg-secondary rounded-circle p-3 mb-4">
+          <img src="assets/img/landing/saas-1/features/calendar.svg" width="32" alt="Icon">
+        </div>
+        <h3 class="h5 pb-1 mb-2"><a href="#">TDAMM Workshops</a></h3>
+        <p class="fs-sm">Mattis urna ultricies non amet, purus in auctor non. Odio vulputate ac nibh. Sapien fermentum, fringilla molestie lorem nec.</p>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4">
+        <div class="d-inline-block bg-secondary rounded-circle p-3 mb-4">
+          <img src="assets/img/landing/saas-1/features/add-group.svg" width="32" alt="Icon">
+        </div>
+        <h3 class="h5 pb-1 mb-2"><a href="#">TDAMM Toolkits</a></h3>
+        <p class="fs-sm">Mattis urna ultricies non amet, purus in auctor non. Odio vulputate ac nibh. Sapien fermentum, fringilla molestie lorem nec.</p>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4">
+        <div class="d-inline-block bg-secondary rounded-circle p-3 mb-4">
+          <img src="assets/img/landing/saas-1/features/headset.svg" width="32" alt="Icon">
+        </div>
+        <h3 class="h5 pb-1 mb-2"><a href="#">TDAMM Help Desk</a></h3>
+        <p class="fs-sm">SMattis urna ultricies non amet, purus in auctor non. Odio vulputate ac nibh. Sapien fermentum, fringilla molestie lorem nec.</p>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4">
+        <div class="d-inline-block bg-secondary rounded-circle p-3 mb-4">
+          <img src="assets/img/landing/saas-1/features/shield.svg" width="32" alt="Icon">
+        </div>
+        <h3 class="h5 pb-1 mb-2"><a href="#">Community Grant Program</a></h3>
+        <p class="fs-sm">Mattis urna ultricies non amet, purus in auctor non. Odio vulputate ac nibh. Sapien fermentum, fringilla molestie lorem nec.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard Table-->
+  <section class="container position-relativ mt-5 mb-5 pb-5">
+    <div class="position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="container position-relative zindex-3 py-lg-4 pt-md-2 py-xl-5 mb-lg-4">
+
+      <!-- Title -->
+      <div class="row justify-content-center text-center pb-4 mb-2">
+        <div class="col-xl-6 pt-2">
+          <h2 class="h1 mb-4">Mission Status Dashboard</h2>
+          <p class="fs-lg mb-0">ACROSS provides comprehensive API access to programmatically obtain the state and status of NASA's astrophysics fleet.</p>
+        </div>
+      </div>
+
+
+      <!-- Dark table with striped rows -->
+      <div class="table-responsive d-flex justify-content-center">
+        <table class="table table-striped text-center align-middle">
+          <thead>
+            <tr>
+              <th>Mission</th>
+              <th>Status</th>
+              <th>Observation</th>
+              <th>Target</th>
+              <th>R.A.</th>
+              <th>Dec.</th>
+              <th>Resources</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">HST</th>
+              <td><div class="text-success">Active</div></td>
+              <td><div>Scheduled</div></td>
+              <td><div>Crab</div></td>
+              <td><div>00:00:00</div></td>
+              <td><div>00:00:00</div></td>
+              <td>  
+                <div class="d-flex justify-content-center">
+                  <button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button>
+                  <button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto ms-4">Request ToO</button>
+                  <button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto ms-4">View API</button>                      
+                </div>
+              </td>
+            </tr>  
+            <tr>
+              <th scope="row">Swift</th>
+              <td><div class="text-success">Active</div></td>
+              <td><div>ToO</div></td>
+              <td><div>Crab</div></td>
+              <td><div>00:00:00</div></td>
+              <td><div>00:00:00</div></td>
+              <td>  
+                <div class="d-flex justify-content-center">
+                  <button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button>
+                  <button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto ms-4">Request ToO</button>
+                  <button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto ms-4">View API</button>                     
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Fermi</th>
+              <td><div class="text-success">Active</div></td>
+              <td><div>Survey</div></td>
+              <td><div>-</div></td>
+              <td><div>00:00:00</div></td>
+              <td><div>00:00:00</div></td>
+              <td>  
+                <div class="d-flex justify-content-center">
+                  <button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button>
+                  <button type="button" class="btn btn-sm btn-outline-success disabled fs-sm w-100 w-lg-auto ms-4">Request ToO</button>
+                  <button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto ms-4">View API</button>                    
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Chandra</th>
+              <td><div class="text-success">Active</div></td>
+              <td><div>Scheduled</div></td>
+              <td><div>Crab</div></td>
+              <td><div>00:00:00</div></td>
+              <td><div>00:00:00</div></td>
+              <td>  
+                <div class="d-flex justify-content-center">
+                  <button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button>
+                  <button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto ms-4">Request ToO</button>
+                  <button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto ms-4">View API</button>                   
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">NICER</th>
+              <td><div class="text-success">Active</div></td>
+              <td><div>Scheduled</div></td>
+              <td><div>Crab</div></td>
+              <td><div>00:00:00</div></td>
+              <td><div>00:00:00</div></td>
+              <td>  
+                <div class="d-flex justify-content-center">
+                  <button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button>
+                  <button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto ms-4">Request ToO</button>
+                  <button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto ms-4">View API</button>                   
+                </div>
+              </td>
+            </tr> 
+            <tr>
+              <th scope="row">NuStar</th>
+              <td><div class="text-success">Active</div></td>
+              <td><div>Scheduled</div></td>
+              <td><div>Crab</div></td>
+              <td><div>00:00:00</div></td>
+              <td><div>00:00:00</div></td>
+              <td>  
+                <div class="justify-content-center">
+                  <button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button>
+                  <button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto ms-4">Request ToO</button>
+                  <button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto ms-4">View API</button>                    
+                </div>
+              </td>
+            </tr>                                                                                                  
+          </tbody>
+        </table>
+      </div>
+
+
+    </div>
+  </section>
+
   <!-- Quotes -->
-  <section class="container pt-md-2 pb-5">
+  <section class="container pt-5 pb-5 mt-5">
     <div class="row">
       <div class="col-md-5">
         <div class="card h-100 border-0 overflow-hidden px-md-4">

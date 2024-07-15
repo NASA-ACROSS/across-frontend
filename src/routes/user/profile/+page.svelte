@@ -7,12 +7,20 @@
     import type { PageData } from './$types';
     import { browser } from '$app/environment';
     import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
+    import { applyAction, enhance } from '$app/forms';
+    import { goto, invalidateAll } from '$app/navigation';
+    import { afterUpdate } from 'svelte';
     export let data: PageData;
     let roles = data.roles;
 
-    const originalUserData = structuredClone(data.user);
+    // user selected role
+    let roleSelection: string;
+
+    let originalUserData = structuredClone(data.user);
     let userData = data.user;
     $: isUserDataUnchanged = _.isEqual(originalUserData, userData);
+    $: form?.successUpdateUserInformation,
+        (originalUserData = structuredClone(data.user));
 
     // safari browser should force a reload on cached navigation using back button
     if (browser) {
@@ -22,6 +30,61 @@
             }
         };
     }
+
+    /**
+     * sveltekit progressive form enhancement
+     * see docs for more information
+     * https://kit.svelte.dev/docs/form-actions#progressive-enhancement-customising-use-enhance
+     *
+     * `formElement` is this `<form>` element.
+     * `formData` is its `FormData` object that's about to be submitted.
+     * `action` is the URL to which the form is posted.
+     * `cancel()` will prevent the submission.
+     * `submitter` is the `HTMLElement` that caused the form to be submitted.
+     */
+    const enhancedForm = ({
+        formElement,
+        formData,
+        action,
+        cancel,
+        submitter,
+    }) => {
+        if (action.href.includes('updateUserInformation')) {
+            // set form data to send, specific to this table
+            if (isUserDataUnchanged) {
+                cancel();
+            }
+            formData.set('firstname', userData.firstname);
+            formData.set('lastname', userData.lastname);
+            formData.set('username', userData.username);
+            formData.set('email', userData.email);
+        } else if (action.href.includes('requestRole')) {
+            formData.set('role', roleSelection);
+        } else if (action.href.includes('cancelRequestedRole')) {
+            formData.set('role', roleSelection);
+        }
+
+        /**
+         * `result` is an `ActionResult` object
+         * `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
+         */
+        return async ({ result, update }) => {
+            if (result.type === 'success') {
+                // rerun all `load` functions, following the successful update
+                await invalidateAll();
+                await applyAction(result);
+            } else if (result.type === 'redirect') {
+                goto(result.location, { invalidateAll: true, noScroll: true });
+            } else {
+                await applyAction(result);
+            }
+        };
+    };
+
+    afterUpdate(() => {
+        roles = data.roles;
+        userData = data.user;
+    });
 </script>
 
 <section class="pt-5 pb-2 bg-secondary">
@@ -33,7 +96,11 @@
             </form>
         </div>
         <h3>User Information</h3>
-        <form method="post" action="?/updateUserInformation">
+        <form
+            method="post"
+            action="?/updateUserInformation"
+            use:enhance={enhancedForm}
+        >
             <label for="firstname">Name</label>
             <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
                 <div class="input-group me-sm-3 mb-sm-0 mb-3">
@@ -103,6 +170,7 @@
                 </div>
             </div>
             <button
+                type="submit"
                 class="btn btn-lg btn-primary"
                 disabled={isUserDataUnchanged}>Update</button
             >
@@ -191,6 +259,7 @@
                                 method="post"
                                 id={role.name + 'form'}
                                 action="?/cancelRequestedRole"
+                                use:enhance={enhancedForm}
                             >
                                 <li class="card my-1">
                                     <div class="card-body">
@@ -204,16 +273,12 @@
                                         <p class="card-text fs-sm">
                                             status reason: {role.status_reason}
                                         </p>
-                                        <input
-                                            class="d-none"
-                                            readonly
-                                            name="role"
-                                            value={JSON.stringify(role)}
-                                        />
                                         <button
                                             type="submit"
-                                            formaction="?/cancelRequestedRole"
                                             class="btn btn-sm btn-danger"
+                                            on:click={() =>
+                                                (roleSelection =
+                                                    JSON.stringify(role))}
                                             >Cancel Request</button
                                         >
                                     </div>
@@ -237,6 +302,7 @@
                             method="post"
                             id={role + 'form'}
                             action="?/requestRole"
+                            use:enhance={enhancedForm}
                         >
                             <div class="input-group my-1">
                                 <button
@@ -261,18 +327,17 @@
                                             class="btn btn-primary"
                                             type="submit"
                                             formaction="?/requestRole"
+                                            on:click={() =>
+                                                (roleSelection = role)}
                                             >Submit</button
                                         >
                                     </div>
                                 </div>
-                                <input
-                                    readonly={true}
+                                <div
                                     class="form-control list-group-item rounded-end"
-                                    name="role"
-                                    type="text"
-                                    placeholder=""
-                                    value={role}
-                                />
+                                >
+                                    {role}
+                                </div>
                             </div>
                         </form>
                     {/each}

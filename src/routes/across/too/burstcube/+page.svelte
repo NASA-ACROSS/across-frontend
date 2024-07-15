@@ -7,6 +7,7 @@
     import BurstcubeTooTableCellComponentRender from './BurstcubeTooTableCellComponentRender.svelte';
     import { afterUpdate, onMount } from 'svelte';
     import { base } from '$app/paths';
+    import { page as sveltePage } from '$app/stores';
     import { goto } from '$app/navigation';
 
     export let data: PageData;
@@ -42,7 +43,7 @@
 
     const refresh = () => {
         return goto(
-            `${base}/across/too/burstcube?page=${page}&limit=${limit}`,
+            `${base}${$sveltePage.url.pathname}?page=${page}&limit=${limit}`,
             { invalidateAll: true, noScroll: true }
         );
     };

@@ -180,7 +180,6 @@
 
   <!-- Dashboard Table-->
   <section class="container position-relativ mt-5 mb-5 pb-5">
-    <div class="position-absolute top-0 start-0 w-100 h-100"></div>
     <div class="container position-relative zindex-3 py-lg-4 pt-md-2 py-xl-5 mb-lg-4">
 
       <!-- Title -->

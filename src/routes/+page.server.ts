@@ -7,9 +7,9 @@ const NUM_POSTS_DISPLAY = 6;
 const USAGE_STATS_CACHE = {
     lastFetchedMilliseconds: 0,
     stats: {
-        apiCount: 404,
-        tooCount: 313,
-        coordinatedObservationsCount: 0,
+        api_count: 0,
+        too_count: 0,
+        coordinated_observations_count: 0,
     },
 };
 const FIFTEEN_MINUTES_AS_MILISECONDS = 900000;
@@ -30,6 +30,7 @@ export async function load() {
     const dateDiff =
         nowMilliseconds - USAGE_STATS_CACHE.lastFetchedMilliseconds;
 
+    // reducde thrashing the api server by conditionally fetching statistics on a 15 minute interval
     if (dateDiff > FIFTEEN_MINUTES_AS_MILISECONDS) {
         try {
             const res = await fetch(
@@ -43,12 +44,10 @@ export async function load() {
             USAGE_STATS_CACHE.stats = responseJson;
             USAGE_STATS_CACHE.lastFetchedMilliseconds = nowMilliseconds;
         } catch (e) {
-            console.error('Error fetching data from API', e);
-            responseJson = {
-                apiCount: 404,
-                tooCount: 313,
-                coordinatedObservationsCount: 0,
-            };
+            console.error(
+                'Error fetching statistics data from API, not changing values from previous state',
+                e
+            );
         }
     }
 

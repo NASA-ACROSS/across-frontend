@@ -6,9 +6,9 @@
 
     export let data: PageData;
 
-    let tooCount = data.tooCount;
-    let apiCount = data.apiCount;
-    let coordinatedObservationsCount = data.coordinatedObservationsCount;
+    let tooCount = data.too_count;
+    let apiCount = data.api_count;
+    let coordinatedObservationsCount = data.coordinated_observations_count;
 
     // extracted to make old site work with svelte
     // library expects a string json object and runs JSON.parse on it
@@ -45,24 +45,6 @@
         },
     });
 </script>
-
-<style>
-    .green-dot {
-        width: 8px;
-        height: 8px;
-        background-color: #00FF00; /* Green color */
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 8px; /* Space between the dot and the text */
-        margin-bottom: 2px; /* Space between the dot and the text */
-    }
-    .status-text {
-        display: inline-block;
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        color: white;
-    }
-</style>
 
 <!-- Page wrapper for sticky footer -->
 <!-- Wraps everything except footer to push footer to the bottom of the page if there is little content -->
@@ -355,8 +337,9 @@
 
     <!-- Dashboard Table-->
     <section class="container position-relativ mt-5 mb-5 pb-5">
-        <div class="container position-relative zindex-3 py-lg-4 pt-md-2 py-xl-5 mb-lg-4">
-
+        <div
+            class="container position-relative zindex-3 py-lg-4 pt-md-2 py-xl-5 mb-lg-4"
+        >
             <!-- Title -->
             <div class="row justify-content-center text-center pb-4 mb-2">
                 <div class="col-xl-6 pt-2">
@@ -372,79 +355,222 @@
             <!-- Dark table with striped rows -->
             <div class="table-responsive mx-auto w-75">
                 <table class="table table-striped text-center align-middle">
-                <thead>
-                    <tr>
-                    <th scope="col">Mission</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Observing Schedule</th>
-                    <th scope="col">Target Of Opportunity</th>
-                    <th scope="col">API</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">JWST</th>
-                        <td><div class="text-success">Active</div></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto">Request ToO</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled">View API</button></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">HST</th>
-                        <td><div class="text-success">Active</div></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto">Request ToO</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled">View API</button></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Swift</th>
-                        <td><div class="text-success">Active</div></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto">Request ToO</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled">View API</button></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Fermi</th>
-                        <td><div class="text-success">Active</div></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto disabled">Request ToO</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled">View API</button></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Chandra</th>
-                        <td><div class="text-success">Active</div></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto">Request ToO</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled">View API</button></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">NICER</th>
-                        <td><div class="text-success">Active</div></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto">Request ToO</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled">View API</button></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">NuStar</th>
-                        <td><div class="text-success">Active</div></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto">View Schedule</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto">Request ToO</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled">View API</button></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">BurstCube</th>
-                        <td><div class="text-warning">Comissioning</div></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto disabled">View Schedule</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto disabled">Request ToO</button></td>
-                        <td><button type="button" class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto">View API</button></td>                    
-                    </tr>                
-                </tbody>
+                    <thead>
+                        <tr>
+                            <th scope="col">Mission</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Observing Schedule</th>
+                            <th scope="col">Target Of Opportunity</th>
+                            <th scope="col">API</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">JWST</th>
+                            <td><div class="text-success">Active</div></td>
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
+                                    >View Schedule</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
+                                    >Request ToO</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
+                                    >View API</button
+                                ></td
+                            >
+                        </tr>
+                        <tr>
+                            <th scope="row">HST</th>
+                            <td><div class="text-success">Active</div></td>
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
+                                    >View Schedule</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
+                                    >Request ToO</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
+                                    >View API</button
+                                ></td
+                            >
+                        </tr>
+                        <tr>
+                            <th scope="row">Swift</th>
+                            <td><div class="text-success">Active</div></td>
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
+                                    >View Schedule</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
+                                    >Request ToO</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
+                                    >View API</button
+                                ></td
+                            >
+                        </tr>
+                        <tr>
+                            <th scope="row">Fermi</th>
+                            <td><div class="text-success">Active</div></td>
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
+                                    >View Schedule</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto disabled"
+                                    >Request ToO</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
+                                    >View API</button
+                                ></td
+                            >
+                        </tr>
+                        <tr>
+                            <th scope="row">Chandra</th>
+                            <td><div class="text-success">Active</div></td>
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
+                                    >View Schedule</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
+                                    >Request ToO</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
+                                    >View API</button
+                                ></td
+                            >
+                        </tr>
+                        <tr>
+                            <th scope="row">NICER</th>
+                            <td><div class="text-success">Active</div></td>
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
+                                    >View Schedule</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
+                                    >Request ToO</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
+                                    >View API</button
+                                ></td
+                            >
+                        </tr>
+                        <tr>
+                            <th scope="row">NuStar</th>
+                            <td><div class="text-success">Active</div></td>
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
+                                    >View Schedule</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
+                                    >Request ToO</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
+                                    >View API</button
+                                ></td
+                            >
+                        </tr>
+                        <tr>
+                            <th scope="row">BurstCube</th>
+                            <td><div class="text-warning">Comissioning</div></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto disabled"
+                                    >View Schedule</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto disabled"
+                                    >Request ToO</button
+                                ></td
+                            >
+                            <td
+                                ><button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto"
+                                    >View API</button
+                                ></td
+                            >
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
-
     </section>
-
 
     <!-- Quotes -->
     <section class="container pt-0 pb-5 mt-0 mb-5">
@@ -729,3 +855,21 @@
         </div>
     </section>
 </main>
+
+<style>
+    .green-dot {
+        width: 8px;
+        height: 8px;
+        background-color: #00ff00; /* Green color */
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px; /* Space between the dot and the text */
+        margin-bottom: 2px; /* Space between the dot and the text */
+    }
+    .status-text {
+        display: inline-block;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        color: white;
+    }
+</style>

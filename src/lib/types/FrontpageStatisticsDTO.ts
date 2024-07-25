@@ -1,5 +1,5 @@
 export type FrontpageStatisticsDTO = {
-    tooCount: number;
-    apiCount: number;
-    coordinatedObservationsCount: number;
+    too_count: number;
+    api_count: number;
+    coordinated_observations_count: number;
 };

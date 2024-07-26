@@ -110,16 +110,16 @@
                               </ul>                               -->
                             </div>
                             <div class="mega-dropdown-column" style="width: 235px;">
-                              <h6 class="px-3 mb-2">ACROSS API</h6>
-                              <ul class="list-unstyled mb-3">
-                                <li><a href="portfolio-grid.html" class="dropdown-item py-1">Documentation</a></li>
-                                <li><a href="portfolio-list.html" class="dropdown-item py-1">FAQ</a></li>
-                              </ul>
                               <h6 class="px-3 mb-2">Observation Requests</h6>
                               <ul class="list-unstyled mb-3">
                                 <li><a href="blog-list-with-sidebar.html" class="dropdown-item py-1">ToO Capabilities</a></li>
                                 <li><a href="blog-list-with-sidebar.html" class="dropdown-item py-1">ToO Submissions</a></li>
                               </ul>
+                              <h6 class="px-3 mb-2">ACROSS API</h6>
+                              <ul class="list-unstyled mb-3">
+                                <li><a href="portfolio-grid.html" class="dropdown-item py-1">Documentation</a></li>
+                                <li><a href="portfolio-list.html" class="dropdown-item py-1">FAQ</a></li>
+                              </ul>                              
                             </div>
                           </div>
                         </div>
@@ -137,7 +137,7 @@
                                 <h6 class="px-3 mb-2">Community Tools</h6>
                                 <ul class="list-unstyled mb-3">
                                 <li><a href="tools" class="dropdown-item py-1">Rapid Alerts</a></li>
-                                <li><a href="tools" class="dropdown-item py-1">Observation Planning Tools</a></li>
+                                <li><a href="tools" class="dropdown-item py-1">Observation Planning</a></li>
                                 <li><a href="tools" class="dropdown-item py-1">Data Archives</a></li>
                                 <li><a href="tools" class="dropdown-item py-1">Data Analysis Toolkits</a></li>
                                 </ul>
@@ -155,17 +155,6 @@
                                     <li><a href="services-v1.html" class="dropdown-item py-1">White Papers</a></li>
                                     <li><a href="services-v2.html" class="dropdown-item py-1">SIG Reports</a></li>
                                 </ul>                                  
-                                <!-- <h6 class="px-3 mb-2">Contacts</h6>
-                                <ul class="list-unstyled mb-3">
-                                    <li><a href="contacts-v1.html" class="dropdown-item py-1">Contacts v.1</a></li>
-                                    <li><a href="contacts-v2.html" class="dropdown-item py-1">Contacts v.2</a></li>
-                                    <li><a href="contacts-v3.html" class="dropdown-item py-1">Contacts v.3</a></li>
-                                </ul>
-                                <h6 class="px-3 mb-2">Specialty</h6>
-                                <ul class="list-unstyled">
-                                    <li><a href="404-v1.html" class="dropdown-item py-1">404 Error v.1</a></li>
-                                    <li><a href="404-v2.html" class="dropdown-item py-1">404 Error v.2</a></li>
-                                </ul> -->
                             </div>
                           </div>
                         </div>

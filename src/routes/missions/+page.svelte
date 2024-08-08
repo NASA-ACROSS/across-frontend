@@ -1,9 +1,17 @@
 <script lang="ts">
     import { base } from '$app/paths';
     import HorizontalCard from '$lib/components/HorizontalCard.svelte';
+    import MissionTimeline from '$lib/components/MissionTimeline.svelte';
+    import { onMount } from 'svelte';
 
     import type { PageData } from './$types';
     export let data: PageData;
+
+    let displayMissionTimeline = false;
+
+    onMount(() => {
+        displayMissionTimeline = true;
+    });
 </script>
 
 <!-- Page wrapper for sticky footer -->
@@ -99,7 +107,10 @@
                     </figcaption>
                 </figure>
 
-                <div id="timeline"></div>
+                <!-- <p class="mb-4 pb-2">Pellentesque laoreet neque ut dictumst fames scelerisque. In malesuada orci dapibus risus tellus, amet, ultrices sagittis a. Turpis vel tincidunt tristique maecenas cursus tortor, suscipit ut. Ullamcorper at faucibus dolor tortor suspendisse suscipit senectus convallis aliquam. At orci amet facilisi nunc mi vitae iaculis diam a. Mauris venenatis sed purus cursus torte.</p>
+            <h2 class="h4">Paragraph Title 2</h2>
+            <p class="mb-4 pb-2">Praesent sed pulvinar posuere nisl tincidunt. Iaculis sit quam magna congue. Amet vel non aliquet habitasse. Egestas erat odio et, eleifend turpis etiam blandit interdum. Nec augue ut senectus quisque diam quis. At augue accumsan, in bibendum. A eget et, eget quisque egestas netus vel. Velit, aliquet turpis convallis ullamcorper. Scelerisque sagittis condimentum pretium in vitae etiam lacinia quis amet. Porttitor consequat, sollicitudin vivamus pharetra nibh faucibus neque, viverra. Praesent amet sed lacus vitae.</p> -->
+
                 <h2 class="h3 mt-5">Multimessenger Mission Timeline</h2>
                 <p class="mb-4 pb-2">
                     NASA missions played a critical role in the discovery and
@@ -116,10 +127,9 @@
                     missions currently being proposed.
                 </p>
 
-                <!-- Image -->
-                <div class="gallery mb-4 pb-2">
-                    <img src="{base}/assets/img/custom/mission-timeline.png" />
-                </div>
+                {#if displayMissionTimeline}
+                    <MissionTimeline {document} />
+                {/if}
 
                 <div id="capabilities"></div>
                 <h2 class="h3 pt-5 mt-5">Target of Opportunity Capabilities</h2>

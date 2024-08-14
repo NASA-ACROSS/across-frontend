@@ -57,10 +57,10 @@
         cellIndex,
         event,
     }: CellClickCallbackInput) => {
-        dataRow = tableData[rowIndex];
+        dataRow = item;
         // key is the column name
         if (key === 'trigger_info') {
-            triggerInfoData = tableData[rowIndex].trigger_info;
+            triggerInfoData = item.trigger_info;
             showModal = true;
         }
     };
@@ -76,8 +76,8 @@
         },
         features: {
             sortable: {
-                key: 'create_on',
-                direction: false, // descending
+                key: 'trigger_time',
+                direction: true, // desc
             },
         },
         callbacks: {

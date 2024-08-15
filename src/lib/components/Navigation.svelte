@@ -97,29 +97,32 @@
                                 <li><a href="about-v1.html" class="dropdown-item py-1">Mission Status Dashboard</a></li>
                                 <li><a href="about-v2.html" class="dropdown-item py-1">Mission Skymap</a></li>
                                 <li><a href="about-v3.html" class="dropdown-item py-1">Orbit Plotter</a></li>
-                              </ul>
+                              </ul> 
                               <h6 class="px-3 mb-2">Observation Planning</h6>
                               <ul class="list-unstyled mb-3">
-                                <li><a href="blog-list-with-sidebar.html" class="dropdown-item py-1">Visibility Calculator</a></li>
-                                <li><a href="blog-list-with-sidebar.html" class="dropdown-item py-1">Sensitivity Calculator</a></li>
-                              </ul>                              
-                              <!-- <h6 class="px-3 mb-2">ACROSS API</h6>
-                              <ul class="list-unstyled mb-3">
-                                <li><a href="blog-list-with-sidebar.html" class="dropdown-item py-1">Documentation</a></li>
-                                <li><a href="blog-grid-with-sidebar.html" class="dropdown-item py-1">FAQ</a></li>
-                              </ul>                               -->
-                            </div>
-                            <div class="mega-dropdown-column" style="width: 235px;">
+                                  <li><a href="blog-list-with-sidebar.html" class="dropdown-item py-1">Visibility Calculator</a></li>
+                                  <li><a href="blog-list-with-sidebar.html" class="dropdown-item py-1">Sensitivity Calculator</a></li>
+                              </ul>                                  
                               <h6 class="px-3 mb-2">Observation Requests</h6>
                               <ul class="list-unstyled mb-3">
-                                <li><a href="blog-list-with-sidebar.html" class="dropdown-item py-1">ToO Capabilities</a></li>
-                                <li><a href="blog-list-with-sidebar.html" class="dropdown-item py-1">ToO Submissions</a></li>
-                              </ul>
-                              <h6 class="px-3 mb-2">ACROSS API</h6>
-                              <ul class="list-unstyled mb-3">
-                                <li><a href="portfolio-grid.html" class="dropdown-item py-1">Documentation</a></li>
-                                <li><a href="portfolio-list.html" class="dropdown-item py-1">FAQ</a></li>
-                              </ul>                              
+                                  <li><a href="blog-list-with-sidebar.html" class="dropdown-item py-1">ToO Capabilities</a></li>
+                                  <li><a href="blog-list-with-sidebar.html" class="dropdown-item py-1">ToO Submissions</a></li>
+                              </ul>                       
+                            </div>
+                            <div class="mega-dropdown-column" style="width: 235px;">
+                                <h6 class="px-3 mb-2">ACROSS API</h6>
+                                <ul class="list-unstyled mb-3">
+                                    <li><a href="portfolio-grid.html" class="dropdown-item py-1">Documentation</a></li>
+                                    <li><a href="portfolio-list.html" class="dropdown-item py-1">FAQ</a></li>
+                                </ul>                                   
+                                <h6 class="px-3 mb-2">Community Tools</h6>
+                                <ul class="list-unstyled mb-3">
+                                    <li><a href="tools" class="dropdown-item py-1">Rapid Alerts</a></li>
+                                    <li><a href="tools" class="dropdown-item py-1">Observation Planning</a></li>
+                                    <li><a href="tools" class="dropdown-item py-1">Data Archives</a></li>
+                                    <li><a href="tools" class="dropdown-item py-1">Data Analysis Toolkits</a></li>
+                                </ul> 
+                            
                             </div>
                           </div>
                         </div>
@@ -128,21 +131,19 @@
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Resources</a>
                         <div class="dropdown-menu">
                           <div class="d-lg-flex pt-lg-3">
-                            <div class="mega-dropdown-column" style="width: 200px;">
+                            <div class="mega-dropdown-column" style="width: 235px;">
                                 <h6 class="px-3 mb-2"><a href="#">ACROSS Support</a></h6>
                                 <ul class="list-unstyled mb-3">
                                 <li><a href="services-v1.html" class="dropdown-item py-1">TDAMM Help Desk</a></li>
                                 <li><a href="#" class="dropdown-item py-1">Analysis Tutorials</a></li>
-                                </ul>                                  
-                                <h6 class="px-3 mb-2">Community Tools</h6>
+                                </ul>  
+                                <h6 class="px-3 mb-2">Papers and Studies</h6>
                                 <ul class="list-unstyled mb-3">
-                                <li><a href="tools" class="dropdown-item py-1">Rapid Alerts</a></li>
-                                <li><a href="tools" class="dropdown-item py-1">Observation Planning</a></li>
-                                <li><a href="tools" class="dropdown-item py-1">Data Archives</a></li>
-                                <li><a href="tools" class="dropdown-item py-1">Data Analysis Toolkits</a></li>
-                                </ul>
+                                    <li><a href="services-v1.html" class="dropdown-item py-1">White Papers</a></li>
+                                    <li><a href="services-v2.html" class="dropdown-item py-1">SIG Reports</a></li>
+                                </ul>                                                                  
                             </div>
-                            <div class="mega-dropdown-column" style="width: 225px;">
+                            <!-- <div class="mega-dropdown-column" style="width: 225px;">
                                 <h6 class="px-3 mb-2">Conferences</h6>
                                 <ul class="list-unstyled mb-3">
                                     <li><a href="{base}/conferences#upcoming" class="dropdown-item">ACROSS Workshops</a></li>
@@ -150,25 +151,11 @@
                                     <li><a href="{base}/conferences#past" class="dropdown-item">Past Meetings</a></li>
                                     <li><a href="{base}/conferences#resources" class="dropdown-item">Presentation Resources</a></li>
                                 </ul>
-                                <h6 class="px-3 mb-2">Papers and Studies</h6>
-                                <ul class="list-unstyled mb-3">
-                                    <li><a href="services-v1.html" class="dropdown-item py-1">White Papers</a></li>
-                                    <li><a href="services-v2.html" class="dropdown-item py-1">SIG Reports</a></li>
-                                </ul>                                  
-                            </div>
+                            </div> -->
                           </div>
                         </div>
                       </li>           
                       
-                      <!-- <li class="nav-item dropdown">
-                        <a href="{base}/conferences" class="nav-link dropdown-toggle" aria-current="page">Conferences</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{base}/conferences#upcoming" class="dropdown-item">ACROSS Workshops</a></li>
-                            <li><a href="{base}/conferences#upcoming" class="dropdown-item">Upcoming Meetings</a></li>
-                            <li><a href="{base}/conferences#past" class="dropdown-item">Past Meetings</a></li>
-                            <li><a href="{base}/conferences#resources" class="dropdown-item">Presentation Resources</a></li>
-                        </ul>
-                    </li> -->
 
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Proposals</a>
@@ -194,15 +181,29 @@
                         </div>
                       </li> 
 
-
-
-                    <li class="nav-item">
-                        <a
-                            data-sveltekit-reload
-                            href="{base}/about"
-                            class="nav-link">About</a
-                        >
+                      <li class="nav-item dropdown">
+                        <a href="{base}/conferences" class="nav-link dropdown-toggle" aria-current="page">Events</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{base}/conferences#upcoming" class="dropdown-item">ACROSS Workshops</a></li>
+                            <li><a href="{base}/conferences#upcoming" class="dropdown-item">Upcoming Meetings</a></li>
+                            <li><a href="{base}/conferences#past" class="dropdown-item">Past Meetings</a></li>
+                            <li><a href="{base}/conferences#resources" class="dropdown-item">Presentation Resources</a></li>
+                        </ul>
                     </li>
+
+                    <li class="nav-item dropdown">
+                        <a href="{base}/conferences" class="nav-link dropdown-toggle" aria-current="page">About</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{base}/conferences#upcoming" class="dropdown-item">Team</a></li>
+                            <li><a href="{base}/conferences#upcoming" class="dropdown-item">ACROSS Services</a></li>
+                            <li><a href="{base}/conferences#past" class="dropdown-item">ACROSS Presentations</a></li>
+                            <li><a href="{base}/conferences#resources" class="dropdown-item">Code of Conduct</a></li>
+                            <li><a href="{base}/conferences#resources" class="dropdown-item">Glossery & Acronyms</a></li>
+                            <li><a href="{base}/conferences#resources" class="dropdown-item">Citing ACROSS</a></li>
+                        </ul>
+                    </li>
+
+
                     <li class="nav-item dropdown">
                         <a
                             data-sveltekit-reload

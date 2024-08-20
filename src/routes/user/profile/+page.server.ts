@@ -23,6 +23,8 @@ export async function load({ locals }) {
 
     const user: User = await getUserInfo(userCookie);
 
+    console.log(user);
+
     // Respond with user cookie data
     return { user };
 }

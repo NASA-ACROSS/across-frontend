@@ -11,6 +11,7 @@
     import { goto, invalidateAll } from '$app/navigation';
     import { afterUpdate } from 'svelte';
     import type { SubmitFunction } from '@sveltejs/kit';
+    import UserGroups from '$lib/components/UserGroups.svelte';
     export let data: PageData;
 
     // user selected role
@@ -30,6 +31,8 @@
             }
         };
     }
+
+    let userGroups = data.user.user_groups;
 
     /**
      * sveltekit progressive form enhancement
@@ -224,6 +227,8 @@
         </div>
     </div>
 </section>
+
+<UserGroups {userGroups} />
 
 <style>
     input:disabled.default-cursor.validation-border-color {

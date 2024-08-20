@@ -1,6 +1,7 @@
-type UserGroup = {
+export type UserGroup = {
     id: number;
     name: string;
+    short_name: string;
     is_admin: boolean;
     roles: UserGroupRoles[];
 };

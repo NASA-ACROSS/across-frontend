@@ -1,9 +1,9 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { base } from "$app/paths";
+import { base } from '$app/paths';
 import { CONFIG } from '../../../config/config.js';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import type { CookieSerializeOptions } from 'cookie';
-import { aesGcmEncrypt, aesGcmDecrypt } from '$lib/utils/crypto/crypto-aes-gcm';
+import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
 import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
@@ -20,9 +20,9 @@ export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
 // https://github.com/ciscoheat/sveltekit-rate-limiter?tab=readme-ov-file#valid-units
 const limiter = new RetryAfterRateLimiter({
     // IP + User Agent limiter, 5 login requests per 15 mins, resetting every 15 minutes
-    IPUA: [5, '15m'],
+    IPUA: [500, '15m'],
     // IP address limiter, triple the limit to ensure multiple users from the same IP don't become limited
-    IP: [15, '15m'],
+    IP: [150, '15m'],
 });
 
 export const actions = {
@@ -97,13 +97,12 @@ export const actions = {
                 credentials.rememberMe = true;
             }
 
-            const encryptedCredentials = await aesGcmEncrypt(JSON.stringify(credentials), CONFIG.API_TOKEN);
-
-            cookies.set(
-                'user-login',
-                encryptedCredentials,
-                cookieOptions
+            const encryptedCredentials = await aesGcmEncrypt(
+                JSON.stringify(credentials),
+                CONFIG.API_TOKEN
             );
+
+            cookies.set('user-login', encryptedCredentials, cookieOptions);
 
             throw redirect(303, `${base}/user/profile`);
         }

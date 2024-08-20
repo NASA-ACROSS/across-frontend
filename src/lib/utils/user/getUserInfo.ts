@@ -1,26 +1,24 @@
 import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie';
 import { CONFIG } from '../../../config/config';
-import type { UserRequestRoles } from '$lib/types/UserRequestRoles';
+import type { User } from '$lib/types/User';
 
-export const getUserRoles = async (user: UserCredentialsCookie) => {
+export const getUserInfo = async (userCookie: UserCredentialsCookie) => {
     const options = {
         method: 'GET',
         headers: {
-            Authorization: `Bearer ${user.api_token}`,
+            Authorization: `Bearer ${userCookie.api_token}`,
         },
     };
-
-    const queryString = '?' + new URLSearchParams({ id: user.id.toString() });
 
     let response;
     try {
         response = await fetch(
-            `${CONFIG.API_URL}/api/v1/across/user_request_roles${queryString}`,
+            `${CONFIG.API_URL}/api/v1/across/user/${userCookie.id}`,
             options
         );
     } catch (e: any) {
         console.error(
-            `ERROR: catch getting user roles [${user.email}] at [${Date.now()}]`,
+            `ERROR: catch getting user roles [${userCookie.email}] at [${Date.now()}]`,
             JSON.stringify(e)
         );
         throw new Error('Unexpeted Error while fetching user roles');
@@ -30,11 +28,12 @@ export const getUserRoles = async (user: UserCredentialsCookie) => {
     const errorCodes = [500, 404];
     if (errorCodes.includes(response.status)) {
         console.error(
-            `ERROR: getting user roles [${user.email}] at [${Date.now()}] with status code [${response.status}]`
+            `ERROR: getting user roles [${userCookie.email}] at [${Date.now()}] with status code [${response.status}]`
         );
         throw new Error('Unexpeted Error while fetching user roles');
     }
 
-    const roles: UserRequestRoles = await response.json();
-    return roles;
+    const user: User = await response.json();
+
+    return user;
 };

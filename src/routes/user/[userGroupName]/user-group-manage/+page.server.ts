@@ -2,65 +2,63 @@ import type { PageServerLoad } from './$types';
 
 import { CONFIG } from '../../../../config/config.js';
 import { fail, redirect } from '@sveltejs/kit';
-import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { base } from '$app/paths';
-
-// rate limit is defined as [number, unit]
-// see documentation for more info
-// https://github.com/ciscoheat/sveltekit-rate-limiter?tab=readme-ov-file#valid-units
-const limiter = new RetryAfterRateLimiter({
-    // IP + User Agent limiter, 5 login requests per 15 mins, resetting every 15 minutes
-    IPUA: [5, '15m'],
-    // IP address limiter, triple the limit to ensure multiple users from the same IP don't become limited
-    IP: [15, '15m'],
-});
+import type { User } from '$lib/types/User';
+import { getUserInfo } from '$lib/utils/user/getUserInfo';
+import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-    const user = locals.user;
+    const userCookie = locals.user;
     // Redirect on load when user is logged in
-    if (!user) {
+    if (!userCookie) {
         throw redirect(303, `${base}/user/login`);
     }
-    return { slug: params.userGroupName };
+
+    const user: User = await getUserInfo(userCookie);
+
+    const userGroup = user.user_groups.find(
+        (group) => group.short_name === params.userGroupName
+    );
+
+    if (!user || !userGroup) {
+        throw redirect(303, `${base}/user/profile`);
+    }
+
+    const invitedUsers = await getInvitedUsers(userCookie, userGroup.id);
+
+    return { slug: params.userGroupName, userGroup, invitedUsers };
 };
 
 export const actions = {
     inviteUser: async (event) => {
         const request = event.request;
+        const userCookie = event.locals.user;
         const data = await request.formData();
 
         const email = data.get('email') as string;
+        const userGroupId = data.get('userGroupId') as string;
 
-        // Rate limit user login
-        // Every call to isLimited counts as a hit towards the rate limit for the event.
-        const rateStatus = await limiter.check(event);
-        if (rateStatus.limited) {
-            console.error(
-                `ERROR: rate-limiting at /login for user email [${email}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`
-            );
-            return fail(429, {
-                rateLimit: true,
-                retryAfter: rateStatus.retryAfter,
-            });
-        }
+        console.log(
+            `invite user with email: ${email} userGroupId: ${userGroupId}`
+        );
 
         const options = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${CONFIG.API_TOKEN}`,
+                Authorization: `Bearer ${userCookie?.api_token}`,
             },
         };
 
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user-group-invite`,
+                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite?email=${email}`,
                 options
             );
         } catch (error: any) {
             console.error(
-                `ERROR: logging in user [${email}] at [${Date.now()}]`,
+                `ERROR: inviting user to group [${email}] at [${Date.now()}]`,
                 JSON.stringify(error)
             );
             return fail(500, { error: error.message, fail: true });
@@ -68,7 +66,7 @@ export const actions = {
 
         if (response.status == 500) {
             console.error(
-                `ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`
+                `ERROR: inviting user to group [${email}] at [${Date.now()}] with status code [500]`
             );
             return fail(500, { fail: true });
         }
@@ -76,7 +74,7 @@ export const actions = {
         if (response.status == 400) {
             const errorResponse = await response.json();
             console.error(
-                `ERROR: logging in user NOT FOUND [${email}] at [${Date.now()}] with status code [400]`
+                `ERROR: inviting user to group NOT FOUND [${email}] at [${Date.now()}] with status code [400]`
             );
             return fail(500, {
                 error: errorResponse.detail,
@@ -84,6 +82,60 @@ export const actions = {
             });
         }
 
-        return { success: true, email };
+        return { successInvite: true };
+    },
+    deleteInvite: async (event) => {
+        const request = event.request;
+        const userCookie = event.locals.user;
+        const data = await request.formData();
+
+        const userInviteId = data.get('userInviteId') as string;
+        const userGroupId = data.get('userGroupId') as string;
+
+        console.log(
+            `delete invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
+        );
+
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${userCookie?.api_token}`,
+            },
+        };
+
+        let response;
+        try {
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite/${userInviteId}`,
+                options
+            );
+        } catch (error: any) {
+            console.error(
+                `ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
+            return fail(500, { error: error.message, fail: true });
+        }
+
+        if (response.status == 500) {
+            console.error(
+                `ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`
+            );
+            return fail(500, { fail: true });
+        }
+
+        if (response.status == 400) {
+            const errorResponse = await response.json();
+            console.error(
+                `ERROR: deleting user invite id [${userInviteId}] NOT FOUND at [${Date.now()}] with status code [400]`
+            );
+            return fail(500, {
+                error: errorResponse.detail,
+                invalidEmail: true,
+            });
+        }
+
+        return { successDelete: true };
     },
 };

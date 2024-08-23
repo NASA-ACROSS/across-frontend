@@ -60,7 +60,7 @@ export const actions = {
             return fail(500, { failValidation: true });
         }
 
-        // Rate limit user login-verify
+        // Rate limit user registration
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {

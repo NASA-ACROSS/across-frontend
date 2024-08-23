@@ -23,9 +23,7 @@ export async function load({ locals }) {
 
     const user: User = await getUserInfo(userCookie);
 
-    console.log(user);
-
-    // Respond with user cookie data
+    // Respond with user data
     return { user };
 }
 
@@ -144,5 +142,91 @@ export const actions = {
             username,
             email,
         };
+    },
+    acceptInvite: async (event) => {
+        const request = event.request;
+        const userCookie = event.locals.user;
+        const data = await request.formData();
+
+        const userInviteId = data.get('userInviteId') as string;
+        const userGroupId = data.get('userGroupId') as string;
+
+        console.log(
+            `accept invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
+        );
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${userCookie?.api_token}`,
+            },
+        };
+
+        let response;
+        try {
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite/${userInviteId}/accept`,
+                options
+            );
+        } catch (error: any) {
+            console.error(
+                `ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
+            return fail(500, { error: error.message, fail: true });
+        }
+
+        if (response.status == 500) {
+            console.error(
+                `ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`
+            );
+            return fail(500, { fail: true });
+        }
+
+        return { successAcceptInvite: true };
+    },
+    denyInvite: async (event) => {
+        const request = event.request;
+        const userCookie = event.locals.user;
+        const data = await request.formData();
+
+        const userInviteId = data.get('userInviteId') as string;
+        const userGroupId = data.get('userGroupId') as string;
+
+        console.log(
+            `deny invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
+        );
+
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${userCookie?.api_token}`,
+            },
+        };
+
+        let response;
+        try {
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite/${userInviteId}/deny`,
+                options
+            );
+        } catch (error: any) {
+            console.error(
+                `ERROR: denying user invite id [${userInviteId}] at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
+            return fail(500, { error: error.message, fail: true });
+        }
+
+        if (response.status == 500) {
+            console.error(
+                `ERROR: denying user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`
+            );
+            return fail(500, { fail: true });
+        }
+
+        return { successAcceptInvite: true };
     },
 };

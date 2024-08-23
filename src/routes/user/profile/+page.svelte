@@ -12,6 +12,7 @@
     import { afterUpdate } from 'svelte';
     import type { SubmitFunction } from '@sveltejs/kit';
     import UserGroups from '$lib/components/UserGroups.svelte';
+    import MyInvites from '$lib/components/MyInvites.svelte';
     export let data: PageData;
 
     // user selected role
@@ -33,6 +34,7 @@
     }
 
     let userGroups = data.user.user_groups;
+    let invitations = data.user.received_invites;
 
     /**
      * sveltekit progressive form enhancement
@@ -229,6 +231,7 @@
 </section>
 
 <UserGroups {userGroups} />
+<MyInvites {invitations} />
 
 <style>
     input:disabled.default-cursor.validation-border-color {

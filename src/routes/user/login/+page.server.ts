@@ -6,6 +6,7 @@ import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js'
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
+    console.log(user);
     // Redirect on load when user is logged in
     if (user) {
         throw redirect(303, `${base}/user/profile`);
@@ -34,37 +35,55 @@ export const actions = {
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {
-            console.error(`ERROR: rate-limiting at /login for user email [${email}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`)
-            return fail(429, { rateLimit: true, retryAfter: rateStatus.retryAfter });
+            console.error(
+                `ERROR: rate-limiting at /login for user email [${email}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`
+            );
+            return fail(429, {
+                rateLimit: true,
+                retryAfter: rateStatus.retryAfter,
+            });
         }
 
         const options = {
             method: 'POST',
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Authorization": `Bearer ${CONFIG.API_TOKEN}`
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${CONFIG.API_TOKEN}`,
             },
-        }
+        };
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/api/v1/across/user/login/${email}`, options)
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user/login/${email}`,
+                options
+            );
         } catch (error: any) {
-            console.error(`ERROR: logging in user [${email}] at [${Date.now()}]`, JSON.stringify(error))
+            console.error(
+                `ERROR: logging in user [${email}] at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
             return fail(500, { error: error.message, fail: true });
         }
 
         if (response.status == 500) {
-            console.error(`ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`)
+            console.error(
+                `ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`
+            );
             return fail(500, { fail: true });
         }
 
         if (response.status == 400) {
             const errorResponse = await response.json();
-            console.error(`ERROR: logging in user NOT FOUND [${email}] at [${Date.now()}] with status code [400]`)
-            return fail(500, { error: errorResponse.detail, invalidEmail: true });
+            console.error(
+                `ERROR: logging in user NOT FOUND [${email}] at [${Date.now()}] with status code [400]`
+            );
+            return fail(500, {
+                error: errorResponse.detail,
+                invalidEmail: true,
+            });
         }
 
-        return { success: true, email }
-    }
-}
+        return { success: true, email };
+    },
+};

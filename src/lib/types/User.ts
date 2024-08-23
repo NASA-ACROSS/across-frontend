@@ -6,6 +6,12 @@ export type UserGroup = {
     roles: UserGroupRoles[];
 };
 
+export type UserInvite = {
+    id: number;
+    name: string;
+    user_group_id: number;
+};
+
 type UserGroupRoles = {
     id: number;
     name: string;
@@ -21,5 +27,6 @@ export type User = {
     api_token: string;
     rememberMe: boolean;
     message: string;
+    received_invites: UserInvite[];
     user_groups: UserGroup[];
 };

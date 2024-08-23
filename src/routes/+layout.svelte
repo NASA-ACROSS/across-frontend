@@ -35,9 +35,6 @@
             }
         });
     });
-
-    // theme variables for light/dark mode and root html ref
-    let mode, root;
 </script>
 
 <svelte:head>
@@ -77,19 +74,6 @@
     />
 
     {#key $page.url}
-        <script>
-            // must run every navigation change asap to prevent flashing
-            mode = window.localStorage.getItem('mode');
-            root = document.getElementsByTagName('html')[0];
-            if (mode == null) {
-                mode = 'dark';
-            } else if (mode !== null && mode === 'dark') {
-                root.classList.add('dark-mode');
-            } else {
-                root.classList.remove('dark-mode');
-            }
-        </script>
-
         {#if DOM_MOUNTED}
             <!-- Vendor Scripts -->
             <script

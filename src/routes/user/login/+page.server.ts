@@ -3,6 +3,8 @@ import { fail, redirect } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { base } from '$app/paths';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
+import { emailRegex } from '$lib/utils/regex/emailRegex.js';
+import type { Actions } from './$types.js';
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
@@ -25,10 +27,16 @@ const limiter = new RetryAfterRateLimiter({
 
 export const actions = {
     default: async (event) => {
-        const request = event.request;
-        const data = await request.formData();
+        const data = await event.request.formData();
 
-        const email = data.get('email') as string;
+        const email = data.get('email')?.toString();
+
+        if (!email?.match(emailRegex)) {
+            return fail(400, {
+                invalidEmail: true,
+                message: 'Please provide a valid email.',
+            });
+        }
 
         // Rate limit user login
         // Every call to isLimited counts as a hit towards the rate limit for the event.
@@ -37,6 +45,7 @@ export const actions = {
             console.error(
                 `ERROR: rate-limiting at /login for user email [${email}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`
             );
+
             return fail(429, {
                 rateLimit: true,
                 retryAfter: rateStatus.retryAfter,
@@ -51,18 +60,23 @@ export const actions = {
             },
         };
 
-        let response;
+        let response: Response;
         try {
             response = await fetch(
                 `${CONFIG.API_URL}/api/v1/across/user/login/${encodeURIComponent(email)}`,
                 options
             );
-        } catch (error: any) {
+        } catch (error) {
             console.error(
                 `ERROR: logging in user [${email}] at [${Date.now()}]`,
                 JSON.stringify(error)
             );
-            return fail(500, { error: error.message, fail: true });
+
+            if (error instanceof Error) {
+                return fail(500, { error: error.message, fail: true });
+            } else {
+                return fail(500, { error: 'Unknown error trying to login.' });
+            }
         }
 
         if (response.status == 500) {
@@ -73,16 +87,13 @@ export const actions = {
         }
 
         if (response.status == 400) {
-            const errorResponse = await response.json();
-            console.error(
-                `ERROR: logging in user NOT FOUND [${email}] at [${Date.now()}] with status code [400]`
-            );
-            return fail(500, {
-                error: errorResponse.detail,
-                invalidEmail: true,
-            });
+            const errorResponse = (await response.json()) as { detail: string };
+
+            console.warn(errorResponse.detail, JSON.stringify({ email }));
+
+            return fail(400, { notFound: true });
         }
 
         return { success: true, email };
     },
-};
+} satisfies Actions;

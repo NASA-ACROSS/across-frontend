@@ -1,84 +1,86 @@
 <script lang="ts">
-    import { enhance } from '$app/forms';
+    import type { SubmitFunction } from '@sveltejs/kit';
+    import type { ActionData } from './$types';
 
-    /** @type {import('./$types').ActionData} */
-    export let form;
+    import { enhance } from '$app/forms';
+    import Button from '$lib/components/Button.svelte';
+    import Container from '$lib/components/Container.svelte';
+    import EmailInput from '$lib/components/inputs/EmailInput.svelte';
+    import Section from '$lib/components/Section.svelte';
+    import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
+    import { base } from '$app/paths';
+
+    export let form: ActionData;
 
     let isLoggingIn = false;
+
+    $: isButtonDisabled = isLoggingIn || form?.success;
+
     // submit function to toggle ui state while waiting for response
-    function enhancedLogin() {
+    const enhancedLogin: SubmitFunction = () => {
         isLoggingIn = true;
 
         return async ({ update }) => {
             await update();
             isLoggingIn = false;
         };
-    }
+    };
 </script>
 
-<section class="py-5 bg-secondary">
-    <div class="container py-md-3">
-        <h1>API User Login</h1>
-        <form method="post" use:enhance={enhancedLogin}>
-            <label for="email">Email</label>
-            <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
-                <div class="input-group me-sm-3 mb-sm-0 mb-3">
-                    <input
-                        class="form-control form-control-lg rounded-3 ps-5"
-                        required
-                        value={form?.email ?? ''}
-                        disabled={isLoggingIn || form?.success}
-                        autocomplete="off"
-                        name="email"
-                        type="email"
-                        placeholder="Please enter your email"
+<Section>
+    <Container title="Login">
+        <form method="post" use:enhance={enhancedLogin} novalidate>
+            <div class="d-flex">
+                <div class="flex-grow-1 me-3">
+                    <EmailInput
+                        value={form?.email}
+                        disabled={isLoggingIn}
+                        autocomplete={false}
                     />
                 </div>
-                <button
-                    class="btn btn-lg btn-primary"
-                    disabled={isLoggingIn || form?.success}
-                >
-                    {#if isLoggingIn && !form?.success}
-                        <span
-                            class="spinner-border spinner-border-sm"
-                            role="status"
-                            aria-hidden="true"
-                        ></span>
-                    {:else}
-                        Login
-                    {/if}
-                </button>
+                <Button
+                    name="Send Link"
+                    isLoading={isLoggingIn && !form?.success}
+                    disabled={isButtonDisabled}
+                />
             </div>
+
             {#if form?.success}
-                <p
-                    class="form-text fs-sm text-sm-start text-center text-success"
-                >
+                <FormInputFeedback>
                     Please check your email for a login link!
-                </p>
+                </FormInputFeedback>
             {/if}
+
             {#if form?.invalidEmail}
-                <p
-                    class="form-text fs-sm text-sm-start text-center text-danger"
-                >
-                    Invalid Email Specified. User not found.
-                </p>
+                <FormInputFeedback type="error">
+                    Please provide a valid email.
+                </FormInputFeedback>
             {/if}
+
             {#if form?.rateLimit}
-                <p
-                    class="form-text fs-sm text-sm-start text-center text-danger"
-                >
+                <FormInputFeedback type="error">
                     You are being rate limited, please retry after {form.retryAfter}
                     seconds.
-                </p>
+                </FormInputFeedback>
             {/if}
+
             {#if form?.fail}
-                <p
-                    class="form-text fs-sm text-sm-start text-center text-danger"
-                >
+                <FormInputFeedback type="error">
                     Something went wrong, please try again. If this error
                     persists, contact support.
-                </p>
+                </FormInputFeedback>
+            {/if}
+
+            {#if form?.notFound}
+                <div class="mt-4">
+                    <p>
+                        The email address is not registered,
+                        <a href="{base}/user/register"
+                            >click here to register!</a
+                        >
+                    </p>
+                </div>
             {/if}
         </form>
-    </div>
-</section>
+    </Container>
+</Section>

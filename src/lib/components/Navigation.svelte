@@ -4,8 +4,8 @@
     import { loggedIn } from '$lib/stores/login';
 
     let isLoggedIn = false;
-    loggedIn.subscribe((value)=>{
-        isLoggedIn = value
+    loggedIn.subscribe((value) => {
+        isLoggedIn = value;
     });
 </script>
 

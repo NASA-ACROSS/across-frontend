@@ -9,7 +9,7 @@ export type UserGroup = {
 export type UserInvite = {
     id: number;
     name: string;
-    user_group_id: number;
+    group_id: number;
 };
 
 type UserGroupRoles = {

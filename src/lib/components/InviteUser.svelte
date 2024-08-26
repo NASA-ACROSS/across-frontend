@@ -57,9 +57,10 @@
 </script>
 
 <div class="container py-md-3">
-    <h1 class="pb-3">Manage User Group: {userGroup.name}</h1>
-    <div class="pb-4 pt-3">
-        <h2>Invite User to Group</h2>
+    <div class="pb-3 pt-3">
+        <h2>
+            <i class="bx bx-envelope opacity-70 me-2"></i>Invite User to Group
+        </h2>
         <form method="post" action="?/inviteUser" use:enhance={enhancedForm}>
             <label for="email">Email</label>
             <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">

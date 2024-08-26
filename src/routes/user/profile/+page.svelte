@@ -94,12 +94,18 @@
 <section class="pt-5 pb-2 bg-secondary">
     <div class="container py-md-3">
         <div class="d-flex justify-content-between align-items-end">
-            <h1>Profile</h1>
+            <h1>
+                <i class="bx bx-user opacity-70 me-2"></i>
+                Profile
+            </h1>
             <form action="{base}/user/logout">
                 <button class="btn btn-lg btn-danger">Logout</button>
             </form>
         </div>
-        <h3>User Information</h3>
+        <h3>
+            <i class="bx bx-edit-alt opacity-70 me-2"></i>
+            User Information
+        </h3>
         <form
             method="post"
             action="?/updateUserInformation"
@@ -207,7 +213,10 @@
 
 <section class="py-2 bg-secondary">
     <div class="container py-md-3">
-        <h3>API Key</h3>
+        <h3>
+            <i class="bx bx-key opacity-70 me-2"></i>
+            API Key
+        </h3>
         <div
             class="password-toggle d-flex flex-sm-row flex-column mb-3 needs-validation"
         >
@@ -232,6 +241,8 @@
 
 <UserGroups {userGroups} />
 <MyInvites {invitations} />
+
+<section class="pb-5 bg-secondary"></section>
 
 <style>
     input:disabled.default-cursor.validation-border-color {

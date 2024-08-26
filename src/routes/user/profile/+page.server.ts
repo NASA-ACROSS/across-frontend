@@ -186,7 +186,7 @@ export const actions = {
 
         return { successAcceptInvite: true };
     },
-    denyInvite: async (event) => {
+    rejectInvite: async (event) => {
         const request = event.request;
         const userCookie = event.locals.user;
         const data = await request.formData();
@@ -195,7 +195,7 @@ export const actions = {
         const userGroupId = data.get('userGroupId') as string;
 
         console.log(
-            `deny invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
+            `rejecting invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
         );
 
         const options = {
@@ -214,7 +214,7 @@ export const actions = {
             );
         } catch (error: any) {
             console.error(
-                `ERROR: denying user invite id [${userInviteId}] at [${Date.now()}]`,
+                `ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}]`,
                 JSON.stringify(error)
             );
             return fail(500, { error: error.message, fail: true });
@@ -222,10 +222,13 @@ export const actions = {
 
         if (response.status == 500) {
             console.error(
-                `ERROR: denying user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`
+                `ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`
             );
             return fail(500, { fail: true });
         }
+
+        const datalog = await response.json();
+        console.log(datalog);
 
         return { successAcceptInvite: true };
     },

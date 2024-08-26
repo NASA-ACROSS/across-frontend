@@ -227,6 +227,9 @@ export const actions = {
             return fail(500, { fail: true });
         }
 
+        const datalog = await response.json();
+        console.log(datalog);
+
         return { successAcceptInvite: true };
     },
 };

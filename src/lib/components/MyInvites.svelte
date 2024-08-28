@@ -3,15 +3,21 @@
     import type { UserInvite } from '$lib/types/User';
 
     export let invitations: UserInvite[];
-    console.log(invitations);
 </script>
 
 {#if invitations && invitations.length}
     <section class="py-2 bg-secondary">
         <div class="container py-md-3">
-            <h3>My Group Invitations</h3>
-            <div class="input-group-lg d-flex flex-row">
-                {#each invitations as invitation}
+            <h3>
+                <i class="bx bx-envelope opacity-70 me-2"></i>My Group
+                Invitations
+            </h3>
+
+            {#each invitations as invitation}
+                <div
+                    id="invite-{invitation.id}"
+                    class="input-group-lg d-flex flex-row pb-3"
+                >
                     <form method="post" action="?/acceptInvite">
                         <input
                             id="userGroupId-{invitation.group_id}"
@@ -56,8 +62,8 @@
                     <div class="input-group-text">
                         {invitation.name}
                     </div>
-                {/each}
-            </div>
+                </div>
+            {/each}
         </div>
     </section>
 {/if}

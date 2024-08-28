@@ -6,7 +6,6 @@ import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js'
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
-    console.log(user);
     // Redirect on load when user is logged in
     if (user) {
         throw redirect(303, `${base}/user/profile`);
@@ -55,7 +54,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user/login/${email}`,
+                `${CONFIG.API_URL}/api/v1/across/user/login/${encodeURIComponent(email)}`,
                 options
             );
         } catch (error: any) {

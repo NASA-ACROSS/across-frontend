@@ -53,7 +53,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite?email=${email}`,
+                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite?email=${encodeURIComponent(email)}`,
                 options
             );
         } catch (error: any) {

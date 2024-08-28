@@ -10,7 +10,7 @@
         <div class="container py-md-3">
             <h3><i class="bx bx-group opacity-70 me-2"></i>My User Groups</h3>
             {#each userGroups as userGroup}
-                <div class="input-group-lg d-flex flex-row">
+                <div class="input-group-lg d-flex flex-row pb-3">
                     {#if userGroup.is_admin}
                         <a
                             class="btn btn-lg btn-primary me-3"

@@ -30,7 +30,6 @@
         cancel,
         submitter,
     }) => {
-        console.log('inside inviteUser');
         // set form data to send, specific to this table
         isSubmittingInvite = true;
 
@@ -42,7 +41,6 @@
          */
         return async ({ result, update }) => {
             isSubmittingInvite = false;
-            console.log('result', result);
             if (result.data.successInvite) {
                 // rerun all `load` functions, following the successful update
                 await invalidateAll();

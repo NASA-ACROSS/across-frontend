@@ -6,7 +6,6 @@ import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCooki
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
-    console.log(user);
     // Redirect on load when user is logged in
     if (user) {
         throw redirect(302, `${base}/user/profile`);

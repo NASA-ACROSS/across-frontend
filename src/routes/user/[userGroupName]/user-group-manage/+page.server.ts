@@ -20,7 +20,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
         (group) => group.short_name === params.userGroupName
     );
 
-    if (!user || !userGroup) {
+    const isAdmin = userGroup?.is_admin;
+
+    if (!user || !userGroup || !isAdmin) {
         throw redirect(303, `${base}/user/profile`);
     }
 
@@ -69,6 +71,13 @@ export const actions = {
                 `ERROR: inviting user to group [${email}] at [${Date.now()}] with status code [500]`
             );
             return fail(500, { fail: true });
+        }
+
+        if (response.status == 409) {
+            console.log(
+                `Attempted to invite a user [${email}] to group id [${userGroupId}] who was already in the group`
+            );
+            return { userInGroup: true };
         }
 
         if (response.status == 400) {

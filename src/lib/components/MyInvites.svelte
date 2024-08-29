@@ -5,7 +5,7 @@
     export let invitations: UserInvite[];
 </script>
 
-{#if invitations && invitations.length}
+{#if invitations && invitations?.length}
     <section class="py-2 bg-secondary">
         <div class="container py-md-3">
             <h3>

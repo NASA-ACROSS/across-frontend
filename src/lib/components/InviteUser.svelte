@@ -104,6 +104,13 @@
                     User Invited!
                 </p>
             {/if}
+            {#if form?.userInGroup}
+                <p
+                    class="form-text fs-sm text-sm-start text-center text-success"
+                >
+                    User is already in group!
+                </p>
+            {/if}
             {#if form?.invalidEmail}
                 <p
                     class="form-text fs-sm text-sm-start text-center text-danger"

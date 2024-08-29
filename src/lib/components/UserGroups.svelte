@@ -5,7 +5,7 @@
     export let userGroups: UserGroup[];
 </script>
 
-{#if userGroups && userGroups.length}
+{#if userGroups && userGroups?.length}
     <section class="py-2 bg-secondary">
         <div class="container py-md-3">
             <h3><i class="bx bx-group opacity-70 me-2"></i>My User Groups</h3>

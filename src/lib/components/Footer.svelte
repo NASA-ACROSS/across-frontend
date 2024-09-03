@@ -1,9 +1,11 @@
 <script lang="ts">
-    import { base } from "$app/paths"
+    import { base } from '$app/paths';
+    import ThemeSwitch from './ThemeSwitch.svelte';
 </script>
+
 <!-- Footer -->
-<footer class="footer bg-light border-top pt-4">
-    <div class="container pt-lg-4">
+<footer class="footer bg-light border-top">
+    <div class="container pt-3">
         <div class="row pb-5">
             <div class="col-xl-6 col-lg-6 col-md-12">
                 <div class="navbar-brand text-dark p-0 me-0 mb-3 mb-lg-4">
@@ -108,28 +110,7 @@
                             </ul>
                         </div>
 
-                        <div
-                            class="mb-4 pb-lg-3 mt-4 float-xl-end float-lg-end"
-                        >
-                            <div
-                                class="form-check form-switch mode-switch pt-1"
-                                data-bs-toggle="mode"
-                            >
-                                <input
-                                    type="checkbox"
-                                    class="form-check-input"
-                                    id="theme-mode"
-                                />
-                                <label
-                                    class="form-check-label d-none d-sm-block"
-                                    for="theme-mode">Light</label
-                                >
-                                <label
-                                    class="form-check-label d-none d-sm-block"
-                                    for="theme-mode">Dark</label
-                                >
-                            </div>
-                        </div>
+                        <ThemeSwitch />
                     </div>
                 </div>
             </div>

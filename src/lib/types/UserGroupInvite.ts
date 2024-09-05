@@ -4,10 +4,10 @@ export type UserGroupInvite = {
     receiver_id: number;
     receiver_email: string;
     sender_id: number;
-    entries: UserGroupInviteEntry[];
+    entries: UserGroupInviteRecord[];
 };
 
-export type UserGroupInviteEntry = {
+export type UserGroupInviteRecord = {
     id: number;
     created_on: string;
     modified_on: string;

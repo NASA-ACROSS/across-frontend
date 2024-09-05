@@ -11,8 +11,9 @@
     import { goto, invalidateAll } from '$app/navigation';
     import { afterUpdate } from 'svelte';
     import type { SubmitFunction } from '@sveltejs/kit';
-    import UserGroups from '$lib/components/UserGroups.svelte';
-    import MyInvites from '$lib/components/MyInvites.svelte';
+    import UserGroups from './_components/UserGroups.svelte';
+    import UserGroupInvites from './_components/UserGroupInvites.svelte';
+
     export let data: PageData;
 
     // user selected role
@@ -240,7 +241,7 @@
 </section>
 
 <UserGroups {userGroups} />
-<MyInvites {invitations} />
+<UserGroupInvites {invitations} />
 
 <section class="pb-5 bg-secondary"></section>
 

@@ -1,7 +1,8 @@
 <script lang="ts">
     import { base } from '$app/paths';
-    import InvitedUsers from '$lib/components/InvitedUsers.svelte';
-    import InviteUser from '$lib/components/InviteUser.svelte';
+    import type { UserGroupInviteEntry } from '$lib/types/UserGroupInvite';
+    import InvitedUsers from './_components/InvitedUsers.svelte';
+    import InviteUser from './_components/InviteUser.svelte';
     import { afterUpdate } from 'svelte';
 
     /** @type {import('./$types').ActionData} */
@@ -9,10 +10,14 @@
     export let data;
 
     let userGroup = data.userGroup;
-    let invitedUsers = data.invitedUsers;
+    let invitedUsers: UserGroupInviteEntry[] = data.invitedUsers[
+        'entries'
+    ] as unknown as UserGroupInviteEntry[];
 
     afterUpdate(() => {
-        invitedUsers = data.invitedUsers;
+        invitedUsers = data.invitedUsers[
+            'entries'
+        ] as unknown as UserGroupInviteEntry[];
     });
 </script>
 
@@ -30,5 +35,5 @@
     </div>
 
     <InviteUser {userGroup} {form}></InviteUser>
-    <InvitedUsers invitedUsers={invitedUsers['entries']}></InvitedUsers>
+    <InvitedUsers {invitedUsers}></InvitedUsers>
 </section>

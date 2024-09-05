@@ -1,7 +1,8 @@
 import { base } from '$app/paths';
-import { getUserRoles } from '$lib/utils/user/getUserRoles';
+import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { fail, redirect } from '@sveltejs/kit';
 import { CONFIG } from '../../../../config/config';
+import type { User } from '$lib/types/User';
 
 const OBSERVATORY = 'burstcube';
 const LIMITS = [10, 25, 50, 100];
@@ -9,7 +10,10 @@ const LIMITS = [10, 25, 50, 100];
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ url, locals }) {
     // Redirect on load when user is not logged in
-    const user = locals.user || { roles: ['user'], email: 'unregistered user' };
+    const userCookie = locals.user;
+    let userInfo: User;
+
+    // || { roles: ['user'], email: 'unregistered user' };
 
     // when limit or page go out of bounds, use this boolean to trigger redirect to rewrite params
     let refresh = false;
@@ -63,9 +67,8 @@ export async function load({ url, locals }) {
 
     // Update user roles and store on request locals
     // This makes a separate request instead of implicitly trusting cookie value for roles
-    if (user.id) {
-        const roles = await getUserRoles(user);
-        user.roles = roles.approved_roles;
+    if (userCookie?.id) {
+        userInfo = await getUserInfo(userCookie);
     }
 
     // prepare the data table request
@@ -78,7 +81,7 @@ export async function load({ url, locals }) {
     const options = {
         method: 'GET',
         headers: {
-            Authorization: `Bearer ${user.api_token ?? CONFIG.API_TOKEN}`,
+            Authorization: `Bearer ${userCookie.api_token ?? CONFIG.API_TOKEN}`,
         },
     };
 
@@ -88,7 +91,7 @@ export async function load({ url, locals }) {
         response = await fetch(targetUrl, options);
     } catch (e: any) {
         console.error(
-            `ERROR: catch getting TOO data for [${OBSERVATORY}] by [${user.email}] at [${Date.now()}]`,
+            `ERROR: catch getting TOO data for [${OBSERVATORY}] by [${userCookie.email}] at [${Date.now()}]`,
             JSON.stringify(e)
         );
         throw new Error(
@@ -100,7 +103,7 @@ export async function load({ url, locals }) {
     const errorCodes = [500, 404];
     if (errorCodes.includes(response.status)) {
         console.error(
-            `ERROR: getting TOO data for [${OBSERVATORY}] by [${user.email}] at [${Date.now()}] with status code [${response.status}]`
+            `ERROR: getting TOO data for [${OBSERVATORY}] by [${userCookie.email}] at [${Date.now()}] with status code [${response.status}]`
         );
         throw new Error(
             `Unexpeted Error while fetching ${OBSERVATORY} TOO data`
@@ -113,7 +116,7 @@ export async function load({ url, locals }) {
 
     return {
         slug: OBSERVATORY,
-        userRoles: user.roles,
+        userGroups: userInfo.user_groups,
         table,
         page,
         limit,

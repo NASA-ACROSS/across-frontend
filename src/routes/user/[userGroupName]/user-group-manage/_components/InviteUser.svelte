@@ -2,46 +2,24 @@
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
     import type { UserGroup } from '$lib/types/User';
+    import type { ActionData, SubmitFunction } from '../$types';
 
-    /** @type {import('./$types').ActionData} */
-    export let form;
+    export let form: ActionData;
     export let userGroup: UserGroup;
-
-    const slug = userGroup.short_name;
-    const userGroupId = userGroup.id;
 
     let isSubmittingInvite = false;
 
-    /**
-     * sveltekit progressive form enhancement
-     * see docs for more information
-     * https://kit.svelte.dev/docs/form-actions#progressive-enhancement-customising-use-enhance
-     *
-     * `formElement` is this `<form>` element.
-     * `formData` is its `FormData` object that's about to be submitted.
-     * `action` is the URL to which the form is posted.
-     * `cancel()` will prevent the submission.
-     * `submitter` is the `HTMLElement` that caused the form to be submitted.
-     */
-    const enhancedForm = ({
-        formElement,
-        formData,
-        action,
-        cancel,
-        submitter,
-    }) => {
-        // set form data to send, specific to this table
+    const enhancedForm: SubmitFunction = ({ formData }) => {
+        // render state changes
         isSubmittingInvite = true;
 
-        formData.set('userGroupId', userGroupId);
+        // set form data to send, specific to this form
+        formData.set('userGroupId', userGroup.id.toString());
 
-        /**
-         * `result` is an `ActionResult` object
-         * `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
-         */
-        return async ({ result, update }) => {
+        return async ({ result }) => {
             isSubmittingInvite = false;
-            if (result.data.successInvite) {
+
+            if (result.status === 200) {
                 // rerun all `load` functions, following the successful update
                 await invalidateAll();
                 await applyAction(result);
@@ -66,19 +44,12 @@
                     <input
                         class="form-control form-control-lg rounded-3 ps-5"
                         required
-                        value={form?.email ?? ''}
+                        value={''}
                         disabled={isSubmittingInvite}
                         autocomplete="off"
                         name="email"
                         type="email"
-                        placeholder="Enter an email to invite to {slug}"
-                    />
-                    <input
-                        class="form-control form-control-lg rounded-3 ps-5"
-                        value={userGroupId}
-                        hidden={true}
-                        autocomplete="off"
-                        name="userGroupId"
+                        placeholder="Enter an email to invite to {userGroup.short_name}"
                     />
                 </div>
                 <button
@@ -86,7 +57,7 @@
                     disabled={isSubmittingInvite}
                     type="submit"
                 >
-                    {#if isSubmittingInvite && !form?.success}
+                    {#if isSubmittingInvite && !form?.successInvite}
                         <span
                             class="spinner-border spinner-border-sm"
                             role="status"
@@ -108,7 +79,7 @@
                 <p
                     class="form-text fs-sm text-sm-start text-center text-success"
                 >
-                    User is already in group!
+                    User is already invited or in group!
                 </p>
             {/if}
             {#if form?.invalidEmail}

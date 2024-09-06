@@ -1,6 +1,6 @@
 <script lang="ts">
     import { base } from '$app/paths';
-    import type { UserInvite } from '$lib/types/User';
+    import type { UserInvite } from '$lib/types/User/UserInvite';
 
     export let invitations: UserInvite[];
 </script>

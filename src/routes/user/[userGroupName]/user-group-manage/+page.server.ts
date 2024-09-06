@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types';
 import { CONFIG } from '../../../../config/config.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { base } from '$app/paths';
-import type { User } from '$lib/types/User';
+import type { User } from '$lib/types/User/User';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 

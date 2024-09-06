@@ -1,5 +1,5 @@
-import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie';
-import type { UserGroupInvite } from '$lib/types/UserGroupInvite';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { UserGroupInvite } from '$lib/types/User/UserGroupInvite';
 import { CONFIG } from '../../../config/config';
 
 export const getInvitedUsers = async (

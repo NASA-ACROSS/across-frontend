@@ -1,6 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 
 // for information about these interfaces
 declare global {

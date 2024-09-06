@@ -1,7 +1,7 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import type { UserGroupInviteRecord } from '$lib/types/UserGroupInvite';
+    import type { UserGroupInviteRecord } from '$lib/types/User/UserGroupInvite';
     import type { SubmitFunction } from '@sveltejs/kit';
 
     export let invitedUsers: UserGroupInviteRecord[];

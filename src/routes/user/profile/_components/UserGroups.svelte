@@ -1,6 +1,6 @@
 <script lang="ts">
     import { base } from '$app/paths';
-    import type { UserGroup } from '$lib/types/User';
+    import type { UserGroup } from '$lib/types/User/UserGroup';
 
     export let userGroups: UserGroup[];
 </script>

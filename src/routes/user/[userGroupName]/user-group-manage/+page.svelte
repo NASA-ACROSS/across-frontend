@@ -1,6 +1,6 @@
 <script lang="ts">
     import { base } from '$app/paths';
-    import type { UserGroupInviteRecord } from '$lib/types/UserGroupInvite';
+    import type { UserGroupInviteRecord } from '$lib/types/User/UserGroupInvite';
     import InvitedUsers from './_components/InvitedUsers.svelte';
     import InviteUser from './_components/InviteUser.svelte';
     import { afterUpdate } from 'svelte';

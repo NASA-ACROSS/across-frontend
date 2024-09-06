@@ -2,7 +2,7 @@ import { CONFIG } from '../../../config/config.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { base } from '$app/paths';
-import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;

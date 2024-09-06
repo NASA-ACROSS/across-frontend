@@ -1,7 +1,7 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import type { UserGroup } from '$lib/types/User';
+    import type { UserGroup } from '$lib/types/User/UserGroup';
     import type { ActionData, SubmitFunction } from '../$types';
 
     export let form: ActionData;

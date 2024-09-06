@@ -1,6 +1,6 @@
-import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import { CONFIG } from '../../../config/config';
-import type { User } from '$lib/types/User';
+import type { User } from '$lib/types/User/User';
 
 export const getUserInfo = async (userCookie: UserCredentialsCookie) => {
     const options = {

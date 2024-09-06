@@ -2,7 +2,7 @@ import { base } from '$app/paths';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { fail, redirect } from '@sveltejs/kit';
 import { CONFIG } from '../../../../config/config';
-import type { User } from '$lib/types/User';
+import type { User } from '$lib/types/User/User';
 
 const OBSERVATORY = 'burstcube';
 const LIMITS = [10, 25, 50, 100];

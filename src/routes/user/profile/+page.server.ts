@@ -3,13 +3,13 @@ import { base } from '$app/paths';
 import { loggedIn } from '$lib/stores/login';
 import { CONFIG } from '../../../config/config';
 import type { CookieSerializeOptions } from 'cookie';
-import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { validate } from '$lib/utils/regex/validate';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
 import { emailRegex } from '$lib/utils/regex/emailRegex';
-import type { User } from '$lib/types/User';
+import type { User } from '$lib/types/User/User';
 
 export async function load({ locals }) {
     const userCookie = locals.user;

@@ -4,7 +4,7 @@ import { CONFIG } from '../../../config/config.js';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import type { CookieSerializeOptions } from 'cookie';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
-import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;

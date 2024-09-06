@@ -2,9 +2,9 @@
 
 ## Developing
 
-Install dependencies with `npm install` (or `pnpm install` or `yarn`)
- 
-### Start a development server:
+Install dependencies with `npm ci`.
+
+### Start a development server
 
 ```bash
 npm run dev
@@ -18,13 +18,15 @@ npm run dev -- --open
 The ACROSS frontend relies on environment variables to run. The following are
 essential for operation:
 
-| Varible                             | Use                                                   |
-| ----------------------------------- | ----------------------------------------------------- |
-| `API_URL`                           | Base hostname and port for the api                    |
-| `ACROSS_API_TOKEN`                  | API key used by admin user for login and registration routes. Set the env var `ACROSS_ADMIN_TOKEN` in the across-api to the same value. Run the API locally after runing a migration to add the user to the local database. |
-| `PUBLIC_BUILD_VERSION`              | Sets version in header meta tag "build-version". **REQUIRED** for `npm run build`  |
+| Variable               | Use                                                                               |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| `API_URL`              | Base hostname and port for the API                                                |
+| `ACROSS_API_TOKEN`     | API key used by admin user for login and registration routes.                     |
+| `PUBLIC_BUILD_VERSION` | Sets version in header meta tag "build-version". **REQUIRED** for `npm run build` |
 
-These are included for your convenience in `.env.development` for local development
+**IMPORTANT:** The `ACROSS_ADMIN_TOKEN` env var in `across-api` should match
+`ACROSS_API_TOKEN`. Run the API locally after running a migration to add the
+user to local database.
 
 ## Building
 

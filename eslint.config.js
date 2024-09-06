@@ -1,17 +1,34 @@
 import globals from 'globals';
-import pluginJs from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import eslint from '@eslint/js';
+import tsEslint from 'typescript-eslint';
+import eslintPluginSvelte from 'eslint-plugin-svelte';
 
-export default [
+export default tsEslint.config(
     {
-        languageOptions: { globals: { ...globals.browser, ...globals.node } },
+        // https://github.com/eslint/eslint/discussions/18304 lol
+        ignores: ['static/**/*'],
     },
-    pluginJs.configs.recommended,
-    ...tseslint.configs.recommended,
     {
-        rules: {
-            '@typescript-eslint/no-explicit-any': 'off',
-            'no-useless-escape': 'off',
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+            },
         },
     },
-];
+    {
+        files: ['**/*.ts'],
+        extends: [
+            eslint.configs.recommended,
+            ...tsEslint.configs.recommendedTypeChecked,
+        ],
+        languageOptions: {
+            parserOptions: {
+                projectService: true,
+                project: true,
+                tsconfigRootDir: import.meta.dirname,
+            },
+        },
+    },
+    ...eslintPluginSvelte.configs['flat/prettier']
+);

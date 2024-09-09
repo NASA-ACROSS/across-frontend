@@ -1,8 +1,7 @@
 {
-    "*.{js,ts,svelte,css,scss,postcss,json}": [
+    "*.{js,ts,svelte,css,scss,postcss,json,md}": [
         "prettier --write",
         "prettier --check"
     ],
-    "*.{js,ts,svelte}": "eslint",
-    "*.md": ["markdownlint-cli2"]
+    "*.{js,ts,svelte}": "eslint"
 }

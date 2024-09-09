@@ -1,34 +1,52 @@
 import globals from 'globals';
-import eslint from '@eslint/js';
+import js from '@eslint/js';
 import tsEslint from 'typescript-eslint';
 import eslintPluginSvelte from 'eslint-plugin-svelte';
+import svelteParser from 'svelte-eslint-parser';
 
 export default tsEslint.config(
+    // top level ignores
+    // https://github.com/eslint/eslint/discussions/18304 lol
     {
-        // https://github.com/eslint/eslint/discussions/18304 lol
-        ignores: ['static/**/*'],
+        ignores: ['static', '.svelte-kit'],
     },
+
+    // Load predefined config
+    js.configs.recommended,
+
+    // TypeScript
     {
+        files: ['**/*.ts'],
+        extends: [...tsEslint.configs.recommendedTypeChecked],
+        // ignores: ['playwright.config.ts'],
         languageOptions: {
+            globals: {
+                ...globals.node,
+            },
+            parser: tsEslint.parser,
+            parserOptions: {
+                extraFileExtensions: ['.svelte'],
+                project: true,
+            },
+        },
+    },
+
+    // svelte
+    {
+        files: ['**/*.svelte'],
+        extends: [...eslintPluginSvelte.configs['flat/prettier']],
+        // Parse the `<script>` in `.svelte` as TypeScript by adding the following configuration.
+        languageOptions: {
+            parser: svelteParser,
             globals: {
                 ...globals.browser,
                 ...globals.node,
             },
-        },
-    },
-    {
-        files: ['**/*.ts'],
-        extends: [
-            eslint.configs.recommended,
-            ...tsEslint.configs.recommendedTypeChecked,
-        ],
-        languageOptions: {
             parserOptions: {
-                projectService: true,
+                extraFileExtensions: ['.svelte'],
                 project: true,
-                tsconfigRootDir: import.meta.dirname,
+                parser: tsEslint.parser,
             },
         },
-    },
-    ...eslintPluginSvelte.configs['flat/prettier']
+    }
 );

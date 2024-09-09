@@ -25,6 +25,7 @@ export default tsEslint.config(
             },
             parser: tsEslint.parser,
             parserOptions: {
+                // for additional info on why this is here https://github.com/sveltejs/eslint-plugin-svelte/issues/422
                 extraFileExtensions: ['.svelte'],
                 project: true,
             },

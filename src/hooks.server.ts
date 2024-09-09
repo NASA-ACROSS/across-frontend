@@ -1,6 +1,7 @@
 import type { Handle, HandleServerError } from '@sveltejs/kit';
 import { handleLogout } from '$lib/handles/handleLogout';
 import { handleLogin } from '$lib/handles/handleLogin';
+import { handleRedirect } from '$lib/handles/handleRedirect';
 /**
  * Runs on every request including link hover prefetch
  * unless explicitly disabled using <a data-sveltekit-preload-data="false"/>
@@ -8,15 +9,12 @@ import { handleLogin } from '$lib/handles/handleLogin';
 export const handle: Handle = async ({ event, resolve }) => {
     event = handleLogout(event);
     event = await handleLogin(event);
-    return await resolve(event);
+    let response: Response = await resolve(event);
+    response = handleRedirect(response);
+    return response;
 };
 
-export const handleError: HandleServerError = ({
-    error,
-    event,
-    status,
-    message,
-}) => {
+export const handleError: HandleServerError = ({ error, event, message }) => {
     const errorId = crypto.randomUUID();
 
     const errorLog = {

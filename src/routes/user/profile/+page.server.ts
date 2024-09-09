@@ -22,7 +22,7 @@ export async function load({
     // Redirect on load when user is not logged in
     if (!user) {
         loggedIn.set(false);
-        throw redirect(303, `${base}/user/login`);
+        throw redirect(307, `${base}/user/login`);
     }
 
     loggedIn.set(true);

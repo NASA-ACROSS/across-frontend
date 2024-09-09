@@ -51,7 +51,7 @@ export async function load({ url, locals }) {
         });
         searchParams.set('page', page.toString());
         searchParams.set('limit', limit.toString());
-        redirect(303, url.origin + url.pathname + '?' + searchParams);
+        redirect(307, url.origin + url.pathname + '?' + searchParams);
     }
 
     // handle custom user input number for limit in address bar not in LIMITS list as part of request
@@ -126,7 +126,7 @@ export const actions = {
         const { request, locals } = event;
         const user: UserCredentialsCookie = locals.user;
         if (!user) {
-            throw redirect(303, `${base}/user/login`);
+            throw redirect(307, `${base}/user/login`);
         }
         const data = await request.formData();
 

@@ -20,7 +20,7 @@ Some examples of spikes:
 
 #### Goal
 
-Include the goal of the spike and why it is relevant.
+Include the goal of the spike, why it is relevant, and define the form of deliverable this spike will result in (i.e. a feature is expected to be spec'd off of the results of the spike, document what was learned in the spike issue.) 
 
 ### References
 

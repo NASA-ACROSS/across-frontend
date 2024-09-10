@@ -32,6 +32,6 @@ export async function handleLogin(
         event.cookies.delete('user-login', { path: '/' });
         event.locals.user = undefined;
 
-        return redirect(303, `${base}/user/logout`);
+        return redirect(302, `${base}/user/logout`);
     }
 }

@@ -8,7 +8,7 @@ export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
     // Redirect on load when user is logged in
     if (user) {
-        throw redirect(303, `${base}/user/profile`);
+        throw redirect(302, `${base}/user/profile`);
     }
     return {};
 }

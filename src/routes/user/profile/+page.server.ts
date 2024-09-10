@@ -16,7 +16,7 @@ export async function load({ locals }) {
     // Redirect on load when user is not logged in
     if (!userCookie) {
         loggedIn.set(false);
-        throw redirect(303, `${base}/user/login`);
+        throw redirect(302, `${base}/user/login`);
     }
 
     loggedIn.set(true);

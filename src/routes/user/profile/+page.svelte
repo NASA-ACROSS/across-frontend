@@ -99,9 +99,11 @@
                 <i class="bx bx-user opacity-70 me-2"></i>
                 Profile
             </h1>
-            <form action="{base}/user/logout">
-                <button class="btn btn-lg btn-danger">Logout</button>
-            </form>
+            <a
+                data-sveltekit-preload-data="false"
+                href="{base}/user/logout"
+                class="btn btn-lg btn-danger">Logout</a
+            >
         </div>
         <h3>
             <i class="bx bx-edit-alt opacity-70 me-2"></i>

@@ -133,3 +133,6 @@ out
 
 # Sveltekit production build files
 build/
+
+# MacOS
+.DS_Store

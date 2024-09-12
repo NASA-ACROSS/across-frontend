@@ -1,9 +1,9 @@
 import type { UserGroupRoles } from './UserGroupRoles';
 
-export type UserGroup = {
+export type UserGroupAdminUser = {
     id: number;
-    name: string;
-    short_name: string;
+    full_name: string;
+    username: string;
     is_admin: boolean;
     roles: UserGroupRoles[];
 };

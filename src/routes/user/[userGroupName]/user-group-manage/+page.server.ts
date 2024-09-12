@@ -6,6 +6,7 @@ import { base } from '$app/paths';
 import type { User } from '$lib/types/User/User';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
+import { getUserGroupAdminData } from '$lib/utils/manage/getUserGroupAdminData';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
     const userCookie = locals.user;
@@ -27,8 +28,17 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     }
 
     const invitedUsers = await getInvitedUsers(userCookie, userGroup.id);
+    const userGroupAdminData = await getUserGroupAdminData(
+        userCookie,
+        userGroup.id
+    );
 
-    return { slug: params.userGroupName, userGroup, invitedUsers };
+    return {
+        slug: params.userGroupName,
+        userGroup,
+        invitedUsers,
+        userGroupAdminData,
+    };
 };
 
 export const actions = {

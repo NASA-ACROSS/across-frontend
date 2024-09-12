@@ -5,6 +5,7 @@
     import InviteUser from './_components/InviteUser.svelte';
     import { afterUpdate } from 'svelte';
     import type { ActionData } from './$types.js';
+    import GroupUsers from './_components/GroupUsers.svelte';
 
     export let form: ActionData;
     export let data;
@@ -13,6 +14,8 @@
     let invitedUsers: UserGroupInviteRecord[] = data.invitedUsers[
         'entries'
     ] as unknown as UserGroupInviteRecord[];
+    let users = data.userGroupAdminData.users;
+    let roles = data.userGroupAdminData.roles;
 
     afterUpdate(() => {
         invitedUsers = data.invitedUsers[
@@ -36,4 +39,5 @@
 
     <InviteUser {userGroup} {form}></InviteUser>
     <InvitedUsers {invitedUsers}></InvitedUsers>
+    <GroupUsers userGroupId={userGroup.id} {users} {roles}></GroupUsers>
 </section>

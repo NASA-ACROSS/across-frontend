@@ -8,15 +8,19 @@
     export let userGroupId: number;
     export let users: UserGroupAdminUser[];
     export let roles: UserGroupRoles[];
+    export let currentUserEmail: string;
 
-    let currentUser: UserGroupAdminUser;
+    let selectedUser: UserGroupAdminUser;
+    let isRemovingUser = false;
 
     const enhancedForm: SubmitFunction = ({ formData }) => {
+        isRemovingUser = true;
         // set form data to send, specific to this form
         formData.set('userGroupId', userGroupId.toString());
-        formData.set('userInviteId', currentUser.id.toString());
+        formData.set('userId', selectedUser.id.toString());
 
         return async ({ result }) => {
+            isRemovingUser = false;
             if (result.status === 200) {
                 // rerun all `load` functions, following the successful update
                 await invalidateAll();
@@ -50,11 +54,24 @@
                             class="btn btn-lg btn-danger me-3"
                             type="submit"
                             on:click={() => {
-                                currentUser = user;
-                            }}>Remove User</button
+                                selectedUser = user;
+                            }}
+                            >{#if isRemovingUser}
+                                <span
+                                    class="spinner-border spinner-border-sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                ></span>
+                            {:else}
+                                {#if user.email === currentUserEmail}
+                                    Remove Self
+                                {:else}
+                                    Remove User
+                                {/if}
+                            {/if}</button
                         >
                         <span class="input-group-text">
-                            {user.username}
+                            {user.email}
                         </span>
                     </div>
                 </form>

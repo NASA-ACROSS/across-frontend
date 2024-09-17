@@ -36,7 +36,7 @@ export const getUserGroupAdminData = async (
         throw new Error('Unexpeted Error while fetching user group admin data');
     }
 
-    const userGroupAdminData: UserGroupAdminData[] = await response.json();
+    const userGroupAdminData: UserGroupAdminData = await response.json();
 
     return userGroupAdminData;
 };

@@ -16,11 +16,14 @@
     ] as unknown as UserGroupInviteRecord[];
     let users = data.userGroupAdminData.users;
     let roles = data.userGroupAdminData.roles;
+    let currentUserEmail = data.currentUserEmail;
 
     afterUpdate(() => {
         invitedUsers = data.invitedUsers[
             'entries'
         ] as unknown as UserGroupInviteRecord[];
+        users = data.userGroupAdminData.users;
+        roles = data.userGroupAdminData.roles;
     });
 </script>
 
@@ -39,5 +42,6 @@
 
     <InviteUser {userGroup} {form}></InviteUser>
     <InvitedUsers {invitedUsers}></InvitedUsers>
-    <GroupUsers userGroupId={userGroup.id} {users} {roles}></GroupUsers>
+    <GroupUsers userGroupId={userGroup.id} {users} {roles} {currentUserEmail}
+    ></GroupUsers>
 </section>

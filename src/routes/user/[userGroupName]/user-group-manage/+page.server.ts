@@ -7,6 +7,7 @@ import type { User } from '$lib/types/User/User';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 import { getUserGroupAdminData } from '$lib/utils/manage/getUserGroupAdminData';
+import type { AssignableRole } from '$lib/types/User/AssignableRole';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
     const userCookie = locals.user;
@@ -33,12 +34,26 @@ export const load: PageServerLoad = async ({ locals, params }) => {
         userGroup.id
     );
 
+    const adminRoleName = `${userGroupAdminData.short_name}:user_group_${userGroupAdminData.id}`;
+    const adminRoleId = userGroupAdminData.roles.find(
+        (role) => role.name == adminRoleName
+    )!.id;
+
+    const assignableRoles: AssignableRole[] = [
+        {
+            name: 'user group admin',
+            role: adminRoleName,
+            id: adminRoleId,
+        },
+    ];
+
     return {
         slug: params.userGroupName,
         userGroup,
         invitedUsers,
         userGroupAdminData,
         currentUserEmail: user.email,
+        assignableRoles,
     };
 };
 

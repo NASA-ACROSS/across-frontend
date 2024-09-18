@@ -1,4 +1,4 @@
-import type { UserGroupRoles } from './UserGroupRoles';
+import type { UserGroupRole } from './UserGroupRole';
 
 export type UserGroupAdminUser = {
     id: number;
@@ -6,5 +6,5 @@ export type UserGroupAdminUser = {
     email: string;
     username: string;
     is_admin: boolean;
-    roles: UserGroupRoles[];
+    roles: UserGroupRole[];
 };

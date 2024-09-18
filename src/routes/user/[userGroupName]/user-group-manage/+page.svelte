@@ -6,9 +6,14 @@
     import { afterUpdate } from 'svelte';
     import type { ActionData } from './$types.js';
     import GroupUsers from './_components/GroupUsers.svelte';
+    import AssignRole from './_components/AssignRole.svelte';
+    import UserDetailCard from './_components/UserDetailCard.svelte';
+    import type { UserGroupAdminUser } from '$lib/types/User/UserGroupAdminUser';
 
     export let form: ActionData;
     export let data;
+
+    let selectedUser: UserGroupAdminUser;
 
     let userGroup = data.userGroup;
     let invitedUsers: UserGroupInviteRecord[] = data.invitedUsers[
@@ -16,6 +21,7 @@
     ] as unknown as UserGroupInviteRecord[];
     let users = data.userGroupAdminData.users;
     let roles = data.userGroupAdminData.roles;
+    let assignableRoles = data.assignableRoles;
     let currentUserEmail = data.currentUserEmail;
 
     afterUpdate(() => {
@@ -24,6 +30,7 @@
         ] as unknown as UserGroupInviteRecord[];
         users = data.userGroupAdminData.users;
         roles = data.userGroupAdminData.roles;
+        assignableRoles = data.assignableRoles;
     });
 </script>
 
@@ -42,6 +49,15 @@
 
     <InviteUser {userGroup} {form}></InviteUser>
     <InvitedUsers {invitedUsers}></InvitedUsers>
-    <GroupUsers userGroupId={userGroup.id} {users} {roles} {currentUserEmail}
-    ></GroupUsers>
+
+    <div class="container pb-0">
+        <div class="row align-items-start">
+            <GroupUsers {users} bind:selectedUser></GroupUsers>
+
+            <UserDetailCard {selectedUser} {assignableRoles}></UserDetailCard>
+
+            <AssignRole user={selectedUser} roles={assignableRoles}
+            ></AssignRole>
+        </div>
+    </div>
 </section>

@@ -188,7 +188,7 @@
                         alt="Icon"
                     />
                 </div>
-                <h3 class="h5 pb-1 mb-2"><a href="#">Mission APIs</a></h3>
+                <h3 class="h5 pb-1 mb-2">Mission APIs</h3>
                 <p class="fs-sm">
                     APIs to obtain mission state and status, observing plans,
                     observability constraints, and submit target of opportunity
@@ -207,9 +207,7 @@
                         alt="Icon"
                     />
                 </div>
-                <h3 class="h5 pb-1 mb-2">
-                    <a href="#">Situational Awarness</a>
-                </h3>
+                <h3 class="h5 pb-1 mb-2">Situational Awarness</h3>
                 <p class="fs-sm">
                     Mission dashboards that provide situational awareness and
                     multi-observatory follow-up planning and feasibility.
@@ -227,7 +225,7 @@
                         alt="Icon"
                     />
                 </div>
-                <h3 class="h5 pb-1 mb-2"><a href="#">Community News</a></h3>
+                <h3 class="h5 pb-1 mb-2">Community News</h3>
                 <p class="fs-sm">
                     Mattis urna ultricies non amet, purus in auctor non. Odio
                     vulputate ac nibh. Sapien fermentum, fringilla molestie
@@ -246,7 +244,7 @@
                         alt="Icon"
                     />
                 </div>
-                <h3 class="h5 pb-1 mb-2"><a href="#">Conferences</a></h3>
+                <h3 class="h5 pb-1 mb-2">Conferences</h3>
                 <p class="fs-sm">
                     A elementum, imperdiet enim, pretium etiam facilisi in
                     aenean quam mauris.
@@ -266,7 +264,7 @@
                         alt="Icon"
                     />
                 </div>
-                <h3 class="h5 pb-1 mb-2"><a href="#">TDAMM Workshops</a></h3>
+                <h3 class="h5 pb-1 mb-2">TDAMM Workshops</h3>
                 <p class="fs-sm">
                     Mattis urna ultricies non amet, purus in auctor non. Odio
                     vulputate ac nibh. Sapien fermentum, fringilla molestie
@@ -285,7 +283,7 @@
                         alt="Icon"
                     />
                 </div>
-                <h3 class="h5 pb-1 mb-2"><a href="#">TDAMM Toolkits</a></h3>
+                <h3 class="h5 pb-1 mb-2">TDAMM Toolkits</h3>
                 <p class="fs-sm">
                     Mattis urna ultricies non amet, purus in auctor non. Odio
                     vulputate ac nibh. Sapien fermentum, fringilla molestie
@@ -304,7 +302,7 @@
                         alt="Icon"
                     />
                 </div>
-                <h3 class="h5 pb-1 mb-2"><a href="#">TDAMM Help Desk</a></h3>
+                <h3 class="h5 pb-1 mb-2">TDAMM Help Desk</h3>
                 <p class="fs-sm">
                     SMattis urna ultricies non amet, purus in auctor non. Odio
                     vulputate ac nibh. Sapien fermentum, fringilla molestie
@@ -323,9 +321,7 @@
                         alt="Icon"
                     />
                 </div>
-                <h3 class="h5 pb-1 mb-2">
-                    <a href="#">Community Grant Program</a>
-                </h3>
+                <h3 class="h5 pb-1 mb-2">Community Grant Program</h3>
                 <p class="fs-sm">
                     Mattis urna ultricies non amet, purus in auctor non. Odio
                     vulputate ac nibh. Sapien fermentum, fringilla molestie
@@ -535,7 +531,7 @@
                             <td
                                 ><button
                                     type="button"
-                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
+                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled opacity-25"
                                     >View API</button
                                 ></td
                             >

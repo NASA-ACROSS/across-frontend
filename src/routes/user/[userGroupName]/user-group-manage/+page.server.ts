@@ -216,4 +216,86 @@ export const actions = {
 
         return { successRemoveUser: true };
     },
+    assignRole: async (event) => {
+        const request = event.request;
+        const userCookie = event.locals.user;
+        const data = await request.formData();
+
+        const userId = data.get('userId') as string;
+        const roleId = data.get('roleId') as string;
+
+        console.log(`assign user role for userId: ${userId} roleId: ${roleId}`);
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${userCookie?.api_token}`,
+            },
+        };
+
+        let response;
+        try {
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user-role/${roleId}/user/${userId}`,
+                options
+            );
+        } catch (error: any) {
+            console.error(
+                `ERROR: assigning user role for userId: ${userId} userGroupId: ${roleId} at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
+            return fail(500, { error: error.message, fail: true });
+        }
+
+        if (response.status == 500) {
+            console.error(
+                `ERROR: assigning user role for userId: ${userId} userGroupId: ${roleId} at [${Date.now()}] with status code [500]`
+            );
+            return fail(500, { fail: true });
+        }
+
+        return { successAssignRole: true };
+    },
+    removeRole: async (event) => {
+        const request = event.request;
+        const userCookie = event.locals.user;
+        const data = await request.formData();
+
+        const userId = data.get('userId') as string;
+        const roleId = data.get('roleId') as string;
+
+        console.log(`remove user role for userId: ${userId} roleId: ${roleId}`);
+
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${userCookie?.api_token}`,
+            },
+        };
+
+        let response;
+        try {
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user-role/${roleId}/user/${userId}`,
+                options
+            );
+        } catch (error: any) {
+            console.error(
+                `ERROR: removing user role for userId: ${userId} userGroupId: ${roleId} at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
+            return fail(500, { error: error.message, fail: true });
+        }
+
+        if (response.status == 500) {
+            console.error(
+                `ERROR: removing user role for userId: ${userId} userGroupId: ${roleId} at [${Date.now()}] with status code [500]`
+            );
+            return fail(500, { fail: true });
+        }
+
+        return { successRemoveRole: true };
+    },
 };

@@ -13,7 +13,7 @@
     export let form: ActionData;
     export let data;
 
-    let selectedUser: UserGroupAdminUser;
+    let selectedUser: UserGroupAdminUser | undefined;
 
     let userGroup = data.userGroup;
     let invitedUsers: UserGroupInviteRecord[] = data.invitedUsers[
@@ -31,6 +31,11 @@
         users = data.userGroupAdminData.users;
         roles = data.userGroupAdminData.roles;
         assignableRoles = data.assignableRoles;
+
+        if (selectedUser) {
+            selectedUser =
+                users.find((user) => user.id == selectedUser?.id) || undefined;
+        }
     });
 </script>
 
@@ -51,6 +56,10 @@
     <InvitedUsers {invitedUsers}></InvitedUsers>
 
     <div class="container pb-0">
+        <h2 class="border-bottom pb-4">
+            <i class="bx bx-shield-quarter opacity-70"></i>
+            User Role Management
+        </h2>
         <div class="row align-items-start">
             <GroupUsers {users} bind:selectedUser></GroupUsers>
 

@@ -33,7 +33,7 @@
 
 <div class="py-md-1 col">
     <h2>
-        <i class="bx bx-user-circle opacity-70 me-2"></i>Users in Group
+        <i class="bx bx-group opacity-70 me-2"></i>Users in Group
     </h2>
     <div>
         {#if !users?.length}

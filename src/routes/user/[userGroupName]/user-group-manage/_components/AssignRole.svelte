@@ -39,7 +39,7 @@
 
 <div class="py-md-1 col">
     <h2>
-        <i class="bx bx-user-circle opacity-70 me-2"></i>Assignable Roles
+        <i class="bx bx-shield opacity-70 me-2"></i>Assignable Roles
     </h2>
     <div>
         {#if !user}
@@ -53,7 +53,7 @@
                     id="{role.id}-role"
                     method="post"
                     use:enhance={enhancedForm}
-                    action="?/removeUser"
+                    action="?/assignRole"
                 >
                     <div class="input-group-lg d-flex flex-row pb-3">
                         <button

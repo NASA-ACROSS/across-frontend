@@ -8,7 +8,7 @@
     export let selectedUser: UserGroupAdminUser | undefined;
     export let assignableRoles: UserGroupRole[];
 
-    let selectedRole;
+    let selectedRole: UserGroupRole;
     let isRemovingRole = false;
 
     // cross match assignable roles with user's to create a list of user's current roles
@@ -22,37 +22,35 @@
         return roles;
     }, [] as UserGroupRole[]);
 
-    // let isRemovingUser = false;
+    const enhancedForm: SubmitFunction = ({ formData }) => {
+        isRemovingRole = true;
+        // set form data to send, specific to this form
+        formData.set('roleId', selectedRole?.id?.toString() || '');
+        formData.set('userId', selectedUser?.id?.toString() || '');
 
-    // const enhancedForm: SubmitFunction = ({ formData }) => {
-    //     isRemovingUser = true;
-    //     // set form data to send, specific to this form
-    //     formData.set('userGroupId', userGroupId.toString());
-    //     formData.set('userId', selectedUser.id.toString());
-
-    //     return async ({ result }) => {
-    //         isRemovingUser = false;
-    //         if (result.status === 200) {
-    //             // rerun all `load` functions, following the successful update
-    //             await invalidateAll();
-    //             await applyAction(result);
-    //         } else if (result.type === 'redirect') {
-    //             goto(result.location, { invalidateAll: true, noScroll: true });
-    //         } else {
-    //             await applyAction(result);
-    //         }
-    //     };
-    // };
+        return async ({ result }) => {
+            isRemovingRole = false;
+            if (result.status === 200) {
+                // rerun all `load` functions, following the successful update
+                await invalidateAll();
+                await applyAction(result);
+            } else if (result.type === 'redirect') {
+                goto(result.location, { invalidateAll: true, noScroll: true });
+            } else {
+                await applyAction(result);
+            }
+        };
+    };
 </script>
 
 <div class="py-md-1 ms-3 me-3 col">
     <h2>
-        <i class="bx bx-user-circle opacity-70 me-2"></i>Selected User
+        <i class="bx bx-user-pin opacity-70 me-2"></i>Selected User
     </h2>
     {#if !selectedUser}
         <p>Select a User to Manage</p>
     {:else}
-        <div class="card">
+        <div class="card border-secondary">
             <div class="card-body">
                 <h4 class="card-title">{selectedUser.full_name}</h4>
                 <p class="card-text fs-md text-muted">
@@ -70,7 +68,8 @@
                             <form
                                 id="{userRole.id}-role"
                                 method="post"
-                                action="?/removeUser"
+                                use:enhance={enhancedForm}
+                                action="?/removeRole"
                             >
                                 <button
                                     class="btn btn-sm btn-danger me-2"

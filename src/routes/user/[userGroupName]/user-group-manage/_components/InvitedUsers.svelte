@@ -27,8 +27,8 @@
     };
 </script>
 
-<div class="container py-md-1">
-    <h2>
+<div class="container py-md-1 py-3">
+    <h2 class="border-bottom pb-4">
         <i class="bx bx-time opacity-70 me-2"></i>Recently Invited Users
     </h2>
     <div>

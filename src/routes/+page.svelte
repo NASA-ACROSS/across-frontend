@@ -53,112 +53,139 @@
 
     <!-- Hero -->
     <section
-        class="dark-mode bg-dark bg-size-cover bg-repeat-0 bg-position-center position-relative overflow-hidden py-5 mb-4"
-        style="background-image: url(assets/img/landing/saas-3/hero/hero-bg.jpg);"
+        class="dark-mode bg-dark bg-size-cover bg-repeat-0 bg-position-center position-relative overflow-hidden mb-4"
     >
-        <div
-            class="container position-relative zindex-2 pt-5 pb-md-2 pb-lg-4 pb-xl-5"
-        >
-            <div class="row pt-3 pb-2 py-md-4">
-                <!-- Text -->
+        <div class="jarallax bg-dark py" data-jarallax data-speed="0.5">
+            <span
+                class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"
+            ></span>
+            <div
+                class="jarallax-img"
+                style="background-image: url(/assets/img/custom/bli_grc_sm.jpg);"
+            ></div>
+            <div class="position-relative text-center zindex-5 py-sm-5">
                 <div
-                    class="col-xl-5 col-md-6 pt-lg-5 text-center text-md-start mb-4 mb-md-0"
+                    class="container position-relative zindex-2 pb-md-2 pb-lg-4 pb-xl-5"
                 >
-                    <h5 class="display-6 pb-2 pb-md-3">
-                        Enabling Time Domain and Multimessenger Astrophysics
-                    </h5>
-                    <p
-                        class="fs-lg d-md-none d-xl-block pb-2 pb-md-0 mb-4 mb-md-5"
-                    >
-                        Time domain and multimessenger astrophysics are opening
-                        entirely new windows on the Universe. The <strong
-                            class="text-white"
-                            >Astrophysics Cross-Observatory Science Support
-                            (ACROSS)</strong
-                        > center focuses on the coordination of NASA resources to
-                        help facilitate this new era of astronomy.
-                    </p>
-
-                    <!-- Buttons -->
-                    <div
-                        class="d-flex justify-content-center justify-content-md-start pb-2 pt-lg-2 pt-xl-0"
-                    >
-                        <a
-                            href="#stats"
-                            class="btn btn-lg btn-primary shadow-primary me-3 me-sm-4"
-                            >Get Started</a
+                    <div class="row pt-3 pb-2 py-md-4">
+                        <!-- Text -->
+                        <div
+                            class="col-xl-5 col-md-6 pt-lg-5 text-center text-md-start mb-4 mb-md-0"
                         >
-                        <a href="#" class="btn btn-lg btn-outline-secondary"
-                            >Learn More</a
+                            <h5 class="display-6 pb-2 pb-md-3">
+                                Enabling Time Domain and Multimessenger
+                                Astrophysics
+                            </h5>
+                            <p
+                                class="fs-lg d-md-none d-xl-block pb-2 pb-md-0 mb-4 mb-md-5"
+                            >
+                                The <strong class="text-white"
+                                    >Astrophysics Cross-Observatory Science
+                                    Support (ACROSS)</strong
+                                > center focuses on the coordination of NASA resources
+                                to help facilitate this new era of astronomy. Time
+                                domain and multimessenger astrophysics are opening
+                                entirely new windows on the Universe.
+                            </p>
+
+                            <!-- Buttons -->
+                            <div
+                                class="d-flex justify-content-center justify-content-md-start pb-2 pt-lg-2 pt-xl-0"
+                            >
+                                <a
+                                    href="#stats"
+                                    class="btn btn-lg btn-primary shadow-primary me-3 me-sm-4"
+                                    >Get Started</a
+                                >
+                                <a
+                                    href={`${base}/missions`}
+                                    class="btn btn-lg btn-outline-secondary"
+                                    >Learn More</a
+                                >
+                            </div>
+
+                            <!-- Stats -->
+                            <div
+                                id="stats"
+                                class="row row-cols-3 pt-4 pt-md-5 mt-2 mt-xl-4"
+                            >
+                                {#if apiCount}
+                                    <div class="col">
+                                        <h3 class="h2 mb-2">{apiCount}</h3>
+                                        <p class="mb-0">API Queries</p>
+                                    </div>
+                                {/if}
+                                {#if tooCount}
+                                    <div class="col">
+                                        <h3 class="h2 mb-2">{tooCount}</h3>
+                                        <p class="mb-0">ToO Submissions</p>
+                                    </div>
+                                {/if}
+                                {#if coordinatedObservationsCount}
+                                    <div class="col">
+                                        <h3 class="h2 mb-2">
+                                            {coordinatedObservationsCount}
+                                        </h3>
+                                        <p class="mb-0">Coordinated Obs</p>
+                                    </div>
+                                {/if}
+                            </div>
+                        </div>
+
+                        <!-- Cursor position parallax -->
+                        <div
+                            class="col-xl-7 col-md-6 d-md-flex justify-content-end"
                         >
-                    </div>
-
-                    <!-- Stats -->
-                    <div
-                        id="stats"
-                        class="row row-cols-3 pt-4 pt-md-5 mt-2 mt-xl-4"
-                    >
-                        {#if apiCount}
-                            <div class="col">
-                                <h3 class="h2 mb-2">{apiCount}</h3>
-                                <p class="mb-0">API Queries</p>
+                            <div class="parallax" style="max-width: 648px;">
+                                <div class="parallax-layer" data-depth="0.1">
+                                    <img
+                                        src="assets/img/landing/online-courses/hero/layer01.png"
+                                        alt="Layer"
+                                    />
+                                </div>
+                                <div class="parallax-layer" data-depth="0.13">
+                                    <img
+                                        src="assets/img/landing/online-courses/hero/layer02.png"
+                                        alt="Layer"
+                                    />
+                                </div>
+                                <div
+                                    class="parallax-layer zindex-5"
+                                    data-depth="-0.12"
+                                >
+                                    <img
+                                        src="assets/img/custom/layer03.png"
+                                        alt="Layer"
+                                    />
+                                </div>
+                                <div
+                                    class="parallax-layer zindex-3"
+                                    data-depth="0.27"
+                                >
+                                    <img
+                                        src="assets/img/custom/layer04_02.png"
+                                        alt="Layer"
+                                    />
+                                </div>
+                                <div
+                                    class="parallax-layer zindex-1"
+                                    data-depth="-0.18"
+                                >
+                                    <img
+                                        src="assets/img/custom/layer05.png"
+                                        alt="Layer"
+                                    />
+                                </div>
+                                <div
+                                    class="parallax-layer zindex-1"
+                                    data-depth="0.1"
+                                >
+                                    <img
+                                        src="assets/img/custom/layer06.png"
+                                        alt="Layer"
+                                    />
+                                </div>
                             </div>
-                        {/if}
-                        {#if tooCount}
-                            <div class="col">
-                                <h3 class="h2 mb-2">{tooCount}</h3>
-                                <p class="mb-0">ToO Submissions</p>
-                            </div>
-                        {/if}
-                        {#if coordinatedObservationsCount}
-                            <div class="col">
-                                <h3 class="h2 mb-2">
-                                    {coordinatedObservationsCount}
-                                </h3>
-                                <p class="mb-0">Coordinated Obs</p>
-                            </div>
-                        {/if}
-                    </div>
-                </div>
-
-                <!-- Cursor position parallax -->
-                <div class="col-xl-7 col-md-6 d-md-flex justify-content-end">
-                    <div class="parallax" style="max-width: 648px;">
-                        <div class="parallax-layer" data-depth="0.1">
-                            <img
-                                src="assets/img/landing/online-courses/hero/layer01.png"
-                                alt="Layer"
-                            />
-                        </div>
-                        <div class="parallax-layer" data-depth="0.13">
-                            <img
-                                src="assets/img/landing/online-courses/hero/layer02.png"
-                                alt="Layer"
-                            />
-                        </div>
-                        <div class="parallax-layer zindex-5" data-depth="-0.12">
-                            <img
-                                src="assets/img/custom/layer03.png"
-                                alt="Layer"
-                            />
-                        </div>
-                        <div class="parallax-layer zindex-3" data-depth="0.27">
-                            <img
-                                src="assets/img/custom/layer04_02.png"
-                                alt="Layer"
-                            />
-                        </div>
-                        <div class="parallax-layer zindex-1" data-depth="-0.18">
-                            <img
-                                src="assets/img/custom/layer05.png"
-                                alt="Layer"
-                            />
-                        </div>
-                        <div class="parallax-layer zindex-1" data-depth="0.1">
-                            <img
-                                src="assets/img/custom/layer06.png"
-                                alt="Layer"
-                            />
                         </div>
                     </div>
                 </div>
@@ -167,7 +194,7 @@
     </section>
 
     <!-- Services -->
-    <section id="services" class="container mt-5 pt-5">
+    <section id="services" class="container mt-3 pt-3 pb-5">
         <h2 class="h1 text-center pt-1 pt-xl-2 mb-4">
             ACROSS Support Overview
         </h2>
@@ -327,243 +354,6 @@
                     vulputate ac nibh. Sapien fermentum, fringilla molestie
                     lorem nec.
                 </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Dashboard Table-->
-    <section class="container position-relativ mt-5 mb-5 pb-5">
-        <div
-            class="container position-relative zindex-3 py-lg-4 pt-md-2 py-xl-5 mb-lg-4"
-        >
-            <!-- Title -->
-            <div class="row justify-content-center text-center pb-4 mb-2">
-                <div class="col-xl-6 pt-2">
-                    <h2 class="h1 mb-4">Mission Status Dashboard</h2>
-                    <p class="fs-lg mb-0">
-                        ACROSS provides comprehensive API access to
-                        programmatically obtain the state and status of NASA's
-                        astrophysics fleet.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Dark table with striped rows -->
-            <div class="table-responsive mx-auto w-75">
-                <table class="table table-striped text-center align-middle">
-                    <thead>
-                        <tr>
-                            <th scope="col">Mission</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Observing Schedule</th>
-                            <th scope="col">Target Of Opportunity</th>
-                            <th scope="col">API</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">JWST</th>
-                            <td><div class="text-success">Active</div></td>
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
-                                    >View Schedule</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
-                                    >Request ToO</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
-                                    >View API</button
-                                ></td
-                            >
-                        </tr>
-                        <tr>
-                            <th scope="row">HST</th>
-                            <td><div class="text-success">Active</div></td>
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
-                                    >View Schedule</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
-                                    >Request ToO</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
-                                    >View API</button
-                                ></td
-                            >
-                        </tr>
-                        <tr>
-                            <th scope="row">Swift</th>
-                            <td><div class="text-success">Active</div></td>
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
-                                    >View Schedule</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
-                                    >Request ToO</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
-                                    >View API</button
-                                ></td
-                            >
-                        </tr>
-                        <tr>
-                            <th scope="row">Fermi</th>
-                            <td><div class="text-success">Active</div></td>
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
-                                    >View Schedule</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto disabled"
-                                    >Request ToO</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
-                                    >View API</button
-                                ></td
-                            >
-                        </tr>
-                        <tr>
-                            <th scope="row">Chandra</th>
-                            <td><div class="text-success">Active</div></td>
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
-                                    >View Schedule</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
-                                    >Request ToO</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
-                                    >View API</button
-                                ></td
-                            >
-                        </tr>
-                        <tr>
-                            <th scope="row">NICER</th>
-                            <td><div class="text-success">Active</div></td>
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
-                                    >View Schedule</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
-                                    >Request ToO</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled"
-                                    >View API</button
-                                ></td
-                            >
-                        </tr>
-                        <tr>
-                            <th scope="row">NuStar</th>
-                            <td><div class="text-success">Active</div></td>
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto"
-                                    >View Schedule</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto"
-                                    >Request ToO</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto disabled opacity-25"
-                                    >View API</button
-                                ></td
-                            >
-                        </tr>
-                        <tr>
-                            <th scope="row">BurstCube</th>
-                            <td><div class="text-warning">Comissioning</div></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-primary fs-sm w-100 w-lg-auto disabled"
-                                    >View Schedule</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-success fs-sm w-100 w-lg-auto disabled"
-                                    >Request ToO</button
-                                ></td
-                            >
-                            <td
-                                ><button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-warning fs-sm w-100 w-lg-auto"
-                                    >View API</button
-                                ></td
-                            >
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </section>

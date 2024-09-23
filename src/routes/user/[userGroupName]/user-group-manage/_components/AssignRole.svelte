@@ -5,7 +5,7 @@
     import type { UserGroupRole } from '$lib/types/User/UserGroupRole';
     import type { SubmitFunction } from '@sveltejs/kit';
 
-    export let user: UserGroupAdminUser;
+    export let user: UserGroupAdminUser | undefined;
     export let roles: UserGroupRole[];
     let selectedRole: UserGroupRole;
 
@@ -19,7 +19,7 @@
     const enhancedForm: SubmitFunction = ({ formData }) => {
         isAssigningRole = true;
         // set form data to send, specific to this form
-        formData.set('userId', user.id.toString());
+        formData.set('userId', user?.id?.toString() || '');
         formData.set('roleId', selectedRole.id.toString());
 
         return async ({ result }) => {
@@ -55,9 +55,9 @@
                     use:enhance={enhancedForm}
                     action="?/assignRole"
                 >
-                    <div class="input-group-lg d-flex flex-row pb-3">
+                    <div class="input-group d-flex flex-row pb-3">
                         <button
-                            class="btn btn-lg btn-success me-3"
+                            class="btn btn-success"
                             type="submit"
                             on:click={() => {
                                 selectedRole = role;
@@ -72,7 +72,7 @@
                                 Assign Role
                             {/if}</button
                         >
-                        <span class="input-group-text">
+                        <span class="input-group-text flex-fill">
                             {role.name}
                         </span>
                     </div>

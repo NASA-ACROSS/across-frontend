@@ -13,11 +13,13 @@
     import type { SubmitFunction } from '@sveltejs/kit';
     import UserGroups from './_components/UserGroups.svelte';
     import UserGroupInvites from './_components/UserGroupInvites.svelte';
+    import type { UserGroup } from '$lib/types/User/UserGroup';
 
     export let data: PageData;
 
     // user selected role
     let roleSelection: string;
+    let leaveUserGroup: UserGroup;
 
     let originalUserData = structuredClone(data.user);
     let userData = data.user;
@@ -68,6 +70,9 @@
             formData.set('role', roleSelection);
         } else if (action.href.includes('cancelRequestedRole')) {
             formData.set('role', roleSelection);
+        } else if (action.href.includes('leaveGroup')) {
+            formData.set('userId', userData.id.toString());
+            formData.set('userGroupId', leaveUserGroup.id.toString());
         }
 
         /**
@@ -89,6 +94,8 @@
 
     afterUpdate(() => {
         userData = data.user;
+        userGroups = data.user.user_groups;
+        invitations = data.user.received_invites;
     });
 </script>
 
@@ -242,8 +249,8 @@
     </div>
 </section>
 
-<UserGroups {userGroups} />
 <UserGroupInvites {invitations} />
+<UserGroups {userGroups} bind:leaveUserGroup {enhancedForm} />
 
 <section class="pb-5 bg-secondary"></section>
 

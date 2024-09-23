@@ -7,28 +7,6 @@
 
     export let users: UserGroupAdminUser[];
     export let selectedUser: UserGroupAdminUser | undefined;
-
-    // let isRemovingUser = false;
-
-    // const enhancedForm: SubmitFunction = ({ formData }) => {
-    //     isRemovingUser = true;
-    //     // set form data to send, specific to this form
-    //     formData.set('userGroupId', userGroupId.toString());
-    //     formData.set('userId', selectedUser.id.toString());
-
-    //     return async ({ result }) => {
-    //         isRemovingUser = false;
-    //         if (result.status === 200) {
-    //             // rerun all `load` functions, following the successful update
-    //             await invalidateAll();
-    //             await applyAction(result);
-    //         } else if (result.type === 'redirect') {
-    //             goto(result.location, { invalidateAll: true, noScroll: true });
-    //         } else {
-    //             await applyAction(result);
-    //         }
-    //     };
-    // };
 </script>
 
 <div class="py-md-1 col">
@@ -37,7 +15,7 @@
     </h2>
     <div>
         {#if !users?.length}
-            <p>No pending invites</p>
+            <p>No Users in Group</p>
         {:else}
             {#each users as user}
                 <!-- Button addon on the right -->
@@ -58,42 +36,9 @@
                             }
                         }}
                     >
-                        {#if selectedUser?.email == user?.email}
-                            Select
-                        {:else}
-                            Select
-                        {/if}</button
-                    >
+                        Select
+                    </button>
                 </div>
-
-                <!-- <form
-                    id="{user.id}-user"
-                    method="post"
-                    use:enhance={enhancedForm}
-                    action="?/removeUser"
-                > -->
-                <!-- <button
-                        class="btn btn-lg btn-danger me-3"
-                        type="submit"
-                        on:click={() => {
-                            selectedUser = user;
-                        }}
-                        >{#if isRemovingUser}
-                            <span
-                                class="spinner-border spinner-border-sm"
-                                role="status"
-                                aria-hidden="true"
-                            ></span>
-                        {:else}
-                            {#if user.email === currentUserEmail}
-                                Remove Self
-                            {:else}
-                                Remove User
-                            {/if}
-                        {/if}</button
-                    > -->
-
-                <!-- </form> -->
             {/each}
         {/if}
     </div>

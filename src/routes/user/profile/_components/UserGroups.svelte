@@ -48,6 +48,7 @@
                                         aria-hidden="true"
                                     ></span>
                                 {:else}
+                                    <i class="bx bx-trash opacity-70 me-2"></i>
                                     Leave Group
                                 {/if}
                             </button>

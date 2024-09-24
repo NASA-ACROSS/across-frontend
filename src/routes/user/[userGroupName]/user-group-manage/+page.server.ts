@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     );
 
     const adminRoleName = `${userGroupAdminData.short_name}:user_group_${userGroupAdminData.id}`;
-    const adminRoleId = userGroupAdminData.roles.find(
+    const adminRoleId = userGroupAdminData?.roles?.find(
         (role) => role.name == adminRoleName
     )!.id;
 

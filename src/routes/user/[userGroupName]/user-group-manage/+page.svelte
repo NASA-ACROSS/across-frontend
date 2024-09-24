@@ -63,7 +63,11 @@
         <div class="row align-items-start">
             <GroupUsers {users} bind:selectedUser></GroupUsers>
 
-            <UserDetailCard {selectedUser} {assignableRoles}></UserDetailCard>
+            <UserDetailCard
+                {selectedUser}
+                {assignableRoles}
+                userGroupId={userGroup.id}
+            ></UserDetailCard>
 
             <AssignRole user={selectedUser} roles={assignableRoles}
             ></AssignRole>

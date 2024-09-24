@@ -7,6 +7,7 @@
 
     export let selectedUser: UserGroupAdminUser | undefined;
     export let assignableRoles: UserGroupRole[];
+    export let userGroupId: number;
 
     let selectedRole: UserGroupRole;
     let isRemovingRole = false;
@@ -22,11 +23,16 @@
         return roles;
     }, [] as UserGroupRole[]);
 
-    const enhancedForm: SubmitFunction = ({ formData }) => {
+    const enhancedForm: SubmitFunction = ({ formData, action }) => {
         isRemovingRole = true;
-        // set form data to send, specific to this form
-        formData.set('roleId', selectedRole?.id?.toString() || '');
-        formData.set('userId', selectedUser?.id?.toString() || '');
+        if (action.href.includes('removeRole')) {
+            // set form data to send, specific to this form
+            formData.set('roleId', selectedRole?.id?.toString() || '');
+            formData.set('userId', selectedUser?.id?.toString() || '');
+        } else if (action.href.includes('removeUser')) {
+            formData.set('userGroupId', userGroupId?.toString() || '');
+            formData.set('userId', selectedUser?.id?.toString() || '');
+        }
 
         return async ({ result }) => {
             isRemovingRole = false;
@@ -96,10 +102,17 @@
             {/if}
             <div class="card-body">
                 <div class="d-flex flex-row-reverse">
-                    <a href="#" class="btn btn-sm btn-danger">
-                        <i class="bx bx-trash opacity-70 me-2"></i>
-                        Remove User From Group
-                    </a>
+                    <form
+                        id="{selectedUser.id}-remove"
+                        method="post"
+                        use:enhance={enhancedForm}
+                        action="?/removeUser"
+                    >
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="bx bx-trash opacity-70 me-2"></i>
+                            Remove User From Group
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

@@ -57,7 +57,7 @@
                 >
                     <div class="input-group d-flex flex-row pb-3">
                         <button
-                            class="btn btn-success"
+                            class="btn btn-primary"
                             type="submit"
                             on:click={() => {
                                 selectedRole = role;

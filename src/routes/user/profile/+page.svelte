@@ -109,8 +109,10 @@
             <a
                 data-sveltekit-preload-data="false"
                 href="{base}/user/logout"
-                class="btn btn-lg btn-danger">Logout</a
+                class="btn btn-lg btn-danger"
             >
+                <i class="bx bx-log-out opacity-70 me-2"></i>Logout
+            </a>
         </div>
         <h3>
             <i class="bx bx-edit-alt opacity-70 me-2"></i>

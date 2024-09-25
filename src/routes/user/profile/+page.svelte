@@ -50,13 +50,7 @@
      * `cancel()` will prevent the submission.
      * `submitter` is the `HTMLElement` that caused the form to be submitted.
      */
-    const enhancedForm: SubmitFunction = ({
-        formElement,
-        formData,
-        action,
-        cancel,
-        submitter,
-    }) => {
+    const enhancedForm: SubmitFunction = ({ formData, action, cancel }) => {
         if (action.href.includes('updateUserInformation')) {
             // set form data to send, specific to this table
             if (isUserDataUnchanged) {
@@ -79,7 +73,7 @@
          * `result` is an `ActionResult` object
          * `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
          */
-        return async ({ result, update }) => {
+        return async ({ result }) => {
             if (result.type === 'success') {
                 // rerun all `load` functions, following the successful update
                 await invalidateAll();
@@ -253,8 +247,6 @@
 
 <UserGroupInvites {invitations} />
 <UserGroups {userGroups} bind:leaveUserGroup {enhancedForm} />
-
-<section class="pb-5 bg-secondary"></section>
 
 <section class="pb-5 bg-secondary"></section>
 

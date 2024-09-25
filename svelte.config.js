@@ -15,15 +15,19 @@ const config = {
         paths: {
             relative: false,
         },
+
         // adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
         // If your environment is not supported or you settled on a specific environment, switch out the adapter.
         // See https://kit.svelte.dev/docs/adapters for more information about adapters.
         adapter: adapter(),
+
+        // poll every minute checking for new version, fixes buggy navigation see: https://kit.svelte.dev/docs/configuration#version
         version: {
             name: child_process
                 .execSync('git rev-parse HEAD')
                 .toString()
                 .trim(),
+            pollInterval: 60000,
         },
     },
 };

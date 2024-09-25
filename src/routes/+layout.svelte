@@ -5,6 +5,9 @@
     import { base } from '$app/paths';
     import { page } from '$app/stores';
 
+    import { beforeNavigate } from '$app/navigation';
+    import { updated } from '$app/stores';
+
     // components
     import Navigation from '$lib/components/Navigation.svelte';
     import Footer from '$lib/components/Footer.svelte';
@@ -38,6 +41,12 @@
 
     // theme variables for light/dark mode and root html ref
     let mode, root;
+
+    beforeNavigate(({ willUnload, to }) => {
+        if ($updated && !willUnload && to?.url) {
+            location.href = to.url.href;
+        }
+    });
 </script>
 
 <svelte:head>

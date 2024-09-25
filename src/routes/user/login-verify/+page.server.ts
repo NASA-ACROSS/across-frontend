@@ -1,16 +1,16 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { base } from "$app/paths";
+import { base } from '$app/paths';
 import { CONFIG } from '../../../config/config.js';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import type { CookieSerializeOptions } from 'cookie';
-import { aesGcmEncrypt, aesGcmDecrypt } from '$lib/utils/crypto/crypto-aes-gcm';
-import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie.js';
+import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
     // Redirect on load when user is logged in
     if (user) {
-        throw redirect(303, `${base}/user/profile`);
+        throw redirect(302, `${base}/user/profile`);
     }
     return {};
 }
@@ -97,15 +97,14 @@ export const actions = {
                 credentials.rememberMe = true;
             }
 
-            const encryptedCredentials = await aesGcmEncrypt(JSON.stringify(credentials), CONFIG.API_TOKEN);
-
-            cookies.set(
-                'user-login',
-                encryptedCredentials,
-                cookieOptions
+            const encryptedCredentials = await aesGcmEncrypt(
+                JSON.stringify(credentials),
+                CONFIG.API_TOKEN
             );
 
-            throw redirect(303, `${base}/user/profile`);
+            cookies.set('user-login', encryptedCredentials, cookieOptions);
+
+            throw redirect(302, `${base}/user/profile`);
         }
 
         return {

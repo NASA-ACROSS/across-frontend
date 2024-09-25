@@ -21,8 +21,6 @@
     $: limit = +data.limit;
     let showPageInput = false;
 
-    const ADMIN_PAGE_ROLES = ['put_burstcube_too', 'delete_burstcube_too'];
-
     const columns = [
         'id',
         'created_on',
@@ -32,8 +30,16 @@
         'too_info',
     ];
 
-    // add admin actions column to table when the user has appropriate roles
-    if (data.userRoles.some((val: string) => ADMIN_PAGE_ROLES.includes(val))) {
+    // add admin actions column to table when the user belongs to burstcube and is admin
+    if (
+        data?.userGroups?.some((group) => {
+            const isBurstcube =
+                group.name.toLowerCase().includes('burstcube') ||
+                group.short_name.toLowerCase().includes('burstcube');
+
+            return isBurstcube && group.is_admin;
+        })
+    ) {
         columns.push('actions');
     }
 

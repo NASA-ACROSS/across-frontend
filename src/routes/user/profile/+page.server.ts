@@ -3,137 +3,31 @@ import { base } from '$app/paths';
 import { loggedIn } from '$lib/stores/login';
 import { CONFIG } from '../../../config/config';
 import type { CookieSerializeOptions } from 'cookie';
-import type { UserCredentialsCookie } from '$lib/types/UserCredentialsCookie';
-import type { UserRequestRoles } from '$lib/types/UserRequestRoles';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
-import { getUserRoles } from '$lib/utils/user/getUserRoles';
+import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { validate } from '$lib/utils/regex/validate';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
 import { emailRegex } from '$lib/utils/regex/emailRegex';
+import type { User } from '$lib/types/User/User';
 
-const ROLES_TO_HIDE = ['admin', 'frontend'];
-
-export async function load({
-    locals,
-}: {
-    locals: { user: UserCredentialsCookie };
-}) {
-    const user = locals.user;
+export async function load({ locals }) {
+    const userCookie = locals.user;
     // Redirect on load when user is not logged in
-    if (!user) {
+    if (!userCookie) {
         loggedIn.set(false);
-        throw redirect(303, `${base}/user/login`);
+        throw redirect(302, `${base}/user/login`);
     }
 
     loggedIn.set(true);
 
-    const roles: UserRequestRoles = await getUserRoles(user);
+    const user: User = await getUserInfo(userCookie);
 
-    // remove these roles from self-service list
-    roles.requestable_roles = roles.requestable_roles.filter(
-        (role) => !ROLES_TO_HIDE.includes(role)
-    );
-    user.roles = roles.approved_roles;
-
-    // Respond with user cookie data
-    return { user, roles };
+    // Respond with user data
+    return { user };
 }
 
 export const actions = {
-    cancelRequestedRole: async (event: any) => {
-        const { request, locals } = event;
-        const user: UserCredentialsCookie = locals.user;
-        const data = await request.formData();
-
-        const requestedRole = JSON.parse(data.get('role'));
-
-        const userData = {
-            id: requestedRole.id,
-        };
-
-        const USER_API_TOKEN = user.api_token;
-
-        const options: RequestInit = {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${USER_API_TOKEN}`,
-            },
-        };
-
-        const requestParams = new URLSearchParams(userData);
-
-        try {
-            await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user_request_roles?${requestParams.toString()}`,
-                options
-            );
-        } catch (error: any) {
-            console.error(
-                `ERROR: catch profile cancel requested role for [${user.email}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, {
-                error: error.message,
-                failRequestRole: true,
-            });
-        }
-
-        return { successCancelRequestedRole: true };
-    },
-    requestRole: async (event: any) => {
-        const { request, locals } = event;
-        const user: UserCredentialsCookie = locals.user;
-        const data = await request.formData();
-
-        const roles = data.get('role') as string;
-        const reasons = data.get('reason') as string;
-
-        if (ROLES_TO_HIDE.includes(roles)) {
-            console.error(
-                `ERROR: profile requesting hidden role [${roles}] for [${user.email}] at [${Date.now()}]`
-            );
-            return fail(500, {
-                failRequestRole: true,
-            });
-        }
-
-        const userData = {
-            roles,
-            reasons,
-            id: user.id.toString(),
-        };
-
-        const USER_API_TOKEN = user.api_token;
-
-        const options: RequestInit = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${USER_API_TOKEN}`,
-            },
-        };
-
-        const requestParams = new URLSearchParams(userData);
-
-        try {
-            await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user_request_roles?${requestParams.toString()}`,
-                options
-            );
-        } catch (error: any) {
-            console.error(
-                `ERROR: catch profile requesting role for [${user.email}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, {
-                error: error.message,
-                failRequestRole: true,
-            });
-        }
-
-        return { successRequestRole: true };
-    },
     updateUserInformation: async (event: any) => {
         const { request, locals, cookies } = event;
         const user: UserCredentialsCookie = locals.user;
@@ -248,5 +142,91 @@ export const actions = {
             username,
             email,
         };
+    },
+    acceptInvite: async (event) => {
+        const request = event.request;
+        const userCookie = event.locals.user;
+        const data = await request.formData();
+
+        const userInviteId = data.get('userInviteId') as string;
+        const userGroupId = data.get('userGroupId') as string;
+
+        console.log(
+            `accept invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
+        );
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${userCookie?.api_token}`,
+            },
+        };
+
+        let response;
+        try {
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite/${userInviteId}/accept`,
+                options
+            );
+        } catch (error: any) {
+            console.error(
+                `ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
+            return fail(500, { error: error.message, fail: true });
+        }
+
+        if (response.status == 500) {
+            console.error(
+                `ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`
+            );
+            return fail(500, { fail: true });
+        }
+
+        return { successAcceptInvite: true };
+    },
+    rejectInvite: async (event) => {
+        const request = event.request;
+        const userCookie = event.locals.user;
+        const data = await request.formData();
+
+        const userInviteId = data.get('userInviteId') as string;
+        const userGroupId = data.get('userGroupId') as string;
+
+        console.log(
+            `rejecting invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
+        );
+
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${userCookie?.api_token}`,
+            },
+        };
+
+        let response;
+        try {
+            response = await fetch(
+                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite/${userInviteId}/deny`,
+                options
+            );
+        } catch (error: any) {
+            console.error(
+                `ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}]`,
+                JSON.stringify(error)
+            );
+            return fail(500, { error: error.message, fail: true });
+        }
+
+        if (response.status == 500) {
+            console.error(
+                `ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`
+            );
+            return fail(500, { fail: true });
+        }
+
+        return { successAcceptInvite: true };
     },
 };

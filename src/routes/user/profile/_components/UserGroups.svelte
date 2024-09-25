@@ -1,8 +1,13 @@
 <script lang="ts">
+    import { applyAction, enhance } from '$app/forms';
+    import { goto, invalidateAll } from '$app/navigation';
     import { base } from '$app/paths';
     import type { UserGroup } from '$lib/types/User/UserGroup';
+    import type { ActionResult, SubmitFunction } from '@sveltejs/kit';
 
     export let userGroups: UserGroup[];
+    export let leaveUserGroup: UserGroup;
+    export let enhancedForm;
 </script>
 
 {#if userGroups && userGroups?.length}
@@ -10,19 +15,46 @@
         <div class="container py-md-3">
             <h3><i class="bx bx-group opacity-70 me-2"></i>My User Groups</h3>
             {#each userGroups as userGroup}
-                <div class="input-group-lg d-flex flex-row pb-3">
-                    {#if userGroup.is_admin}
-                        <a
-                            class="btn btn-lg btn-primary me-3"
-                            href="{base}/user/{userGroup.short_name}/user-group-manage"
-                        >
-                            <i class="bx bx-edit me-2"></i> Manage
-                        </a>
-                    {/if}
-                    <span class="input-group-text">
-                        {userGroup.name}
-                    </span>
-                </div>
+                <!-- Button addon on the right -->
+                <form
+                    method="post"
+                    use:enhance={enhancedForm}
+                    action="?/leaveGroup"
+                >
+                    <div class="input-group d-flex py-1">
+                        <span class={`input-group-text flex-grow-1`}>
+                            {userGroup.name}
+                        </span>
+                        {#if userGroup.is_admin}
+                            <a
+                                class="btn btn-primary"
+                                href="{base}/user/{userGroup.short_name}/user-group-manage"
+                            >
+                                <i class="bx bx-edit me-2"></i> Manage
+                            </a>
+                        {/if}
+                        {#if userGroup.id != 1}
+                            <button
+                                class={`btn btn-danger`}
+                                type="submit"
+                                on:click={() => {
+                                    leaveUserGroup = userGroup;
+                                }}
+                            >
+                                {#if leaveUserGroup?.id == userGroup?.id}
+                                    <span
+                                        class="spinner-border spinner-border-sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    ></span>
+                                {:else}
+                                    <i class="bx bx-trash opacity-70 me-2"></i>
+                                    Leave Group
+                                {/if}
+                            </button>
+                        {/if}
+                    </div>
+                </form>
             {/each}
         </div>
     </section>

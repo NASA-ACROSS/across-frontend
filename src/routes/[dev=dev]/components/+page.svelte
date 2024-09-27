@@ -1,13 +1,9 @@
 <script lang="ts">
-    import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
-    let visible = false;
+    import { base } from '$app/paths';
 
-    const confirmHook = (confirm: boolean) => {
-        alert(`User Clicked ${confirm ? 'Confirm' : 'Cancel'}`);
-    };
+    export let data;
+    let links = data.links;
 </script>
-
-<ConfirmationModal bind:visible {confirmHook}></ConfirmationModal>
 
 <section class="py-5 bg-secondary">
     <div class="container pb-0">
@@ -16,11 +12,14 @@
                 <i class="bx bx-code-alt me-2"></i>Component Playground
             </h1>
         </div>
-        <h3 class="pb-3">
-            <i class="bx bx-code-alt me-2"></i>Confirmation Modal
-        </h3>
-        <button class="btn btn-danger" on:click={() => (visible = !visible)}
-            >DO THING!</button
-        >
+        {#each links as link}
+            <h3>
+                <p>
+                    <a href="{base}/dev/components/{link.path}" class="link"
+                        ><i class="bx bx-code me-2"></i>{link.name}</a
+                    >
+                </p>
+            </h3>
+        {/each}
     </div>
 </section>

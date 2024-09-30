@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { emailRegex } from '$lib/utils/regex/emailRegex';
     import type { KeyboardEventHandler } from 'svelte/elements';
 
     export let label = 'Email';
@@ -16,7 +15,7 @@
     <input
         class="form-control"
         {required}
-        bind:value
+        {value}
         {disabled}
         {name}
         on:keyup={onKeyUp}
@@ -26,3 +25,17 @@
     />
     <label for={label}>{label}</label>
 </div>
+
+<style>
+    input:valid:not(:placeholder-shown) {
+        border: 1px solid rgba(160, 160, 255, 1);
+    }
+
+    input:disabled {
+        border: 1px solid rgb(34, 197, 94) !important;
+    }
+
+    input:invalid:not(:placeholder-shown) {
+        border: 1px solid rgba(255, 0, 0, 1);
+    }
+</style>

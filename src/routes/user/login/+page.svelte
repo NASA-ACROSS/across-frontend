@@ -34,7 +34,7 @@
                 <div class="flex-grow-1 me-3">
                     <EmailInput
                         value={form?.email}
-                        disabled={isLoggingIn}
+                        disabled={isLoggingIn || form?.success}
                         autocomplete={false}
                     />
                 </div>

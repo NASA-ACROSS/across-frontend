@@ -18,7 +18,7 @@
     export let data: PageData;
 
     $: {
-        loggedIn.set(data.user);
+        loggedIn.set(!!data.user);
     }
 
     $: DOM_MOUNTED = false;
@@ -38,9 +38,6 @@
             }
         });
     });
-
-    // theme variables for light/dark mode and root html ref
-    let mode, root;
 
     beforeNavigate(({ willUnload, to }) => {
         if ($updated && !willUnload && to?.url) {
@@ -86,19 +83,6 @@
     />
 
     {#key $page.url}
-        <script>
-            // must run every navigation change asap to prevent flashing
-            mode = window.localStorage.getItem('mode');
-            root = document.getElementsByTagName('html')[0];
-            if (mode == null) {
-                mode = 'dark';
-            } else if (mode !== null && mode === 'dark') {
-                root.classList.add('dark-mode');
-            } else {
-                root.classList.remove('dark-mode');
-            }
-        </script>
-
         {#if DOM_MOUNTED}
             <!-- Vendor Scripts -->
             <script
@@ -136,9 +120,11 @@
     {/key}
 </svelte:head>
 
-<Navigation></Navigation>
+<main class="d-flex flex-column min-vh-100 m-0">
+    <Navigation></Navigation>
 
-<slot />
+    <slot />
 
-<Footer></Footer>
-<BackToTopButton></BackToTopButton>
+    <Footer></Footer>
+    <BackToTopButton></BackToTopButton>
+</main>

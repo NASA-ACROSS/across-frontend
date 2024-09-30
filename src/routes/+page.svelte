@@ -1,14 +1,17 @@
 <script lang="ts">
     import type { PageData } from './$types';
+    import { base } from '$app/paths';
     import Card from '$lib/components/Card.svelte';
     import Hero from '$lib/components/Hero.svelte';
-    import { base } from '$app/paths';
+    import SupportOverview from '$lib/components/SupportOverview.svelte';
 
     export let data: PageData;
 
-    let tooCount = data.too_count;
-    let apiCount = data.api_count;
-    let coordinatedObservationsCount = data.coordinated_observations_count;
+    let statisticsCounts = {
+        tooCount: data.too_count,
+        apiCount: data.api_count,
+        coordinatedObservationsCount: data.coordinated_observations_count,
+    };
 
     // extracted to make old site work with svelte
     // library expects a string json object and runs JSON.parse on it
@@ -46,152 +49,8 @@
     });
 </script>
 
-<!-- Page wrapper for sticky footer -->
-<!-- Wraps everything except footer to push footer to the bottom of the page if there is little content -->
 <main class="page-wrapper">
-    <!-- <Hero></Hero> -->
-
-    <!-- Hero -->
-    <section
-        class="dark-mode bg-dark bg-size-cover bg-repeat-0 bg-position-center position-relative overflow-hidden mb-4"
-    >
-        <div class="jarallax bg-dark py" data-jarallax data-speed="0.5">
-            <span
-                class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"
-            ></span>
-            <div
-                class="jarallax-img"
-                style="background-image: url(/assets/img/custom/bli_grc_sm.jpg);"
-            ></div>
-            <div class="position-relative text-center zindex-5 py-sm-5">
-                <div
-                    class="container position-relative zindex-2 pb-md-2 pb-lg-4 pb-xl-5"
-                >
-                    <div class="row pt-3 pb-2 py-md-4">
-                        <!-- Text -->
-                        <div
-                            class="col-xl-5 col-md-6 pt-lg-5 text-center text-md-start mb-4 mb-md-0"
-                        >
-                            <h5 class="display-6 pb-2 pb-md-3">
-                                Enabling Time Domain and Multimessenger
-                                Astrophysics
-                            </h5>
-                            <p
-                                class="fs-lg d-md-none d-xl-block pb-2 pb-md-0 mb-4 mb-md-5"
-                            >
-                                The <strong class="text-white"
-                                    >Astrophysics Cross-Observatory Science
-                                    Support (ACROSS)</strong
-                                > center focuses on the coordination of NASA resources
-                                to help facilitate this new era of astronomy. Time
-                                domain and multimessenger astrophysics are opening
-                                entirely new windows on the Universe.
-                            </p>
-
-                            <!-- Buttons -->
-                            <div
-                                class="d-flex justify-content-center justify-content-md-start pb-2 pt-lg-2 pt-xl-0"
-                            >
-                                <a
-                                    href="#stats"
-                                    class="btn btn-lg btn-primary shadow-primary me-3 me-sm-4"
-                                    >Get Started</a
-                                >
-                                <a
-                                    href={`${base}/missions`}
-                                    class="btn btn-lg btn-outline-secondary"
-                                    >Learn More</a
-                                >
-                            </div>
-
-                            <!-- Stats -->
-                            <div
-                                id="stats"
-                                class="row row-cols-3 pt-4 pt-md-5 mt-2 mt-xl-4"
-                            >
-                                {#if apiCount}
-                                    <div class="col">
-                                        <h3 class="h2 mb-2">{apiCount}</h3>
-                                        <p class="mb-0">API Queries</p>
-                                    </div>
-                                {/if}
-                                {#if tooCount}
-                                    <div class="col">
-                                        <h3 class="h2 mb-2">{tooCount}</h3>
-                                        <p class="mb-0">ToO Submissions</p>
-                                    </div>
-                                {/if}
-                                {#if coordinatedObservationsCount}
-                                    <div class="col">
-                                        <h3 class="h2 mb-2">
-                                            {coordinatedObservationsCount}
-                                        </h3>
-                                        <p class="mb-0">Coordinated Obs</p>
-                                    </div>
-                                {/if}
-                            </div>
-                        </div>
-
-                        <!-- Cursor position parallax -->
-                        <div
-                            class="col-xl-7 col-md-6 d-md-flex justify-content-end"
-                        >
-                            <div class="parallax" style="max-width: 648px;">
-                                <div class="parallax-layer" data-depth="0.1">
-                                    <img
-                                        src="assets/img/landing/online-courses/hero/layer01.png"
-                                        alt="Layer"
-                                    />
-                                </div>
-                                <div class="parallax-layer" data-depth="0.13">
-                                    <img
-                                        src="assets/img/landing/online-courses/hero/layer02.png"
-                                        alt="Layer"
-                                    />
-                                </div>
-                                <div
-                                    class="parallax-layer zindex-5"
-                                    data-depth="-0.12"
-                                >
-                                    <img
-                                        src="assets/img/custom/layer03.png"
-                                        alt="Layer"
-                                    />
-                                </div>
-                                <div
-                                    class="parallax-layer zindex-3"
-                                    data-depth="0.27"
-                                >
-                                    <img
-                                        src="assets/img/custom/layer04_02.png"
-                                        alt="Layer"
-                                    />
-                                </div>
-                                <div
-                                    class="parallax-layer zindex-1"
-                                    data-depth="-0.18"
-                                >
-                                    <img
-                                        src="assets/img/custom/layer05.png"
-                                        alt="Layer"
-                                    />
-                                </div>
-                                <div
-                                    class="parallax-layer zindex-1"
-                                    data-depth="0.1"
-                                >
-                                    <img
-                                        src="assets/img/custom/layer06.png"
-                                        alt="Layer"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <Hero {statisticsCounts}></Hero>
 
     <!-- Services -->
     <section id="services" class="container mt-3 pt-3 pb-5">
@@ -202,174 +61,83 @@
             How does ACROSS coordinate NASA resources and support the TDAMM
             community?
         </p>
-        <div class="row mb-3">
-            <div
-                class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4"
+        <div class="d-flex flex-sm-wrap flex-md-nowrap">
+            <SupportOverview
+                title="Mission APIs"
+                imgSrc="assets/img/landing/saas-1/features/chat.svg"
             >
-                <div
-                    class="d-inline-block bg-secondary rounded-circle p-3 mb-4"
-                >
-                    <img
-                        src="assets/img/landing/saas-1/features/chat.svg"
-                        width="32"
-                        alt="Icon"
-                    />
-                </div>
-                <h3 class="h5 pb-1 mb-2">Mission APIs</h3>
-                <p class="fs-sm">
-                    APIs to obtain mission state and status, observing plans,
-                    observability constraints, and submit target of opportunity
-                    requests
-                </p>
-            </div>
-            <div
-                class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4"
+                Application Programming Interfaces (APIs) to obtain mission
+                state and status, observing plans, observing constraints, and
+                submit target of opportunity requests.
+            </SupportOverview>
+            <SupportOverview
+                title="Situational Awarness"
+                imgSrc="assets/img/landing/saas-1/features/analytics.svg"
             >
-                <div
-                    class="d-inline-block bg-secondary rounded-circle p-3 mb-4"
-                >
-                    <img
-                        src="assets/img/landing/saas-1/features/analytics.svg"
-                        width="32"
-                        alt="Icon"
-                    />
-                </div>
-                <h3 class="h5 pb-1 mb-2">Situational Awarness</h3>
-                <p class="fs-sm">
-                    Mission dashboards that provide situational awareness and
-                    multi-observatory follow-up planning and feasibility.
-                </p>
-            </div>
-            <div
-                class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4"
+                Mission dashboards that provide situational awareness and
+                multi-obesrvatory follow-up planing and feasibility.
+            </SupportOverview>
+            <SupportOverview
+                title="Community News"
+                imgSrc="assets/img/landing/saas-1/features/bell.svg"
             >
-                <div
-                    class="d-inline-block bg-secondary rounded-circle p-3 mb-4"
-                >
-                    <img
-                        src="assets/img/landing/saas-1/features/bell.svg"
-                        width="32"
-                        alt="Icon"
-                    />
-                </div>
-                <h3 class="h5 pb-1 mb-2">Community News</h3>
-                <p class="fs-sm">
-                    Mattis urna ultricies non amet, purus in auctor non. Odio
-                    vulputate ac nibh. Sapien fermentum, fringilla molestie
-                    lorem nec.
-                </p>
-            </div>
-            <div
-                class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4"
+                Updates on the latest TDAMM press releases, science highlights,
+                and programmatic news.
+            </SupportOverview>
+            <SupportOverview
+                title="Conferences"
+                imgSrc="assets/img/landing/saas-1/features/tasks.svg"
             >
-                <div
-                    class="d-inline-block bg-secondary rounded-circle p-3 mb-4"
-                >
-                    <img
-                        src="assets/img/landing/saas-1/features/tasks.svg"
-                        width="32"
-                        alt="Icon"
-                    />
-                </div>
-                <h3 class="h5 pb-1 mb-2">Conferences</h3>
-                <p class="fs-sm">
-                    A elementum, imperdiet enim, pretium etiam facilisi in
-                    aenean quam mauris.
-                </p>
-            </div>
+                A comprehensive list upcoming and past conferences and workshops
+                focusing on TDAMM related science and infrastructure
+            </SupportOverview>
         </div>
-        <div class="row">
-            <div
-                class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4"
+        <div class="d-flex flex-sm-wrap flex-md-nowrap">
+            <SupportOverview
+                title="TDAMM Workshops"
+                imgSrc="assets/img/landing/saas-1/features/calendar.svg"
             >
-                <div
-                    class="d-inline-block bg-secondary rounded-circle p-3 mb-4"
-                >
-                    <img
-                        src="assets/img/landing/saas-1/features/calendar.svg"
-                        width="32"
-                        alt="Icon"
-                    />
-                </div>
-                <h3 class="h5 pb-1 mb-2">TDAMM Workshops</h3>
-                <p class="fs-sm">
-                    Mattis urna ultricies non amet, purus in auctor non. Odio
-                    vulputate ac nibh. Sapien fermentum, fringilla molestie
-                    lorem nec.
-                </p>
-            </div>
-            <div
-                class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4"
+                Community workshops to demonstrate the use of community and
+                ACROSS developed tools to lower the barriers to entry to their
+                usage.
+            </SupportOverview>
+            <SupportOverview
+                title="TDAMM Toolkits"
+                imgSrc="assets/img/landing/saas-1/features/add-group.svg"
             >
-                <div
-                    class="d-inline-block bg-secondary rounded-circle p-3 mb-4"
-                >
-                    <img
-                        src="assets/img/landing/saas-1/features/add-group.svg"
-                        width="32"
-                        alt="Icon"
-                    />
-                </div>
-                <h3 class="h5 pb-1 mb-2">TDAMM Toolkits</h3>
-                <p class="fs-sm">
-                    Mattis urna ultricies non amet, purus in auctor non. Odio
-                    vulputate ac nibh. Sapien fermentum, fringilla molestie
-                    lorem nec.
-                </p>
-            </div>
-            <div
-                class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4"
+                Toolkits to programmatically interface with ACROSS developed
+                TDAMM infrastructure.
+            </SupportOverview>
+            <SupportOverview
+                title="TDAMM Help Desk"
+                imgSrc="assets/img/landing/saas-1/features/headset.svg"
             >
-                <div
-                    class="d-inline-block bg-secondary rounded-circle p-3 mb-4"
-                >
-                    <img
-                        src="assets/img/landing/saas-1/features/headset.svg"
-                        width="32"
-                        alt="Icon"
-                    />
-                </div>
-                <h3 class="h5 pb-1 mb-2">TDAMM Help Desk</h3>
-                <p class="fs-sm">
-                    SMattis urna ultricies non amet, purus in auctor non. Odio
-                    vulputate ac nibh. Sapien fermentum, fringilla molestie
-                    lorem nec.
-                </p>
-            </div>
-            <div
-                class="col-lg-3 col-md-4 col-sm-6 text-center pb-md-2 mb-3 mb-lg-4"
+                A virtual help desk staffed by domain experts who can assist
+                observers in submitting ToO requests and coordinating with
+                observatory teams.
+            </SupportOverview>
+            <SupportOverview
+                title="Community Grant Program"
+                imgSrc="assets/img/landing/saas-1/features/shield.svg"
             >
-                <div
-                    class="d-inline-block bg-secondary rounded-circle p-3 mb-4"
-                >
-                    <img
-                        src="assets/img/landing/saas-1/features/shield.svg"
-                        width="32"
-                        alt="Icon"
-                    />
-                </div>
-                <h3 class="h5 pb-1 mb-2">Community Grant Program</h3>
-                <p class="fs-sm">
-                    Mattis urna ultricies non amet, purus in auctor non. Odio
-                    vulputate ac nibh. Sapien fermentum, fringilla molestie
-                    lorem nec.
-                </p>
-            </div>
+                A public solicitation to fund the development of TDAMM related
+                observing tools, analysis software, and infrastructure.
+            </SupportOverview>
         </div>
     </section>
 
     <!-- Quotes -->
     <section class="container pt-0 pb-5 mt-0 mb-5">
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-5 my-sm-2 my-md-0">
                 <div class="card h-100 border-0 overflow-hidden px-md-4">
                     <span
-                        class="bg-gradient-primary position-absolute top-0 start-0 w-100 h-100 opacity-10 d-none d-md-block"
+                        class="bg-gradient-primary position-absolute top-0 start-0 w-100 h-100 opacity-10 d-none d-sm-block"
                     ></span>
                     <div
-                        class="card-body d-flex flex-column align-items-center justify-content-center position-relative zindex-2 p-0 pb-2 p-lg-4"
+                        class="card-body d-flex flex-column align-items-center justify-content-center position-relative zindex-2 p-0 py-sm-3 p-lg-4"
                     >
-                        <h2 class="h1 text-center text-md-start p-lg-4">
+                        <h2 class="h1 text-center text-md-start mb-2">
                             The Decadal Survey Findings on Multi-messenger
                             Astronomy
                         </h2>

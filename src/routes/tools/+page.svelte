@@ -5,445 +5,758 @@
 <!-- Page wrapper for sticky footer -->
 <!-- Wraps everything except footer to push footer to the bottom of the page if there is little content -->
 <main class="page-wrapper">
+  <!-- Page image (parallax) -->
+  <!-- <div class="jarallax mb-lg-5 mb-4" data-jarallax data-speed="0.35" style="height: 36.45vw; height: 750px;">
+        <div class="jarallax-img" style="background-image: url(assets/img/custom/rsz_shutterstock_744577681.jpg);"></div>
+      </div>   -->
+
   <!-- Breadcrumb -->
   <nav class="container py-4 mb-2 my-lg-3" aria-label="breadcrumb">
     <!-- <ol class="breadcrumb mb-0">
           <li class="breadcrumb-item">
             <a href="index.html"><i class="bx bx-home-alt fs-lg me-1"></i>Home</a>
           </li>
-          <li class="breadcrumb-item active" aria-current="page">Proposal Opportunities</li>
+          <li class="breadcrumb-item active" aria-current="page">Tools and Resources</li>
         </ol> -->
   </nav>
 
   <!-- Post content + Sharing -->
-  <section class="container pb-5 mb-md-2 mb-lg-4">
+  <div id="overview"></div>
+  <section class="container pb-0 mb-md-2 mb-lg-4">
     <div class="row gy-4">
-      <!-- Content -->
-      <div class="col-lg-9">
-        <div id="proposals"></div>
-        <h1 class="border-bottom pb-4" id="Overview">Tools and Resources</h1>
+      <h1 class="border-bottom pb-4" id="Overview">Tools and Resources</h1>
+    </div>
+    <!-- <p class="d-md-none d-lg-block pb-3 mb-2 mb-md-3">Id eget blandit sapien cras massa lectus lorem placerat. Quam dolor commodo fermentum bibendum dictumst. Risus pretium eget at viverra eget. Sit neque adipiscing malesuada blandit justo, quam. Id eget blandit sapien cras massa lectus lorem placerat. Quam dolor commodo fermentum bibendum dictumst. Risus pretium eget at viverra eget. Sit neque adipiscing malesuada blandit justo, quam.</p> -->
+  </section>
 
-        <div id="overview"></div>
-        <h2 class="h4">Overview</h2>
+  <!-- Reporting Tools -->
+  <div id="reporting"></div>
+  <section class="pb-md-2 pb-lg-0 mb-5">
+    <div class="container pb-4 pt-2">
+      <h2 class="h2 text-center text-md-start mb-lg-0 pt-0 pt-md-0">
+        Rapid Reporting Resources
+      </h2>
 
-        <p class="mb-4 pb-2">
-          Supporting research in science and technology is an important part of
-          NASA's overall mission. NASA solicits this research through the
-          release of various research announcements in a wide range of science
-          and technology disciplines. Basic and applied research in support of
-          NASA’s Science Mission Directorate (SMD) is solicited through the
-          Research Opportunities in Space and Earth Sciences (ROSES) research
-          announcement (NRA). Through this ROSES NRA, NASA encourages the
-          participation of the space and Earth science communities in SMD’s
-          research and technology programs. These programs form the foundation
-          of both the basic and applied research opportunities that allows
-          NASA’s space and Earth science programs realize the Strategic
-          Objectives of NASA and the SMD.
-        </p>
-
-        <div id="programs"></div>
-        <h2 class="h4">Rapid Reporting Tools</h2>
-
-        <p class="mb-0 pb-0">
-          Real-time messaging systems are pivotal in enabling multimessenger astronomy by facilitating the rapid and efficient sharing of observational data across the global scientific community. These systems provide prompt notifications of transient astrophysical events, such as gamma-ray bursts, gravitational waves, and neutrino detections, allowing astronomers to coordinate observations using various instruments and across different wavelengths. This timely dissemination of information is crucial for capturing fleeting signals and gaining a comprehensive understanding of the dynamic and often elusive phenomena in the universe.
-        </p>
-
-        <div class="row row-cols-2 row-cols-md-2 g-4 pt-2 pt-md-4 pb-lg-2 mb-5">
-          <!-- Item -->
-          <div class="col">
-            <div class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100">
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" alt="Doctor icon"> -->
-              <div class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2 text-align-top">
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  The General Coordinates Network
-                </h3>
-                <p class="fs-sm mb-1">
-                  The General Coordinates Network (GCN) is a public collaboration platform run by NASA for the astronomy research community to share alerts and rapid communications about high-energy, multimessenger, and transient phenomena.
-                </p>
-                <a
-                  href="https://science.nasa.gov/researchers/sara/grant-solicitations"
-                  class="btn btn-link stretched-link px-0"
-                >
-                  Visit gcn.nasa.gov
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Item -->
-          <div class="col">
-            <div
-              class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100"
-            >
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" width="168" alt="Doctor icon"> -->
-              <div
-                class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2"
-              >
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  HOPSKOTCH
-                </h3>
-                <p class="fs-sm mb-1">
-                  Hop.SCIMMA is an NSF funded hub providing real-time streams of candidate discoveries from MMA experiments. Hop.SCIMMA allows observatories to publish streams of candidates and discoveries, and scientists, brokers, and TOMs to subscribe to these streams.
-                </p>
-                <a
-                  href="https://nspires.nasaprs.com/external/viewrepositorydocument/cmdocumentid=735966/solicitationId=%7BBCEE336B-D550-CCBA-1C8C-7A866DB06F45%7D/viewSolicitationDocument=1/FULL%20ROSES-2020_Amend89.pdf"
-                  class="btn btn-link stretched-link px-0"
-                >
-                Visit hop.scimma.org
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Item -->
-          <div class="col">
-            <div
-              class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100"
-            >
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" width="168" alt="Doctor icon"> -->
-              <div
-                class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2"
-              >
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  The Astronomer's Telegrams
-                </h3>
-                <p class="fs-sm mb-1">
-                  Email notices for the reporting new astronomical observations of transient sources.
-                </p>
-                <a
-                  href="https://nspires.nasaprs.com"
-                  class="btn btn-link stretched-link px-0"
-                >
-                  Visit astronomerstelegram.org
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="programs"></div>
-        <h2 class="h4">Data Analysis Toolkits</h2>
-
-        <p class="mb-0 pb-0">
-          Windows on the Universe: The era of Multi-Messenger Astrophysics
-          (WoU-MMA) is one of the 10 Big Ideas that will drive NSF’s long-term
-          research agenda.
-        </p>
-
-        <div class="row row-cols-1 row-cols-md-3 g-4 pt-2 pt-md-4 pb-lg-2 mb-5">
-          <!-- Item -->
-          <div class="col">
-            <div
-              class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100"
-            >
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" width="168" alt="Doctor icon"> -->
-              <div
-                class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2 text-align-top"
-              >
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  Neil Gehrels Swift Observatory Guest Investigator Program
-                </h3>
-                <p class="fs-sm mb-1">
-                  Cycle 19 proposals are due Thursday, September 22, 2022
-                </p>
-                <a
-                  href="https://swift.gsfc.nasa.gov/proposals/swiftgi.html"
-                  class="btn btn-link stretched-link px-0"
-                >
-                  Learn More
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Item -->
-          <div class="col">
-            <div
-              class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100"
-            >
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" width="168" alt="Doctor icon"> -->
-              <div
-                class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2 text-align-top"
-              >
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  Hubble Space Telescope Observations
-                </h3>
-                <p class="fs-sm mb-1">
-                  Cycle 30 1st Mid-Cycle proposals due September 30, 2022
-                </p>
-                <a
-                  href="https://hst-docs.stsci.edu/hsp"
-                  class="btn btn-link stretched-link px-0"
-                >
-                  Learn More
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Item -->
-          <div class="col">
-            <div
-              class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100"
-            >
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" width="168" alt="Doctor icon"> -->
-              <div
-                class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2 text-align-top"
-              >
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  Fermi Guest Investigator Program
-                </h3>
-                <p class="fs-sm mb-1">
-                  Cycle 16 proposals are due in early 2023
-                </p>
-                <a
-                  href="https://fermi.gsfc.nasa.gov/ssc/proposals/"
-                  class="btn btn-link stretched-link px-0"
-                >
-                  Learn More
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="resources"></div>
-        <h2 class="h5 pt-3">Observations Planning Tools</h2>
-        <p class="mb-0 pb-0">
-          Windows on the Universe: The era of Multi-Messenger Astrophysics
-          (WoU-MMA) is one of the 10 Big Ideas that will drive NSF’s long-term
-          research agenda. 
-        </p>
-
-        <div class="row row-cols-1 row-cols-md-3 g-4 pt-2 pt-md-4 pb-lg-2 mb-5">
-          <!-- Item -->
-          <div class="col">
-            <div
-              class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100"
-            >
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" width="168" alt="Doctor icon"> -->
-              <div
-                class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2 text-align-top"
-              >
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  Astronomy and Astrophysics Research Grants (AAG)
-                </h3>
-                <p class="fs-sm mb-1">Annual deadline 15 November.</p>
-                <a href="#" class="btn btn-link stretched-link px-0">
-                  Learn More
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Item -->
-          <div class="col">
-            <div
-              class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100"
-            >
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" width="168" alt="Doctor icon"> -->
-              <div
-                class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2"
-              >
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  Division of Physics: Investigator-Initiated Research Projects
-                  (PHY)
-                </h3>
-                <p class="fs-sm mb-1">
-                  Annual deadlines in November and December.
-                </p>
-                <a href="#" class="btn btn-link stretched-link px-0">
-                  Learn More
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Item -->
-          <div class="col">
-            <div
-              class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100"
-            >
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" width="168" alt="Doctor icon"> -->
-              <div
-                class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2"
-              >
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  Faculty Early Career Development Program (CAREER)
-                </h3>
-                <p class="fs-sm mb-1">
-                  Annual deadline fourth Wednesday every year.
-                </p>
-                <a href="#" class="btn btn-link stretched-link px-0">
-                  Read More
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="resources"></div>
-        <h2 class="h5 pt-3">Data Archives & Repositories</h2>
-        <p class="mb-0 pb-0">
-          Windows on the Universe: The era of Multi-Messenger Astrophysics
-          (WoU-MMA) is one of the 10 Big Ideas that will drive NSF’s long-term
-          research agenda.
-        </p>
-
-        <div class="row row-cols-1 row-cols-md-3 g-4 pt-2 pt-md-4 pb-lg-2 mb-5">
-          <!-- Item -->
-          <div class="col">
-            <div
-              class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100"
-            >
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" width="168" alt="Doctor icon"> -->
-              <div
-                class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2 text-align-top"
-              >
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  Astronomy and Astrophysics Research Grants (AAG)
-                </h3>
-                <p class="fs-sm mb-1">Annual deadline 15 November.</p>
-                <a href="#" class="btn btn-link stretched-link px-0">
-                  Learn More
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Item -->
-          <div class="col">
-            <div
-              class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100"
-            >
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" width="168" alt="Doctor icon"> -->
-              <div
-                class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2"
-              >
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  Division of Physics: Investigator-Initiated Research Projects
-                  (PHY)
-                </h3>
-                <p class="fs-sm mb-1">
-                  Annual deadlines in November and December.
-                </p>
-                <a href="#" class="btn btn-link stretched-link px-0">
-                  Learn More
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Item -->
-          <div class="col">
-            <div
-              class="card bg-secondary border-0 flex-column flex-sm-row flex-md-column flex-xxl-row align-items-top card-hover border-primary h-100"
-            >
-              <!-- <img src="assets/img/landing/medical/icons/doctor.svg" width="168" alt="Doctor icon"> -->
-              <div
-                class="card-body text-center text-sm-start text-md-center text-xxl-start pb-3 pb-sm-2 pb-md-3 pb-xxl-2"
-              >
-                <h3 class="h6 mb-2 mt-n4 mt-sm-0 mt-md-n4 mt-xxl-0">
-                  Faculty Early Career Development Program (CAREER)
-                </h3>
-                <p class="fs-sm mb-1">
-                  Annual deadline fourth Wednesday every year.
-                </p>
-                <a href="#" class="btn btn-link stretched-link px-0">
-                  Read More
-                  <i class="bx bx-right-arrow-alt fs-xl ms-1"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>      </div>
-
-      <div class="col-xl-3 col-lg-5 position-relative pt-5">
+      <!-- Item -->
+      <div class="row pb-0 mb-md-4 mb-lg-5 pt-5 mt-4">
         <div
-          class="sticky-top ms-xl-5 ms-lg-4 ps-xxl-4"
-          style="top: 105px !important; margin-left: 0px !important;"
+          class="rellax col-md-6 pb-1 mb-3 pb-md-0 mb-md-0"
+          data-rellax-percentage="0.5"
+          data-rellax-speed="0.8"
+          data-disable-parallax-down="md"
         >
-          <!-- Page Outline -->
-          <div class="card card-body border-0 position-relative mb-4">
-            <span
-              class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-primary opacity-10 rounded-3"
-            ></span>
-            <div class="position-relative zindex-2">
-              <h3 class="h5 mb-4">Page Outline</h3>
-              <ul class="list-unstyled mb-3">
-                <li class="pb-1 mb-1">
-                  <div class="mb-0">
-                    <a class="nav nav-link p-0" href="#overview">Overview</a>
-                  </div>
-                </li>
-
-                <li class="pb-1 mb-1">
-                  <div class="mb-0">
-                    <a class="nav nav-link p-0" href="#gops"
-                      >Guest Observer & Investigator Programs</a
-                    >
-                  </div>
-                </li>
-
-                <li class="pb-1 mb-1">
-                  <div class="mb-0">
-                    <a class="nav nav-link p-0" href="#joint"
-                      >Joint Observing Opportunities</a
-                    >
-                  </div>
-                </li>
-
-                <li class="pb-1 mb-1">
-                  <div class="mb-0">
-                    <a class="nav nav-link p-0" href="#resources"
-                      >Complementary Opportunities</a
-                    >
-                  </div>
-                </li>
-              </ul>
+          <a href="portfolio-single-project.html">
+            <img
+              src="{base}/assets/img/custom/gcn-diagram.jpg"
+              class="rounded-3"
+              width="600"
+              alt="Image"
+            />
+          </a>
+        </div>
+        <div
+          class="rellax col-md-6"
+          data-rellax-percentage="0.5"
+          data-rellax-speed="-0.6"
+          data-disable-parallax-down="md"
+        >
+          <div class="ps-md-4 ms-md-2">
+            <a
+              href="#"
+              class="d-table badge bg-faded-primary text-primary fs-sm mb-3"
+              >Featured Resource</a
+            >
+            <!-- <div class="fs-sm text-muted mb-1">Nov 18, 2021</div> -->
+            <h2 class="h4">The General Coordinates Network</h2>
+            <p class="d-md-none d-lg-block pb-3 mb-2 mb-md-3">
+              The General Coordinates Network (GCN) is a public collaboration
+              platform run by NASA for the astronomy research community to share
+              alerts and rapid communications about high-energy, multimessenger,
+              and transient phenomena. GCN is the established platform for
+              publishing discoveries and follow-up of gamma-ray bursts (GRBs),
+              gravitational-wave (GW) compact binary mergers, and high-energy
+              neutrinos. GCN distributes alerts between space- and ground-based
+              observatories, physics experiments, and thousands of astronomers
+              around the world.
+            </p>
+            <!-- <a href="portfolio-single-project.html" class="btn btn-outline-primary">Learn More</a> -->
+            <div class="d-flex flex-column flex-sm-row">
+              <a href="#" class="btn btn-primary mb-3 mb-sm-0 me-sm-3">
+                Visit gcn.nasa.gov
+              </a>
+              <a href="#" class="btn btn-outline-primary">
+                <i class="bx bx-edit fs-xl me-xl-2"></i>
+                Contribute
+              </a>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div class="mt-4">
-            <h5 class="mb-4">Share this page:</h5>
-            <div class="mb-4 pb-lg-3">
-              <a
-                href="#"
-                class="btn btn-icon btn-secondary btn-linkedin me-2 mb-2"
+      <div class="row align-items-center pb-5 mb-lg-2">
+        <div class="col-md-8 text-center text-md-start">
+          <!-- <p class="fs-lg text-muted mb-md-0">We are focused on helping brands grow through digital transformation services. We bring real solutions to each client’s problems through a deep understanding of their market, solution, and vision.</p> -->
+        </div>
+        <div
+          class="col-md-4 d-flex justify-content-center justify-content-md-end"
+        >
+          <!--  <a href="services-v1.html" class="btn btn-outline-primary btn-lg">See all services</a> -->
+        </div>
+      </div>
+      <div class="row row-cols-1 row-cols-md-2">
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="https://www.wis-tns.org"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 ms-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
               >
-                <i class="bx bxl-linkedin"></i>
-              </a>
-              <a
-                href="#"
-                class="btn btn-icon btn-secondary btn-facebook me-2 mb-2"
-              >
-                <i class="bx bxl-facebook"></i>
-              </a>
-              <a
-                href="#"
-                class="btn btn-icon btn-secondary btn-twitter me-2 mb-2"
-              >
-                <i class="bx bxl-twitter"></i>
-              </a>
-              <a
-                href="#"
-                class="btn btn-icon btn-secondary btn-instagram me-2 mb-2"
-              >
-                <i class="bx bxl-instagram"></i>
-              </a>
-              <div></div>
+                <img
+                  src="{base}/assets/img/services/icons/web-search.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                Transient Name Server
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                The official IAU mechanism for reporting new astronomical
+                transients, provided by the IAU supernova working group.
+              </p>
             </div>
+          </a>
+        </div>
+
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="https://www.astronomerstelegram.org"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 ms-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
+              >
+                <img
+                  src="{base}/assets/img/about/icons/chat-light.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                The Astronomer's Telegrams
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                Email notices for the reporting new astronomical observations of
+                transient sources.
+              </p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="services-single-v1.html"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 ms-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
+              >
+                <img
+                  src="{base}/assets/img/about/icons/chat-light.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                Hopskotch
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                Gravida eget euismod tempus diam dignissim quam. Dignissim
+                magnis blandit faucibus convallis augue nisl, etiam. Feugiat ut
+                molestie non arcu senectus sed. Diam pellentesque sit mattis nec
+                amet varius nunc a sed.
+              </p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Analysis Toolkits -->
+  <div id="analysis"></div>
+  <section class="pb-md-2 pb-lg-0 mb-0">
+    <div class="container pb-4 pt-0">
+      <h2 class="h2 text-center text-md-start mb-lg-0 pt-0 pt-md-0">
+        Data Analysis Toolkits
+      </h2>
+
+      <!-- Item -->
+      <div class="row pb-0 mb-md-4 mb-lg-5 pt-5 mt-4">
+        <div
+          class="rellax col-md-6 pb-1 mb-3 pb-md-0 mb-md-0"
+          data-rellax-percentage="0.5"
+          data-rellax-speed="0.8"
+          data-disable-parallax-down="md"
+        >
+          <a href="portfolio-single-project.html">
+            <img
+              src="{base}/assets/img/custom/gdt_logo.png"
+              class="rounded-3 pt-5 mt-5"
+              width="600"
+              alt="Image"
+            />
+          </a>
+        </div>
+        <div
+          class="rellax col-md-6"
+          data-rellax-percentage="0.5"
+          data-rellax-speed="-0.6"
+          data-disable-parallax-down="md"
+        >
+          <div class="ps-md-4 ms-md-2">
+            <a
+              href="#"
+              class="d-table badge bg-faded-primary text-primary fs-sm mb-3"
+              >Featured Resource</a
+            >
+            <!-- <a href="#" class="badge fs-sm text-white bg-primary shadow-primary text-decoration-none mb-3">Featured Resource</a> -->
+            <!-- <div class="fs-sm text-muted mb-1">Nov 18, 2021</div> -->
+            <h2 class="h4">The Gamma-ray Data Tools</h2>
+            <p class="d-md-none d-lg-block pb-3 mb-2 mb-md-3">
+              The Gamma-ray Data Tools consist of an Application Programming
+              Interface (API) for detctors that gather GBM like data. The
+              fundamental purpose of the Data Tools is to allow general users to
+              incorporate gamma-ray analysis into their scripts and workflows
+              without having to sweat very many details. The Data Tools have a
+              fairly high-level API layer allowing a user to read, reduce, and
+              visualize GBM data with only a few lines of code. For expert
+              users, and users who want fine control over various aspects of
+              their analysis, the Data Tools exposes a lower-level API layer,
+              which can also be used to generalize the GBM Data Tools to data
+              from other like instruments.
+            </p>
+            <!-- <a href="portfolio-single-project.html" class="btn btn-outline-primary">Learn More</a> -->
+            <div class="d-flex flex-column flex-sm-row">
+              <a href="#" class="btn btn-primary mb-3 mb-sm-0 me-sm-3">
+                Learn More
+              </a>
+              <a href="#" class="btn btn-outline-primary">
+                <i class="bx bx-edit fs-xl me-xl-2"></i>
+                Contribute
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row align-items-center pb-5 mb-lg-2">
+        <div class="col-md-8 text-center text-md-start">
+          <!-- <p class="fs-lg text-muted mb-md-0">We are focused on helping brands grow through digital transformation services. We bring real solutions to each client’s problems through a deep understanding of their market, solution, and vision.</p> -->
+        </div>
+        <div
+          class="col-md-4 d-flex justify-content-center justify-content-md-end"
+        >
+          <!--  <a href="services-v1.html" class="btn btn-outline-primary btn-lg">See all services</a> -->
+        </div>
+      </div>
+      <div class="row row-cols-1 row-cols-md-2">
+        <!-- Item -->
+        <!-- <div class="col py-4 my-2 my-sm-3">
+              <a href="services-single-v1.html" class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 me-xl-2">
+                <div class="card-body pt-3">
+                  <div class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3">
+                    <img src="assets/img/services/icons/rocket.svg" class="d-block m-1" width="40" alt="Icon">
+                  </div>
+                  <h2 class="h4 d-inline-flex align-items-center">
+                    Gamma-ray Data Tools
+                    <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+                  </h2>
+                  <p class="fs-sm text-body mb-0">Nisi, dis sed cursus eget pellentesque mattis. Odio eu proin aliquam a. Semper bibendum tellus non tellus, facilisi dignissim in quam massa. Aliquam, feugiat ut cum tellus, sit. Quis consectetur gravida ac ac lectus cursus egestas.</p>
+                </div>
+              </a>
+            </div> -->
+
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="https://threeml.readthedocs.io/en/stable/index.html"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 ms-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
+              >
+                <img
+                  src="{base}/assets/img/services/icons/analytics.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                The Multi-Mission Maximum Likelihood framework (3ML)
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                A common framework for source modeling and analysis with data
+                from different instrument.
+              </p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="https://www.astropy.org"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 ms-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
+              >
+                <img
+                  src="{base}/assets/img/services/icons/cms.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                AstroPy
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                A community-developed core Python package for Astronomy.
+              </p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="https://mhealpy.readthedocs.io/en/latest/index.html"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 ms-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
+              >
+                <img
+                  src="{base}/assets/img/services/icons/cms.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                mhealpy
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                Object-oriented wrapper of healpy.
+              </p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="https://pypi.org/project/healpix-alchemy"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 ms-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
+              >
+                <img
+                  src="{base}/assets/img/services/icons/cms.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                HEALPix-alchemy
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                An open-source, Python implementation of a set of methods that
+                enables rapid all-sky geometry calculations. Designed for
+                cross-matching galaxy catalogs, observation footprints, and
+                all-sky images like gravitational-wave probability sky maps or
+                even dust maps.
+              </p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Observations Planning Tools -->
+  <div id="planning"></div>
+  <section class="pb-md-2 pb-lg-0 mb-5">
+    <div class="container pb-4 pt-0">
+      <h2 class="h2 text-center text-md-start mb-lg-0 pt-0 pt-md-0">
+        Observations Planning Tools
+      </h2>
+
+      <!-- Item -->
+      <div class="row pb-0 mb-md-4 mb-lg-5 pt-5 mt-4">
+        <div
+          class="rellax col-md-6 pb-1 mb-3 pb-md-0 mb-md-0"
+          data-rellax-percentage="0.5"
+          data-rellax-speed="0.8"
+          data-disable-parallax-down="md"
+        >
+          <a href="portfolio-single-project.html">
+            <img
+              src="{base}/assets/img/custom/TreasureMap.png"
+              class="rounded-3 pt-0"
+              width="600"
+              alt="Image"
+            />
+          </a>
+        </div>
+        <div
+          class="rellax col-md-6"
+          data-rellax-percentage="0.5"
+          data-rellax-speed="-0.6"
+          data-disable-parallax-down="md"
+        >
+          <div class="ps-md-4 ms-md-2">
+            <a
+              href="#"
+              class="d-table badge bg-faded-primary text-primary fs-sm mb-3"
+              >Featured Resource</a
+            >
+            <!-- <a href="#" class="badge fs-sm text-white bg-primary shadow-primary text-decoration-none mb-3">Featured Resource</a> -->
+            <!-- <div class="fs-sm text-muted mb-1">Nov 18, 2021</div> -->
+            <h2 class="h4">Treasure Map</h2>
+            <p class="d-md-none d-lg-block pb-3 mb-2 mb-md-3">
+              The Gamma-ray Data Tools consist of an Application Programming
+              Interface (API) for detctors that gather GBM like data. The
+              fundamental purpose of the Data Tools is to allow general users to
+              incorporate gamma-ray analysis into their scripts and workflows
+              without having to sweat very many details. The Data Tools have a
+              fairly high-level API layer allowing a user to read, reduce, and
+              visualize GBM data with only a few lines of code. For expert
+              users, and users who want fine control over various aspects of
+              their analysis, the Data Tools exposes a lower-level API layer,
+              which can also be used to generalize the GBM Data Tools to data
+              from other like instruments.
+            </p>
+            <!-- <a href="portfolio-single-project.html" class="btn btn-outline-primary">Learn More</a> -->
+            <div class="d-flex flex-column flex-sm-row">
+              <a href="#" class="btn btn-primary mb-3 mb-sm-0 me-sm-3">
+                Learn More
+              </a>
+              <a href="#" class="btn btn-outline-primary">
+                <i class="bx bx-edit fs-xl me-xl-2"></i>
+                Contribute
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row align-items-center pb-5 mb-lg-2">
+        <div class="col-md-8 text-center text-md-start">
+          <!-- <p class="fs-lg text-muted mb-md-0">We are focused on helping brands grow through digital transformation services. We bring real solutions to each client’s problems through a deep understanding of their market, solution, and vision.</p> -->
+        </div>
+        <div
+          class="col-md-4 d-flex justify-content-center justify-content-md-end"
+        >
+          <!--  <a href="services-v1.html" class="btn btn-outline-primary btn-lg">See all services</a> -->
+        </div>
+      </div>
+      <div class="row row-cols-1 row-cols-md-2">
+        <!-- Item -->
+        <!-- <div class="col py-4 my-2 my-sm-3">
+              <a href="services-single-v1.html" class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 me-xl-2">
+                <div class="card-body pt-3">
+                  <div class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3">
+                    <img src="assets/img/services/icons/rocket.svg" class="d-block m-1" width="40" alt="Icon">
+                  </div>
+                  <h2 class="h4 d-inline-flex align-items-center">
+                    TreasureMap
+                    <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+                  </h2>
+                  <p class="fs-sm text-body mb-0">Nisi, dis sed cursus eget pellentesque mattis. Odio eu proin aliquam a. Semper bibendum tellus non tellus, facilisi dignissim in quam massa. Aliquam, feugiat ut cum tellus, sit. Quis consectetur gravida ac ac lectus cursus egestas.</p>
+                </div>
+              </a>
+            </div> -->
+
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="https://m4opt.readthedocs.io/en/latest/index.html"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 ms-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
+              >
+                <img
+                  src="{base}/assets/img/services/icons/rocket.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                M4OPT
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                An open-source toolkit for multi-facility scheduling of
+                astrophysics observing campaigns, with a focus on extremely
+                rapid follow-up of gravitational wave and neutrino events.
+              </p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Data Archives -->
+  <div id="archives"></div>
+  <section class="pb-md-2 pb-lg-0 mb-5">
+    <div class="container pb-4 pt-0">
+      <h2 class="h2 text-center text-md-start mb-lg-0 pt-0 pt-md-0">
+        Data Archives & Repositories
+      </h2>
+      <div class="row align-items-center pb-5 mb-lg-2">
+        <div class="col-md-8 text-center text-md-start">
+          <!-- <p class="fs-lg text-muted mb-md-0">We are focused on helping brands grow through digital transformation services. We bring real solutions to each client’s problems through a deep understanding of their market, solution, and vision.</p> -->
+        </div>
+        <div
+          class="col-md-4 d-flex justify-content-center justify-content-md-end"
+        >
+          <!--  <a href="services-v1.html" class="btn btn-outline-primary btn-lg">See all services</a> -->
+        </div>
+      </div>
+      <div class="row row-cols-1 row-cols-md-2">
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="https://heasarc.gsfc.nasa.gov"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 me-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
+              >
+                <img
+                  src="{base}/assets/img/services/icons/rocket.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                High Energy Astrophysics Science Archive Research Center
+                (HEASARC)
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                NASA's archive of data on energetic phenomena.
+              </p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="https://www.gw-openscience.org"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 ms-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
+              >
+                <img
+                  src="{base}/assets/img/services/icons/web-search.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                Gravitational Wave Open Science Center
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                A repository of data and software tools from gravitational-wave
+                observatories.
+              </p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="https://fermi.gsfc.nasa.gov/ssc/data/access/lat/FAVA"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 ms-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
+              >
+                <img
+                  src="{base}/assets/img/services/icons/web-search.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                Fermi All-sky Variability Analysis (FAVA)
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                A catalog of flaring sources observed by the Fermi Large Area
+                Telescope.
+              </p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Item -->
+        <div class="col py-4 my-2 my-sm-3">
+          <a
+            href="https://fermi.gsfc.nasa.gov/ssc/data/access/lat/LightCurveRepository"
+            class="card card-hover h-100 border-0 shadow-sm text-decoration-none pt-5 px-sm-3 px-md-0 px-lg-3 pb-sm-3 pb-md-0 pb-lg-3 ms-xl-2 border-primary"
+          >
+            <div class="card-body pt-3">
+              <div
+                class="d-inline-block bg-primary shadow-primary rounded-3 position-absolute top-0 translate-middle-y p-3"
+              >
+                <img
+                  src="{base}/assets/img/services/icons/web-search.svg"
+                  class="d-block m-1"
+                  width="40"
+                  alt="Icon"
+                />
+              </div>
+              <h2 class="h4 d-inline-flex align-items-center">
+                Fermi LAT Light Curve Repository (LCR)
+                <i class="bx bx-right-arrow-circle text-primary fs-3 ms-2"></i>
+              </h2>
+              <p class="fs-sm text-body mb-0">
+                A database of multi-cadence flux calibrated lightcurves for
+                variable sources observed by the Fermi Large Area Telescope .
+              </p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--      <section class="container pb-5 mb-2 mb-md-4 mb-lg-5 mt-n3 mt-lg-0">
+        <div>
+          <h2 class="h2">Additional Resources</h2>
+          <p class="mb-4 pb-2">Although not an exhaustive, below is a list of upcoming conferences that are of particular interest to the multimessenger community. Please feel free to contact us if you would like to see a conference added to this list!</p>
+
+          <!-- Dark table with striped rows -->
+  <!--         <div class="table-responsive">
+            <table class="table table-dark table-striped">
+              <thead>
+                <tr>
+                  <th>Conference</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                  <th>Registration Deadline</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">massa</th>
+                  <td>tellus</td>
+                  <td>fermentum</td>
+                  <td>orci</td>
+                </tr>
+                <tr>
+                  <th scope="row">egestas</th>
+                  <td>Urna</td>
+                  <td>sed</td>
+                  <td>gravida</td>
+                </tr>
+                <tr>
+                  <th scope="row">ipsum</th>
+                  <td>dictum</td>
+                  <td>orci</td>
+                  <td>Sit</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section> -->
+
+  <!-- Contact CTA -->
+  <section class="container mb-1 mb-md-3 mb-lg-4 pb-5">
+    <div class="bg-secondary rounded-3 overflow-hidden">
+      <div class="row align-items-center">
+        <div class="col-xl-4 col-md-5 offset-lg-1">
+          <div class="pt-5 pb-3 pb-md-5 px-4 px-lg-0 text-center text-md-start">
+            <p class="lead mb-3">Ready to contribute?</p>
+            <h2 class="h1 pb-3 pb-sm-4">
+              Want to see <span class="text-primary">your</span> project listed here?
+            </h2>
+            <a
+              href="mailto:daniel.kocevski@nasa.gov"
+              class="btn btn-primary btn-lg">Contact us!</a
+            >
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-7 offset-xl-1">
+          <div
+            class="position-relative d-flex flex-column align-items-center justify-content-center h-100"
+          >
+            <svg
+              class="d-none d-md-block position-absolute top-50 start-0 translate-middle-y"
+              width="868"
+              height="868"
+              style="min-width: 868px;"
+              viewBox="0 0 868 868"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              ><circle
+                opacity="0.15"
+                cx="434"
+                cy="434"
+                r="434"
+                fill="#6366F1"
+              /></svg
+            >
+            <img
+              src="{base}/assets/img/about/cta.png"
+              class="position-relative zindex-3 mb-2 my-lg-4"
+              width="382"
+              alt="Illustration"
+            />
           </div>
         </div>
       </div>

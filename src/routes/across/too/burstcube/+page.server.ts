@@ -11,7 +11,7 @@ const LIMITS = [10, 25, 50, 100];
 export async function load({ url, locals }) {
     // Redirect on load when user is not logged in
     const userCookie = locals.user;
-    let userInfo: User;
+    let userInfo: Partial<User> | undefined = undefined;
 
     // || { roles: ['user'], email: 'unregistered user' };
 
@@ -81,7 +81,7 @@ export async function load({ url, locals }) {
     const options = {
         method: 'GET',
         headers: {
-            Authorization: `Bearer ${userCookie.api_token ?? CONFIG.API_TOKEN}`,
+            Authorization: `Bearer ${userInfo?.api_token ?? CONFIG.API_TOKEN}`,
         },
     };
 
@@ -91,7 +91,7 @@ export async function load({ url, locals }) {
         response = await fetch(targetUrl, options);
     } catch (e: any) {
         console.error(
-            `ERROR: catch getting TOO data for [${OBSERVATORY}] by [${userCookie.email}] at [${Date.now()}]`,
+            `ERROR: catch getting TOO data for [${OBSERVATORY}] by [${userInfo?.email ?? 'frontend'}] at [${Date.now()}]`,
             JSON.stringify(e)
         );
         throw new Error(
@@ -103,7 +103,7 @@ export async function load({ url, locals }) {
     const errorCodes = [500, 404];
     if (errorCodes.includes(response.status)) {
         console.error(
-            `ERROR: getting TOO data for [${OBSERVATORY}] by [${userCookie.email}] at [${Date.now()}] with status code [${response.status}]`
+            `ERROR: getting TOO data for [${OBSERVATORY}] by [${userInfo?.email ?? 'frontend'}] at [${Date.now()}] with status code [${response.status}]`
         );
         throw new Error(
             `Unexpeted Error while fetching ${OBSERVATORY} TOO data`
@@ -116,7 +116,7 @@ export async function load({ url, locals }) {
 
     return {
         slug: OBSERVATORY,
-        userGroups: userInfo.user_groups,
+        userGroups: userInfo?.user_groups,
         table,
         page,
         limit,

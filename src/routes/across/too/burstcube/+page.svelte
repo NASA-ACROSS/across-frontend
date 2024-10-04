@@ -14,12 +14,12 @@
 
     $: tableData = data.table || [];
     $: showTable = false;
-    $: showModal = false;
     $: triggerInfoData = {};
     $: dataRow = {};
     $: page = +data.page;
     $: limit = +data.limit;
     let showPageInput = false;
+    let showModal = false;
 
     const columns = [
         'id',
@@ -64,10 +64,13 @@
         event,
     }: CellClickCallbackInput) => {
         dataRow = item;
-        // key is the column name
+        // key is the column name, we clicked in the right cell
         if (key === 'trigger_info') {
-            triggerInfoData = item.trigger_info;
-            showModal = true;
+            // we clicked on the show button and not just in the cell
+            if (event?.target?.id == 'show-trigger-info') {
+                triggerInfoData = item.trigger_info;
+                showModal = true;
+            }
         }
     };
 

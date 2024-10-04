@@ -6,10 +6,9 @@
     export let item;
     export let key;
     export let value;
-    export let index;
     export let type;
-    export let toastSuccessCallback;
-    export let toastFailCallback;
+    export let rowIndex;
+    export let cellIndex;
 
     let status = '';
 
@@ -93,10 +92,8 @@
     {:else if key == 'created_on' || key == 'trigger_time'}
         <div>{value.split('T').join('\n')}</div>
     {:else if key == 'trigger_info'}
-        <button
-            class="btn btn-sm btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#triggerInfoModal">Show Trigger Info</button
+        <button id="show-trigger-info" class="btn btn-sm btn-outline-primary"
+            >Show Trigger Info</button
         >
     {:else if key == 'status'}
         {#if value == 'Requested'}

@@ -10,43 +10,45 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
-<dialog
-    id="triggerInfoModal"
-    bind:this={dialog}
-    on:close={() => (showModal = false)}
-    on:click|self={() => dialog.close()}
-    class="modal fade"
->
-    <div
-        class="modal-dialog {centered ? 'modal-dialog-centered' : ''}"
-        role="document"
-        on:click|stopPropagation
+{#if showModal}
+    <dialog
+        id="triggerInfoModal"
+        bind:this={dialog}
+        on:close={() => (showModal = false)}
+        on:click|self={() => dialog.close()}
+        class="modal d-block"
     >
-        <div class="modal-content">
-            <div class="modal-header">
-                <slot name="header" />
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                    on:click={() => dialog.close()}
-                ></button>
-            </div>
-            <div class="modal-body">
-                <slot />
-            </div>
-            <div class="modal-footer">
-                <button
-                    class="btn btn-primary btn-sm"
-                    data-bs-dismiss="modal"
-                    autofocus
-                    on:click={() => dialog.close()}>Close</button
-                >
+        <div
+            class="modal-dialog {centered ? 'modal-dialog-centered' : ''}"
+            role="document"
+            on:click|stopPropagation
+        >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <slot name="header" />
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        on:click={() => dialog.close()}
+                    ></button>
+                </div>
+                <div class="modal-body">
+                    <slot />
+                </div>
+                <div class="modal-footer">
+                    <button
+                        class="btn btn-primary btn-sm"
+                        data-bs-dismiss="modal"
+                        autofocus
+                        on:click={() => dialog.close()}>Close</button
+                    >
+                </div>
             </div>
         </div>
-    </div>
-</dialog>
+    </dialog>
+{/if}
 
 <style>
     dialog {

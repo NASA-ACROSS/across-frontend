@@ -19,6 +19,7 @@
 
     onMount(() => {
         window.addEventListener('resize', setNavHeight);
+        setNavHeight();
     });
 </script>
 

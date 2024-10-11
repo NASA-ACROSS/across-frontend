@@ -4,6 +4,217 @@
 
     import type { PageData } from './$types';
     export let data: PageData;
+
+
+    const missionData = [
+        { name: 'Fermi', type: 'Gamma-ray', start: 2010, end: 2028, fade: 2025, index: 1 },
+        { name: 'Swift', type: 'Gamma-ray', start: 2010, end: 2028, fade: 2025, index: 2 },
+        { name: 'ULTRASAT', type: 'Gamma-ray', start: 2026, end: 2032, fade: 2029, index: 3 },
+        { name: 'StarBurst', type: 'Gamma-ray', start: 2027.5, end: 2030.5, fade: 2028.5, index: 4 },
+        { name: 'COSI', type: 'Gamma-ray', start: 2027.5, end: 2033, fade: 2030.5, index: 5 },
+        { name: 'Chandra', type: 'X-ray', start: 2010, end: 2029, fade: 2026, index: 1 },
+        { name: 'XMM', type: 'X-ray', start: 2010, end: 2028, fade: 2026, index: 2 },
+        { name: 'Swift', type: 'X-ray', start: 2010, end: 2028, fade: 2026, index: 3 },
+        { name: 'NuStar', type: 'X-ray', start: 2012.5, end: 2030, fade: 2027, index: 4 },
+        { name: 'Nicer', type: 'X-ray', start: 2017.5, end: 2027, fade: 2025, index: 5 },
+        { name: 'HST', type: 'Optical & UV', start: 2010, end: 2030, fade: 2027, index: 1 },
+        { name: 'Swift', type: 'Optical & UV', start: 2010, end: 2030, fade: 2025, index: 2 },
+        { name: 'TESS', type: 'Optical & UV', start: 2018.416, end: 2027, fade: 2025, index: 3 },
+        { name: 'Euclid', type: 'Optical & UV', start: 2023.58, end: 2033.58, fade: 2030, index: 4 },
+        { name: 'HST', type: 'Infrared', start: 2010, end: 2030, fade: 2027, index: 1 },
+        { name: 'JWST', type: 'Infrared', start: 2021, end: 2032, fade: 2030, index: 2 },
+        { name: 'SPHEREx', type: 'Infrared', start: 2025.3, end: 2028, fade: 2026, index: 3 },
+        { name: 'Roman', type: 'Infrared', start: 2027, end: 2034, fade: 2034, index: 4 },
+        { name: 'O1', type: 'GW & nu', start: 2015.5, end: 2016.2, fade: 2016.2, index: 2 },
+        { name: 'O2', type: 'GW & nu', start: 2016.75, end: 2017.75, fade: 2017.75, index: 2 },
+        { name: 'O3', type: 'GW & nu', start: 2019.2, end: 2020.25, fade: 2020.25, index: 2 },
+        { name: 'O4', type: 'GW & nu', start: 2023.5, end: 2025, fade: 2025, index: 2 },
+        { name: 'LIGO O5', type: 'GW & nu', start: 2027.5, end: 2030.5, fade: 2030.5, index: 2 },
+        { name: 'IceCube', type: 'GW & nu', start: 2011, end: 2027.75, fade: 2027.75, index: 3 },
+        { name: 'IceCube-Gen2', type: 'GW & nu', start: 2028, end: 2034, fade: 2032, index: 3 },
+    ];
+
+    // Plot size and margins
+    const margin = { top: 20, right: 20, bottom: 30, left: 100 },
+          width = 1100 - margin.left - margin.right,
+          height = 700 - margin.top - margin.bottom;
+
+    const svg = d3.select("#timeline")
+                  .attr("width", width + margin.left + margin.right)
+                  .attr("height", height + margin.top + margin.bottom)
+                  .append("g")
+                  .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Add background rectangle
+    svg.append("rect")
+       .attr("width", width + margin.left + margin.right)
+       .attr("height", height + margin.top + margin.bottom)
+       .attr("fill", "black")
+       .attr("transform", `translate(${-margin.left},${-margin.top})`);
+
+    const types = ['Gamma-ray', 'X-ray', 'Optical & UV', 'Infrared', 'GW & nu'];
+
+    const y = d3.scaleBand()
+                .domain(types)
+                .range([0, height])
+                .padding(0.15);
+
+    const x = d3.scaleLinear()
+                .domain([2010, 2034])
+                .range([0, width]);
+
+    const ySubgroup = d3.scaleBand()
+                        .domain(d3.range(1, 6)) 
+                        .range([0, y.bandwidth()])
+                        .padding(0.15);
+
+    svg.append("g")
+       .attr("class", "axis axis--x")
+       .attr("transform", `translate(0,${height})`)
+       .call(d3.axisBottom(x).ticks((2034 - 2010) / 3).tickFormat(d3.format("d")));
+
+    svg.append("g")
+       .attr("class", "axis axis--y")
+       .call(d3.axisLeft(y));
+
+    // Define a color map
+    const colorMap = {
+        'Gamma-ray': '#984ea3',
+        'X-ray': '#004D7F',
+        'Optical & UV': '#FF9300',
+        'Infrared': '#B51700',
+        'GW & nu': 'LightSlateGray'
+    };
+
+    // Define gradient
+    const defs = svg.append("defs");
+
+    missionData.forEach((d, i) => {
+        let gradientId = `gradient${i}`;
+        let rectHeight = ySubgroup.bandwidth();
+
+        if (d.type === 'GW') {
+            rectHeight = ySubgroup.bandwidth() 
+        }
+
+        // Get color from the color map
+        let color = colorMap[d.type];
+
+        // Create a gradient for each bar using its color from the color map
+        defs.append("linearGradient")
+            .attr("id", gradientId)
+            .attr("x1", "0%")
+            .attr("x2", "100%")
+            .attr("y1", "0%")
+            .attr("y2", "0%")
+            .selectAll("stop")
+            .data([
+                { offset: "0%", color: color },
+                { offset: ((d.fade-d.start)/(d.end-d.start)*100) + "%", color: color },
+                { offset: "100%", color: `#000` } // Modify color to have 0 opacity
+            ])
+            .enter().append("stop")
+            .attr("offset", d => d.offset)
+            .attr("stop-color", d => d.color);
+
+        svg.append("rect")
+           .attr("class", `bar ${d.type.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`)
+           .attr("x", x(d.start))
+           .attr("y", y(d.type) + ySubgroup(d.index))
+           .attr("width", x(d.end) - x(d.start))
+           .attr("height", rectHeight)
+           .style("fill", `url(#${gradientId})`)
+           // .on("mouseover", function(event, d) {
+           //     d3.select(this)
+           //       .attr("height", rectHeight * 1.2)
+           //       .attr("y", y(d.type) + ySubgroup(d.index) - rectHeight * 0.1);
+           // })
+           // .on("mouseout", function(event, d) {
+           //     d3.select(this)
+           //       .attr("height", rectHeight)
+           //       .attr("y", y(d.type) + ySubgroup(d.index));
+           // })
+           .append("title")
+           .text(`${d.name}: ${d.start} - ${d.end}`);
+
+    });
+
+    svg.selectAll(".text-label")
+       .data(data)
+       .enter().append("text")
+       .attr("class", "text-label")
+       .attr("x", d => x(d.start) + 5)
+       .attr("y", d => y(d.type) + ySubgroup(d.index) + ySubgroup.bandwidth() / 2)
+       .attr("dy", ".35em")
+       .text(d => d.name);
+
+    // Add download icon to SVG
+    svg.append("path")
+       .attr("d", "M3.25 13.25h9m-8.5-6.5 4 3.5 4-3.5m-4-5v8.5")
+       .attr("class", "download-icon")
+       .attr("transform", "translate(" + (width-20) + "," + (-10) + ") scale(1.75)")  // Adjust the position and scale as needed
+       .on("click", function() {
+           downloadPNG();
+       });
+
+    // Function to embed CSS into SVG
+    function embedCSS(svg, css) {
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = css;
+        svg.insertBefore(style, svg.firstChild);
+    }
+
+    // Download button functionality
+    document.getElementById('download-button').addEventListener('click', downloadPNG);
+
+    function downloadPNG() {
+        const svgElement = document.getElementById('timeline');
+        const serializer = new XMLSerializer();
+        const svgData = serializer.serializeToString(svgElement);
+
+        // Embed CSS into SVG
+        const css = `
+            @import url('https://fonts.googleapis.com/css2?family=Arial:wght@400&display=swap');
+            .axis line, .axis path { stroke: #fff; }
+            .axis text { font-size: 16px; fill: #fff; }
+            .bar { fill-opacity: 1; }
+            .gamma-ray { fill: #984ea3; }
+            .x-ray { fill: #004D7F; }
+            .optical-uv { fill: #FF9300; }
+            .infrared { fill: #B51700; }
+            .gw-nu { fill: LightSlateGray; }
+            .text-label { fill: #fff; font-size: 14px; text-anchor: start; font-family: 'Arial', sans-serif; }
+            svg { background: none; }
+        `;
+        const svgWithCSS = svgElement.cloneNode(true);
+        embedCSS(svgWithCSS, css);
+        const svgBlob = new Blob([serializer.serializeToString(svgWithCSS)], { type: 'image/svg+xml;charset=utf-8' });
+
+        // PNG size
+        const pngWidth = 1666; // New width
+        const pngHeight = 1000; // New height
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = pngWidth;
+        canvas.height = pngHeight;
+
+        const image = new Image();
+        image.onload = function() {
+            context.drawImage(image, 0, 0, pngWidth, pngHeight); // Scale SVG to canvas size
+            const png = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = 'timeline.png';
+            link.href = png;
+            link.click();
+        };
+
+        const url = URL.createObjectURL(svgBlob);
+        image.src = url;
+    }
+
+
 </script>
 
 <!-- Page wrapper for sticky footer -->
@@ -144,7 +355,9 @@
 
                 <!-- Image -->
                 <div class="gallery mb-4 pb-2">
-                    <img src="{base}/assets/img/custom/mission-timeline.png" />
+
+                    <svg id="timeline" width="1100" height="700"></svg>
+
                 </div>
 
                 <div id="capabilities"></div>

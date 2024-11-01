@@ -136,3 +136,6 @@ build/
 
 # MacOS
 .DS_Store
+
+# Playwright output
+test-results

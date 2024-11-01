@@ -37,3 +37,33 @@ npm run build
 ```
 
 You can preview the production build with `npm run preview`.
+
+## Testing
+
+This project utilizes the following tools for various testing requirements
+
+| Unit Tests | Component Tests                      | E2E Tests  |
+| ---------- | ------------------------------------ | ---------- |
+| Vitest     | `vitest` + `@testing-library/svelte` | Playwright |
+
+### E2E
+
+It is assumed that playwright is installed locally with
+
+```bash
+npx playwright install
+```
+
+when running e2e tests locally, you must simulataneously run an accompanying `across-api` server to receive requests
+
+It is recommended to install the extension
+[Playwright Test for VSCode](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) which is included in the workspace recommended extension configuration
+
+#### Running E2E tests
+
+1. Start the API server and database
+2. Click the Testing tab on the left side of VSCode and choose a test to run or use the command line to run
+
+```bash
+npm run test:e2e
+```

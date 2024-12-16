@@ -128,7 +128,7 @@
                 </p>
 
                 {#if displayMissionTimeline}
-                    <MissionTimeline {document} />
+                    <MissionTimeline />
                 {/if}
 
                 <div id="capabilities"></div>

@@ -114,16 +114,6 @@
                 .attr('width', x(d.end) - x(d.start))
                 .attr('height', rectHeight)
                 .style('fill', `url(#${gradientId})`)
-                // .on("mouseover", function(event, d) {
-                //     d3.select(this)
-                //       .attr("height", rectHeight * 1.2)
-                //       .attr("y", y(d.type) + ySubgroup(d.index) - rectHeight * 0.1);
-                // })
-                // .on("mouseout", function(event, d) {
-                //     d3.select(this)
-                //       .attr("height", rectHeight)
-                //       .attr("y", y(d.type) + ySubgroup(d.index));
-                // })
                 .append('title')
                 .text(`${d.name}: ${d.start} - ${d.end}`);
         });

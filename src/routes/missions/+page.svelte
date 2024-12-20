@@ -9,32 +9,12 @@
 <!-- Page wrapper for sticky footer -->
 <!-- Wraps everything except footer to push footer to the bottom of the page if there is little content -->
 <main class="page-wrapper">
-    <!-- Post image (parallax) -->
     <div
-        class="jarallax mb-lg-5 mb-4"
-        data-jarallax
-        data-speed="0.35"
-        style="height: 36.45vw; min-height: 300px;"
-    >
-        <div
-            class="jarallax-img"
-            style="background-image: url({base}/assets/img/custom/Fermi_Earth_GWs.jpg);"
-        ></div>
-    </div>
-
-    <!-- Breadcrumb -->
-
-    <nav class="container py-4 mb-2 my-lg-3" aria-label="breadcrumb">
-        <!-- <ol class="breadcrumb mb-0">
-          <li class="breadcrumb-item">
-            <a href="index.html"><i class="bx bx-home-alt fs-lg me-1"></i>Home</a>
-          </li>
-          <li class="breadcrumb-item active" aria-current="page">Multimessenger Missions</li>
-        </ol> -->
-    </nav>
-
+        class="page-banner"
+        style="background-image: url({base}/assets/img/custom/Fermi_Earth_GWs.jpg);  "
+    ></div>
     <!-- Content -->
-    <section class="container pb-5 mb-md-2 mb-lg-4">
+    <section class="container pt-4 pb-5 mb-md-2 mb-lg-4">
         <div class="row gy-4">
             <!-- Main Content -->
             <div class="col-lg-9">
@@ -46,7 +26,6 @@
                 <div id="toolkits"></div>
                 <h2 class="h3 mt-5">Overview</h2>
 
-                <!-- <h2 class="h4">Paragraph Title</h2> -->
                 <p class="mb-4 pb-2">
                     The joint discovery of gravitational waves and
                     electromagnetic radiation from the binary neutron star
@@ -74,7 +53,7 @@
                 <!-- Image -->
                 <div class="gallery mb-4 pb-2">
                     <img
-                        src="{base}/assets/img/custom/AstrophysicsFleet2.jpg"
+                        src="{base}/assets/img/custom/astro-fleet-spiral-2024-10-21.webp"
                     />
                 </div>
 
@@ -120,13 +99,8 @@
                     </figcaption>
                 </figure>
 
-                <!-- <p class="mb-4 pb-2">Pellentesque laoreet neque ut dictumst fames scelerisque. In malesuada orci dapibus risus tellus, amet, ultrices sagittis a. Turpis vel tincidunt tristique maecenas cursus tortor, suscipit ut. Ullamcorper at faucibus dolor tortor suspendisse suscipit senectus convallis aliquam. At orci amet facilisi nunc mi vitae iaculis diam a. Mauris venenatis sed purus cursus torte.</p>
-            <h2 class="h4">Paragraph Title 2</h2>
-            <p class="mb-4 pb-2">Praesent sed pulvinar posuere nisl tincidunt. Iaculis sit quam magna congue. Amet vel non aliquet habitasse. Egestas erat odio et, eleifend turpis etiam blandit interdum. Nec augue ut senectus quisque diam quis. At augue accumsan, in bibendum. A eget et, eget quisque egestas netus vel. Velit, aliquet turpis convallis ullamcorper. Scelerisque sagittis condimentum pretium in vitae etiam lacinia quis amet. Porttitor consequat, sollicitudin vivamus pharetra nibh faucibus neque, viverra. Praesent amet sed lacus vitae.</p> -->
-
                 <div id="timeline"></div>
                 <h2 class="h3 mt-5">Multimessenger Mission Timeline</h2>
-
                 <p class="mb-4 pb-2">
                     NASA missions played a critical role in the discovery and
                     characterization of the first binary neutron star merger
@@ -284,7 +258,7 @@
                 {/each}
 
                 <div id="development"></div>
-                <!-- <h2 class="h3 mt-5">NASA's Multimessenger Missions - in Development</h2> -->
+
                 <h2 class="h3 mt-5">
                     NASA's Multimessenger Mission in Development
                 </h2>
@@ -429,8 +403,9 @@
                                 <a
                                     href="#"
                                     class="badge fs-sm text-white bg-primary shadow-primary text-decoration-none mb-3"
-                                    >Gamma-rays</a
                                 >
+                                    Gamma-rays
+                                </a>
                                 <h3 class="h4">
                                     <a href="https://cosi.ssl.berkeley.edu"
                                         >The Compton Spectrometer and Imager
@@ -570,11 +545,19 @@
                         href="mailto:daniel.kocevski@nasa.gov"
                         class="display-6 text-light">Contact us!</a
                     >
-                    <div class="pt-md-5 pt-4 pb-md-2">
-                        <!-- <a href="contacts-v1.html" class="btn btn-lg btn-light">Contact us!</a> -->
-                    </div>
                 </div>
             </div>
         </div>
     </section>
 </main>
+
+<style>
+    .page-banner {
+        width: 100vw;
+        background-clip: border-box;
+        background-size: cover;
+        height: 20vh;
+        min-height: 20vh;
+        background-position-y: center;
+    }
+</style>

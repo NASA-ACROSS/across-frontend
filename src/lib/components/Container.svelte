@@ -5,10 +5,9 @@
 
 <div class="container my-md-3 py-md-4">
     {#if icon}
-        <i class="bx bx-{icon} opacity-70 mx-2" />
+        <div class="bx bx-{icon} opacity-70 mx-2" />
     {/if}
-
-    <h1>{title}</h1>
+    <h2>{title}</h2>
 
     <slot />
 </div>

@@ -14,7 +14,9 @@ export default [
         url: 'https://pcos.gsfc.nasa.gov/TDAMM/',
     },
     {
-        name: 'Windows on the Universe: Establishing the Infrastructure for a Collaborative Multi-messenger Ecosystem',
+        name: 'Windows on the Universe',
+        description:
+            'Establishing the Infrastructure for a Collaborative Multi-messenger Ecosystem',
         location: 'Tuscon, AZ',
         dateRange: {
             begin: luxon.DateTime.fromISO('2023-10-16'),
@@ -25,12 +27,27 @@ export default [
         url: 'https://noirlab.edu/science/events/websites/MMA2023',
     },
     {
-        name: '3rd TDAMM Workshop: Multidisciplinary Science in the Multimessenger Era',
+        name: '3rd TDAMM Workshop',
+        description: 'Multidisciplinary Science in the Multimessenger Era',
         location: 'Baton Rouge, LA',
         dateRange: {
             begin: luxon.DateTime.fromISO('2024-09-23'),
             end: luxon.DateTime.fromISO('2023-09-26'),
         },
         url: 'https://sites.google.com/view/3rd-tdamm-workshop/home',
+    },
+    {
+        name: '4th TDAMM Workshop',
+        description: 'The fourth workshop',
+        location: 'Huntsville, AL',
+        url: 'https://sites.google.com/view/3rd-tdamm-workshop/home',
+
+        // DATE IS TBD
+        // dateRange: {
+        //     begin: luxon.DateTime.fromISO('2025-10-01'),
+        //     end: luxon.DateTime.fromISO('2023-10-4'),
+        // },
+        // registrationDeadline: luxon.DateTime.fromISO('2025-01-20'),
+        // abstractDeadline: luxon.DateTime.fromISO('2024-12-30'),
     },
 ] satisfies Conference[];

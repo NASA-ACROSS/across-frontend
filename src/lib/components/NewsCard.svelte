@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { newsDataType } from "$lib/content/newsData";
+    import type { newsDataType } from '$lib/content/newsData';
     export let data: newsDataType;
 </script>
 

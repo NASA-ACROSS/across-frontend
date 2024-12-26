@@ -4,8 +4,9 @@ import { DateTime } from 'luxon';
 export interface Conference {
     name: string;
     location: string;
-    dateRange: DateRange;
+    dateRange?: DateRange;
+    url: string;
+    description?: string;
     abstractDeadline?: DateTime;
     registrationDeadline?: DateTime;
-    url: string;
 }

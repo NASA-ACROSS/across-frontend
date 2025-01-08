@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { PageData } from './$types';
     import { base } from '$app/paths';
-    import Card from '$lib/components/Card.svelte';
+    import Card from '$lib/components/NewsCard.svelte';
     import Hero from '$lib/components/Hero.svelte';
     import SupportOverview from '$lib/components/SupportOverview.svelte';
 

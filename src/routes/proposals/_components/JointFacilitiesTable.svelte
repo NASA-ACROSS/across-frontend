@@ -17,75 +17,54 @@
         <thead class="header" style="top:{heightOffset}px">
             <tr>
                 <th class="border-bottom border-5">Joint Facility</th>
-                <th class="border-bottom border-5">HST</th>
-                <th class="border-bottom border-5">Chandra</th>
-                <th class="border-bottom border-5">XMM</th>
-                <th class="border-bottom border-5">Swift</th>
-                <th class="border-bottom border-5">NuSTAR</th>
-                <th class="border-bottom border-5">Fermi</th>
-                <th class="border-bottom border-5">TESS</th>
-                <th class="border-bottom border-5">NICER</th>
+                <th title="Primary Facility" class="border-bottom border-5"
+                    >HST</th
+                >
+                <th title="Primary Facility" class="border-bottom border-5"
+                    >JWST</th
+                >
+                <th title="Primary Facility" class="border-bottom border-5"
+                    >Chandra</th
+                >
+                <th title="Primary Facility" class="border-bottom border-5"
+                    >XMM</th
+                >
+                <th title="Primary Facility" class="border-bottom border-5"
+                    >Swift</th
+                >
+                <th title="Primary Facility" class="border-bottom border-5"
+                    >Fermi</th
+                >
+                <th title="Primary Facility" class="border-bottom border-5"
+                    >NuSTAR</th
+                >
+                <th title="Primary Facility" class="border-bottom border-5"
+                    >TESS</th
+                >
+                <th title="Primary Facility" class="border-bottom border-5"
+                    >NICER</th
+                >
+                <th title="Primary Facility" class="border-bottom border-5"
+                    >IXPE</th
+                >
             </tr>
         </thead>
         <tbody>
             <tr>
-                <th scope="row">HST</th>
+                <th title="Joint Facility" scope="row">HST</th>
                 <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <th scope="row">Chandra</th>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <th scope="row">XMM</th>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <th scope="row">Swift</th>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-            </tr>
-            <tr>
-                <th scope="row">NuSTAR</th>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-            </tr>
-            <tr>
-                <th scope="row">Fermi</th>
-                <td></td>
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
                 <td></td>
                 <td></td>
                 <td></td>
@@ -95,65 +74,27 @@
                 <td></td>
             </tr>
             <tr>
-                <th scope="row">TESS</th>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <th title="Joint Facility" scope="row">JWST</th>
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
                 <td></td>
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
                 <td></td>
-                <td></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-            </tr>
-            <tr>
-                <th scope="row">NICER</th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-            </tr>
-            <tr>
-                <th scope="row">NOAO</th>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <th scope="row">NRAO</th>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <th scope="row">Integral</th>
-                <td></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <th scope="row">VLT</th>
-                <td></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -161,18 +102,131 @@
                 <td></td>
             </tr>
             <tr>
-                <th scope="row">VERITAS</th>
+                <th title="Joint Facility" scope="row">Chandra</th>
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
+                <td></td>
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td><i class="bx bx-check bx-md me-1"></i></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
-                <th scope="row">MAGIC</th>
+                <th title="Joint Facility" scope="row">XMM</th>
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th title="Joint Facility" scope="row">Swift</th>
+                <td></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+            </tr>
+            <tr>
+                <th title="Joint Facility" scope="row">Fermi</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th title="Joint Facility" scope="row">NuSTAR</th>
+                <td></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+            </tr>
+
+            <tr>
+                <th title="Joint Facility" scope="row">TESS</th>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th title="Joint Facility" scope="row">NICER</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+            </tr>
+            <tr>
+                <th title="Joint Facility" scope="row">IXPE</th>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td><i class="bx bx-check bx-md me-1"></i></td>
@@ -183,11 +237,80 @@
                 <td></td>
             </tr>
             <tr>
-                <th scope="row">H.E.S.S.</th>
+                <th title="Joint Facility" scope="row">NRAO</th>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
                 <td></td>
                 <td></td>
                 <td><i class="bx bx-check bx-md me-1"></i></td>
                 <td></td>
+            </tr>
+            <tr>
+                <th title="Joint Facility" scope="row">ALMA</th>
+                <td></td>
+                <td
+                    ><i
+                        title="submit to primary facility"
+                        class="bx bx-plus bx-md me-1"
+                    ></i></td
+                >
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th title="Joint Facility" scope="row">LCO</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td
+                    ><i
+                        title="coordinated reviews"
+                        class="bx bx-star bx-md me-1"
+                    ></i></td
+                >
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th title="Joint Facility" scope="row">NOIRlab</th>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th title="Joint Facility" scope="row">VERITAS</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><i class="bx bx-check bx-md me-1"></i></td>
                 <td></td>
                 <td></td>
                 <td></td>

@@ -1,15 +1,30 @@
-<script>
+<script lang="ts">
     import { base } from '$app/paths';
 
     import { loggedIn } from '$lib/stores/login';
+    import { navHeight } from '$lib/stores/navHeight';
+    import { onMount } from 'svelte';
 
     let isLoggedIn = false;
     loggedIn.subscribe((value) => {
         isLoggedIn = value;
     });
+    let nav: HTMLElement;
+
+    const setNavHeight = () => {
+        if (nav) {
+            navHeight.set(nav?.clientHeight);
+        }
+    };
+
+    onMount(() => {
+        window.addEventListener('resize', setNavHeight);
+        setNavHeight();
+    });
 </script>
 
 <nav
+    bind:this={nav}
     class="header navbar navbar-expand-lg bg-light navbar-sticky border-bottom"
 >
     <div class="container px-3">

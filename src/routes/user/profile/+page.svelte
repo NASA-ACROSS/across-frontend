@@ -56,8 +56,8 @@
             if (isUserDataUnchanged) {
                 cancel();
             }
-            formData.set('firstname', userData.firstname);
-            formData.set('lastname', userData.lastname);
+            formData.set('firstname', userData.first_name);
+            formData.set('lastname', userData.last_name);
             formData.set('username', userData.username);
             formData.set('email', userData.email);
         } else if (action.href.includes('requestRole')) {
@@ -125,7 +125,7 @@
                             ? 'validation-border-color'
                             : ''} form-control form-control-lg rounded-3 ps-5"
                         required
-                        bind:value={userData.firstname}
+                        bind:value={userData.first_name}
                         pattern={frontendAlphaNumRegex}
                         autocomplete="off"
                         name="firstname"
@@ -140,7 +140,7 @@
                             ? 'validation-border-color'
                             : ''} form-control form-control-lg rounded-3 ps-5"
                         required
-                        bind:value={userData.lastname}
+                        bind:value={userData.last_name}
                         pattern={frontendAlphaNumRegex}
                         autocomplete="off"
                         name="lastname"

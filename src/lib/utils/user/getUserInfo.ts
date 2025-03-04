@@ -2,13 +2,15 @@ import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCooki
 import { UserCredentials } from '$lib/types/User/UserCredentials';
 import { CONFIG } from '../../../config/config';
 import type { User } from '$lib/types/User/User';
+import type { Cookies } from '@sveltejs/kit';
 
-export const getUserInfo = async (userCookie: UserCredentialsCookie) => {
+export const getUserInfo = async (userCookie: UserCredentialsCookie, cookies: Cookies) => {
     const userCredentials = new UserCredentials(userCookie);
+    const accessToken = await userCredentials.getAccessToken(cookies);
     const options = {
         method: 'GET',
         headers: {
-            Authorization: `Bearer ${await userCredentials.getAccessToken()}`,
+            Authorization: `Bearer ${accessToken}`,
         },
     };
 

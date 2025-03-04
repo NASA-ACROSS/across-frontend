@@ -4,6 +4,7 @@ import { validate } from '$lib/utils/regex/validate.js';
 import { CONFIG } from '../../../config/config.js';
 import { fail } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
+import type { RequestEvent } from './$types.js';
 
 // rate limit is defined as [number, unit]
 // see documentation for more info
@@ -16,7 +17,7 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export const actions = {
-    default: async (event: any) => {
+    default: async (event: RequestEvent) => {
         const { request } = event;
         const data = await request.formData();
 
@@ -41,8 +42,8 @@ export const actions = {
         const user_post_data = {
             first_name: firstname,
             last_name: lastname,
-            username: username,
-            email: email,
+            username,
+            email,
             roles: 'user',
         };
 

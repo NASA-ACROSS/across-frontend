@@ -3,10 +3,10 @@ import { base } from '$app/paths';
 import { CONFIG } from '../../../config/config.js';
 import { jwtDecode } from "jwt-decode";
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
-import type { CookieSerializeOptions } from 'cookie';
-import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
 import type { UserCredentialsCookie, AccessDataResponse } from '$lib/types/User/UserCredentialsCookie.js';
 import type { User } from '$lib/types/User/User.js';
+import { UserCredentials } from '$lib/types/User/UserCredentials.js';
+import type { RequestEvent } from './$types.js';
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
@@ -28,7 +28,7 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export const actions = {
-    default: async (event) => {
+    default: async (event: RequestEvent) => {
         const { url, request, cookies } = event;
         const verificationToken = url.searchParams.get('token');
 
@@ -84,12 +84,6 @@ export const actions = {
         const headers = response.headers;
 
         if (credentials) {
-            const cookieOptions: CookieSerializeOptions & { path: string } = {
-                path: '/',
-                sameSite: true,
-                secure: true,
-                httpOnly: true,
-            };
 
             const userCredentialsCookie: UserCredentialsCookie = {
                 id: '',
@@ -106,9 +100,6 @@ export const actions = {
             const data = await request.formData();
             const rememberMe = data.get('rememberMe');
             if (rememberMe) {
-                // add an expiration to the cookie so it lasts longer than one browser session
-                const ONE_YEAR_IN_MS = 31536000;
-                cookieOptions.maxAge = ONE_YEAR_IN_MS;
                 userCredentialsCookie.rememberMe = true;
             }
 
@@ -150,26 +141,21 @@ export const actions = {
                 userCredentialsCookie.email = userAPIInfo.email;
 
                 // Get the refresh token from the response headers
-                const cookies = headers.get('set-cookie');
-                let refresh_token = '';
-                if (cookies) {
-                    const cookieArray = cookies.split(';');
-                    for (let index = 0; index < cookieArray.length; ++index) {
-                        const cookie = cookieArray[index];
-                        if (cookie.includes('refresh_token')) {
-                            refresh_token = cookie.split('=')[1];
-                        }
-                    }
+                const cookiesStr = headers.get('set-cookie');
+                let refresh_token = cookiesStr
+                        ?.split(';')
+                        .find((element) => element.includes('refresh_token'))
+                        ?.split('=')[1]
+
+                if (refresh_token == null) {
+                    refresh_token = '';
                 }
+                
                 userCredentialsCookie.refresh_token = refresh_token;
             }
 
-            const encryptedCredentials = await aesGcmEncrypt(
-                JSON.stringify(userCredentialsCookie),
-                CONFIG.API_TOKEN
-            );
-
-            cookies.set('user-login', encryptedCredentials, cookieOptions);
+            const userCredentials = new UserCredentials(userCredentialsCookie);
+            await userCredentials.setCookie(cookies);
 
             throw redirect(302, `${base}/user/profile`);
         }

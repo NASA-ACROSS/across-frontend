@@ -1,10 +1,12 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { base } from '$app/paths';
 import { CONFIG } from '../../../config/config.js';
+import { jwtDecode } from "jwt-decode";
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
-import type { CookieSerializeOptions } from 'cookie';
-import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
+import type { UserCredentialsCookie, AccessDataResponse } from '$lib/types/User/UserCredentialsCookie.js';
+import type { User } from '$lib/types/User/User.js';
+import { UserCredentials } from '$lib/types/User/UserCredentials.js';
+import type { RequestEvent } from './$types.js';
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
@@ -26,16 +28,16 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export const actions = {
-    default: async (event) => {
+    default: async (event: RequestEvent) => {
         const { url, request, cookies } = event;
-        const verificationKey = url.searchParams.get('verification_key');
+        const verificationToken = url.searchParams.get('token');
 
         // Rate limit user login-verify
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {
             console.error(
-                `ERROR: rate-limiting at /login-verify for verificationKey [${verificationKey}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`
+                `ERROR: rate-limiting at /verify for verificationToken [${verificationToken}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`
             );
             return fail(429, {
                 rateLimit: true,
@@ -44,23 +46,23 @@ export const actions = {
         }
 
         const options = {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 Authorization: `Bearer ${CONFIG.API_TOKEN}`,
             },
         };
 
-        // trade verification key for api key
+        // trade verification token for access token
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user/login-verify/${verificationKey}`,
+                `${CONFIG.API_URL}/api/auth/verify?token=${verificationToken}`,
                 options
             );
         } catch (error: any) {
             console.error(
-                `ERROR: login-verify for verificationKey [${verificationKey}] at [${Date.now()}]`,
+                `ERROR: login-verify for verificationToken [${verificationToken}] at [${Date.now()}]`,
                 JSON.stringify(error)
             );
             return fail(500, { error: error?.message, fail: true });
@@ -69,7 +71,7 @@ export const actions = {
         // short circuit for error status
         if (response.status != 200) {
             console.error(
-                `ERROR: login-verify for verificationKey [${verificationKey}] at time [${Date.now()}] with status code [${response.status}] with status text ${response.statusText}`,
+                `ERROR: login-verify for verificationToken [${verificationToken}] at time [${Date.now()}] with status code [${response.status}] with status text ${response.statusText}`,
                 response
             );
             return {};
@@ -78,31 +80,82 @@ export const actions = {
         // clear current login cookie
         cookies.delete('user-login', { path: '/' });
 
-        const credentials = await response?.json();
+        const credentials = await response?.json() as AccessDataResponse;
+        const headers = response.headers;
 
         if (credentials) {
-            const cookieOptions: CookieSerializeOptions & { path: string } = {
-                path: '/',
-                sameSite: true,
-                secure: true,
-                httpOnly: true,
+
+            const userCredentialsCookie: UserCredentialsCookie = {
+                id: '',
+                first_name: '',
+                last_name: '',
+                username: '',
+                email: '',
+                access_token: credentials.access_token,
+                refresh_token: '',
+                rememberMe: false,
+                message: ''
             };
 
             const data = await request.formData();
             const rememberMe = data.get('rememberMe');
             if (rememberMe) {
-                // add an expiration to the cookie so it lasts longer than one browser session
-                const ONE_YEAR_IN_MS = 31536000;
-                cookieOptions.maxAge = ONE_YEAR_IN_MS;
-                credentials.rememberMe = true;
+                userCredentialsCookie.rememberMe = true;
             }
 
-            const encryptedCredentials = await aesGcmEncrypt(
-                JSON.stringify(credentials),
-                CONFIG.API_TOKEN
-            );
+            // get user id from access token
+            const decodedToken = jwtDecode(credentials.access_token);
+            const userId = decodedToken.sub;
 
-            cookies.set('user-login', encryptedCredentials, cookieOptions);
+            // Get the User info using the ID
+            if (userId) {
+
+                userCredentialsCookie.id = userId;
+
+                const userOptions = {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        Authorization: `Bearer ${credentials.access_token}`,
+                    },
+                };
+        
+                let userResponse;
+                try {
+                    userResponse = await fetch(
+                        `${CONFIG.API_URL}/api/user/${userId}`,
+                        userOptions
+                    );
+                } catch (error: any) {
+                    console.error(
+                        `ERROR: getting information for user [${userId}] at [${Date.now()}]`,
+                        JSON.stringify(error)
+                    );
+                    return fail(500, { error: error?.message, fail: true });
+                }
+
+                const userAPIInfo = await userResponse.json() as User;
+                userCredentialsCookie.first_name = userAPIInfo.first_name;
+                userCredentialsCookie.last_name = userAPIInfo.last_name;
+                userCredentialsCookie.username = userAPIInfo.username;
+                userCredentialsCookie.email = userAPIInfo.email;
+
+                // Get the refresh token from the response headers
+                const cookiesStr = headers.get('set-cookie');
+                let refresh_token = cookiesStr
+                        ?.split(';')
+                        .find((element) => element.includes('refresh_token'))
+                        ?.split('=')[1]
+
+                if (refresh_token == null) {
+                    refresh_token = '';
+                }
+                
+                userCredentialsCookie.refresh_token = refresh_token;
+            }
+
+            const userCredentials = new UserCredentials(userCredentialsCookie);
+            await userCredentials.setCookie(cookies);
 
             throw redirect(302, `${base}/user/profile`);
         }

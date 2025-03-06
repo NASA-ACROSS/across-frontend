@@ -14,5 +14,5 @@ type Config = {
  */
 export const CONFIG: Config = {
     API_URL: env.API_URL || "",
-    API_TOKEN: env.ACROSS_API_TOKEN || "",
+    API_TOKEN: env.ACROSS_API_TOKEN || "WEBSERVER_SECRET_KEY",
 }

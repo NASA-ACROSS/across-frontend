@@ -4,6 +4,7 @@ import { validate } from '$lib/utils/regex/validate.js';
 import { CONFIG } from '../../../config/config.js';
 import { fail } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
+import type { RequestEvent } from './$types.js';
 
 // rate limit is defined as [number, unit]
 // see documentation for more info
@@ -16,7 +17,7 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export const actions = {
-    default: async (event: any) => {
+    default: async (event: RequestEvent) => {
         const { request } = event;
         const data = await request.formData();
 
@@ -39,8 +40,8 @@ export const actions = {
         const email = validate(data.get('email'), emailRegex, 'email');
 
         const user_post_data = {
-            firstname,
-            lastname,
+            first_name: firstname,
+            last_name: lastname,
             username,
             email,
             roles: 'user',
@@ -77,18 +78,15 @@ export const actions = {
         const options = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${CONFIG.API_TOKEN}`,
             },
-            body: new URLSearchParams(user_post_data),
+            body: JSON.stringify(user_post_data),
         };
 
         let response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user/`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/api/user`, options);
         } catch (error: any) {
             console.error(
                 `ERROR: logging in registering [${email}] at [${Date.now()}]`,
@@ -105,7 +103,7 @@ export const actions = {
         }
 
         if (response.status == 409) {
-            const errorResponse = await response.json();
+            const errorResponse = await response.json() as {detail: string};
             console.error(
                 `ERROR: user already exists  [${email}, ${username}] at [${Date.now()}] with status code [409]`
             );
@@ -115,9 +113,9 @@ export const actions = {
             });
         }
 
-        if (response.status == 500) {
+        if (response.status == 500 || response.status == 422) {
             console.error(
-                `ERROR: register user with [${email}, ${username}] at [${Date.now()}] with status code [500]`
+                `ERROR: register user with [${email}, ${username}] at [${Date.now()}] with status code [${response.status}]`
             );
             return fail(500, { fail: true });
         }

@@ -3,6 +3,7 @@ import { base } from '$app/paths';
 import { loggedIn } from '$lib/stores/login';
 import { CONFIG } from '../../../config/config';
 import type { CookieSerializeOptions } from 'cookie';
+import { UserCredentials} from '$lib/types/User/UserCredentials';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
@@ -10,8 +11,9 @@ import { validate } from '$lib/utils/regex/validate';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
 import { emailRegex } from '$lib/utils/regex/emailRegex';
 import type { User } from '$lib/types/User/User';
+import type { RequestEvent } from './$types.js';
 
-export async function load({ locals }) {
+export async function load({ locals, cookies }) {
     const userCookie = locals.user;
     // Redirect on load when user is not logged in
     if (!userCookie) {
@@ -21,14 +23,14 @@ export async function load({ locals }) {
 
     loggedIn.set(true);
 
-    const user: User = await getUserInfo(userCookie);
+    const user: User = await getUserInfo(userCookie as UserCredentialsCookie, cookies);
 
     // Respond with user data
     return { user };
 }
 
 export const actions = {
-    updateUserInformation: async (event: any) => {
+    updateUserInformation: async (event: RequestEvent) => {
         const { request, locals, cookies } = event;
         const user: UserCredentialsCookie = locals.user;
         const data = await request.formData();
@@ -72,13 +74,14 @@ export const actions = {
             return fail(500, { failValidation: true });
         }
 
-        const USER_API_TOKEN = event.locals.user.api_token;
+        const userCred = new UserCredentials(user);
+        const userAccessToken = await userCred.getAccessToken(cookies);
 
         const options: RequestInit = {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${USER_API_TOKEN}`,
+                Authorization: `Bearer ${userAccessToken}`,
             },
         };
 
@@ -87,7 +90,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user/${user.id}?${requestParams.toString()}`,
+                `${CONFIG.API_URL}/api/across/user/${user.id}?${requestParams.toString()}`,
                 options
             );
         } catch (error: any) {
@@ -143,9 +146,15 @@ export const actions = {
             email,
         };
     },
-    acceptInvite: async (event) => {
-        const request = event.request;
-        const userCookie = event.locals.user;
+    acceptInvite: async (event: RequestEvent) => {
+        const { request, cookies } = event;
+        // NOTE: The following block is for temporary testing purposes
+        //       We need to come back to these once we finish porting
+        //       over API features
+        const user = event.locals.user;
+        if (!user) {
+            return fail(500, { fail: true })
+        }
         const data = await request.formData();
 
         const userInviteId = data.get('userInviteId') as string;
@@ -154,12 +163,14 @@ export const actions = {
         console.log(
             `accept invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
         );
+        const userCred = new UserCredentials(user);
+        const userAccessToken = await userCred.getAccessToken(cookies);
 
         const options = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.api_token}`,
+                Authorization: `Bearer ${userAccessToken}`,
             },
         };
 
@@ -186,9 +197,15 @@ export const actions = {
 
         return { successAcceptInvite: true };
     },
-    rejectInvite: async (event) => {
-        const request = event.request;
-        const userCookie = event.locals.user;
+    rejectInvite: async (event: RequestEvent) => {
+        const { request, cookies } = event;
+        // NOTE: The following block is for temporary testing purposes
+        //       We need to come back to these once we finish porting
+        //       over API features
+        const user = event.locals.user;
+        if (!user) {
+            return fail(500, { fail: true })
+        }
         const data = await request.formData();
 
         const userInviteId = data.get('userInviteId') as string;
@@ -197,12 +214,14 @@ export const actions = {
         console.log(
             `rejecting invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
         );
+        const userCred = new UserCredentials(user);
+        const userAccessToken = await userCred.getAccessToken(cookies);
 
         const options = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.api_token}`,
+                Authorization: `Bearer ${userAccessToken}`,
             },
         };
 
@@ -229,9 +248,15 @@ export const actions = {
 
         return { successRejectInvite: true };
     },
-    leaveGroup: async (event) => {
-        const request = event.request;
-        const userCookie = event.locals.user;
+    leaveGroup: async (event: RequestEvent) => {
+        const { request, cookies } = event;
+        // NOTE: The following block is for temporary testing purposes
+        //       We need to come back to these once we finish porting
+        //       over API features
+        const user = event.locals.user;
+        if (!user) {
+            return fail(500, { fail: true })
+        }
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
@@ -240,12 +265,14 @@ export const actions = {
         console.log(
             `leaving group userGroupId: ${userGroupId}  userId: ${userId} `
         );
+        const userCred = new UserCredentials(user);
+        const userAccessToken = await userCred.getAccessToken(cookies);
 
         const options = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.api_token}`,
+                Authorization: `Bearer ${userAccessToken}`,
             },
         };
 

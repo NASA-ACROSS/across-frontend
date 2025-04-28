@@ -253,7 +253,7 @@
 <section class="pb-5 bg-secondary"></section>
 
 <style>
-    input:disabled.default-cursor.validation-border-color {
+    input:disabled.default-cursor {
         cursor: default;
         pointer-events: none;
     }

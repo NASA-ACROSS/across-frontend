@@ -3,7 +3,7 @@
     export let icon: string | undefined = undefined;
 </script>
 
-<section class="container py-4">
+<section class="py-4 bg-secondary">
     <h1>
         {#if icon}
             <div class="bx bx-{icon} opacity-70 mx-2" />

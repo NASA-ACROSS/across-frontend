@@ -36,7 +36,7 @@
             />
             <!-- <span class='navbar-title' >Multimessenger<br> Astrophysics</span> -->
             <p class="navbar-title mt-0 mb-0" style="line-height:25px">
-                Multimessenger<br /> Astrophysics
+                ACROSS<br /> Astrophysics Cross-Observatory Science Support
             </p>
         </a>
         <button
@@ -65,33 +65,20 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a
-                            href="{base}/missions"
+                            href="{base}/data"
                             class="nav-link dropdown-toggle"
-                            aria-current="page">Missions</a
+                            aria-current="page">Data</a
                         >
                         <ul class="dropdown-menu">
                             <li>
-                                <a
-                                    href="{base}/missions#overview"
-                                    class="dropdown-item">Overview</a
+                                <a href="{base}/schedules" class="dropdown-item"
+                                    >Schedules</a
                                 >
                             </li>
                             <li>
                                 <a
-                                    href="{base}/missions#timeline"
-                                    class="dropdown-item">Timeline</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/missions#active"
-                                    class="dropdown-item">Active</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/missions#development"
-                                    class="dropdown-item">Development</a
+                                    href="{base}/observations"
+                                    class="dropdown-item">Observations</a
                                 >
                             </li>
                         </ul>
@@ -105,101 +92,9 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a
-                                    href="{base}/tools#overview"
-                                    class="dropdown-item">Overview</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/tools#reporting"
+                                    href="{base}/visibility-calculator"
                                     class="dropdown-item"
-                                    >Rapid Reporting Resources</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/tools#analysis"
-                                    class="dropdown-item"
-                                    >Data Analysis Toolkits</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/tools#planning"
-                                    class="dropdown-item"
-                                    >Observations Planning Tools</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/tools#archives"
-                                    class="dropdown-item"
-                                    >Data Archives & Repositories</a
-                                >
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a
-                            href="{base}/proposals"
-                            class="nav-link dropdown-toggle"
-                            aria-current="page">Proposals</a
-                        >
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a
-                                    href="{base}/proposals#proposals"
-                                    class="dropdown-item"
-                                    >Proposal Opportunities</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/proposals#programs"
-                                    class="dropdown-item"
-                                    >Guest Observer & Investigator Programs</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/proposals#joint"
-                                    class="dropdown-item"
-                                    >Joint Observing Opportunities</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/proposals#resources"
-                                    class="dropdown-item"
-                                    >Complementary Opportunities</a
-                                >
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a
-                            href="{base}/conferences"
-                            class="nav-link dropdown-toggle"
-                            aria-current="page">Conferences</a
-                        >
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a
-                                    href="{base}/conferences#upcoming"
-                                    class="dropdown-item">Upcoming Meetings</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/conferences#past"
-                                    class="dropdown-item">Past Meetings</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/conferences#resources"
-                                    class="dropdown-item"
-                                    >Presentation Resources</a
+                                    >Visibility Calculator</a
                                 >
                             </li>
                         </ul>
@@ -211,26 +106,27 @@
                             class="nav-link">About</a
                         >
                     </li>
+                    <li class="nav-item">
+                        <a
+                            data-sveltekit-reload
+                            href="http://127.0.0.1:8000/docs"
+                            class="nav-link"
+                            aria-current="page">API</a
+                        >
+                    </li>
                     <li class="nav-item dropdown">
                         <a
                             data-sveltekit-reload
-                            href="{base}/api/v1/docs"
+                            href="{base}/user/profile"
                             class="nav-link dropdown-toggle"
-                            aria-current="page">API</a
+                            aria-current="page">My ACROSS</a
                         >
                         <ul class="dropdown-menu">
-                            <li>
-                                <a
-                                    data-sveltekit-reload
-                                    href="{base}/api/v1/docs"
-                                    class="dropdown-item">Documentation</a
-                                >
-                            </li>
                             {#if isLoggedIn}
                                 <li>
                                     <a
                                         href="{base}/user/profile"
-                                        class="dropdown-item">Profile</a
+                                        class="dropdown-item">My Profile</a
                                     >
                                 </li>
                                 <li>
@@ -244,7 +140,7 @@
                                 <li>
                                     <a
                                         href="{base}/user/register"
-                                        class="dropdown-item">Register</a
+                                        class="dropdown-item">Create Account</a
                                     >
                                 </li>
                                 <li>

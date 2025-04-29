@@ -7,7 +7,7 @@
 
 <section class="py-5 bg-secondary">
     <div class="container py-md-3">
-        <h1>API User Registration</h1>
+        <h1>Create Account</h1>
         <form method="post">
             <label for="firstname">Name</label>
             <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">

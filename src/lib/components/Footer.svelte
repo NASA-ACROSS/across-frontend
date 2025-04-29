@@ -26,14 +26,14 @@
                 >
                     <ul class="nav flex-column pb-lg-1 mb-lg-0 mt-3">
                         <li>
-                            <span class="h6">NASA Official: </span> Daniel Kocevski
+                            <span class="h6">NASA Official: </span> Official TBD
                         </li>
                         <li>
-                            <span class="h6">Page Editor: </span> Daniel Kocevski
+                            <span class="h6">Informational Website: </span> Link
+                            TBD
                         </li>
                         <li>
-                            <span class="h6">Page Last Updated: </span> August 21st,
-                            2022
+                            <span class="h6">Git Repository: </span> Link TBD
                         </li>
                     </ul>
 
@@ -70,7 +70,6 @@
 
             <div class="col-xl-6 col-lg-6 col-md-12">
                 <div id="footer-links" class="row">
-                    <!-- MOSSAIC Column -->
                     <div class="text-end">
                         <div
                             id="useful-links"
@@ -90,7 +89,7 @@
                                     <a
                                         href="/"
                                         class="nav-link d-lg-inline-block px-0 pt-0 pb-0 mt-1"
-                                        >multimessenger.across.smce.nasa.gov</a
+                                        >across.sciencecloud.nasa.gov</a
                                     >
                                 </li>
                                 <li class="nav-item">

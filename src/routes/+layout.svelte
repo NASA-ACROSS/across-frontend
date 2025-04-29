@@ -54,28 +54,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Meta -->
-    <meta name="msapplication-TileColor" content="#080032" />
-    <meta name="theme-color" content="#ffffff" />
     <meta name="build-version" content={PUBLIC_CONFIG.BUILD_VERSION} />
 
-    <!-- Vendor Styles -->
+    <!-- BoxIcons -->
     <link
         rel="stylesheet"
         media="screen"
         href="{base}/assets/vendor/boxicons/css/boxicons.min.css"
     />
-    <link
-        rel="stylesheet"
-        media="screen"
-        href="{base}/assets/vendor/swiper/swiper-bundle.min.css"
-    />
-    <link
-        rel="stylesheet"
-        media="screen"
-        href="{base}/assets/vendor/lightgallery/css/lightgallery-bundle.min.css"
-    />
 
-    <!-- Main Theme Styles + Bootstrap -->
+    <!-- Main Theme Style -->
     <link
         rel="stylesheet"
         media="screen"
@@ -84,36 +72,6 @@
 
     {#key $page.url}
         {#if DOM_MOUNTED}
-            <!-- Vendor Scripts -->
-            <script
-                src="{base}/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"
-            ></script>
-            <script
-                src="{base}/assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"
-            ></script>
-            <script
-                src="{base}/assets/vendor/jarallax/dist/jarallax.min.js "
-            ></script>
-            <script
-                src="{base}/assets/vendor/parallax-js/dist/parallax.min.js"
-            ></script>
-            <script
-                src="{base}/assets/vendor/lightgallery/lightgallery.min.js"
-            ></script>
-            <script
-                src="{base}/assets/vendor/lightgallery/plugins/zoom/lg-zoom.min.js"
-            ></script>
-            <script
-                src="{base}/assets/vendor/lightgallery/plugins/fullscreen/lg-fullscreen.min.js"
-            ></script>
-            <script
-                src="{base}/assets/vendor/lightgallery/plugins/video/lg-video.min.js"
-            ></script>
-            <script
-                src="{base}/assets/vendor/swiper/swiper-bundle.min.js"
-            ></script>
-            <script src="{base}/assets/vendor/rellax/rellax.min.js"></script>
-
             <!-- Main Theme Script -->
             <script src="{base}/assets/js/theme.min.js"></script>
         {/if}

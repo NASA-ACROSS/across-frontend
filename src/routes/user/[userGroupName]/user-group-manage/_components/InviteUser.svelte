@@ -5,7 +5,7 @@
     import type { ActionData, SubmitFunction } from '../$types';
 
     export let form: ActionData;
-    export let userGroup: UserGroup;
+    export let group: UserGroup;
 
     let isSubmittingInvite = false;
 
@@ -14,7 +14,7 @@
         isSubmittingInvite = true;
 
         // set form data to send, specific to this form
-        formData.set('userGroupId', userGroup.id.toString());
+        formData.set('groupId', group.id.toString());
 
         return async ({ result }) => {
             isSubmittingInvite = false;
@@ -49,7 +49,7 @@
                         autocomplete="off"
                         name="email"
                         type="email"
-                        placeholder="Enter an email to invite to {userGroup.short_name}"
+                        placeholder="Enter an email to invite to {group.short_name}"
                     />
                 </div>
                 <button

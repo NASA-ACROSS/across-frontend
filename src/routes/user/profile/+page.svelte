@@ -36,7 +36,7 @@
         };
     }
 
-    let userGroups = data.user.user_groups;
+    let userGroups = data.user.groups;
     let invitations = data.user.received_invites;
 
     /**
@@ -59,14 +59,13 @@
             formData.set('firstname', userData.first_name);
             formData.set('lastname', userData.last_name);
             formData.set('username', userData.username);
-            formData.set('email', userData.email);
         } else if (action.href.includes('requestRole')) {
             formData.set('role', roleSelection);
         } else if (action.href.includes('cancelRequestedRole')) {
             formData.set('role', roleSelection);
         } else if (action.href.includes('leaveGroup')) {
             formData.set('userId', userData.id.toString());
-            formData.set('userGroupId', leaveUserGroup.id.toString());
+            formData.set('groupId', leaveUserGroup.id.toString());
         }
 
         /**
@@ -88,7 +87,7 @@
 
     afterUpdate(() => {
         userData = data.user;
-        userGroups = data.user.user_groups;
+        userGroups = data.user.groups;
         invitations = data.user.received_invites;
     });
 </script>
@@ -128,7 +127,7 @@
                         bind:value={userData.first_name}
                         pattern={frontendAlphaNumRegex}
                         autocomplete="off"
-                        name="firstname"
+                        name="first_name"
                         title="First name (alphanumeric, 25 character max)"
                         type="text"
                         placeholder="First"
@@ -143,7 +142,7 @@
                         bind:value={userData.last_name}
                         pattern={frontendAlphaNumRegex}
                         autocomplete="off"
-                        name="lastname"
+                        name="last_name"
                         title="Last name (alphanumeric, 25 character max)"
                         type="text"
                         placeholder="Last"
@@ -172,14 +171,13 @@
             <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
                 <div class="input-group me-sm-3 mb-sm-0 mb-3">
                     <input
-                        class="{!isUserDataUnchanged
-                            ? 'validation-border-color'
-                            : ''} form-control form-control-lg rounded-3 ps-5"
+                        class="form-control form-control-lg rounded-3 ps-5"
                         required
+                        disabled
                         bind:value={userData.email}
                         autocomplete="off"
                         name="email"
-                        title="Please enter a valid email"
+                        title="You cannot change your email"
                         type="email"
                         placeholder="Please enter your email"
                     />
@@ -217,36 +215,8 @@
     </div>
 </section>
 
-<section class="py-2 bg-secondary">
-    <div class="container py-md-3">
-        <h3>
-            <i class="bx bx-key opacity-70 me-2"></i>
-            API Key
-        </h3>
-        <div
-            class="password-toggle d-flex flex-sm-row flex-column mb-3 needs-validation"
-        >
-            <div class="input-group me-sm-3 mb-sm-0 mb-3">
-                <input
-                    class="form-control form-control-lg rounded-3 ps-5 default-cursor"
-                    type="password"
-                    disabled={true}
-                    value={userData.api_token}
-                />
-                <label
-                    class="password-toggle-btn"
-                    aria-label="Show/hide API key"
-                >
-                    <input class="password-toggle-check" type="checkbox" />
-                    <span class="password-toggle-indicator"></span>
-                </label>
-            </div>
-        </div>
-    </div>
-</section>
-
 <UserGroupInvites {invitations} />
-<UserGroups {userGroups} bind:leaveUserGroup {enhancedForm} />
+<UserGroups {userData} {userGroups} bind:leaveUserGroup {enhancedForm} />
 
 <section class="pb-5 bg-secondary"></section>
 

@@ -8,6 +8,8 @@ export type UserCredentialsCookie = {
     refresh_token: string;
     rememberMe: boolean;
     message: string;
+    scopes: string[];
+    groups: string[];
 };
 
 export interface AccessDataResponse {

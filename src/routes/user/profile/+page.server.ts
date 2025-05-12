@@ -9,7 +9,6 @@ import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { validate } from '$lib/utils/regex/validate';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
-import { emailRegex } from '$lib/utils/regex/emailRegex';
 import type { User } from '$lib/types/User/User';
 import type { RequestEvent } from './$types.js';
 
@@ -23,7 +22,10 @@ export async function load({ locals, cookies }) {
 
     loggedIn.set(true);
 
-    const user: User = await getUserInfo(userCookie as UserCredentialsCookie, cookies);
+    const user: User = await getUserInfo(
+        userCookie as UserCredentialsCookie,
+        cookies
+    );
 
     // Respond with user data
     return { user };
@@ -36,40 +38,33 @@ export const actions = {
         const data = await request.formData();
 
         // validate and sanitize input
-        const firstname = validate(
-            data.get('firstname'),
+        const first_name: string = validate(
+            data.get('first_name'),
             backendAlphaNumRegex,
             'firstname'
-        );
-        const lastname = validate(
-            data.get('lastname'),
+        )!;
+        const last_name: string = validate(
+            data.get('last_name'),
             backendAlphaNumRegex,
             'lastname'
-        );
-        const username = validate(
+        )!;
+        const username: string = validate(
             data.get('username'),
             backendAlphaNumRegex,
             'username'
-        );
-        const email = validate(data.get('email'), emailRegex, 'email');
+        )!;
 
-        const userPutData = {
-            firstname,
-            lastname,
+        const userPutBody = {
+            first_name,
+            last_name,
             username,
-            email,
         };
 
         // reject if any inputs are null after sanitization, this should never happen
-        if (
-            firstname === null ||
-            lastname === null ||
-            username === null ||
-            email === null
-        ) {
+        if (first_name === null || last_name === null || username === null) {
             console.error(
                 `ERROR: could not validate user input to update user info, something is null.`,
-                JSON.stringify(userPutData, null, 2)
+                JSON.stringify(userPutBody, null, 2)
             );
             return fail(500, { failValidation: true });
         }
@@ -78,24 +73,23 @@ export const actions = {
         const userAccessToken = await userCred.getAccessToken(cookies);
 
         const options: RequestInit = {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${userAccessToken}`,
             },
+            body: JSON.stringify(userPutBody),
         };
-
-        const requestParams = new URLSearchParams(userPutData);
 
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/across/user/${user.id}?${requestParams.toString()}`,
+                `${CONFIG.API_URL}/api/user/${user.id}`,
                 options
             );
         } catch (error: any) {
             console.error(
-                `ERROR: updating user information [${email}] at [${Date.now()}]`,
+                `ERROR: updating user information [${username}] at [${Date.now()}]`,
                 JSON.stringify(error)
             );
             return fail(500, {
@@ -111,12 +105,12 @@ export const actions = {
 
         if (response.status == 500) {
             console.error(
-                `ERROR: updating user information with [${email}, ${username}] at [${Date.now()}] with status code [500]`
+                `ERROR: updating user information with [${username}] at [${Date.now()}] with status code [500]`
             );
             return fail(500, { failUpdateUserInformation: true });
         }
 
-        const cookieUserData = { ...user, ...userPutData };
+        const cookieUserData = { ...user, ...userPutBody };
         const cookieOptions: CookieSerializeOptions & { path: string } = {
             path: '/',
             sameSite: true,
@@ -140,10 +134,9 @@ export const actions = {
 
         return {
             successUpdateUserInformation: true,
-            firstname,
-            lastname,
+            first_name,
+            last_name,
             username,
-            email,
         };
     },
     acceptInvite: async (event: RequestEvent) => {
@@ -153,21 +146,19 @@ export const actions = {
         //       over API features
         const user = event.locals.user;
         if (!user) {
-            return fail(500, { fail: true })
+            return fail(500, { fail: true });
         }
         const data = await request.formData();
 
         const userInviteId = data.get('userInviteId') as string;
-        const userGroupId = data.get('userGroupId') as string;
 
-        console.log(
-            `accept invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
-        );
+        console.log(`accept invite userInviteId: ${userInviteId}`);
+
         const userCred = new UserCredentials(user);
         const userAccessToken = await userCred.getAccessToken(cookies);
 
         const options = {
-            method: 'POST',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 Authorization: `Bearer ${userAccessToken}`,
@@ -177,7 +168,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite/${userInviteId}/accept`,
+                `${CONFIG.API_URL}/user/${userCred.userCookie.id}/invite/${userInviteId}`,
                 options
             );
         } catch (error: any) {
@@ -204,16 +195,14 @@ export const actions = {
         //       over API features
         const user = event.locals.user;
         if (!user) {
-            return fail(500, { fail: true })
+            return fail(500, { fail: true });
         }
         const data = await request.formData();
 
         const userInviteId = data.get('userInviteId') as string;
-        const userGroupId = data.get('userGroupId') as string;
 
-        console.log(
-            `rejecting invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
-        );
+        console.log(`rejecting invite userInviteId: ${userInviteId}`);
+
         const userCred = new UserCredentials(user);
         const userAccessToken = await userCred.getAccessToken(cookies);
 
@@ -228,7 +217,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite/${userInviteId}/deny`,
+                `${CONFIG.API_URL}/user/${userCred.userCookie.id}/invite/${userInviteId}`,
                 options
             );
         } catch (error: any) {
@@ -255,15 +244,15 @@ export const actions = {
         //       over API features
         const user = event.locals.user;
         if (!user) {
-            return fail(500, { fail: true })
+            return fail(500, { fail: true });
         }
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
-        const userGroupId = data.get('userGroupId') as string;
+        const groupId = data.get('groupId') as string;
 
         console.log(
-            `leaving group userGroupId: ${userGroupId}  userId: ${userId} `
+            `leaving group userGroupId: ${groupId}  userId: ${userId} `
         );
         const userCred = new UserCredentials(user);
         const userAccessToken = await userCred.getAccessToken(cookies);
@@ -279,12 +268,12 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/user/${userId}/`,
+                `${CONFIG.API_URL}/api/user/${userId}/group/${groupId}/`,
                 options
             );
         } catch (error: any) {
             console.error(
-                `ERROR: leaving group id [${userGroupId}] for user id [${userId}] at [${Date.now()}]`,
+                `ERROR: leaving group id [${groupId}] for user id [${userId}] at [${Date.now()}]`,
                 JSON.stringify(error)
             );
             return fail(500, { error: error.message, fail: true });
@@ -292,7 +281,7 @@ export const actions = {
 
         if (response.status == 500) {
             console.error(
-                `ERROR: leaving group id [${userGroupId}] for user id [${userId}] at [${Date.now()}] with status code [500]`
+                `ERROR: leaving group id [${groupId}] for user id [${userId}] at [${Date.now()}] with status code [500]`
             );
             return fail(500, { fail: true });
         }

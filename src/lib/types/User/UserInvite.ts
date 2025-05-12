@@ -1,5 +1,14 @@
+import type { UserDetail } from './User';
+
 export type UserInvite = {
     id: number;
+    group: InviteGroupDetail;
+    sender: UserDetail;
+};
+
+type InviteGroupDetail = {
+    id: string;
     name: string;
-    group_id: number;
+    short_name: string;
+    created_on: string;
 };

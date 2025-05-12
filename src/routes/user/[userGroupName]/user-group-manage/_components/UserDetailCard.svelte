@@ -1,19 +1,20 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import type { UserGroupAdminUser } from '$lib/types/User/UserGroupAdminUser';
+    import type { UserGroupUser } from '$lib/types/User/UserGroupUser';
     import type { UserGroupRole } from '$lib/types/User/UserGroupRole';
     import type { SubmitFunction } from '@sveltejs/kit';
+    import type { UserGroup } from '$lib/types/User/UserGroup';
 
-    export let selectedUser: UserGroupAdminUser | undefined;
-    export let assignableRoles: UserGroupRole[];
-    export let userGroupId: number;
+    export let selectedUser: UserGroupUser | undefined;
+    export let group: UserGroup;
 
+    $: assignableRoles = group?.roles;
     let selectedRole: UserGroupRole;
     let isRemovingRole = false;
 
     // cross match assignable roles with user's to create a list of user's current roles
-    $: userRoles = selectedUser?.roles?.reduce((roles, userRole) => {
+    $: userRoles = selectedUser?.group_roles?.reduce((roles, userRole) => {
         let matchingRole = assignableRoles?.find(
             (role) => role.id == userRole.id
         );
@@ -29,8 +30,9 @@
             // set form data to send, specific to this form
             formData.set('roleId', selectedRole?.id?.toString() || '');
             formData.set('userId', selectedUser?.id?.toString() || '');
+            formData.set('groupId', group?.id?.toString() || '');
         } else if (action.href.includes('removeUser')) {
-            formData.set('userGroupId', userGroupId?.toString() || '');
+            formData.set('groupId', group?.id?.toString() || '');
             formData.set('userId', selectedUser?.id?.toString() || '');
         }
 
@@ -58,7 +60,7 @@
     {:else}
         <div class="card border-secondary">
             <div class="card-body">
-                <h4 class="card-title">{selectedUser.full_name}</h4>
+                <h4 class="card-title">{selectedUser.first_name + " " + selectedUser.last_name}</h4>
                 <p class="card-text fs-md text-muted">
                     {selectedUser.email}
                 </p>

@@ -1,11 +1,11 @@
+import type { User } from './User';
 import type { UserGroupRole } from './UserGroupRole';
-import type { UserGroupAdminUser } from './UserGroupAdminUser';
 
-export type UserGroupAdminData = {
+export type UserGroupData = {
     id: number;
     name: string;
     short_name: string;
-    users: UserGroupAdminUser[];
+    users: User[];
     roles: UserGroupRole[];
     invites: [];
 };

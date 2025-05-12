@@ -1,6 +1,6 @@
 <script lang="ts">
     import { base } from '$app/paths';
-    import type { UserGroupInviteRecord } from '$lib/types/User/UserGroupInvite';
+    import type { UserGroupInvite } from '$lib/types/User/UserGroupInvite';
     import InvitedUsers from './_components/InvitedUsers.svelte';
     import InviteUser from './_components/InviteUser.svelte';
     import { afterUpdate } from 'svelte';
@@ -8,29 +8,25 @@
     import GroupUsers from './_components/GroupUsers.svelte';
     import AssignRole from './_components/AssignRole.svelte';
     import UserDetailCard from './_components/UserDetailCard.svelte';
-    import type { UserGroupAdminUser } from '$lib/types/User/UserGroupAdminUser';
+    import type { UserGroupUser } from '$lib/types/User/UserGroupUser';
 
     export let form: ActionData;
     export let data;
 
-    let selectedUser: UserGroupAdminUser | undefined;
+    console.log("user-management", data)
 
-    let userGroup = data.userGroup;
-    let invitedUsers: UserGroupInviteRecord[] = data.invitedUsers[
-        'entries'
-    ] as unknown as UserGroupInviteRecord[];
-    let users = data.userGroupAdminData.users;
-    let roles = data.userGroupAdminData.roles;
-    let assignableRoles = data.assignableRoles;
+    let selectedUser: UserGroupUser | undefined;
+
+    let group = data.userGroup;
+    let invitedUsers: UserGroupInvite[] = data.invitedUsers as UserGroupInvite[];
+    let users = group.users;
+    let roles = group.roles;
     let currentUserEmail = data.currentUserEmail;
 
     afterUpdate(() => {
-        invitedUsers = data.invitedUsers[
-            'entries'
-        ] as unknown as UserGroupInviteRecord[];
-        users = data.userGroupAdminData.users;
-        roles = data.userGroupAdminData.roles;
-        assignableRoles = data.assignableRoles;
+        invitedUsers = data.invitedUsers as UserGroupInvite[];
+        users = data.userGroupData.users;
+        roles = data.userGroupData.roles;
 
         if (selectedUser) {
             selectedUser =
@@ -48,11 +44,11 @@
             <h1 class="pb-1 pe-2 my-0">
                 <i class="bx bx-edit me-2"></i>Manage -
             </h1>
-            <h3 class="pb-0 my-0">{userGroup.name}</h3>
+            <h3 class="pb-0 my-0">{group.name}</h3>
         </div>
     </div>
 
-    <InviteUser {userGroup} {form}></InviteUser>
+    <InviteUser {group} {form}></InviteUser>
     <InvitedUsers {invitedUsers}></InvitedUsers>
 
     <div class="container pb-0">
@@ -65,11 +61,11 @@
 
             <UserDetailCard
                 {selectedUser}
-                {assignableRoles}
-                userGroupId={userGroup.id}
+                userGroupId={group.id}
+                group={group}
             ></UserDetailCard>
 
-            <AssignRole user={selectedUser} roles={assignableRoles}
+            <AssignRole user={selectedUser} group={group}
             ></AssignRole>
         </div>
     </div>

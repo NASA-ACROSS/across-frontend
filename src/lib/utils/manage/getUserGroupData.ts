@@ -1,8 +1,8 @@
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
-import type { UserGroupInvite } from '$lib/types/User/UserGroupInvite';
+import type { UserGroupData } from '$lib/types/User/UserGroupData';
 import { CONFIG } from '../../../config/config';
 
-export const getInvitedUsers = async (
+export const getUserGroupData = async (
     userCookie: UserCredentialsCookie,
     userGroupId: number
 ) => {
@@ -16,27 +16,27 @@ export const getInvitedUsers = async (
     let response;
     try {
         response = await fetch(
-            `${CONFIG.API_URL}/api/group/${userGroupId}/invite`,
+            `${CONFIG.API_URL}/api/group/${userGroupId}`,
             options
         );
     } catch (e: any) {
         console.error(
-            `ERROR: catch getting invited users [${userCookie.email}] at [${Date.now()}]`,
+            `ERROR: catch getting user group data [${userCookie.email}] at [${Date.now()}]`,
             JSON.stringify(e)
         );
-        throw new Error('Unexpeted Error while fetching invited users');
+        throw new Error('Unexpeted Error while fetching user group data');
     }
 
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404];
     if (errorCodes.includes(response.status)) {
         console.error(
-            `ERROR: getting invited users [${userCookie.email}] at [${Date.now()}] with status code [${response.status}]`
+            `ERROR: getting user group data [${userCookie.email}] at [${Date.now()}] with status code [${response.status}]`
         );
-        throw new Error('Unexpeted Error while fetching invited users');
+        throw new Error('Unexpeted Error while fetching user group data');
     }
 
-    const invitedUsers: UserGroupInvite[] = await response.json();
+    const userGroupData: UserGroupData = await response.json();
 
-    return invitedUsers;
+    return userGroupData;
 };

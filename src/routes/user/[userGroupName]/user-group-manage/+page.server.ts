@@ -6,52 +6,47 @@ import { base } from '$app/paths';
 import type { User } from '$lib/types/User/User';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
-import { getUserGroupAdminData } from '$lib/utils/manage/getUserGroupAdminData';
+import { getUserGroupData } from '$lib/utils/manage/getUserGroupData';
 import type { AssignableRole } from '$lib/types/User/AssignableRole';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
+export const load: PageServerLoad = async ({ locals, params, cookies }) => {
     const userCookie = locals.user;
     // Redirect on load when user is logged in
     if (!userCookie) {
         throw redirect(303, `${base}/user/login`);
     }
 
-    const user: User = await getUserInfo(userCookie);
+    const user: User = await getUserInfo(userCookie, cookies);
 
-    const userGroup = user.user_groups.find(
+    const userGroup = user.groups.find(
         (group) => group.short_name === params.userGroupName
     );
 
-    const isAdmin = userGroup?.is_admin;
+    const isAdmin = user.group_roles.find((group_role) =>
+        group_role.permissions.find(
+            (permission) => permission.name === 'group:user:write'
+        )
+    );
 
     if (!user || !userGroup || !isAdmin) {
         throw redirect(303, `${base}/user/profile`);
     }
 
     const invitedUsers = await getInvitedUsers(userCookie, userGroup.id);
-    const userGroupAdminData = await getUserGroupAdminData(
-        userCookie,
-        userGroup.id
+    const userGroupData = await getUserGroupData(userCookie, userGroup.id);
+
+    const adminPermission = `group:user:write`;
+    const adminRole = userGroupData?.roles?.find((role) =>
+        role?.permissions.find((p) => p.name == adminPermission)
     );
 
-    const adminRoleName = `${userGroupAdminData.short_name}:user_group_${userGroupAdminData.id}`;
-    const adminRoleId = userGroupAdminData?.roles?.find(
-        (role) => role.name == adminRoleName
-    )!.id;
-
-    const assignableRoles: AssignableRole[] = [
-        {
-            name: 'user group admin',
-            role: adminRoleName,
-            id: adminRoleId,
-        },
-    ];
+    const assignableRoles = userGroupData.roles;
 
     return {
         slug: params.userGroupName,
         userGroup,
         invitedUsers,
-        userGroupAdminData,
+        userGroupData,
         currentUserEmail: user.email,
         assignableRoles,
     };
@@ -64,24 +59,27 @@ export const actions = {
         const data = await request.formData();
 
         const email = data.get('email') as string;
-        const userGroupId = data.get('userGroupId') as string;
+        const groupId = data.get('groupId') as string;
 
-        console.log(
-            `invite user with email: ${email} userGroupId: ${userGroupId}`
-        );
+        console.log(`invite user with email: ${email} groupId: ${groupId}`);
+
+        const groupInviteBody = {
+            receiver_email: email,
+        };
 
         const options = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.api_token}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userCookie?.access_token}`,
             },
+            body: JSON.stringify(groupInviteBody),
         };
 
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite?email=${encodeURIComponent(email)}`,
+                `${CONFIG.API_URL}/api/group/${groupId}/invite`,
                 options
             );
         } catch (error: any) {
@@ -101,7 +99,7 @@ export const actions = {
 
         if (response.status == 409) {
             console.log(
-                `Attempted to invite a user [${email}] to group id [${userGroupId}] who was already in the group`
+                `Attempted to invite a user [${email}] to group id [${groupId}] who was already in the group`
             );
             return { userInGroup: true };
         }
@@ -135,14 +133,14 @@ export const actions = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.api_token}`,
+                Authorization: `Bearer ${userCookie?.access_token}`,
             },
         };
 
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite/${userInviteId}`,
+                `${CONFIG.API_URL}/api/group/${userGroupId}/invite/${userInviteId}`,
                 options
             );
         } catch (error: any) {
@@ -179,29 +177,29 @@ export const actions = {
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
-        const userGroupId = data.get('userGroupId') as string;
+        const groupId = data.get('groupId') as string;
 
         console.log(
-            `remove user from group userId: ${userId} userGroupId: ${userGroupId}`
+            `remove user from group userId: ${userId} userGroupId: ${groupId}`
         );
 
         const options = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.api_token}`,
+                Authorization: `Bearer ${userCookie?.access_token}`,
             },
         };
 
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/user/${userId}`,
+                `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}`,
                 options
             );
         } catch (error: any) {
             console.error(
-                `ERROR: removing user from group userId: ${userId} userGroupId: ${userGroupId} at [${Date.now()}]`,
+                `ERROR: removing user from group userId: ${userId} userGroupId: ${groupId} at [${Date.now()}]`,
                 JSON.stringify(error)
             );
             return fail(500, { error: error.message, fail: true });
@@ -223,26 +221,29 @@ export const actions = {
 
         const userId = data.get('userId') as string;
         const roleId = data.get('roleId') as string;
+        const groupId = data.get('groupId') as string;
 
-        console.log(`assign user role for userId: ${userId} roleId: ${roleId}`);
+        console.log(
+            `assign user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId}`
+        );
 
         const options = {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.api_token}`,
+                Authorization: `Bearer ${userCookie?.access_token}`,
             },
         };
 
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user-role/${roleId}/user/${userId}`,
+                `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}/role/${roleId}`,
                 options
             );
         } catch (error: any) {
             console.error(
-                `ERROR: assigning user role for userId: ${userId} userGroupId: ${roleId} at [${Date.now()}]`,
+                `ERROR: assigning user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`,
                 JSON.stringify(error)
             );
             return fail(500, { error: error.message, fail: true });
@@ -250,7 +251,7 @@ export const actions = {
 
         if (response.status == 500) {
             console.error(
-                `ERROR: assigning user role for userId: ${userId} userGroupId: ${roleId} at [${Date.now()}] with status code [500]`
+                `ERROR: assigning user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}] with status code [500]`
             );
             return fail(500, { fail: true });
         }
@@ -264,26 +265,29 @@ export const actions = {
 
         const userId = data.get('userId') as string;
         const roleId = data.get('roleId') as string;
+        const groupId = data.get('groupId') as string;
 
-        console.log(`remove user role for userId: ${userId} roleId: ${roleId}`);
+        console.log(
+            `remove user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId}`
+        );
 
         const options = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.api_token}`,
+                Authorization: `Bearer ${userCookie?.access_token}`,
             },
         };
 
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/v1/across/user-role/${roleId}/user/${userId}`,
+                `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}/role/${roleId}`,
                 options
             );
         } catch (error: any) {
             console.error(
-                `ERROR: removing user role for userId: ${userId} userGroupId: ${roleId} at [${Date.now()}]`,
+                `ERROR: removing user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`,
                 JSON.stringify(error)
             );
             return fail(500, { error: error.message, fail: true });
@@ -291,7 +295,7 @@ export const actions = {
 
         if (response.status == 500) {
             console.error(
-                `ERROR: removing user role for userId: ${userId} userGroupId: ${roleId} at [${Date.now()}] with status code [500]`
+                `ERROR: removing user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}] with status code [500]`
             );
             return fail(500, { fail: true });
         }

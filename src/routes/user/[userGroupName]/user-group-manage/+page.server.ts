@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad, RequestEvent } from './$types';
 
 import { CONFIG } from '../../../../config/config.js';
 import { fail, redirect } from '@sveltejs/kit';
@@ -7,7 +7,8 @@ import type { User } from '$lib/types/User/User';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 import { getUserGroupData } from '$lib/utils/manage/getUserGroupData';
-import type { AssignableRole } from '$lib/types/User/AssignableRole';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
 
 export const load: PageServerLoad = async ({ locals, params, cookies }) => {
     const userCookie = locals.user;
@@ -33,29 +34,28 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
     }
 
     const invitedUsers = await getInvitedUsers(userCookie, userGroup.id);
-    const userGroupData = await getUserGroupData(userCookie, userGroup.id);
+    const groupData = await getUserGroupData(userCookie, userGroup.id);
 
-    const adminPermission = `group:user:write`;
-    const adminRole = userGroupData?.roles?.find((role) =>
-        role?.permissions.find((p) => p.name == adminPermission)
-    );
-
-    const assignableRoles = userGroupData.roles;
+    const assignableRoles = groupData.roles;
 
     return {
         slug: params.userGroupName,
         userGroup,
         invitedUsers,
-        userGroupData,
+        groupData,
         currentUserEmail: user.email,
         assignableRoles,
     };
 };
 
 export const actions = {
-    inviteUser: async (event) => {
+    inviteUser: async (event: RequestEvent) => {
         const request = event.request;
-        const userCookie = event.locals.user;
+        const userCookie = event.locals.user as UserCredentialsCookie;
+        // Redirect on load when user is logged in
+        if (!userCookie) {
+            throw redirect(303, `${base}/user/login`);
+        }
         const data = await request.formData();
 
         const email = data.get('email') as string;
@@ -82,12 +82,10 @@ export const actions = {
                 `${CONFIG.API_URL}/api/group/${groupId}/invite`,
                 options
             );
-        } catch (error: any) {
-            console.error(
-                `ERROR: inviting user to group [${email}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, { error: error.message, fail: true });
+        } catch (error: unknown) {
+            const errorLog = `ERROR: inviting user to group [${email}] at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
         }
 
         if (response.status == 500) {
@@ -105,7 +103,7 @@ export const actions = {
         }
 
         if (response.status == 400) {
-            const errorResponse = await response.json();
+            const errorResponse = (await response.json()) as ErrorResponse;
             console.error(
                 `ERROR: inviting user to group NOT FOUND [${email}] at [${Date.now()}] with status code [400]`
             );
@@ -117,7 +115,7 @@ export const actions = {
 
         return { successInvite: true };
     },
-    deleteInvite: async (event) => {
+    deleteInvite: async (event: RequestEvent) => {
         const request = event.request;
         const userCookie = event.locals.user;
         const data = await request.formData();
@@ -143,12 +141,10 @@ export const actions = {
                 `${CONFIG.API_URL}/api/group/${userGroupId}/invite/${userInviteId}`,
                 options
             );
-        } catch (error: any) {
-            console.error(
-                `ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, { error: error.message, fail: true });
+        } catch (error: unknown) {
+            const errorLog = `ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
         }
 
         if (response.status == 500) {
@@ -159,7 +155,7 @@ export const actions = {
         }
 
         if (response.status == 400) {
-            const errorResponse = await response.json();
+            const errorResponse = (await response.json()) as ErrorResponse;
             console.error(
                 `ERROR: deleting user invite id [${userInviteId}] NOT FOUND at [${Date.now()}] with status code [400]`
             );
@@ -171,7 +167,7 @@ export const actions = {
 
         return { successDelete: true };
     },
-    removeUser: async (event) => {
+    removeUser: async (event: RequestEvent) => {
         const request = event.request;
         const userCookie = event.locals.user;
         const data = await request.formData();
@@ -197,24 +193,22 @@ export const actions = {
                 `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}`,
                 options
             );
-        } catch (error: any) {
-            console.error(
-                `ERROR: removing user from group userId: ${userId} userGroupId: ${groupId} at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, { error: error.message, fail: true });
+        } catch (error: unknown) {
+            const errorLog = `ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
         }
 
         if (response.status == 500) {
             console.error(
-                `ERROR: removing user from group userId: ${userId} userGroupId: ${userGroupId} at [${Date.now()}] with status code [500]`
+                `ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}] with status code [500]`
             );
             return fail(500, { fail: true });
         }
 
         return { successRemoveUser: true };
     },
-    assignRole: async (event) => {
+    assignRole: async (event: RequestEvent) => {
         const request = event.request;
         const userCookie = event.locals.user;
         const data = await request.formData();
@@ -235,30 +229,20 @@ export const actions = {
             },
         };
 
-        let response;
         try {
-            response = await fetch(
+            await fetch(
                 `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}/role/${roleId}`,
                 options
             );
-        } catch (error: any) {
-            console.error(
-                `ERROR: assigning user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, { error: error.message, fail: true });
-        }
-
-        if (response.status == 500) {
-            console.error(
-                `ERROR: assigning user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}] with status code [500]`
-            );
-            return fail(500, { fail: true });
+        } catch (error: unknown) {
+            const errorLog = `ERROR: assigning user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
         }
 
         return { successAssignRole: true };
     },
-    removeRole: async (event) => {
+    removeRole: async (event: RequestEvent) => {
         const request = event.request;
         const userCookie = event.locals.user;
         const data = await request.formData();
@@ -279,25 +263,15 @@ export const actions = {
             },
         };
 
-        let response;
         try {
-            response = await fetch(
+            await fetch(
                 `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}/role/${roleId}`,
                 options
             );
-        } catch (error: any) {
-            console.error(
-                `ERROR: removing user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, { error: error.message, fail: true });
-        }
-
-        if (response.status == 500) {
-            console.error(
-                `ERROR: removing user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}] with status code [500]`
-            );
-            return fail(500, { fail: true });
+        } catch (error: unknown) {
+            const errorLog = `ERROR: removing user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
         }
 
         return { successRemoveRole: true };

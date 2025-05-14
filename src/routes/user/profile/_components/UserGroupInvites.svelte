@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { base } from '$app/paths';
     import type { UserInvite } from '$lib/types/User/UserInvite';
 
     export let invitations: UserInvite[];
@@ -54,10 +53,13 @@
                     </div>
                     <div class="d-flex flex-column me-3">
                         <div>
-                            from {invitation.sender.first_name} {invitation.sender.last_name}
+                            from {invitation.sender.first_name}
+                            {invitation.sender.last_name}
                         </div>
                         <div>
-                        <a href="mailto:{invitation.sender.email}">{invitation.sender.email}</a>
+                            <a href="mailto:{invitation.sender.email}"
+                                >{invitation.sender.email}</a
+                            >
                         </div>
                     </div>
                 </div>

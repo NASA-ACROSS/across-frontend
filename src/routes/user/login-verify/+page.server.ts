@@ -63,12 +63,10 @@ export const actions = {
                 `${CONFIG.API_URL}/api/auth/verify?token=${verificationToken}`,
                 options
             );
-        } catch (error: any) {
-            console.error(
-                `ERROR: login-verify for verificationToken [${verificationToken}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, { error: error?.message, fail: true });
+        } catch (error: unknown) {
+            const errorLog = `ERROR: login-verify for verificationToken [${verificationToken}] at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
         }
 
         // short circuit for error status
@@ -106,11 +104,10 @@ export const actions = {
             }
 
             // get user id from access token
-            const decodedToken: JwtPayload & { scopes: any } = jwtDecode(
+            const decodedToken: JwtPayload = jwtDecode(
                 credentials.access_token
             );
             const userId = decodedToken.sub;
-            const scopes = decodedToken.scopes;
 
             // Get the User info using the ID
             if (userId) {
@@ -130,12 +127,10 @@ export const actions = {
                         `${CONFIG.API_URL}/api/user/${userId}`,
                         userOptions
                     );
-                } catch (error: any) {
-                    console.error(
-                        `ERROR: getting information for user [${userId}] at [${Date.now()}]`,
-                        JSON.stringify(error)
-                    );
-                    return fail(500, { error: error?.message, fail: true });
+                } catch (error: unknown) {
+                    const errorLog = `ERROR: getting information for user [${userId}] at [${Date.now()}]`;
+                    console.error(errorLog, JSON.stringify(error));
+                    return fail(500, { error: errorLog, fail: true });
                 }
 
                 const userAPIInfo = (await userResponse.json()) as User;
@@ -143,7 +138,6 @@ export const actions = {
                 userCredentialsCookie.last_name = userAPIInfo.last_name;
                 userCredentialsCookie.username = userAPIInfo.username;
                 userCredentialsCookie.email = userAPIInfo.email;
-                userCredentialsCookie.scopes = scopes;
 
                 // Get the refresh token from the response headers
                 const cookiesStr = headers.get('set-cookie');

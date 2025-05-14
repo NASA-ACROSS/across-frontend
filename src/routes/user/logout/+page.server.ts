@@ -1,6 +1,6 @@
-import { loggedIn } from '$lib/stores/login.js';
+import type { RequestEvent } from './$types';
 
-export function load({ locals, cookies }) {
+export function load({ locals, cookies }: RequestEvent) {
     cookies.delete('user-login', {
         path: '/',
     });

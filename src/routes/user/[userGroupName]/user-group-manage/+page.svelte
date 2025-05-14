@@ -9,28 +9,26 @@
     import AssignRole from './_components/AssignRole.svelte';
     import UserDetailCard from './_components/UserDetailCard.svelte';
     import type { UserGroupUser } from '$lib/types/User/UserGroupUser';
+    import type { User } from '$lib/types/User/User';
 
     export let form: ActionData;
     export let data;
 
-    console.log("user-management", data)
-
     let selectedUser: UserGroupUser | undefined;
 
-    let group = data.userGroup;
-    let invitedUsers: UserGroupInvite[] = data.invitedUsers as UserGroupInvite[];
+    let group = data.groupData;
+    let invitedUsers: UserGroupInvite[] =
+        data.invitedUsers as UserGroupInvite[];
     let users = group.users;
-    let roles = group.roles;
-    let currentUserEmail = data.currentUserEmail;
 
     afterUpdate(() => {
         invitedUsers = data.invitedUsers as UserGroupInvite[];
-        users = data.userGroupData.users;
-        roles = data.userGroupData.roles;
+        users = data.groupData.users;
 
         if (selectedUser) {
             selectedUser =
-                users.find((user) => user.id == selectedUser?.id) || undefined;
+                users.find((user: User) => user.id == selectedUser?.id) ||
+                undefined;
         }
     });
 </script>
@@ -59,14 +57,9 @@
         <div class="row align-items-start">
             <GroupUsers {users} bind:selectedUser></GroupUsers>
 
-            <UserDetailCard
-                {selectedUser}
-                userGroupId={group.id}
-                group={group}
-            ></UserDetailCard>
+            <UserDetailCard {selectedUser} {group}></UserDetailCard>
 
-            <AssignRole user={selectedUser} group={group}
-            ></AssignRole>
+            <AssignRole user={selectedUser} {group}></AssignRole>
         </div>
     </div>
 </section>

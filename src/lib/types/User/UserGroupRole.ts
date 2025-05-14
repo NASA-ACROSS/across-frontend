@@ -1,4 +1,5 @@
 import type { Permission } from './Permission';
+import type { ServiceAccountDetail } from './ServiceAccountDetail';
 import type { UserDetail } from './User';
 
 export type UserGroupRole = {
@@ -6,5 +7,5 @@ export type UserGroupRole = {
     name: string;
     permissions: Permission[];
     users: UserDetail[];
-    service_accounts: any[];
+    service_accounts: ServiceAccountDetail[];
 };

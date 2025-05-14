@@ -19,7 +19,7 @@ export const getInvitedUsers = async (
             `${CONFIG.API_URL}/api/group/${userGroupId}/invite`,
             options
         );
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error(
             `ERROR: catch getting invited users [${userCookie.email}] at [${Date.now()}]`,
             JSON.stringify(e)
@@ -36,7 +36,7 @@ export const getInvitedUsers = async (
         throw new Error('Unexpeted Error while fetching invited users');
     }
 
-    const invitedUsers: UserGroupInvite[] = await response.json();
+    const invitedUsers = (await response.json()) as UserGroupInvite[];
 
     return invitedUsers;
 };

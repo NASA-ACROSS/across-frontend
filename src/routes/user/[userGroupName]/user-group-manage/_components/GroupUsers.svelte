@@ -1,9 +1,5 @@
 <script lang="ts">
-    import { applyAction, enhance } from '$app/forms';
-    import { goto, invalidateAll } from '$app/navigation';
     import type { UserGroupUser } from '$lib/types/User/UserGroupUser';
-    import type { UserGroupRole } from '$lib/types/User/UserGroupRole';
-    import type { SubmitFunction } from '@sveltejs/kit';
 
     export let users: UserGroupUser[];
     export let selectedUser: UserGroupUser | undefined;

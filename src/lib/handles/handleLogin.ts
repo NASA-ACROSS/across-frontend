@@ -17,7 +17,7 @@ export async function handleLogin(
                 encryptedUserCookie,
                 CONFIG.API_TOKEN
             );
-            const user: UserCredentialsCookie = JSON.parse(decryptedCookie);
+            const user = JSON.parse(decryptedCookie) as UserCredentialsCookie;
 
             if (decryptedCookie) {
                 event.locals.user = user;

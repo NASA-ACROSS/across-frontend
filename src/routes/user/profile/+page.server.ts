@@ -3,7 +3,7 @@ import { base } from '$app/paths';
 import { loggedIn } from '$lib/stores/login';
 import { CONFIG } from '../../../config/config';
 import type { CookieSerializeOptions } from 'cookie';
-import { UserCredentials} from '$lib/types/User/UserCredentials';
+import { UserCredentials } from '$lib/types/User/UserCredentials';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
@@ -12,8 +12,8 @@ import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumeric
 import type { User } from '$lib/types/User/User';
 import type { RequestEvent } from './$types.js';
 
-export async function load({ locals, cookies }) {
-    const userCookie = locals.user;
+export async function load({ locals, cookies }: RequestEvent) {
+    const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is not logged in
     if (!userCookie) {
         loggedIn.set(false);
@@ -22,10 +22,7 @@ export async function load({ locals, cookies }) {
 
     loggedIn.set(true);
 
-    const user: User = await getUserInfo(
-        userCookie as UserCredentialsCookie,
-        cookies
-    );
+    const user: User = await getUserInfo(userCookie, cookies);
 
     // Respond with user data
     return { user };
@@ -34,22 +31,22 @@ export async function load({ locals, cookies }) {
 export const actions = {
     updateUserInformation: async (event: RequestEvent) => {
         const { request, locals, cookies } = event;
-        const user: UserCredentialsCookie = locals.user;
+        const user = locals.user as UserCredentialsCookie;
         const data = await request.formData();
 
         // validate and sanitize input
         const first_name: string = validate(
-            data.get('first_name'),
+            data.get('first_name') as string,
             backendAlphaNumRegex,
             'firstname'
         )!;
         const last_name: string = validate(
-            data.get('last_name'),
+            data.get('last_name') as string,
             backendAlphaNumRegex,
             'lastname'
         )!;
         const username: string = validate(
-            data.get('username'),
+            data.get('username') as string,
             backendAlphaNumRegex,
             'username'
         )!;
@@ -87,13 +84,11 @@ export const actions = {
                 `${CONFIG.API_URL}/api/user/${user.id}`,
                 options
             );
-        } catch (error: any) {
-            console.error(
-                `ERROR: updating user information [${username}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
+        } catch (error: unknown) {
+            const errorLog = `ERROR: updating user information [${username}] at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
             return fail(500, {
-                error: error.message,
+                error: errorLog,
                 failUpdateUserInformation: true,
             });
         }
@@ -171,12 +166,10 @@ export const actions = {
                 `${CONFIG.API_URL}/user/${userCred.userCookie.id}/invite/${userInviteId}`,
                 options
             );
-        } catch (error: any) {
-            console.error(
-                `ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, { error: error.message, fail: true });
+        } catch (error: unknown) {
+            const errorLog = `ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
         }
 
         if (response.status == 500) {
@@ -220,12 +213,10 @@ export const actions = {
                 `${CONFIG.API_URL}/user/${userCred.userCookie.id}/invite/${userInviteId}`,
                 options
             );
-        } catch (error: any) {
-            console.error(
-                `ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, { error: error.message, fail: true });
+        } catch (error: unknown) {
+            const errorLog = `ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
         }
 
         if (response.status == 500) {
@@ -271,12 +262,10 @@ export const actions = {
                 `${CONFIG.API_URL}/api/user/${userId}/group/${groupId}/`,
                 options
             );
-        } catch (error: any) {
-            console.error(
-                `ERROR: leaving group id [${groupId}] for user id [${userId}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, { error: error.message, fail: true });
+        } catch (error: unknown) {
+            const errorLog = `ERROR: leaving group id [${groupId}] for user id [${userId}] at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
         }
 
         if (response.status == 500) {

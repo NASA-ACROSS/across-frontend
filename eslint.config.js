@@ -8,7 +8,7 @@ export default tsEslint.config(
     // top level ignores
     // https://github.com/eslint/eslint/discussions/18304 lol
     {
-        ignores: ['static', '.svelte-kit'],
+        ignores: ['static', '.svelte-kit', 'build'],
     },
 
     // Load predefined config
@@ -17,6 +17,7 @@ export default tsEslint.config(
     // TypeScript
     {
         files: ['**/*.ts'],
+        ignores: ['playwright.config.ts'],
         extends: [...tsEslint.configs.recommendedTypeChecked],
         // ignores: ['playwright.config.ts'],
         languageOptions: {

@@ -2,16 +2,12 @@
     import { enhance } from '$app/forms';
     import { base } from '$app/paths';
     import type { User } from '$lib/types/User/User';
-    import type { UserGroup } from '$lib/types/User/UserGroup'
+    import type { UserGroup } from '$lib/types/User/UserGroup';
 
     export let user: User;
     export let userGroups: UserGroup[];
     export let leaveUserGroup: UserGroup;
     export let enhancedForm;
-
-    const isAdmin = (user: User, userGroups: UserGroup[]) => {
-        return true
-    };
 </script>
 
 {#if userGroups && userGroups?.length}
@@ -29,7 +25,7 @@
                         <span class={`input-group-text flex-grow-1`}>
                             {userGroup.name}
                         </span>
-                        {#if isAdmin(user,userGroups)}
+                        {#if true}
                             <a
                                 class="btn btn-primary"
                                 href="{base}/user/{userGroup.short_name}/user-group-manage"

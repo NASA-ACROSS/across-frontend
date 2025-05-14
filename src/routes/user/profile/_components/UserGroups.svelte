@@ -3,6 +3,7 @@
     import { base } from '$app/paths';
     import type { User } from '$lib/types/User/User';
     import type { UserGroup } from '$lib/types/User/UserGroup';
+    import { isAdmin } from '$lib/utils/user/isAdmin';
 
     export let user: User;
     export let userGroups: UserGroup[];
@@ -25,7 +26,7 @@
                         <span class={`input-group-text flex-grow-1`}>
                             {userGroup.name}
                         </span>
-                        {#if true}
+                        {#if isAdmin(user, userGroup)}
                             <a
                                 class="btn btn-primary"
                                 href="{base}/user/{userGroup.short_name}/user-group-manage"

@@ -18,12 +18,12 @@
     export let data: PageData;
 
     // user selected role
-    let roleSelection: string;
+    let roleSelection: string = '';
     let leaveUserGroup: UserGroup;
 
     let originalUserData = structuredClone(data.user);
-    let userData = data.user;
-    $: isUserDataUnchanged = _.isEqual(originalUserData, userData);
+    let user = data.user;
+    $: isUserDataUnchanged = _.isEqual(originalUserData, user);
     $: form?.successUpdateUserInformation,
         (originalUserData = structuredClone(data.user));
 
@@ -56,15 +56,15 @@
             if (isUserDataUnchanged) {
                 cancel();
             }
-            formData.set('firstname', userData.first_name);
-            formData.set('lastname', userData.last_name);
-            formData.set('username', userData.username);
+            formData.set('firstname', user.first_name);
+            formData.set('lastname', user.last_name);
+            formData.set('username', user.username);
         } else if (action.href.includes('requestRole')) {
             formData.set('role', roleSelection);
         } else if (action.href.includes('cancelRequestedRole')) {
             formData.set('role', roleSelection);
         } else if (action.href.includes('leaveGroup')) {
-            formData.set('userId', userData.id.toString());
+            formData.set('userId', user.id.toString());
             formData.set('groupId', leaveUserGroup.id.toString());
         }
 
@@ -86,7 +86,7 @@
     };
 
     afterUpdate(() => {
-        userData = data.user;
+        user = data.user;
         userGroups = data.user.groups;
         invitations = data.user.received_invites;
     });
@@ -124,7 +124,7 @@
                             ? 'validation-border-color'
                             : ''} form-control form-control-lg rounded-3 ps-5"
                         required
-                        bind:value={userData.first_name}
+                        bind:value={user.first_name}
                         pattern={frontendAlphaNumRegex}
                         autocomplete="off"
                         name="first_name"
@@ -139,7 +139,7 @@
                             ? 'validation-border-color'
                             : ''} form-control form-control-lg rounded-3 ps-5"
                         required
-                        bind:value={userData.last_name}
+                        bind:value={user.last_name}
                         pattern={frontendAlphaNumRegex}
                         autocomplete="off"
                         name="last_name"
@@ -157,7 +157,7 @@
                             ? 'validation-border-color'
                             : ''} form-control form-control-lg rounded-3 ps-5"
                         required
-                        bind:value={userData.username}
+                        bind:value={user.username}
                         pattern={frontendAlphaNumRegex}
                         autocomplete="off"
                         name="username"
@@ -174,7 +174,7 @@
                         class="form-control form-control-lg rounded-3 ps-5"
                         required
                         disabled
-                        bind:value={userData.email}
+                        bind:value={user.email}
                         autocomplete="off"
                         name="email"
                         title="You cannot change your email"
@@ -216,7 +216,7 @@
 </section>
 
 <UserGroupInvites {invitations} />
-<UserGroups {userData} {userGroups} bind:leaveUserGroup {enhancedForm} />
+<UserGroups {user} {userGroups} bind:leaveUserGroup {enhancedForm} />
 
 <section class="pb-5 bg-secondary"></section>
 

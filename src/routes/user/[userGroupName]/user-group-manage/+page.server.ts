@@ -9,6 +9,7 @@ import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 import { getUserGroupData } from '$lib/utils/manage/getUserGroupData';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
+import { isAdmin } from '$lib/utils/user/isAdmin';
 
 export const load: PageServerLoad = async ({ locals, params, cookies }) => {
     const userCookie = locals.user;
@@ -19,32 +20,23 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 
     const user: User = await getUserInfo(userCookie, cookies);
 
+    // find current group from route by short_name
     const userGroup = user.groups.find(
         (group) => group.short_name === params.userGroupName
     );
 
-    const isAdmin = user.group_roles.find((group_role) =>
-        group_role.permissions.find(
-            (permission) => permission.name === 'group:user:write'
-        )
-    );
-
-    if (!user || !userGroup || !isAdmin) {
+    // redirect if we don't have necessary info or user lacks permission
+    if (!user || !userGroup || !isAdmin(user, userGroup)) {
         throw redirect(303, `${base}/user/profile`);
     }
 
     const invitedUsers = await getInvitedUsers(userCookie, userGroup.id);
     const groupData = await getUserGroupData(userCookie, userGroup.id);
 
-    const assignableRoles = groupData.roles;
-
     return {
         slug: params.userGroupName,
-        userGroup,
         invitedUsers,
         groupData,
-        currentUserEmail: user.email,
-        assignableRoles,
     };
 };
 
@@ -102,10 +94,10 @@ export const actions = {
             return { userInGroup: true };
         }
 
-        if (response.status == 400) {
+        if (response.status == 404) {
             const errorResponse = (await response.json()) as ErrorResponse;
             console.error(
-                `ERROR: inviting user to group NOT FOUND [${email}] at [${Date.now()}] with status code [400]`
+                `ERROR: inviting user to group NOT FOUND [${email}] at [${Date.now()}] with status code [404]`
             );
             return fail(500, {
                 error: errorResponse.detail,

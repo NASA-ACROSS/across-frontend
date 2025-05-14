@@ -8,7 +8,7 @@
 
     export let user: UserGroupUser | undefined;
     export let group: UserGroup;
-    let roles: UserGroupRole[] = group.roles
+    let roles: UserGroupRole[] = group.roles;
     let selectedRole: UserGroupRole;
 
     // noRolesToAdd when every assignable role is found in the user's role list
@@ -16,13 +16,13 @@
         user?.group_roles?.find((userRole) => userRole?.id == role?.id)
     );
 
-    $: assignableRoles = roles?.reduce((assignableRoles,role) => {
-        // if user does not have this role add it to assinable
-        if(!user?.group_roles?.find((userRole) => userRole?.id == role?.id)) {
-            assignableRoles.push(role)
+    $: assignableRoles = roles?.reduce((assignableRoles, role) => {
+        // if user does not have this role add it to assignable
+        if (!user?.group_roles?.find((userRole) => userRole?.id == role?.id)) {
+            assignableRoles.push(role);
         }
-        return assignableRoles
-    },[] as UserGroupRole[])
+        return assignableRoles;
+    }, [] as UserGroupRole[]);
 
     let isAssigningRole = false;
 
@@ -31,7 +31,7 @@
         // set form data to send, specific to this form
         formData.set('userId', user?.id?.toString() || '');
         formData.set('roleId', selectedRole.id.toString());
-        formData.set('groupId', group.id.toString())
+        formData.set('groupId', group.id.toString());
 
         return async ({ result }) => {
             isAssigningRole = false;

@@ -177,7 +177,7 @@
                         bind:value={user.email}
                         autocomplete="off"
                         name="email"
-                        title="You cannot change your email"
+                        title="Email"
                         type="email"
                         placeholder="Please enter your email"
                     />

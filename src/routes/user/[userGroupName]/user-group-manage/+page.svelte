@@ -1,6 +1,6 @@
 <script lang="ts">
     import { base } from '$app/paths';
-    import type { UserGroupInvite } from '$lib/types/User/UserGroupInvite';
+    import type { GroupInvite } from '$lib/types/User/GroupInvite';
     import InvitedUsers from './_components/InvitedUsers.svelte';
     import InviteUser from './_components/InviteUser.svelte';
     import { afterUpdate } from 'svelte';
@@ -17,12 +17,11 @@
     let selectedUser: GroupUser | undefined;
 
     let group = data.groupData;
-    let invitedUsers: UserGroupInvite[] =
-        data.invitedUsers as UserGroupInvite[];
+    let invitedUsers: GroupInvite[] = data.invitedUsers as GroupInvite[];
     let users = group.users;
 
     afterUpdate(() => {
-        invitedUsers = data.invitedUsers as UserGroupInvite[];
+        invitedUsers = data.invitedUsers as GroupInvite[];
         users = data.groupData.users;
 
         if (selectedUser) {

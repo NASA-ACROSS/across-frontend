@@ -1,5 +1,5 @@
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
-import type { UserGroupInvite } from '$lib/types/User/UserGroupInvite';
+import type { GroupInvite } from '$lib/types/User/GroupInvite';
 import { CONFIG } from '../../../config/config';
 
 export const getInvitedUsers = async (
@@ -36,7 +36,7 @@ export const getInvitedUsers = async (
         throw new Error('Unexpeted Error while fetching invited users');
     }
 
-    const invitedUsers = (await response.json()) as UserGroupInvite[];
+    const invitedUsers = (await response.json()) as GroupInvite[];
 
     return invitedUsers;
 };

@@ -38,12 +38,12 @@ export const actions = {
         const first_name: string = validate(
             data.get('first_name') as string,
             backendAlphaNumRegex,
-            'firstname'
+            'first_name'
         )!;
         const last_name: string = validate(
             data.get('last_name') as string,
             backendAlphaNumRegex,
-            'lastname'
+            'last_name'
         )!;
         const username: string = validate(
             data.get('username') as string,

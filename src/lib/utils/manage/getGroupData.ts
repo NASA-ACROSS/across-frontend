@@ -1,11 +1,11 @@
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
-import type { UserGroupData } from '$lib/types/User/UserGroupData';
+import type { Group } from '$lib/types/User/Group';
 import { CONFIG } from '../../../config/config';
 
-export const getUserGroupData = async (
+export const getGroupData = async (
     userCookie: UserCredentialsCookie,
     userGroupId: number
-) => {
+): Promise<Group> => {
     const options = {
         method: 'GET',
         headers: {
@@ -34,7 +34,7 @@ export const getUserGroupData = async (
         throw new Error('Unexpeted Error while fetching user group data');
     }
 
-    const userGroupData = (await response.json()) as UserGroupData;
+    const group = (await response.json()) as Group;
 
-    return userGroupData;
+    return group;
 };

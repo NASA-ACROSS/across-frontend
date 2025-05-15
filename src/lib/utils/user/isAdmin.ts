@@ -1,6 +1,6 @@
 import type { User } from '$lib/types/User/User';
 import type { UserGroup } from '$lib/types/User/UserGroup';
-import type { UserGroupRole } from '$lib/types/User/UserGroupRole';
+import type { GroupRole } from '$lib/types/User/GroupRole';
 
 /**
  * Returns True if the `user` object contains a `group_role` that belongs to the `group`
@@ -14,7 +14,7 @@ export const isAdmin = (user: User, group: UserGroup): boolean => {
 
     // find group.roles which contain adminPermissionName
     const adminRoles = group.roles.reduce(
-        (roles: UserGroupRole[], role: UserGroupRole) => {
+        (roles: GroupRole[], role: GroupRole) => {
             if (
                 role.permissions.find(
                     (permission) => permission.name == adminPermissionName
@@ -24,7 +24,7 @@ export const isAdmin = (user: User, group: UserGroup): boolean => {
             }
             return roles;
         },
-        [] as UserGroupRole[]
+        [] as GroupRole[]
     );
 
     // user has at least one adminRole

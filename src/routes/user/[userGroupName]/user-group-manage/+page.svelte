@@ -8,13 +8,13 @@
     import GroupUsers from './_components/GroupUsers.svelte';
     import AssignRole from './_components/AssignRole.svelte';
     import UserDetailCard from './_components/UserDetailCard.svelte';
-    import type { UserGroupUser } from '$lib/types/User/UserGroupUser';
+    import type { GroupUser } from '$lib/types/User/GroupUser';
     import type { User } from '$lib/types/User/User';
 
     export let form: ActionData;
     export let data;
 
-    let selectedUser: UserGroupUser | undefined;
+    let selectedUser: GroupUser | undefined;
 
     let group = data.groupData;
     let invitedUsers: UserGroupInvite[] =

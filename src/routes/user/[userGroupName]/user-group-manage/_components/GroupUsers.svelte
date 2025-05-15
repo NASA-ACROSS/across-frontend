@@ -1,8 +1,8 @@
 <script lang="ts">
-    import type { UserGroupUser } from '$lib/types/User/UserGroupUser';
+    import type { GroupUser } from '$lib/types/User/GroupUser';
 
-    export let users: UserGroupUser[];
-    export let selectedUser: UserGroupUser | undefined;
+    export let users: GroupUser[];
+    export let selectedUser: GroupUser | undefined;
 </script>
 
 <div class="py-md-1 col">

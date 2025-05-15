@@ -1,6 +1,6 @@
 import type { UserInvite } from './UserInvite';
 import type { UserGroup } from './UserGroup';
-import type { UserGroupRole } from './UserGroupRole';
+import type { GroupRole } from './GroupRole';
 
 export type User = {
     id: string;
@@ -12,7 +12,7 @@ export type User = {
     message: string;
     received_invites: UserInvite[];
     groups: UserGroup[];
-    group_roles: UserGroupRole[];
+    group_roles: GroupRole[];
 };
 
 export type UserDetail = Pick<

@@ -1,10 +1,10 @@
+import type { GroupUser } from './GroupUser';
 import type { GroupRole } from './GroupRole';
 
-export type UserGroup = {
+export type Group = {
     id: number;
     name: string;
     short_name: string;
+    users: GroupUser[];
     roles: GroupRole[];
 };
-
-export type GroupDetail = Pick<UserGroup, 'id' | 'name' | 'short_name'>;

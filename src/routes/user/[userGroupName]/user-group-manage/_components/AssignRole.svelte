@@ -1,15 +1,15 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import type { UserGroupUser } from '$lib/types/User/UserGroupUser';
-    import type { UserGroupRole } from '$lib/types/User/UserGroupRole';
+    import type { GroupUser } from '$lib/types/User/GroupUser';
+    import type { GroupRole } from '$lib/types/User/GroupRole';
     import type { SubmitFunction } from '@sveltejs/kit';
     import type { UserGroup } from '$lib/types/User/UserGroup';
 
-    export let user: UserGroupUser | undefined;
+    export let user: GroupUser | undefined;
     export let group: UserGroup;
-    let roles: UserGroupRole[] = group.roles;
-    let selectedRole: UserGroupRole;
+    let roles: GroupRole[] = group.roles;
+    let selectedRole: GroupRole;
 
     // noRolesToAdd when every assignable role is found in the user's role list
     $: noRolesToAdd = roles?.every((role) =>
@@ -22,7 +22,7 @@
             assignableRoles.push(role);
         }
         return assignableRoles;
-    }, [] as UserGroupRole[]);
+    }, [] as GroupRole[]);
 
     let isAssigningRole = false;
 

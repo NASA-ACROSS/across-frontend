@@ -1,16 +1,16 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import type { UserGroupUser } from '$lib/types/User/UserGroupUser';
-    import type { UserGroupRole } from '$lib/types/User/UserGroupRole';
+    import type { GroupUser } from '$lib/types/User/GroupUser';
+    import type { GroupRole } from '$lib/types/User/GroupRole';
     import type { SubmitFunction } from '@sveltejs/kit';
     import type { UserGroup } from '$lib/types/User/UserGroup';
 
-    export let selectedUser: UserGroupUser | undefined;
+    export let selectedUser: GroupUser | undefined;
     export let group: UserGroup;
 
     $: assignableRoles = group?.roles;
-    let selectedRole: UserGroupRole;
+    let selectedRole: GroupRole;
     let isRemovingRole = false;
 
     // cross match assignable roles with user's to create a list of user's current roles
@@ -22,7 +22,7 @@
         if (matchingRole) roles.push(matchingRole);
 
         return roles;
-    }, [] as UserGroupRole[]);
+    }, [] as GroupRole[]);
 
     const enhancedForm: SubmitFunction = ({ formData, action }) => {
         isRemovingRole = true;
@@ -60,7 +60,9 @@
     {:else}
         <div class="card border-secondary">
             <div class="card-body">
-                <h4 class="card-title">{selectedUser.first_name + " " + selectedUser.last_name}</h4>
+                <h4 class="card-title">
+                    {selectedUser.first_name + ' ' + selectedUser.last_name}
+                </h4>
                 <p class="card-text fs-md text-muted">
                     {selectedUser.email}
                 </p>

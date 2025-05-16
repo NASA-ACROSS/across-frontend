@@ -1,9 +1,12 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { base } from '$app/paths';
 import { CONFIG } from '../../../config/config.js';
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
-import type { UserCredentialsCookie, AccessDataResponse } from '$lib/types/User/UserCredentialsCookie.js';
+import type {
+    UserCredentialsCookie,
+    AccessDataResponse,
+} from '$lib/types/User/UserCredentialsCookie.js';
 import type { User } from '$lib/types/User/User.js';
 import { UserCredentials } from '$lib/types/User/UserCredentials.js';
 import type { RequestEvent } from './$types.js';
@@ -60,12 +63,10 @@ export const actions = {
                 `${CONFIG.API_URL}/api/auth/verify?token=${verificationToken}`,
                 options
             );
-        } catch (error: any) {
-            console.error(
-                `ERROR: login-verify for verificationToken [${verificationToken}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, { error: error?.message, fail: true });
+        } catch (error: unknown) {
+            const errorLog = `ERROR: login-verify for verificationToken [${verificationToken}] at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
         }
 
         // short circuit for error status
@@ -80,11 +81,10 @@ export const actions = {
         // clear current login cookie
         cookies.delete('user-login', { path: '/' });
 
-        const credentials = await response?.json() as AccessDataResponse;
+        const credentials = (await response?.json()) as AccessDataResponse;
         const headers = response.headers;
 
         if (credentials) {
-
             const userCredentialsCookie: UserCredentialsCookie = {
                 id: '',
                 first_name: '',
@@ -94,7 +94,7 @@ export const actions = {
                 access_token: credentials.access_token,
                 refresh_token: '',
                 rememberMe: false,
-                message: ''
+                message: '',
             };
 
             const data = await request.formData();
@@ -104,12 +104,13 @@ export const actions = {
             }
 
             // get user id from access token
-            const decodedToken = jwtDecode(credentials.access_token);
+            const decodedToken: JwtPayload = jwtDecode(
+                credentials.access_token
+            );
             const userId = decodedToken.sub;
 
             // Get the User info using the ID
             if (userId) {
-
                 userCredentialsCookie.id = userId;
 
                 const userOptions = {
@@ -119,22 +120,20 @@ export const actions = {
                         Authorization: `Bearer ${credentials.access_token}`,
                     },
                 };
-        
+
                 let userResponse;
                 try {
                     userResponse = await fetch(
                         `${CONFIG.API_URL}/api/user/${userId}`,
                         userOptions
                     );
-                } catch (error: any) {
-                    console.error(
-                        `ERROR: getting information for user [${userId}] at [${Date.now()}]`,
-                        JSON.stringify(error)
-                    );
-                    return fail(500, { error: error?.message, fail: true });
+                } catch (error: unknown) {
+                    const errorLog = `ERROR: getting information for user [${userId}] at [${Date.now()}]`;
+                    console.error(errorLog, JSON.stringify(error));
+                    return fail(500, { error: errorLog, fail: true });
                 }
 
-                const userAPIInfo = await userResponse.json() as User;
+                const userAPIInfo = (await userResponse.json()) as User;
                 userCredentialsCookie.first_name = userAPIInfo.first_name;
                 userCredentialsCookie.last_name = userAPIInfo.last_name;
                 userCredentialsCookie.username = userAPIInfo.username;
@@ -143,14 +142,14 @@ export const actions = {
                 // Get the refresh token from the response headers
                 const cookiesStr = headers.get('set-cookie');
                 let refresh_token = cookiesStr
-                        ?.split(';')
-                        .find((element) => element.includes('refresh_token'))
-                        ?.split('=')[1]
+                    ?.split(';')
+                    .find((element) => element.includes('refresh_token'))
+                    ?.split('=')[1];
 
                 if (refresh_token == null) {
                     refresh_token = '';
                 }
-                
+
                 userCredentialsCookie.refresh_token = refresh_token;
             }
 

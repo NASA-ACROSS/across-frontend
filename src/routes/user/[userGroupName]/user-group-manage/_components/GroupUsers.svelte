@@ -1,12 +1,8 @@
 <script lang="ts">
-    import { applyAction, enhance } from '$app/forms';
-    import { goto, invalidateAll } from '$app/navigation';
-    import type { UserGroupAdminUser } from '$lib/types/User/UserGroupAdminUser';
-    import type { UserGroupRole } from '$lib/types/User/UserGroupRole';
-    import type { SubmitFunction } from '@sveltejs/kit';
+    import type { GroupUser } from '$lib/types/User/GroupUser';
 
-    export let users: UserGroupAdminUser[];
-    export let selectedUser: UserGroupAdminUser | undefined;
+    export let users: GroupUser[];
+    export let selectedUser: GroupUser | undefined;
 </script>
 
 <div class="py-md-1 col">

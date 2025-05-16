@@ -1,6 +1,6 @@
 <script lang="ts">
     import { base } from '$app/paths';
-    import type { UserGroupInviteRecord } from '$lib/types/User/UserGroupInvite';
+    import type { GroupInvite } from '$lib/types/User/GroupInvite';
     import InvitedUsers from './_components/InvitedUsers.svelte';
     import InviteUser from './_components/InviteUser.svelte';
     import { afterUpdate } from 'svelte';
@@ -8,33 +8,26 @@
     import GroupUsers from './_components/GroupUsers.svelte';
     import AssignRole from './_components/AssignRole.svelte';
     import UserDetailCard from './_components/UserDetailCard.svelte';
-    import type { UserGroupAdminUser } from '$lib/types/User/UserGroupAdminUser';
+    import type { GroupUser } from '$lib/types/User/GroupUser';
+    import type { User } from '$lib/types/User/User';
 
     export let form: ActionData;
     export let data;
 
-    let selectedUser: UserGroupAdminUser | undefined;
+    let selectedUser: GroupUser | undefined;
 
-    let userGroup = data.userGroup;
-    let invitedUsers: UserGroupInviteRecord[] = data.invitedUsers[
-        'entries'
-    ] as unknown as UserGroupInviteRecord[];
-    let users = data.userGroupAdminData.users;
-    let roles = data.userGroupAdminData.roles;
-    let assignableRoles = data.assignableRoles;
-    let currentUserEmail = data.currentUserEmail;
+    let group = data.groupData;
+    let invitedUsers: GroupInvite[] = data.invitedUsers as GroupInvite[];
+    let users = group.users;
 
     afterUpdate(() => {
-        invitedUsers = data.invitedUsers[
-            'entries'
-        ] as unknown as UserGroupInviteRecord[];
-        users = data.userGroupAdminData.users;
-        roles = data.userGroupAdminData.roles;
-        assignableRoles = data.assignableRoles;
+        invitedUsers = data.invitedUsers as GroupInvite[];
+        users = data.groupData.users;
 
         if (selectedUser) {
             selectedUser =
-                users.find((user) => user.id == selectedUser?.id) || undefined;
+                users.find((user: User) => user.id == selectedUser?.id) ||
+                undefined;
         }
     });
 </script>
@@ -48,11 +41,11 @@
             <h1 class="pb-1 pe-2 my-0">
                 <i class="bx bx-edit me-2"></i>Manage -
             </h1>
-            <h3 class="pb-0 my-0">{userGroup.name}</h3>
+            <h3 class="pb-0 my-0">{group.name}</h3>
         </div>
     </div>
 
-    <InviteUser {userGroup} {form}></InviteUser>
+    <InviteUser {group} {form}></InviteUser>
     <InvitedUsers {invitedUsers}></InvitedUsers>
 
     <div class="container pb-0">
@@ -63,14 +56,9 @@
         <div class="row align-items-start">
             <GroupUsers {users} bind:selectedUser></GroupUsers>
 
-            <UserDetailCard
-                {selectedUser}
-                {assignableRoles}
-                userGroupId={userGroup.id}
-            ></UserDetailCard>
+            <UserDetailCard {selectedUser} {group}></UserDetailCard>
 
-            <AssignRole user={selectedUser} roles={assignableRoles}
-            ></AssignRole>
+            <AssignRole user={selectedUser} {group}></AssignRole>
         </div>
     </div>
 </section>

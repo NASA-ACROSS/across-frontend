@@ -1,18 +1,28 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import type { UserGroupAdminUser } from '$lib/types/User/UserGroupAdminUser';
-    import type { UserGroupRole } from '$lib/types/User/UserGroupRole';
+    import type { GroupUser } from '$lib/types/User/GroupUser';
+    import type { GroupRole } from '$lib/types/User/GroupRole';
     import type { SubmitFunction } from '@sveltejs/kit';
+    import type { UserGroup } from '$lib/types/User/UserGroup';
 
-    export let user: UserGroupAdminUser | undefined;
-    export let roles: UserGroupRole[];
-    let selectedRole: UserGroupRole;
+    export let user: GroupUser | undefined;
+    export let group: UserGroup;
+    let roles: GroupRole[] = group.roles;
+    let selectedRole: GroupRole;
 
     // noRolesToAdd when every assignable role is found in the user's role list
     $: noRolesToAdd = roles?.every((role) =>
-        user?.roles?.find((userRole) => userRole?.id == role?.id)
+        user?.group_roles?.find((userRole) => userRole?.id == role?.id)
     );
+
+    $: assignableRoles = roles?.reduce((assignableRoles, role) => {
+        // if user does not have this role add it to assignable
+        if (!user?.group_roles?.find((userRole) => userRole?.id == role?.id)) {
+            assignableRoles.push(role);
+        }
+        return assignableRoles;
+    }, [] as GroupRole[]);
 
     let isAssigningRole = false;
 
@@ -21,6 +31,7 @@
         // set form data to send, specific to this form
         formData.set('userId', user?.id?.toString() || '');
         formData.set('roleId', selectedRole.id.toString());
+        formData.set('groupId', group.id.toString());
 
         return async ({ result }) => {
             isAssigningRole = false;
@@ -48,7 +59,7 @@
             <h5>No roles left to assign.</h5>
             <h5>User has all assignable roles.</h5>
         {:else}
-            {#each roles as role}
+            {#each assignableRoles as role}
                 <form
                     id="{role.id}-role"
                     method="post"

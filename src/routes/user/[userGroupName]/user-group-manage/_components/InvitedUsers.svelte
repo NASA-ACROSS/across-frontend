@@ -1,16 +1,16 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import type { UserGroupInviteRecord } from '$lib/types/User/UserGroupInvite';
+    import type { GroupInvite } from '$lib/types/User/GroupInvite';
     import type { SubmitFunction } from '@sveltejs/kit';
 
-    export let invitedUsers: UserGroupInviteRecord[];
+    export let invitedUsers: GroupInvite[];
 
-    let currentUserInvite: UserGroupInviteRecord;
+    let currentUserInvite: GroupInvite;
 
     const enhancedForm: SubmitFunction = ({ formData }) => {
         // set form data to send, specific to this form
-        formData.set('userGroupId', currentUserInvite.user_group_id.toString());
+        formData.set('userGroupId', currentUserInvite.group.id.toString());
         formData.set('userInviteId', currentUserInvite.id.toString());
 
         return async ({ result }) => {
@@ -51,7 +51,7 @@
                             }}>Delete Invitation</button
                         >
                         <span class="input-group-text">
-                            {userInvite.receiver_email}
+                            {userInvite.receiver.email}
                         </span>
                     </div>
                 </form>

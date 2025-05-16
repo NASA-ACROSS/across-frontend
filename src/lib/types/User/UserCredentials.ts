@@ -30,13 +30,14 @@ export class UserCredentials {
             );
         } catch (error) {
             console.error(
-                `ERROR: getting refresh token for user [${this.userCookie.id}] at [${Date.now()}]`,
+                `ERROR: refreshing access token for user [${this.userCookie.id}] at [${Date.now()}]`,
                 JSON.stringify(error)
             );
-            return ""
+            return '';
         }
 
-        const newCredentials = await response.json() as AccessDataResponse;
+        const newCredentials = (await response.json()) as AccessDataResponse;
+
         // Return the new access token
         return newCredentials.access_token;
     }
@@ -49,15 +50,21 @@ export class UserCredentials {
             // Subtracting 30 secs from the expiration to avoid edge case
             // of having the token expire "in flight" to server
             if (decodedToken.exp && decodedToken.exp - 30 > dateInSecs) {
-                // Return the current access token            
+                // Return the current access token
                 return this.userCookie.access_token;
-            } else if (decodedToken.exp) {   
+            } else {
                 const accessToken = await this.refreshAccessToken();
                 // Set the new access token as part of the UserCredentialsCookie
                 this.userCookie.access_token = accessToken;
-                await this.setCookie(cookies); 
-                return this.userCookie.access_token
+                await this.setCookie(cookies);
+                return this.userCookie.access_token;
             }
+        } else if (this.userCookie.refresh_token) {
+            const accessToken = await this.refreshAccessToken();
+            // Set the new access token as part of the UserCredentialsCookie
+            this.userCookie.access_token = accessToken;
+            await this.setCookie(cookies);
+            return this.userCookie.access_token;
         }
         // If no access token, log an error
         console.error('ERROR: no access token saved in user cookie for user ', this.userCookie.id);
@@ -76,10 +83,12 @@ export class UserCredentials {
             secure: true,
             httpOnly: true,
         };
+
         if (this.userCookie.rememberMe) {
             const ONE_YEAR_IN_MS = 31536000;
             cookieOptions.maxAge = ONE_YEAR_IN_MS;
         }
+
         cookies.set('user-login', encryptedCredentials, cookieOptions);
     }
 }

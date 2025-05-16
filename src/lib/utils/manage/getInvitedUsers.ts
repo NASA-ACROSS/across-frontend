@@ -1,5 +1,5 @@
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
-import type { UserGroupInvite } from '$lib/types/User/UserGroupInvite';
+import type { GroupInvite } from '$lib/types/User/GroupInvite';
 import { CONFIG } from '../../../config/config';
 
 export const getInvitedUsers = async (
@@ -9,17 +9,17 @@ export const getInvitedUsers = async (
     const options = {
         method: 'GET',
         headers: {
-            Authorization: `Bearer ${userCookie.api_token}`,
+            Authorization: `Bearer ${userCookie.access_token}`,
         },
     };
 
     let response;
     try {
         response = await fetch(
-            `${CONFIG.API_URL}/api/v1/across/user-group/${userGroupId}/invite`,
+            `${CONFIG.API_URL}/api/group/${userGroupId}/invite`,
             options
         );
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error(
             `ERROR: catch getting invited users [${userCookie.email}] at [${Date.now()}]`,
             JSON.stringify(e)
@@ -36,7 +36,7 @@ export const getInvitedUsers = async (
         throw new Error('Unexpeted Error while fetching invited users');
     }
 
-    const invitedUsers: UserGroupInvite[] = await response.json();
+    const invitedUsers = (await response.json()) as GroupInvite[];
 
     return invitedUsers;
 };

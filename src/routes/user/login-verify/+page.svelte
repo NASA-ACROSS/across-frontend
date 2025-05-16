@@ -1,7 +1,6 @@
 <script lang="ts">
     import { base } from '$app/paths';
 
-    import type { ActionData } from './$types';
     export let form;
 </script>
 
@@ -25,13 +24,6 @@
                     >
                 </div>
             </form>
-        {:else if form?.credentials?.api_token}
-            <h1>Email Login Success</h1>
-            <h2>Email: {form.credentials.email}</h2>
-            <h2>API Key: {form.credentials.api_token}</h2>
-            <p class="form-text fs-sm text-sm-start text-center">
-                Please store this API key in a secure location.
-            </p>
         {:else if form?.rateLimit}
             <h1>Email Login Error</h1>
             <h4>

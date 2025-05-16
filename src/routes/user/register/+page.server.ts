@@ -23,21 +23,25 @@ export const actions = {
 
         // validate and sanitize input
         const firstname = validate(
-            data.get('firstname'),
+            data.get('firstname') as string,
             backendAlphaNumRegex,
             'firstname'
         );
         const lastname = validate(
-            data.get('lastname'),
+            data.get('lastname') as string,
             backendAlphaNumRegex,
             'lastname'
         );
         const username = validate(
-            data.get('username'),
+            data.get('username') as string,
             backendAlphaNumRegex,
             'username'
         );
-        const email = validate(data.get('email'), emailRegex, 'email');
+        const email = validate(
+            data.get('email') as string,
+            emailRegex,
+            'email'
+        );
 
         const user_post_data = {
             first_name: firstname,
@@ -87,12 +91,10 @@ export const actions = {
         let response;
         try {
             response = await fetch(`${CONFIG.API_URL}/api/user`, options);
-        } catch (error: any) {
-            console.error(
-                `ERROR: logging in registering [${email}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
-            return fail(500, { error: error.message, fail: true });
+        } catch (error: unknown) {
+            const errorLog = `ERROR: registering [${email}] at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
         }
 
         if (response.status == 403) {
@@ -103,7 +105,7 @@ export const actions = {
         }
 
         if (response.status == 409) {
-            const errorResponse = await response.json() as {detail: string};
+            const errorResponse = (await response.json()) as { detail: string };
             console.error(
                 `ERROR: user already exists  [${email}, ${username}] at [${Date.now()}] with status code [409]`
             );

@@ -1,10 +1,11 @@
 <script lang="ts">
-    import { applyAction, enhance } from '$app/forms';
-    import { goto, invalidateAll } from '$app/navigation';
+    import { enhance } from '$app/forms';
     import { base } from '$app/paths';
+    import type { User } from '$lib/types/User/User';
     import type { UserGroup } from '$lib/types/User/UserGroup';
-    import type { ActionResult, SubmitFunction } from '@sveltejs/kit';
+    import { isAdmin } from '$lib/utils/user/isAdmin';
 
+    export let user: User;
     export let userGroups: UserGroup[];
     export let leaveUserGroup: UserGroup;
     export let enhancedForm;
@@ -25,7 +26,7 @@
                         <span class={`input-group-text flex-grow-1`}>
                             {userGroup.name}
                         </span>
-                        {#if userGroup.is_admin}
+                        {#if isAdmin(user, userGroup)}
                             <a
                                 class="btn btn-primary"
                                 href="{base}/user/{userGroup.short_name}/user-group-manage"
@@ -33,26 +34,25 @@
                                 <i class="bx bx-edit me-2"></i> Manage
                             </a>
                         {/if}
-                        {#if userGroup.id != 1}
-                            <button
-                                class={`btn btn-danger`}
-                                type="submit"
-                                on:click={() => {
-                                    leaveUserGroup = userGroup;
-                                }}
-                            >
-                                {#if leaveUserGroup?.id == userGroup?.id}
-                                    <span
-                                        class="spinner-border spinner-border-sm"
-                                        role="status"
-                                        aria-hidden="true"
-                                    ></span>
-                                {:else}
-                                    <i class="bx bx-trash opacity-70 me-2"></i>
-                                    Leave Group
-                                {/if}
-                            </button>
-                        {/if}
+                        <!-- Leave Group button -->
+                        <button
+                            class={`btn btn-danger`}
+                            type="submit"
+                            on:click={() => {
+                                leaveUserGroup = userGroup;
+                            }}
+                        >
+                            {#if leaveUserGroup?.id == userGroup?.id}
+                                <span
+                                    class="spinner-border spinner-border-sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                ></span>
+                            {:else}
+                                <i class="bx bx-trash opacity-70 me-2"></i>
+                                Leave Group
+                            {/if}
+                        </button>
                     </div>
                 </form>
             {/each}

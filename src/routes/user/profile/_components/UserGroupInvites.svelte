@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { base } from '$app/paths';
     import type { UserInvite } from '$lib/types/User/UserInvite';
 
     export let invitations: UserInvite[];
@@ -20,12 +19,6 @@
                 >
                     <form method="post" action="?/acceptInvite">
                         <input
-                            id="userGroupId-{invitation.group_id}"
-                            hidden={true}
-                            name="userGroupId"
-                            bind:value={invitation.group_id}
-                        />
-                        <input
                             id="userInviteId-{invitation.id}"
                             hidden={true}
                             name="userInviteId"
@@ -40,12 +33,6 @@
                     </form>
                     <form method="post" action="?/rejectInvite">
                         <input
-                            id="userGroupId-{invitation.group_id}"
-                            hidden={true}
-                            name="userGroupId"
-                            bind:value={invitation.group_id}
-                        />
-                        <input
                             id="userInviteId-{invitation.id}"
                             hidden={true}
                             name="userInviteId"
@@ -59,8 +46,21 @@
                             Reject</button
                         >
                     </form>
-                    <div class="input-group-text">
-                        {invitation.name}
+                    <div class="input-group-text me-3">
+                        <div>
+                            {invitation.group.name}
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column me-3">
+                        <div>
+                            from {invitation.sender.first_name}
+                            {invitation.sender.last_name}
+                        </div>
+                        <div>
+                            <a href="mailto:{invitation.sender.email}"
+                                >{invitation.sender.email}</a
+                            >
+                        </div>
                     </div>
                 </div>
             {/each}

@@ -1,8 +1,9 @@
 <script lang="ts">
+    import '../app.css';
+
     import { PUBLIC_CONFIG } from '../config/config.public';
     import { onMount } from 'svelte';
 
-    import { base } from '$app/paths';
     import { page } from '$app/stores';
 
     import { beforeNavigate } from '$app/navigation';
@@ -59,21 +60,13 @@
     <!-- BoxIcons -->
     <link
         rel="stylesheet"
-        media="screen"
-        href="{base}/assets/vendor/boxicons/css/boxicons.min.css"
-    />
-
-    <!-- Main Theme Style -->
-    <link
-        rel="stylesheet"
-        media="screen"
-        href="{base}/assets/css/theme.min.css"
+        href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
     />
 
     {#key $page.url}
         {#if DOM_MOUNTED}
             <!-- Main Theme Script -->
-            <script src="{base}/assets/js/theme.min.js"></script>
+            <!-- <script src="{base}/assets/js/theme.min.js"></script> -->
         {/if}
     {/key}
 </svelte:head>

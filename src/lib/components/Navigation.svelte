@@ -2,158 +2,159 @@
     import { base } from '$app/paths';
 
     import { loggedIn } from '$lib/stores/login';
-    import { navHeight } from '$lib/stores/navHeight';
-    import { onMount } from 'svelte';
+    import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+
+    export let user: UserCredentialsCookie;
 
     let isLoggedIn = false;
     loggedIn.subscribe((value) => {
         isLoggedIn = value;
     });
-    let nav: HTMLElement;
-
-    const setNavHeight = () => {
-        if (nav) {
-            navHeight.set(nav?.clientHeight);
-        }
-    };
-
-    onMount(() => {
-        window.addEventListener('resize', setNavHeight);
-        setNavHeight();
-    });
 </script>
 
-<nav
-    bind:this={nav}
-    class="header navbar navbar-expand-lg bg-light navbar-sticky border-bottom"
->
-    <div class="container px-3">
-        <a href="{base}/" class="navbar-brand pe-3">
+<div class="navbar bg-base-900 shadow-sm h-22">
+    <div class="navbar-start">
+        <div class="dropdown">
+            <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6h16M4 12h8m-8 6h16"
+                    />
+                </svg>
+            </div>
+            <ul
+                tabindex="0"
+                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            >
+                <li><a>Item 1</a></li>
+                <li>
+                    <a>Parent</a>
+                    <ul class="p-2">
+                        <li><a>Submenu 1</a></li>
+                        <li><a>Submenu 2</a></li>
+                    </ul>
+                </li>
+                <li><a>Item 3</a></li>
+            </ul>
+        </div>
+        <a href="{base}/" class="btn btn-ghost text-xl">
             <img
                 src="{base}/assets/img/custom/logo-nasa.svg"
-                width="75"
+                width="60"
                 alt="NASA logo"
             />
-            <!-- <span class='navbar-title' >Multimessenger<br> Astrophysics</span> -->
-            <p class="navbar-title mt-0 mb-0" style="line-height:25px">
-                ACROSS<br /> Astrophysics Cross-Observatory Science Support
-            </p>
+            Astrophysics Cross-Observatory Science Support
         </a>
-        <button
-            type="button"
-            class="navbar-toggler ms-auto"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
+    </div>
+    <div class="navbar-end">
+        <ul class="menu menu-horizontal px-1 hidden lg:flex lg:items-center">
+            <li>
+                <div class="dropdown dropdown-hover dropdown-end">
+                    <div tabindex="0" class="text-lg font-bold" role="button">
+                        Data
+                        <div class="bx bx-chevron-down"></div>
+                    </div>
+                    <ul
+                        class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+                    >
+                        <li><a href="{base}/schedules">Schedules</a></li>
+                        <li><a href="{base}/observations">Observations</a></li>
+                        <li>
+                            <a href="{base}/observatories">Observatories</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="dropdown dropdown-hover dropdown-end">
+                    <div tabindex="0" class="text-lg font-bold" role="button">
+                        Tools
+                        <div class="bx bx-chevron-down"></div>
+                    </div>
+                    <ul
+                        class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+                    >
+                        <li>
+                            <a href="{base}/visibility-calculator"
+                                >Visibility Calculator</a
+                            >
+                        </li>
+                        <li>
+                            <a href="{base}/target-of-opportunity"
+                                >Data Ingestion Status</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div>
+                    <a
+                        class="text-lg font-bold"
+                        data-sveltekit-reload
+                        href="http://127.0.0.1:8000/docs"
+                        >API
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- profile -->
+    {#if user}
+        <a href="{base}/user/profile" class="text-lg font-bold m-2"
+            >{user?.email}</a
         >
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="offcanvas offcanvas-end" id="navbarNav">
+    {:else}
+        <a href="{base}/user/login" class="btn btn-lg text-lg font-bold m-2"
+            >Log In</a
+        >
+    {/if}
+    <div class="flex-none">
+        <div class="dropdown dropdown-end">
             <div
-                class="offcanvas-header shadow-sm border-bottom"
-                data-bs-dismiss="offcanvas"
+                tabindex="0"
+                role="button"
+                class="btn btn-ghost btn-circle avatar avatar-placeholder"
             >
-                <h6 class="offcanvas-title">Menu</h6>
-                <button type="button" class="btn-close"></button>
+                <div class="bg-neutral text-neutral-content w-10 rounded-full">
+                    <a href="{base}/user/profile" class="bx bx-user"></a>
+                </div>
             </div>
-            <div class="offcanvas-body">
-                <ul class="navbar-nav mb-lg-0 justify-content-end">
-                    <li class="nav-item">
-                        <a href="{base}/" class="nav-link">Home</a>
+            <ul
+                role="link"
+                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            >
+                {#if isLoggedIn}
+                    <li>
+                        <a class="justify-between" href="{base}/user/profile">
+                            Profile
+                        </a>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li>
                         <a
-                            href="{base}/data"
-                            class="nav-link dropdown-toggle"
-                            aria-current="page">Data</a
-                        >
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="{base}/schedules" class="dropdown-item"
-                                    >Schedules</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/observations"
-                                    class="dropdown-item">Observations</a
-                                >
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a
-                            href="{base}/tools"
-                            class="nav-link dropdown-toggle"
-                            aria-current="page">Tools</a
-                        >
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a
-                                    href="{base}/visibility-calculator"
-                                    class="dropdown-item"
-                                    >Visibility Calculator</a
-                                >
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a
-                            data-sveltekit-reload
-                            href="{base}/about"
-                            class="nav-link">About</a
+                            data-sveltekit-preload-data="false"
+                            href="{base}/user/logout">Logout</a
                         >
                     </li>
-                    <li class="nav-item">
-                        <a
-                            data-sveltekit-reload
-                            href="http://127.0.0.1:8000/docs"
-                            class="nav-link"
-                            aria-current="page">API</a
-                        >
+                {:else}
+                    <li>
+                        <a class="justify-between" href="{base}/user/register">
+                            Create Account
+                        </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a
-                            data-sveltekit-reload
-                            href="{base}/user/profile"
-                            class="nav-link dropdown-toggle"
-                            aria-current="page">My ACROSS</a
-                        >
-                        <ul class="dropdown-menu">
-                            {#if isLoggedIn}
-                                <li>
-                                    <a
-                                        href="{base}/user/profile"
-                                        class="dropdown-item">My Profile</a
-                                    >
-                                </li>
-                                <li>
-                                    <a
-                                        data-sveltekit-preload-data="false"
-                                        href="{base}/user/logout"
-                                        class="dropdown-item">Logout</a
-                                    >
-                                </li>
-                            {:else}
-                                <li>
-                                    <a
-                                        href="{base}/user/register"
-                                        class="dropdown-item">Create Account</a
-                                    >
-                                </li>
-                                <li>
-                                    <a
-                                        href="{base}/user/login"
-                                        class="dropdown-item">Login</a
-                                    >
-                                </li>
-                            {/if}
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+                    <li><a href="{base}/user/login">Login</a></li>
+                {/if}
+            </ul>
         </div>
     </div>
-</nav>
+</div>

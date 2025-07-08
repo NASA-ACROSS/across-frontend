@@ -60,7 +60,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/auth/verify?token=${verificationToken}`,
+                `${CONFIG.API_URL}/auth/verify?token=${verificationToken}`,
                 options
             );
         } catch (error: unknown) {
@@ -124,7 +124,7 @@ export const actions = {
                 let userResponse;
                 try {
                     userResponse = await fetch(
-                        `${CONFIG.API_URL}/api/user/${userId}`,
+                        `${CONFIG.API_URL}/user/${userId}`,
                         userOptions
                     );
                 } catch (error: unknown) {

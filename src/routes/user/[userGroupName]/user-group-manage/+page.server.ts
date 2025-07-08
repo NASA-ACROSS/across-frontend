@@ -71,7 +71,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/group/${groupId}/invite`,
+                `${CONFIG.API_URL}/group/${groupId}/invite`,
                 options
             );
         } catch (error: unknown) {
@@ -130,7 +130,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/group/${userGroupId}/invite/${userInviteId}`,
+                `${CONFIG.API_URL}/group/${userGroupId}/invite/${userInviteId}`,
                 options
             );
         } catch (error: unknown) {
@@ -182,7 +182,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}`,
+                `${CONFIG.API_URL}/group/${groupId}/user/${userId}`,
                 options
             );
         } catch (error: unknown) {
@@ -223,7 +223,7 @@ export const actions = {
 
         try {
             await fetch(
-                `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}/role/${roleId}`,
+                `${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`,
                 options
             );
         } catch (error: unknown) {
@@ -257,7 +257,7 @@ export const actions = {
 
         try {
             await fetch(
-                `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}/role/${roleId}`,
+                `${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`,
                 options
             );
         } catch (error: unknown) {

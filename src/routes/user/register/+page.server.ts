@@ -90,7 +90,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/api/user`, options);
+            response = await fetch(`${CONFIG.API_URL}/user`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: registering [${email}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));

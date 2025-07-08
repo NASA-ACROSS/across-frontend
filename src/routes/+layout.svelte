@@ -71,7 +71,7 @@
 </svelte:head>
 
 <main class="d-flex flex-column min-vh-100 m-0">
-    <Navigation></Navigation>
+    <Navigation user={data.user}></Navigation>
 
     <slot />
 

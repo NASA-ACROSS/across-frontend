@@ -63,7 +63,7 @@ export const actions = {
         let response: Response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/auth/login?email=${encodeURIComponent(email)}`,
+                `${CONFIG.API_URL}/auth/login?email=${encodeURIComponent(email)}`,
                 options
             );
         } catch (error) {

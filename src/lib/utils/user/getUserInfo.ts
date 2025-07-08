@@ -21,7 +21,7 @@ export const getUserInfo = async (
     let response;
     try {
         response = await fetch(
-            `${CONFIG.API_URL}/api/user/${userCookie.id}`,
+            `${CONFIG.API_URL}/user/${userCookie.id}`,
             options
         );
     } catch (e) {

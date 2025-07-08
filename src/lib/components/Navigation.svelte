@@ -4,7 +4,7 @@
     import { loggedIn } from '$lib/stores/login';
     import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 
-    export let user: UserCredentialsCookie;
+    export let user: UserCredentialsCookie | undefined;
 
     let isLoggedIn = false;
     loggedIn.subscribe((value) => {

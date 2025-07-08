@@ -81,7 +81,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/user/${user.id}`,
+                `${CONFIG.API_URL}/user/${user.id}`,
                 options
             );
         } catch (error: unknown) {
@@ -259,7 +259,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/user/${userId}/group/${groupId}/`,
+                `${CONFIG.API_URL}/user/${userId}/group/${groupId}/`,
                 options
             );
         } catch (error: unknown) {

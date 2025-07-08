@@ -16,7 +16,7 @@ export const getGroupData = async (
     let response;
     try {
         response = await fetch(
-            `${CONFIG.API_URL}/api/group/${userGroupId}`,
+            `${CONFIG.API_URL}/group/${userGroupId}`,
             options
         );
     } catch (e: unknown) {

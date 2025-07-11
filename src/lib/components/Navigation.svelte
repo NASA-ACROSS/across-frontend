@@ -12,7 +12,7 @@
     });
 </script>
 
-<div class="navbar bg-base-900 shadow-sm h-22">
+<div class="navbar bg-base-primary shadow-sm h-22">
     <div class="navbar-start">
         <div class="dropdown">
             <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -46,13 +46,19 @@
                 <li><a>Item 3</a></li>
             </ul>
         </div>
-        <a href="{base}/" class="btn btn-ghost text-xl">
+        <a
+            href="{base}/"
+            role="button"
+            class="text-xl font-bold flex flex-row items-center pl-3"
+        >
             <img
                 src="{base}/assets/img/custom/logo-nasa.svg"
                 width="60"
                 alt="NASA logo"
             />
-            Astrophysics Cross-Observatory Science Support
+            <div class="align-center color-primary">
+                Astrophysics Cross-Observatory Science Support
+            </div>
         </a>
     </div>
     <div class="navbar-end">
@@ -120,7 +126,7 @@
         >
     {/if}
     <div class="flex-none">
-        <div class="dropdown dropdown-end">
+        <div class="dropdown dropdown-end pr-3">
             <div
                 tabindex="0"
                 role="button"
@@ -132,7 +138,7 @@
             </div>
             <ul
                 role="link"
-                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                class="menu dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
                 {#if isLoggedIn}
                     <li>

@@ -3,7 +3,6 @@
     import type { ActionData } from './$types';
 
     import { enhance } from '$app/forms';
-    import Button from '$lib/components/Button.svelte';
     import Container from '$lib/components/Container.svelte';
     import EmailInput from '$lib/components/inputs/EmailInput.svelte';
     import Section from '$lib/components/Section.svelte';
@@ -27,33 +26,20 @@
     };
 </script>
 
-<Section>
-    <Container title="Login">
-        <form method="post" use:enhance={enhancedLogin} novalidate>
-            <div class="d-flex">
-                <div class="flex-grow-1 me-3">
-                    <EmailInput
-                        value={form?.email}
-                        disabled={isLoggingIn || form?.success}
-                        autocomplete={false}
-                    />
-                </div>
-                <Button
-                    name="Send Link"
-                    isLoading={isLoggingIn && !form?.success}
-                    disabled={isButtonDisabled}
-                />
-            </div>
+<Section center={true}>
+    <Container title="Login" center={true}>
+        <form class="pt-2" method="post" use:enhance={enhancedLogin} novalidate>
+            <EmailInput
+                value={form?.email}
+                disabled={isLoggingIn || form?.success || isButtonDisabled}
+                autocomplete={false}
+                includeButton={true}
+                isLoading={isLoggingIn && !form?.success}
+            />
 
             {#if form?.success}
                 <FormInputFeedback>
                     Please check your email for a login link!
-                </FormInputFeedback>
-            {/if}
-
-            {#if form?.invalidEmail}
-                <FormInputFeedback type="error">
-                    Please provide a valid email.
                 </FormInputFeedback>
             {/if}
 

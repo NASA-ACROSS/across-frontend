@@ -72,7 +72,7 @@
                 <ul class="list-group list-group-flush">
                     {#each userRoles as userRole}
                         <li
-                            class="list-group-item d-flex justify-content-between"
+                            class="list-group-item flex justify-content-between"
                         >
                             <span class="fs-lg p-1">{userRole?.name}</span>
                             <form
@@ -105,7 +105,7 @@
                 </ul>
             {/if}
             <div class="card-body">
-                <div class="d-flex flex-row-reverse">
+                <div class="flex flex-row-reverse">
                     <form
                         id="{selectedUser.id}-remove"
                         method="post"

@@ -13,7 +13,7 @@
         <img src={img.url} class="card-img-top" alt={img.description} />
     {/if}
 
-    <div class="card-header d-flex justify-content-between">
+    <div class="card-header flex justify-content-between">
         <InfoBadge>{data.tag}</InfoBadge>
         <span class="fs-sm text-muted">{data.date}</span>
     </div>

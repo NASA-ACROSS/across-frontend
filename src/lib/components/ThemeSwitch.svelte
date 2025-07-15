@@ -7,10 +7,6 @@
         darkMode = !darkMode;
 
         localStorage.setItem('theme', darkMode ? 'dark' : 'light');
-
-        darkMode
-            ? document.documentElement.classList.add('dark-mode')
-            : document.documentElement.classList.remove('dark-mode');
     }
 
     if (browser) {
@@ -19,29 +15,49 @@
             (!('theme' in localStorage) &&
                 window.matchMedia('(prefers-color-scheme: dark)').matches)
         ) {
-            document.documentElement.classList.add('dark-mode');
             darkMode = true;
         } else {
-            document.documentElement.classList.remove('dark-mode');
             darkMode = false;
         }
     }
 </script>
 
-<div class="mb-4 pb-lg-3 mt-4 float-xl-end float-lg-end">
-    <div class="form-check form-switch mode-switch pt-1">
-        <input
-            type="checkbox"
-            class="form-check-input"
-            id="theme-mode"
-            checked={darkMode}
-            on:click={handleSwitch}
-        />
-        <label class="form-check-label d-none d-sm-block" for="theme-mode"
-            >Light</label
-        >
-        <label class="form-check-label d-none d-sm-block" for="theme-mode"
-            >Dark</label
-        >
-    </div>
-</div>
+<label class="toggle text-secondary">
+    <input
+        id="theme-mode"
+        type="checkbox"
+        value="nasa-across-light"
+        class="theme-controller"
+        checked={darkMode}
+        on:click={handleSwitch}
+    />
+
+    <svg aria-label="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+        ><g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-width="2"
+            fill="none"
+            stroke="currentColor"
+            ><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"
+            ></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"
+            ></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"
+            ></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"
+            ></path><path d="m19.07 4.93-1.41 1.41"></path></g
+        ></svg
+    >
+
+    <svg
+        aria-label="moon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        ><g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-width="2"
+            fill="none"
+            stroke="currentColor"
+            ><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></g
+        ></svg
+    >
+</label>

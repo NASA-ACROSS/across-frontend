@@ -39,7 +39,7 @@
         </h2>
         <form method="post" action="?/inviteUser" use:enhance={enhancedForm}>
             <label for="email">Email</label>
-            <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
+            <div class="flex flex-sm-row flex-column mb-3 needs-validation">
                 <div class="input-group me-sm-3 mb-sm-0 mb-3">
                     <input
                         class="form-control form-control-lg rounded-3 ps-5"

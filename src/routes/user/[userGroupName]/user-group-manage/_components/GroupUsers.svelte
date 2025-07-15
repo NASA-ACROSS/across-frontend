@@ -15,7 +15,7 @@
         {:else}
             {#each users as user}
                 <!-- Button addon on the right -->
-                <div class="input-group d-flex py-1">
+                <div class="input-group flex py-1">
                     <span
                         class={`input-group-text flex-grow-1 ${selectedUser?.email == user?.email ? 'text-success' : ''}`}
                     >

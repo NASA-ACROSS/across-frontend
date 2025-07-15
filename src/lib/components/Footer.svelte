@@ -3,14 +3,16 @@
     import ThemeSwitch from './ThemeSwitch.svelte';
 </script>
 
-<footer class="footer sm:footer-horizontal bg-base-200 text-base-content p-10">
+<footer
+    class="footer sm:footer-horizontal bg-primary text-primary-content p-10"
+>
     <aside>
         <img
             src="{base}/assets/img/custom/logo-nasa.svg"
             width="75"
             alt="NASA logo"
         />
-        <p class="">
+        <p class="my-5">
             National Aeronautics and Space Administration
             <br />
             Astrophysics Cross-Observatory Science Support

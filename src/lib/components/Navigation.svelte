@@ -12,7 +12,7 @@
     });
 </script>
 
-<div class="navbar bg-base-primary shadow-sm h-22">
+<div class="navbar bg-primary shadow-sm h-22">
     <div class="navbar-start">
         <div class="dropdown">
             <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -56,7 +56,7 @@
                 width="60"
                 alt="NASA logo"
             />
-            <div class="align-center color-primary">
+            <div class="align-center text-primary-content">
                 Astrophysics Cross-Observatory Science Support
             </div>
         </a>
@@ -64,13 +64,19 @@
     <div class="navbar-end">
         <ul class="menu menu-horizontal px-1 hidden lg:flex lg:items-center">
             <li>
-                <div class="dropdown dropdown-hover dropdown-end">
-                    <div tabindex="0" class="text-lg font-bold" role="button">
+                <div
+                    class="dropdown dropdown-hover dropdown-end border-3 border-primary hover:border-info"
+                >
+                    <div
+                        tabindex="0"
+                        class="text-lg font-bold text-primary-content"
+                        role="button"
+                    >
                         Data
                         <div class="bx bx-chevron-down"></div>
                     </div>
                     <ul
-                        class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+                        class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm"
                     >
                         <li><a href="{base}/schedules">Schedules</a></li>
                         <li><a href="{base}/observations">Observations</a></li>
@@ -81,13 +87,19 @@
                 </div>
             </li>
             <li>
-                <div class="dropdown dropdown-hover dropdown-end">
-                    <div tabindex="0" class="text-lg font-bold" role="button">
+                <div
+                    class="dropdown dropdown-hover dropdown-end border-3 border-primary hover:border-info"
+                >
+                    <div
+                        tabindex="0"
+                        class="text-lg font-bold text-primary-content"
+                        role="button"
+                    >
                         Tools
                         <div class="bx bx-chevron-down"></div>
                     </div>
                     <ul
-                        class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+                        class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm"
                     >
                         <li>
                             <a href="{base}/visibility-calculator"
@@ -103,9 +115,9 @@
                 </div>
             </li>
             <li>
-                <div>
+                <div class="border-3 border-primary hover:border-info">
                     <a
-                        class="text-lg font-bold"
+                        class="text-lg font-bold text-primary-content"
                         data-sveltekit-reload
                         href="http://127.0.0.1:8000/docs"
                         >API
@@ -117,11 +129,14 @@
 
     <!-- profile -->
     {#if user}
-        <a href="{base}/user/profile" class="text-lg font-bold m-2"
-            >{user?.email}</a
+        <a
+            href="{base}/user/profile"
+            class="text-lg font-bold text-primary-content m-2">{user?.email}</a
         >
     {:else}
-        <a href="{base}/user/login" class="btn btn-lg text-lg font-bold m-2"
+        <a
+            href="{base}/user/login"
+            class="btn btn-lg btn-accent text-lg font-bold text-primary-content m-2"
             >Log In</a
         >
     {/if}
@@ -132,22 +147,26 @@
                 role="button"
                 class="btn btn-ghost btn-circle avatar avatar-placeholder"
             >
-                <div class="bg-neutral text-neutral-content w-10 rounded-full">
+                <div class="bg-info text-neutral-content w-10 rounded-full">
                     <a href="{base}/user/profile" class="bx bx-user"></a>
                 </div>
             </div>
             <ul
                 role="link"
-                class="menu dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
                 {#if isLoggedIn}
                     <li>
-                        <a class="justify-between" href="{base}/user/profile">
+                        <a
+                            class="justify-between text-primary-content"
+                            href="{base}/user/profile"
+                        >
                             Profile
                         </a>
                     </li>
                     <li>
                         <a
+                            class="text-primary-content hover:bg-accent"
                             data-sveltekit-preload-data="false"
                             href="{base}/user/logout">Logout</a
                         >

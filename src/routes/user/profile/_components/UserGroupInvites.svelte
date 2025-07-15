@@ -1,21 +1,22 @@
 <script lang="ts">
+    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
     import type { UserInvite } from '$lib/types/User/UserInvite';
 
     export let invitations: UserInvite[];
 </script>
 
 {#if invitations && invitations?.length}
-    <section class="py-2 bg-secondary">
-        <div class="container py-md-3">
-            <h3>
-                <i class="bx bx-envelope opacity-70 me-2"></i>My Group
-                Invitations
-            </h3>
-
+    <Section>
+        <Container
+            title="My Group
+                Invitations"
+            icon="envelope"
+        >
             {#each invitations as invitation}
                 <div
                     id="invite-{invitation.id}"
-                    class="input-group-lg d-flex flex-row pb-3"
+                    class="input-group-lg flex flex-row pb-3"
                 >
                     <form method="post" action="?/acceptInvite">
                         <input
@@ -64,6 +65,6 @@
                     </div>
                 </div>
             {/each}
-        </div>
-    </section>
+        </Container>
+    </Section>
 {/if}

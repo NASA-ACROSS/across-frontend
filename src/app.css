@@ -1,21 +1,21 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
-    themes: nasa-across-dark --default;
+    themes: nasa-across-dark;
 }
 
 @plugin "daisyui/theme" {
     name: 'nasa-across-light';
-    default: true;
+    default: false;
     prefersdark: false;
     color-scheme: 'light';
     --color-base-100: oklch(100% 0 0);
     --color-base-200: rgb(245, 245, 245);
     --color-base-300: oklch(86% 0.005 56.366);
     --color-base-content: oklch(0% 0 0);
-    --color-primary: oklch(0% 0 0);
-    --color-primary-content: oklch(100% 0 0);
-    --color-secondary: oklch(98% 0.001 106.423);
-    --color-secondary-content: oklch(0% 0 0);
+    --color-primary: rgb(255, 255, 255);
+    --color-primary-content: rgb(0, 0, 0);
+    --color-secondary: rgb(0, 0, 0);
+    --color-secondary-content: rgb(255, 255, 255);
     --color-accent: rgb(246, 65, 55);
     --color-accent-content: oklch(96% 0.018 272.314);
     --color-neutral: rgb(22, 46, 81);
@@ -41,16 +41,16 @@
 @plugin "daisyui/theme" {
     name: 'nasa-across-dark';
     default: true;
-    prefersdark: false;
-    color-scheme: 'light';
-    --color-base-100: oklch(100% 0 0);
-    --color-base-200: rgb(245, 245, 245);
-    --color-base-300: oklch(86% 0.005 56.366);
+    prefersdark: true;
+    color-scheme: 'dark';
+    --color-base-100: rgb(0, 0, 0);
+    --color-base-200: rgb(20, 20, 20);
+    --color-base-300: rgb(40, 40, 40);
     --color-base-content: oklch(0% 0 0);
-    --color-primary: oklch(98% 0.001 106.423);
+    --color-primary: rgb(0, 0, 0);
     --color-primary-content: oklch(100% 0 0);
-    --color-secondary: oklch(0% 0 0);
-    --color-secondary-content: oklch(100% 0 0);
+    --color-secondary: rgb(255, 255, 255);
+    --color-secondary-content: rgb(0, 0, 0);
     --color-accent: rgb(246, 65, 55);
     --color-accent-content: oklch(96% 0.018 272.314);
     --color-neutral: rgb(11, 23, 40);

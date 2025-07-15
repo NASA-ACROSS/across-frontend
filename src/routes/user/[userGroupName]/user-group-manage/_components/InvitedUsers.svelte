@@ -42,7 +42,7 @@
                     use:enhance={enhancedForm}
                     action="?/deleteInvite"
                 >
-                    <div class="input-group-lg d-flex flex-row pb-3">
+                    <div class="input-group-lg flex flex-row pb-3">
                         <button
                             class="btn btn-lg btn-danger me-3"
                             type="submit"

@@ -37,7 +37,7 @@
         <a class="btn btn-primary btn-lg" href="{base}/user/profile"
             >← <i class="bx bx-user opacity-70 mx-2"></i>Profile</a
         >
-        <div class="d-flex flex-row align-items-center border-bottom py-3">
+        <div class="flex flex-row align-items-center border-bottom py-3">
             <h1 class="pb-1 pe-2 my-0">
                 <i class="bx bx-edit me-2"></i>Manage -
             </h1>

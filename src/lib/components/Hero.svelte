@@ -23,7 +23,7 @@
             <button class="btn btn-info"
                 ><a href="{base}/observations">Browse Observations</a></button
             >
-            <button class="btn btn-primary">
+            <button class="btn btn-secondary">
                 <a href="http://127.0.0.1:8000/docs">Explore API</a></button
             >
         </div>

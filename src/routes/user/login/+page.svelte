@@ -35,38 +35,38 @@
                 autocomplete={false}
                 includeButton={true}
                 isLoading={isLoggingIn && !form?.success}
-            />
+            >
+                {#if form?.success}
+                    <FormInputFeedback>
+                        Please check your email for a login link!
+                    </FormInputFeedback>
+                {/if}
 
-            {#if form?.success}
-                <FormInputFeedback>
-                    Please check your email for a login link!
-                </FormInputFeedback>
-            {/if}
+                {#if form?.rateLimit}
+                    <FormInputFeedback type="error">
+                        You are being rate limited, please retry after {form.retryAfter}
+                        seconds.
+                    </FormInputFeedback>
+                {/if}
 
-            {#if form?.rateLimit}
-                <FormInputFeedback type="error">
-                    You are being rate limited, please retry after {form.retryAfter}
-                    seconds.
-                </FormInputFeedback>
-            {/if}
+                {#if form?.fail}
+                    <FormInputFeedback type="error">
+                        Something went wrong, please try again. If this error
+                        persists, contact support.
+                    </FormInputFeedback>
+                {/if}
 
-            {#if form?.fail}
-                <FormInputFeedback type="error">
-                    Something went wrong, please try again. If this error
-                    persists, contact support.
-                </FormInputFeedback>
-            {/if}
-
-            {#if form?.notFound}
-                <div class="mt-4">
-                    <p>
-                        The email address is not registered,
-                        <a href="{base}/user/register"
-                            >click here to register!</a
-                        >
-                    </p>
-                </div>
-            {/if}
+                {#if form?.notFound}
+                    <div class="mt-4">
+                        <p>
+                            The email address is not registered,
+                            <a href="{base}/user/register"
+                                >click here to register!</a
+                            >
+                        </p>
+                    </div>
+                {/if}
+            </EmailInput>
         </form>
     </Container>
 </Section>

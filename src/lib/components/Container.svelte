@@ -4,13 +4,23 @@
     export let center: boolean | undefined = false;
 </script>
 
-<div class="mx-10 my-3 py-3 flex flex-col {center ? 'place-items-center' : ''}">
+<div
+    class="lg:mx-13 mx-3 my-6 flex flex-col {center
+        ? 'place-items-center'
+        : ''}"
+>
     <div class="">
-        <h2 class="text-2xl">
-            {#if icon}
-                <div class="bx bx-{icon} opacity-70 mx-2" />
-            {/if}
-            {title}
+        <h2 class="text-2xl flex justify-between">
+            <div>
+                {#if icon}
+                    <div class="bx bx-{icon} opacity-70" />
+                {/if}
+                {title}
+            </div>
+
+            <div class="flex justify-end">
+                <slot name="buttons"></slot>
+            </div>
         </h2>
 
         <slot />

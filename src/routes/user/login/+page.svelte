@@ -8,6 +8,7 @@
     import Section from '$lib/components/Section.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
     import { base } from '$app/paths';
+    import ArrowButton from '$lib/components/ArrowButton.svelte';
 
     export let form: ActionData;
 
@@ -68,5 +69,12 @@
                 {/if}
             </EmailInput>
         </form>
+        <ArrowButton
+            href="{base}/user/register"
+            containerClasses="mt-6 text-right"
+            textClasses="text-sm"
+        >
+            Don't have an account? Register here
+        </ArrowButton>
     </Container>
 </Section>

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { base } from '$app/paths';
+    import ArrowButton from '$lib/components/ArrowButton.svelte';
     import Container from '$lib/components/Container.svelte';
     import Section from '$lib/components/Section.svelte';
 
@@ -10,19 +11,19 @@
     <Container title="Email Link Login">
         {#if !form}
             <form method="post">
-                <button class="btn btn-lg btn-info mb-3"> Login </button>
-
                 <div class="form-check">
-                    <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="rememberMe"
-                        id="remember-me-checkbox"
-                    />
-                    <label class="form-check-label" for="remember-me-checkbox"
-                        >Remember me on this computer</label
+                    <label
+                        class="label text-primary mt-auto"
+                        for="remember-me-checkbox"
+                        ><input
+                            class="checkbox"
+                            type="checkbox"
+                            name="rememberMe"
+                            id="remember-me-checkbox"
+                        />Remember me on this computer</label
                     >
                 </div>
+                <ArrowButton>Login</ArrowButton>
             </form>
         {:else if form?.rateLimit}
             <h4>

@@ -70,7 +70,7 @@
     {/key}
 </svelte:head>
 
-<main class="min-h-screen m-0 flex flex-col content-between">
+<main class="min-h-screen m-0 flex flex-col content-between bg-primary">
     <Navigation user={data.user}></Navigation>
 
     <slot />

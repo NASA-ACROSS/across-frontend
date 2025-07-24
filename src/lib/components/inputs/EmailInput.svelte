@@ -12,9 +12,13 @@
 
 <div>
     <div class="join w-100">
-        <label class="input validator join-item">
+        <label
+            class="input validator join-item bg-nasa-white disabled:bg-nasa-green"
+        >
             <svg
-                class="h-[1em] opacity-50"
+                class="h-[1em] opacity-50 {disabled
+                    ? 'text-secondary-content'
+                    : ''}"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
             >
@@ -30,7 +34,7 @@
                 </g>
             </svg>
             <input
-                class="form-control"
+                class="form-control disabled:text-secondary-content"
                 type="email"
                 placeholder="email@example.com"
                 autocomplete={autocomplete ? 'on' : 'off'}
@@ -41,7 +45,7 @@
             />
         </label>
         {#if includeButton}
-            <Button classes="btn-neutral join-item" {isLoading} {disabled}
+            <Button classes="btn-primary join-item" {isLoading} {disabled}
                 >Send Link</Button
             >
         {/if}

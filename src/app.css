@@ -1,61 +1,49 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
-    themes: nasa-across-dark;
+    themes: nasa-across-hds;
+}
+
+@theme {
+    --color-nasa-black: rgb(0, 0, 0);
+    --color-carbon-90: rgb(23, 23, 27);
+    --color-carbon-80: rgb(46, 46, 60);
+    --color-carbon-70: rgb(68, 68, 71);
+    --color-carbon-60: rgb(88, 88, 91);
+    --color-carbon-50: rgb(119, 119, 122);
+    --color-carbon-40: rgb(149, 149, 153);
+    --color-carbon-30: rgb(185, 185, 187);
+    --color-carbon-20: rgb(209, 209, 209);
+    --color-carbon-10: rgb(227, 227, 227);
+    --color-carbon-05: rgb(246, 246, 246);
+    --color-nasa-white: rgb(255, 255, 255);
+    --color-nasa-red: rgb(246, 65, 55);
+    --color-nasa-red-tint: rgb(255, 92, 82);
+    --color-nasa-red-shade: rgb(182, 1, 9);
+    --color-nasa-blue: rgb(28, 103, 227);
+    --color-nasa-blue-tint: rgb(40, 139, 255);
+    --color-nasa-blue-shade: rgb(11, 61, 145);
+    --color-nasa-orange: rgb(234, 111, 36);
+    --color-nasa-green: rgb(71, 218, 132);
 }
 
 @plugin "daisyui/theme" {
-    name: 'nasa-across-light';
-    default: false;
-    prefersdark: false;
-    color-scheme: 'light';
-    --color-base-100: oklch(100% 0 0);
-    --color-base-200: rgb(245, 245, 245);
-    --color-base-300: oklch(86% 0.005 56.366);
-    --color-base-content: oklch(0% 0 0);
-    --color-primary: rgb(255, 255, 255);
-    --color-primary-content: rgb(0, 0, 0);
-    --color-secondary: rgb(0, 0, 0);
-    --color-secondary-content: rgb(255, 255, 255);
-    --color-accent: rgb(246, 65, 55);
-    --color-accent-content: oklch(96% 0.018 272.314);
-    --color-neutral: rgb(22, 46, 81);
-    --color-neutral-content: oklch(98% 0.003 247.858);
-    --color-info: rgb(28, 103, 227);
-    --color-info-content: oklch(97% 0.014 254.604);
-    --color-success: oklch(59% 0.145 163.225);
-    --color-success-content: oklch(97% 0.021 166.113);
-    --color-warning: oklch(68% 0.162 75.834);
-    --color-warning-content: oklch(98% 0.026 102.212);
-    --color-error: rgb(182, 1, 9);
-    --color-error-content: oklch(100% 0 0);
-    --radius-selector: 0rem;
-    --radius-field: 0rem;
-    --radius-box: 0rem;
-    --size-selector: 0.3125rem;
-    --size-field: 0.3125rem;
-    --border: 1px;
-    --depth: 0;
-    --noise: 0;
-}
-
-@plugin "daisyui/theme" {
-    name: 'nasa-across-dark';
+    name: 'nasa-across-hds';
     default: true;
     prefersdark: true;
     color-scheme: 'dark';
-    --color-base-100: rgb(0, 0, 0);
-    --color-base-200: rgb(20, 20, 20);
-    --color-base-300: rgb(40, 40, 40);
+    --color-base-100: var(--color-carbon-05);
+    --color-base-200: var(--color-carbon-10);
+    --color-base-300: var(--color-carbon-20);
     --color-base-content: oklch(0% 0 0);
     --color-primary: rgb(0, 0, 0);
-    --color-primary-content: oklch(100% 0 0);
+    --color-primary-content: rgb(255, 255, 255);
     --color-secondary: rgb(255, 255, 255);
     --color-secondary-content: rgb(0, 0, 0);
-    --color-accent: rgb(246, 65, 55);
-    --color-accent-content: oklch(96% 0.018 272.314);
+    --color-accent: var(--color-nasa-red);
+    --color-accent-content: rgb(0, 0, 0);
     --color-neutral: rgb(11, 23, 40);
     --color-neutral-content: oklch(98% 0.003 247.858);
-    --color-info: rgb(28, 103, 227);
+    --color-info: var(--color-nasa-blue);
     --color-info-content: oklch(97% 0.014 254.604);
     --color-success: oklch(59% 0.145 163.225);
     --color-success-content: oklch(97% 0.021 166.113);

@@ -5,10 +5,11 @@
 </script>
 
 <div
-    class="pt-2 pb-5 w-auto color-base-300 flex flex-col flex-grow {center
+    class="pt-2 pb-5 w-auto bg-base-100 flex flex-col flex-grow {center
         ? 'items-center'
         : ''}"
 >
+    <!--Section-->
     {#if icon || title}
         <h1>
             {#if icon}

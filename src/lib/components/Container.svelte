@@ -9,8 +9,10 @@
         ? 'place-items-center'
         : ''}"
 >
-    <div class="">
-        <h2 class="text-2xl flex justify-between">
+    <div class="text-primary min-w-1/2">
+        <h2
+            class="text-3xl flex justify-between text-primary items-center pb-3"
+        >
             <div>
                 {#if icon}
                     <div class="bx bx-{icon} opacity-70" />

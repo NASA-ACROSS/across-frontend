@@ -10,12 +10,21 @@
     loggedIn.subscribe((value) => {
         isLoggedIn = value;
     });
+
+    $: userInitials = isLoggedIn
+        ? user?.first_name?.[0]?.toUpperCase() +
+          user?.last_name?.[0]?.toUpperCase()
+        : '';
 </script>
 
 <div class="navbar bg-primary shadow-sm h-22">
     <div class="navbar-start">
         <div class="dropdown">
-            <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+            <div
+                tabindex="0"
+                role="button"
+                class="btn btn-ghost text-primary-content lg:hidden"
+            >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5"
@@ -56,8 +65,13 @@
                 width="60"
                 alt="NASA logo"
             />
-            <div class="align-center text-primary-content">
+            <div
+                class="align-center text-primary-content sm:hidden md:hidden lg:block hidden text-nowrap"
+            >
                 Astrophysics Cross-Observatory Science Support
+            </div>
+            <div class="align-center text-primary-content lg:hidden">
+                ACROSS
             </div>
         </a>
     </div>
@@ -131,26 +145,24 @@
     {#if user}
         <a
             href="{base}/user/profile"
-            class="text-lg font-bold text-primary-content m-2">{user?.email}</a
-        >
-    {:else}
-        <a
-            href="{base}/user/login"
-            class="btn btn-lg btn-accent text-lg font-bold text-primary-content m-2"
-            >Log In</a
+            class="text-sm font-bold text-primary-content m-2">{user?.email}</a
         >
     {/if}
     <div class="flex-none">
-        <div class="dropdown dropdown-end pr-3">
-            <div
-                tabindex="0"
-                role="button"
-                class="btn btn-ghost btn-circle avatar avatar-placeholder"
-            >
-                <div class="bg-info text-neutral-content w-10 rounded-full">
-                    <a href="{base}/user/profile" class="bx bx-user"></a>
+        <div class="dropdown dropdown-hover dropdown-end pr-3">
+            <a href="{base}/user/profile">
+                <div
+                    tabindex="0"
+                    role="button"
+                    class="btn btn-ghost btn-circle avatar avatar-placeholder -my-3"
+                >
+                    <div class="bg-info text-neutral-content w-10 rounded-full">
+                        <div class={isLoggedIn ? 'text-lg' : 'bx bx-user'}>
+                            {userInitials}
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </a>
             <ul
                 role="link"
                 class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow"
@@ -158,7 +170,7 @@
                 {#if isLoggedIn}
                     <li>
                         <a
-                            class="justify-between text-primary-content"
+                            class="justify-between text-primary-content hover:bg-info"
                             href="{base}/user/profile"
                         >
                             Profile
@@ -166,18 +178,25 @@
                     </li>
                     <li>
                         <a
-                            class="text-primary-content hover:bg-accent"
+                            class="text-primary-content hover:bg-accent hover:text-primary"
                             data-sveltekit-preload-data="false"
                             href="{base}/user/logout">Logout</a
                         >
                     </li>
                 {:else}
                     <li>
-                        <a class="justify-between" href="{base}/user/register">
+                        <a
+                            class="justify-between text-primary-content"
+                            href="{base}/user/register"
+                        >
                             Create Account
                         </a>
                     </li>
-                    <li><a href="{base}/user/login">Login</a></li>
+                    <li>
+                        <a class="text-primary-content" href="{base}/user/login"
+                            >Login</a
+                        >
+                    </li>
                 {/if}
             </ul>
         </div>

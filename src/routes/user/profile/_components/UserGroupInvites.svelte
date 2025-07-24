@@ -16,51 +16,68 @@
             {#each invitations as invitation}
                 <div
                     id="invite-{invitation.id}"
-                    class="input-group-lg flex flex-row pb-3"
+                    class="input-group-lg flex flex-col-reverse gap-3 lg:flex-row bg-base-200 p-3 mb-3"
                 >
-                    <form method="post" action="?/acceptInvite">
-                        <input
-                            id="userInviteId-{invitation.id}"
-                            hidden={true}
-                            name="userInviteId"
-                            bind:value={invitation.id}
-                        />
-                        <button
-                            class="btn btn-lg btn-outline-success me-3"
-                            type="submit"
-                            ><i class="bx bx-check-square fs-lg me-2"
-                            ></i>Accept</button
+                    <div class="flex">
+                        <form
+                            class="flex-grow"
+                            method="post"
+                            action="?/acceptInvite"
                         >
-                    </form>
-                    <form method="post" action="?/rejectInvite">
-                        <input
-                            id="userInviteId-{invitation.id}"
-                            hidden={true}
-                            name="userInviteId"
-                            bind:value={invitation.id}
-                        />
-                        <button
-                            class="btn btn-lg btn-outline-danger me-3"
-                            type="submit"
-                        >
-                            <i class="bx bx-no-entry fs-lg me-2"></i>
-                            Reject</button
-                        >
-                    </form>
-                    <div class="input-group-text me-3">
-                        <div>
-                            {invitation.group.name}
-                        </div>
-                    </div>
-                    <div class="d-flex flex-column me-3">
-                        <div>
-                            from {invitation.sender.first_name}
-                            {invitation.sender.last_name}
-                        </div>
-                        <div>
-                            <a href="mailto:{invitation.sender.email}"
-                                >{invitation.sender.email}</a
+                            <input
+                                id="userInviteId-{invitation.id}"
+                                hidden={true}
+                                name="userInviteId"
+                                bind:value={invitation.id}
+                            />
+                            <button
+                                class="btn btn-info text-xl me-3 w-full"
+                                type="submit"
+                                ><i class="bx bx-check-square fs-lg me-2"
+                                ></i>Accept</button
                             >
+                        </form>
+                        <form
+                            class="flex-grow"
+                            method="post"
+                            action="?/rejectInvite"
+                        >
+                            <input
+                                id="userInviteId-{invitation.id}"
+                                hidden={true}
+                                name="userInviteId"
+                                bind:value={invitation.id}
+                            />
+                            <button
+                                class="btn btn-accent text-xl me-3 w-full"
+                                type="submit"
+                            >
+                                <i class="bx bx-no-entry fs-lg me-2"></i>
+                                Reject</button
+                            >
+                        </form>
+                    </div>
+
+                    <div class="flex">
+                        <div
+                            class="text-xl text-center label text-primary me-2 btn btn-outline btn-active"
+                        >
+                            <div>
+                                {invitation.group.name}
+                            </div>
+                        </div>
+                        <div class="flex flex-row me-3 text-xl label">
+                            <div class="text-primary">
+                                from {invitation.sender.first_name}
+                                {invitation.sender.last_name}
+                            </div>
+                            <div>
+                                <a
+                                    class="email text-info underline"
+                                    href="mailto:{invitation.sender.email}"
+                                    >{invitation.sender.email}</a
+                                >
+                            </div>
                         </div>
                     </div>
                 </div>

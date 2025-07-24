@@ -16,6 +16,7 @@
     import type { UserGroup } from '$lib/types/User/UserGroup';
     import Section from '$lib/components/Section.svelte';
     import Container from '$lib/components/Container.svelte';
+    import Fieldset from '$lib/components/Fieldset.svelte';
 
     export let data: PageData;
 
@@ -100,24 +101,26 @@
             <a
                 data-sveltekit-preload-data="false"
                 href="{base}/user/logout"
-                class="btn btn-accent"
+                class="btn btn-accent text-xl"
             >
                 <i class="bx bx-log-out opacity-70 me-2"></i>Logout
             </a>
         </div>
-        <Container title="User Information" icon="edit-alt">
+
+        <Fieldset title="User Information">
             <form
                 method="post"
                 action="?/updateUserInformation"
                 use:enhance={enhancedForm}
             >
                 <label for="firstname">Name</label>
-                <div class="flex flex-sm-row flex-column mb-3 needs-validation">
-                    <div class="input-group me-sm-3 mb-sm-0 mb-3">
+                <div class="flex flex-row flex-grow mb-3 needs-validation join">
+                    <div class="join-item me-sm-3 mb-sm-0 mb-3 w-1/2">
                         <input
+                            id="firstname"
                             class="{!isUserDataUnchanged
                                 ? 'validation-border-color'
-                                : ''} input form-control form-control-lg rounded-3 ps-5"
+                                : ''} input form-control form-control-lg ps-5 w-full"
                             required
                             bind:value={user.first_name}
                             pattern={frontendAlphaNumRegex}
@@ -128,11 +131,11 @@
                             placeholder="First"
                         />
                     </div>
-                    <div class="input-group me-sm-3 mb-sm-0 mb-3">
+                    <div class="join-item me-sm-3 mb-sm-0 mb-3 w-1/2">
                         <input
                             class="{!isUserDataUnchanged
                                 ? 'validation-border-color'
-                                : ''} input form-control form-control-lg rounded-3 ps-5"
+                                : ''} input form-control form-control-lg ps-5 w-full"
                             required
                             bind:value={user.last_name}
                             pattern={frontendAlphaNumRegex}
@@ -146,11 +149,11 @@
                 </div>
                 <label for="username">Username</label>
                 <div class="flex flex-sm-row flex-column mb-3 needs-validation">
-                    <div class="input-group me-sm-3 mb-sm-0 mb-3">
+                    <div class="input-group me-sm-3 mb-sm-0 mb-3 w-full">
                         <input
                             class="{!isUserDataUnchanged
                                 ? 'validation-border-color'
-                                : ''} input form-control form-control-lg rounded-3 ps-5"
+                                : ''} input form-control form-control-lg ps-5 w-full"
                             required
                             bind:value={user.username}
                             pattern={frontendAlphaNumRegex}
@@ -164,9 +167,9 @@
                 </div>
                 <label for="email">Email</label>
                 <div class="flex flex-sm-row flex-column mb-3 needs-validation">
-                    <div class="input-group me-sm-3 mb-sm-0 mb-3">
+                    <div class="input-group me-sm-3 mb-sm-0 mb-3 w-full">
                         <input
-                            class="input form-control form-control-lg rounded-3 ps-5"
+                            class="input form-control form-control-lg rounded-3 ps-5 w-full disabled:bg-base-300 disabled:text-carbon-70"
                             required
                             disabled
                             bind:value={user.email}
@@ -178,43 +181,39 @@
                         />
                     </div>
                 </div>
-                <button
-                    type="submit"
-                    class="btn btn-lg btn-primary"
-                    disabled={isUserDataUnchanged}>Update</button
-                >
-                {#if form?.successUpdateUserInformation}
-                    <p
-                        class="form-text fs-sm text-sm-start text-center text-success"
+                <div class="flex justify-end items-center">
+                    {#if form?.successUpdateUserInformation}
+                        <p class="form-text fs-sm text-sm-start text-success">
+                            Successfully updated user information!
+                        </p>
+                    {/if}
+                    {#if form?.failUpdateUserInformation}
+                        <p class="form-text text-sm text-danger">
+                            Something went wrong, please try again. If this
+                            error persists, contact support.
+                        </p>
+                    {/if}
+                    {#if form?.failValidation}
+                        <p class="form-text text-sm text-danger">
+                            Form validation failed. Please try again. If this
+                            error persists, contact support.
+                        </p>
+                    {/if}
+                    <button
+                        type="submit"
+                        class="btn text-lg btn-info ml-5"
+                        disabled={isUserDataUnchanged}
                     >
-                        Successfully updated user information!
-                    </p>
-                {/if}
-                {#if form?.failUpdateUserInformation}
-                    <p
-                        class="form-text fs-sm text-sm-start text-center text-danger"
-                    >
-                        Something went wrong, please try again. If this error
-                        persists, contact support.
-                    </p>
-                {/if}
-                {#if form?.failValidation}
-                    <p
-                        class="form-text fs-sm text-sm-start text-center text-danger"
-                    >
-                        Form validation failed. Please try again. If this error
-                        persists, contact support.
-                    </p>
-                {/if}
+                        Update
+                    </button>
+                </div>
             </form>
-        </Container>
+        </Fieldset>
     </Container>
+
+    <UserGroupInvites {invitations} />
+    <UserGroups {user} {userGroups} bind:leaveUserGroup {enhancedForm} />
 </Section>
-
-<UserGroupInvites {invitations} />
-<UserGroups {user} {userGroups} bind:leaveUserGroup {enhancedForm} />
-
-<Section></Section>
 
 <style>
     input:disabled.default-cursor {

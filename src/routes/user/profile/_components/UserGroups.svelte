@@ -21,41 +21,43 @@
                 use:enhance={enhancedForm}
                 action="?/leaveGroup"
             >
-                <div class="input-group d-flex p-3 bg-base-200">
+                <div class="input-group flex p-3 gap-3 bg-base-200">
                     <div
-                        class="text-xl text-center label text-primary-content me-2 btn btn-primary btn-active cursor-default"
+                        class="text-xl text-center label text-primary-content btn btn-primary btn-active cursor-default"
                     >
                         <div>
                             {userGroup.name}
                         </div>
                     </div>
-                    {#if isAdmin(user, userGroup)}
-                        <a
-                            class="btn btn-primary"
-                            href="{base}/user/{userGroup.short_name}/user-group-manage"
-                        >
-                            <i class="bx bx-edit me-2"></i> Manage
-                        </a>
-                    {/if}
-                    <!-- Leave Group button -->
-                    <button
-                        class={`btn btn-accent text-lg`}
-                        type="submit"
-                        on:click={() => {
-                            leaveUserGroup = userGroup;
-                        }}
-                    >
-                        {#if leaveUserGroup?.id == userGroup?.id}
-                            <span
-                                class="loading loading-spinner"
-                                role="status"
-                                aria-hidden="true"
-                            ></span>
-                        {:else}
-                            <i class="bx bx-log-out opacity-70 me-2"></i>
-                            Leave Group
+                    <div class="flex justify-between w-full">
+                        {#if isAdmin(user, userGroup)}
+                            <a
+                                class="btn btn-info text-lg"
+                                href="{base}/user/{userGroup.short_name}/user-group-manage"
+                            >
+                                <i class="bx bx-edit me-2"></i> Manage
+                            </a>
                         {/if}
-                    </button>
+                        <!-- Leave Group button -->
+                        <button
+                            class={`btn btn-accent text-lg`}
+                            type="submit"
+                            on:click={() => {
+                                leaveUserGroup = userGroup;
+                            }}
+                        >
+                            {#if leaveUserGroup?.id == userGroup?.id}
+                                <span
+                                    class="loading loading-spinner"
+                                    role="status"
+                                    aria-hidden="true"
+                                ></span>
+                            {:else}
+                                <i class="bx bx-log-out opacity-70 me-2"></i>
+                                Leave Group
+                            {/if}
+                        </button>
+                    </div>
                 </div>
             </form>
         {/each}

@@ -20,7 +20,7 @@
                 >
                     <div class="flex">
                         <form
-                            class="flex-grow"
+                            class="flex-grow me-3"
                             method="post"
                             action="?/acceptInvite"
                         >
@@ -33,7 +33,7 @@
                             <button
                                 class="btn btn-info text-xl me-3 w-full"
                                 type="submit"
-                                ><i class="bx bx-check-square fs-lg me-2"
+                                ><i class="bx bx-check-square fs-lg"
                                 ></i>Accept</button
                             >
                         </form>

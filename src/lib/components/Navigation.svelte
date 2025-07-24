@@ -79,7 +79,7 @@
         <ul class="menu menu-horizontal px-1 hidden lg:flex lg:items-center">
             <li>
                 <div
-                    class="dropdown dropdown-hover dropdown-end border-3 border-primary hover:border-info"
+                    class="dropdown dropdown-hover dropdown-end m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info"
                 >
                     <div
                         tabindex="0"
@@ -102,7 +102,7 @@
             </li>
             <li>
                 <div
-                    class="dropdown dropdown-hover dropdown-end border-3 border-primary hover:border-info"
+                    class="dropdown dropdown-hover dropdown-end m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info"
                 >
                     <div
                         tabindex="0"
@@ -129,7 +129,9 @@
                 </div>
             </li>
             <li>
-                <div class="border-3 border-primary hover:border-info">
+                <div
+                    class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info"
+                >
                     <a
                         class="text-lg font-bold text-primary-content"
                         data-sveltekit-reload

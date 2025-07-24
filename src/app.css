@@ -47,7 +47,7 @@
     --color-info-content: oklch(97% 0.014 254.604);
     --color-success: oklch(59% 0.145 163.225);
     --color-success-content: oklch(97% 0.021 166.113);
-    --color-warning: oklch(68% 0.162 75.834);
+    --color-warning: var(--color-nasa-orange);
     --color-warning-content: oklch(98% 0.026 102.212);
     --color-error: rgb(182, 1, 9);
     --color-error-content: oklch(100% 0 0);

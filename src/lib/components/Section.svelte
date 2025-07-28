@@ -5,7 +5,7 @@
 </script>
 
 <div
-    class="pt-2 pb-5 w-auto bg-base-100 flex flex-col flex-grow {center
+    class="pt-2 pb-8 w-auto bg-base-100 flex flex-col flex-grow {center
         ? 'items-center'
         : ''}"
 >

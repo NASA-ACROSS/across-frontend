@@ -7,8 +7,9 @@
     import EmailInput from '$lib/components/inputs/EmailInput.svelte';
     import Section from '$lib/components/Section.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
-    import { base } from '$app/paths';
+    import { base, resolve } from '$app/paths';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
+    import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
 
     export let form: ActionData;
 
@@ -28,7 +29,15 @@
 </script>
 
 <Section center={true}>
-    <Container title="Login" center={true}>
+    <div role="alert" class="alert alert-info alert-soft mt-5">
+        <span class=""
+            >Login is not required to GET data from ACROSS. <a
+                href={resolve('/help/documentation')}
+                class="link font-normal">See documentation for more details.</a
+            ></span
+        >
+    </div>
+    <Container title="Login">
         <form class="pt-2" method="post" use:enhance={enhancedLogin} novalidate>
             <EmailInput
                 value={form?.email}
@@ -77,4 +86,5 @@
             Don't have an account? Register here
         </ArrowButton>
     </Container>
+    <NasaSecurityBanner></NasaSecurityBanner>
 </Section>

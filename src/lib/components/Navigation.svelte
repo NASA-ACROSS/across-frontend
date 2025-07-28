@@ -1,5 +1,6 @@
 <script lang="ts">
     import { base } from '$app/paths';
+    import { page } from '$app/state';
 
     import { loggedIn } from '$lib/stores/login';
     import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
@@ -10,6 +11,10 @@
     loggedIn.subscribe((value) => {
         isLoggedIn = value;
     });
+
+    $: currentPath = page.url.pathname;
+
+    $: userEmail = user?.email;
 
     $: userInitials = isLoggedIn
         ? user?.first_name?.[0]?.toUpperCase() +
@@ -143,64 +148,72 @@
         </ul>
     </div>
 
-    <!-- profile -->
-    {#if user}
-        <a
-            href="{base}/user/profile"
-            class="text-sm font-bold text-primary-content m-2">{user?.email}</a
-        >
-    {/if}
-    <div class="flex-none">
-        <div class="dropdown dropdown-hover dropdown-end pr-3">
-            <a href="{base}/user/profile">
-                <div
-                    tabindex="0"
-                    role="button"
-                    class="btn btn-ghost btn-circle avatar avatar-placeholder -my-3"
+    {#key currentPath}
+        <!-- profile -->
+        {#key userEmail}
+            {#if userEmail}
+                <a
+                    href="{base}/user/profile"
+                    class="text-sm font-bold text-primary-content m-2"
+                    >{userEmail}</a
                 >
-                    <div class="bg-info text-neutral-content w-10 rounded-full">
-                        <div class={isLoggedIn ? 'text-lg' : 'bx bx-user'}>
-                            {userInitials}
+            {/if}
+        {/key}
+        <div class="flex-none">
+            <div class="dropdown dropdown-hover dropdown-end pr-3">
+                <a href="{base}/user/profile">
+                    <div
+                        tabindex="0"
+                        role="button"
+                        class="btn btn-ghost btn-circle avatar avatar-placeholder -my-3"
+                    >
+                        <div
+                            class="bg-info text-neutral-content w-10 rounded-full"
+                        >
+                            <div class={isLoggedIn ? 'text-lg' : 'bx bx-user'}>
+                                {userInitials}
+                            </div>
                         </div>
                     </div>
-                </div>
-            </a>
-            <ul
-                role="link"
-                class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow"
-            >
-                {#if isLoggedIn}
-                    <li>
-                        <a
-                            class="justify-between text-primary-content hover:bg-info"
-                            href="{base}/user/profile"
-                        >
-                            Profile
-                        </a>
-                    </li>
-                    <li>
-                        <a
-                            class="text-primary-content hover:bg-accent hover:text-primary"
-                            data-sveltekit-preload-data="false"
-                            href="{base}/user/logout">Logout</a
-                        >
-                    </li>
-                {:else}
-                    <li>
-                        <a
-                            class="justify-between text-primary-content"
-                            href="{base}/user/register"
-                        >
-                            Create Account
-                        </a>
-                    </li>
-                    <li>
-                        <a class="text-primary-content" href="{base}/user/login"
-                            >Login</a
-                        >
-                    </li>
-                {/if}
-            </ul>
+                </a>
+                <ul
+                    role="link"
+                    class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow"
+                >
+                    {#if isLoggedIn}
+                        <li>
+                            <a
+                                class="justify-between text-primary-content hover:bg-info"
+                                href="{base}/user/profile"
+                            >
+                                Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                class="text-primary-content hover:bg-accent hover:text-primary"
+                                data-sveltekit-preload-data="false"
+                                href="{base}/user/logout">Logout</a
+                            >
+                        </li>
+                    {:else}
+                        <li>
+                            <a
+                                class="justify-between text-primary-content"
+                                href="{base}/user/register"
+                            >
+                                Create Account
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                class="text-primary-content"
+                                href="{base}/user/login">Login</a
+                            >
+                        </li>
+                    {/if}
+                </ul>
+            </div>
         </div>
-    </div>
+    {/key}
 </div>

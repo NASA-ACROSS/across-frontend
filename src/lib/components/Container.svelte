@@ -2,14 +2,11 @@
     export let title = '';
     export let icon: string | undefined = undefined;
     export let center: boolean | undefined = false;
+    export let containerClasses: string | undefined = undefined;
 </script>
 
-<div
-    class="lg:mx-13 mx-3 my-6 flex flex-col {center
-        ? 'place-items-center'
-        : ''}"
->
-    <div class="text-primary min-w-1/2">
+<div class="lg:mx-13 mx-3 my-6 flex flex-col {center ? 'items-center' : ''}">
+    <div class="text-primary min-w-1/2 {containerClasses}">
         <h2
             class="text-3xl flex justify-between text-primary items-center pb-3"
         >

@@ -7,15 +7,16 @@
 
 <div class="my-2 {containerClasses}">
     <a {href} class="text-lg h-auto {textClasses}">
-        <span class="color-primary-content">
-            {#if name}
-                {name}
-            {:else}
-                <slot></slot>
-            {/if}
-        </span>
-        <button class="btn btn-xs btn-circle bg-accent border-none">
+        <button class="flex me-0 cursor-pointer gap-1" on:click>
+            <span class="color-primary-content self-center pb-1">
+                {#if name}
+                    {name}
+                {:else}
+                    <slot></slot>
+                {/if}
+            </span>
             <svg
+                class="btn-xs btn-circle bg-accent border-none"
                 viewBox="0 0 32 32"
                 fill="var(--color-nasa-white)"
                 xmlns="http://www.w3.org/2000/svg"

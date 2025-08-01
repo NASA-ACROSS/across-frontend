@@ -10,6 +10,8 @@
     import UserDetailCard from './_components/UserDetailCard.svelte';
     import type { GroupUser } from '$lib/types/User/GroupUser';
     import type { User } from '$lib/types/User/User';
+    import Section from '$lib/components/Section.svelte';
+    import Container from '$lib/components/Container.svelte';
 
     export let form: ActionData;
     export let data;
@@ -32,33 +34,25 @@
     });
 </script>
 
-<section class="py-5 bg-secondary">
-    <div class="container pb-0">
-        <a class="btn btn-primary btn-lg" href="{base}/user/profile"
-            >← <i class="bx bx-user opacity-70 mx-2"></i>Profile</a
-        >
-        <div class="flex flex-row align-items-center border-bottom py-3">
-            <h1 class="pb-1 pe-2 my-0">
-                <i class="bx bx-edit me-2"></i>Manage -
-            </h1>
-            <h3 class="pb-0 my-0">{group.name}</h3>
+<Section>
+    <Container title={'Manage - ' + group.name} icon="edit">
+        <div slot="buttons">
+            <a class="btn btn-info text-lg" href="{base}/user/profile"
+                >← <i class="bx bx-user mx-2"></i>Profile</a
+            >
         </div>
-    </div>
+    </Container>
 
     <InviteUser {group} {form}></InviteUser>
     <InvitedUsers {invitedUsers}></InvitedUsers>
 
-    <div class="container pb-0">
-        <h2 class="border-bottom pb-4">
-            <i class="bx bx-shield-quarter opacity-70"></i>
-            User Role Management
-        </h2>
-        <div class="row align-items-start">
+    <Container title="User Role Management" icon="shield-quarter">
+        <div class="flex gap-5">
             <GroupUsers {users} bind:selectedUser></GroupUsers>
 
             <UserDetailCard {selectedUser} {group}></UserDetailCard>
 
             <AssignRole user={selectedUser} {group}></AssignRole>
         </div>
-    </div>
-</section>
+    </Container>
+</Section>

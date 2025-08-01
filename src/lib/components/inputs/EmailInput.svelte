@@ -3,6 +3,8 @@
 
     export let name = 'email';
     export let value = '';
+    export let btnTxt = 'Send Link';
+    export let placeholder = 'Enter an email address';
     export let disabled = false;
     export let autocomplete = true;
     export let required = true;
@@ -11,9 +13,9 @@
 </script>
 
 <div>
-    <div class="join w-100">
+    <div class="join w-full">
         <label
-            class="input validator join-item bg-nasa-white disabled:bg-nasa-green"
+            class="input validator join-item w-full bg-nasa-white disabled:bg-nasa-green"
         >
             <svg
                 class="h-[1em] opacity-50 {disabled
@@ -34,9 +36,9 @@
                 </g>
             </svg>
             <input
-                class="form-control disabled:text-secondary-content"
+                class="form-control disabled:text-secondary-content w-full"
                 type="email"
-                placeholder="email@example.com"
+                {placeholder}
                 autocomplete={autocomplete ? 'on' : 'off'}
                 {required}
                 {value}
@@ -46,7 +48,7 @@
         </label>
         {#if includeButton}
             <Button classes="btn-primary join-item" {isLoading} {disabled}
-                >Send Link</Button
+                >{btnTxt}</Button
             >
         {/if}
         <div class="validator-hint hidden absolute mt-13">

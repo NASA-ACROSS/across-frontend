@@ -1,6 +1,7 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
+    import Container from '$lib/components/Container.svelte';
     import type { GroupInvite } from '$lib/types/User/GroupInvite';
     import type { SubmitFunction } from '@sveltejs/kit';
 
@@ -27,10 +28,7 @@
     };
 </script>
 
-<div class="container py-md-1 py-3">
-    <h2 class="border-bottom pb-4">
-        <i class="bx bx-time opacity-70 me-2"></i>Recently Invited Users
-    </h2>
+<Container title="Recently Invited Users" icon="time">
     <div>
         {#if !invitedUsers?.length}
             <p>No pending invites</p>
@@ -42,15 +40,18 @@
                     use:enhance={enhancedForm}
                     action="?/deleteInvite"
                 >
-                    <div class="input-group-lg flex flex-row pb-3">
+                    <div class="input-group-lg flex flex-row gap-3 pb-3">
                         <button
-                            class="btn btn-lg btn-danger me-3"
+                            class="btn btn-primary"
                             type="submit"
                             on:click={() => {
                                 currentUserInvite = userInvite;
-                            }}>Delete Invitation</button
+                            }}
                         >
-                        <span class="input-group-text">
+                            <i class="bx bx-trash opacity-70"></i>
+                            Delete Invitation</button
+                        >
+                        <span class="self-center text-lg">
                             {userInvite.receiver.email}
                         </span>
                     </div>
@@ -58,4 +59,4 @@
             {/each}
         {/if}
     </div>
-</div>
+</Container>

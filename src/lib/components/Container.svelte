@@ -5,14 +5,18 @@
     export let containerClasses: string | undefined = undefined;
 </script>
 
-<div class="lg:mx-13 mx-3 my-6 flex flex-col {center ? 'items-center' : ''}">
-    <div class="text-primary min-w-1/2 {containerClasses}">
+<div
+    class="lg:mx-13 mx-3 my-8 flex flex-col {center
+        ? 'items-center'
+        : ''} {containerClasses}"
+>
+    <div class="text-primary">
         <h2
             class="text-3xl flex justify-between text-primary items-center pb-3"
         >
             <div>
                 {#if icon}
-                    <div class="bx bx-{icon} opacity-70" />
+                    <div class="bx bx-{icon} opacity-80" />
                 {/if}
                 {title}
             </div>

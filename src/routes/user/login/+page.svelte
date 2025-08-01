@@ -37,7 +37,7 @@
             ></span
         >
     </div>
-    <Container title="Login">
+    <Container title="Login" containerClasses="w-1/3">
         <form class="pt-2" method="post" use:enhance={enhancedLogin} novalidate>
             <EmailInput
                 value={form?.email}
@@ -80,8 +80,8 @@
         </form>
         <ArrowButton
             href="{base}/user/register"
-            containerClasses="mt-6 text-right"
-            textClasses="text-sm"
+            containerClasses="mt-6 text-right justify-self-end"
+            textClasses="text-sm text-right"
         >
             Don't have an account? Register here
         </ArrowButton>

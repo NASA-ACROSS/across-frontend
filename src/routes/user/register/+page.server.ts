@@ -2,9 +2,11 @@ import { emailRegex } from '$lib/utils/regex/emailRegex.js';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex.js';
 import { validate } from '$lib/utils/regex/validate.js';
 import { CONFIG } from '../../../config/config.js';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import type { RequestEvent } from './$types.js';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
+import { resolve } from '$app/paths';
 
 // rate limit is defined as [number, unit]
 // see documentation for more info
@@ -15,6 +17,14 @@ const limiter = new RetryAfterRateLimiter({
     // IP address limiter, triple the limit to ensure multiple users from the same IP don't become limited
     IP: [15, '15m'],
 });
+
+export function load({ locals }: RequestEvent) {
+    const userCookie = locals?.user as UserCredentialsCookie;
+    // Redirect on load when user is logged in
+    if (userCookie) {
+        throw redirect(302, resolve('/user/profile'));
+    }
+}
 
 export const actions = {
     default: async (event: RequestEvent) => {

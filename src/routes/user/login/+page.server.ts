@@ -1,18 +1,17 @@
 import { CONFIG } from '../../../config/config.js';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
-import { base } from '$app/paths';
+import { resolve } from '$app/paths';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
 import { emailRegex } from '$lib/utils/regex/emailRegex.js';
 import type { Actions } from './$types.js';
 
-export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
-    const user = locals.user;
+export function load({ locals }: RequestEvent) {
+    const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is logged in
-    if (user) {
-        throw redirect(302, `${base}/user/profile`);
+    if (userCookie) {
+        throw redirect(302, resolve('/user/profile'));
     }
-    return {};
 }
 
 // rate limit is defined as [number, unit]

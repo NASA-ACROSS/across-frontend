@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { base } from '$app/paths';
+    import { resolve } from '$app/paths';
     import _ from 'lodash';
     /** @type {import('./$types').ActionData} */
     export let form;
@@ -27,8 +27,8 @@
     let originalUserData = structuredClone(data.user);
     let user = data.user;
     $: isUserDataUnchanged = _.isEqual(originalUserData, user);
-    $: form?.successUpdateUserInformation,
-        (originalUserData = structuredClone(data.user));
+    $: (form?.successUpdateUserInformation,
+        (originalUserData = structuredClone(data.user)));
 
     // safari browser should force a reload on cached navigation using back button
     if (browser) {
@@ -100,7 +100,7 @@
         <div slot="buttons" class="">
             <a
                 data-sveltekit-preload-data="false"
-                href="{base}/user/logout"
+                href={resolve('/user/logout')}
                 class="btn btn-accent text-xl"
             >
                 <i class="bx bx-log-out opacity-70 me-2"></i>Logout

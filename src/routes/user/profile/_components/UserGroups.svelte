@@ -1,6 +1,6 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
-    import { base } from '$app/paths';
+    import { resolve } from '$app/paths';
     import Container from '$lib/components/Container.svelte';
     import type { User } from '$lib/types/User/User';
     import type { UserGroup } from '$lib/types/User/UserGroup';
@@ -33,7 +33,10 @@
                         {#if isAdmin(user, userGroup)}
                             <a
                                 class="btn btn-info text-lg"
-                                href="{base}/user/{userGroup.short_name}/user-group-manage"
+                                href={resolve(
+                                    '/user/[userGroupName]/user-group-manage',
+                                    { userGroupName: userGroup.short_name }
+                                )}
                             >
                                 <i class="bx bx-edit me-2"></i> Manage
                             </a>

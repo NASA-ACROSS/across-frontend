@@ -1,22 +1,16 @@
 <script lang="ts">
-    import { base } from '$app/paths';
+    import { asset, resolve } from '$app/paths';
     import { page } from '$app/state';
 
-    import { loggedIn } from '$lib/stores/login';
     import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 
     export let user: UserCredentialsCookie | undefined;
 
-    let isLoggedIn = false;
-    loggedIn.subscribe((value) => {
-        isLoggedIn = value;
-    });
-
     $: currentPath = page.url.pathname;
 
-    $: userEmail = isLoggedIn ? user?.email : '';
+    $: userEmail = user?.email ? user.email : '';
 
-    $: userInitials = isLoggedIn
+    $: userInitials = user
         ? user?.first_name?.[0]?.toUpperCase() +
           user?.last_name?.[0]?.toUpperCase()
         : '';
@@ -61,12 +55,12 @@
             </ul>
         </div>
         <a
-            href="{base}/"
+            href={resolve('/')}
             role="button"
             class="text-xl font-bold flex flex-row items-center pl-3"
         >
             <img
-                src="{base}/assets/img/custom/logo-nasa.svg"
+                src={asset('/assets/img/custom/logo-nasa.svg')}
                 width="60"
                 alt="NASA logo"
             />
@@ -97,10 +91,13 @@
                     <ul
                         class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm"
                     >
-                        <li><a href="{base}/schedules">Schedules</a></li>
-                        <li><a href="{base}/observations">Observations</a></li>
+                        <li><a href={resolve('/schedules')}>Schedules</a></li>
                         <li>
-                            <a href="{base}/observatories">Observatories</a>
+                            <a href={resolve('/observations')}>Observations</a>
+                        </li>
+                        <li>
+                            <a href={resolve('/observatories')}>Observatories</a
+                            >
                         </li>
                     </ul>
                 </div>
@@ -121,12 +118,12 @@
                         class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm"
                     >
                         <li>
-                            <a href="{base}/visibility-calculator"
+                            <a href={resolve('/visibility-calculator')}
                                 >Visibility Calculator</a
                             >
                         </li>
                         <li>
-                            <a href="{base}/target-of-opportunity"
+                            <a href={resolve('/target-of-opportunity')}
                                 >Data Ingestion Status</a
                             >
                         </li>
@@ -153,7 +150,7 @@
         {#key userEmail}
             {#if userEmail}
                 <a
-                    href="{base}/user/profile"
+                    href={resolve('/user/profile')}
                     class="text-sm font-bold text-primary-content m-2"
                     >{userEmail}</a
                 >
@@ -161,7 +158,7 @@
         {/key}
         <div class="flex-none">
             <div class="dropdown dropdown-hover dropdown-end pr-3">
-                <a href="{base}/user/profile">
+                <a href={resolve('/user/profile')}>
                     <div
                         tabindex="0"
                         role="button"
@@ -170,7 +167,7 @@
                         <div
                             class="bg-info text-neutral-content w-10 rounded-full"
                         >
-                            <div class={isLoggedIn ? 'text-lg' : 'bx bx-user'}>
+                            <div class={user ? 'text-lg' : 'bx bx-user'}>
                                 {userInitials}
                             </div>
                         </div>
@@ -180,11 +177,11 @@
                     role="link"
                     class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow"
                 >
-                    {#if isLoggedIn}
+                    {#if user}
                         <li>
                             <a
                                 class="justify-between text-primary-content hover:bg-info"
-                                href="{base}/user/profile"
+                                href={resolve('/user/profile')}
                             >
                                 Profile
                             </a>
@@ -193,14 +190,14 @@
                             <a
                                 class="text-primary-content hover:bg-accent hover:text-primary"
                                 data-sveltekit-preload-data="false"
-                                href="{base}/user/logout">Logout</a
+                                href={resolve('/user/logout')}>Logout</a
                             >
                         </li>
                     {:else}
                         <li>
                             <a
                                 class="justify-between text-primary-content"
-                                href="{base}/user/register"
+                                href={resolve('/user/register')}
                             >
                                 Create Account
                             </a>
@@ -208,7 +205,7 @@
                         <li>
                             <a
                                 class="text-primary-content"
-                                href="{base}/user/login">Login</a
+                                href={resolve('/user/login')}>Login</a
                             >
                         </li>
                     {/if}

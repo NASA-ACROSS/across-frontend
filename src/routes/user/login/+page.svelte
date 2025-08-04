@@ -7,7 +7,7 @@
     import EmailInput from '$lib/components/inputs/EmailInput.svelte';
     import Section from '$lib/components/Section.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
-    import { base, resolve } from '$app/paths';
+    import { resolve } from '$app/paths';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
 
@@ -70,7 +70,7 @@
                     <div class="mt-4">
                         <p>
                             The email address is not registered,
-                            <a href="{base}/user/register"
+                            <a href={resolve('/user/register')}
                                 >click here to register!</a
                             >
                         </p>
@@ -79,7 +79,7 @@
             </EmailInput>
         </form>
         <ArrowButton
-            href="{base}/user/register"
+            href={resolve('/user/register')}
             containerClasses="mt-6 text-right justify-self-end"
             textClasses="text-sm text-right"
         >

@@ -1,5 +1,5 @@
 <script>
-    import { base } from '$app/paths';
+    import { resolve } from '$app/paths';
     import ArrowButton from './ArrowButton.svelte';
 </script>
 
@@ -19,10 +19,10 @@
                 status information to facilitate science situational awareness.
             </p>
             <div class="flex flex-col md:flex-row md:gap-4">
-                <ArrowButton href="{base}/schedules">
+                <ArrowButton href={resolve('/schedules')}>
                     View Schedules
                 </ArrowButton>
-                <ArrowButton href="{base}/observations">
+                <ArrowButton href={resolve('/observations')}>
                     Browse Observations
                 </ArrowButton>
                 <ArrowButton href="http://127.0.0.1:8000/docs">

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { base } from '$app/paths';
+    import { asset, resolve } from '$app/paths';
 </script>
 
 <footer
@@ -7,7 +7,7 @@
 >
     <aside>
         <img
-            src="{base}/assets/img/custom/logo-nasa.svg"
+            src={asset('/assets/img/custom/logo-nasa.svg')}
             width="75"
             alt="NASA logo"
         />
@@ -19,9 +19,9 @@
     </aside>
     <nav>
         <h6 class="footer-title">Services</h6>
-        <a href="{base}/schedules">Schedules</a>
-        <a href="{base}/observations">Observations</a>
-        <a href="{base}/observations">Visibility Calculator</a>
+        <a href={resolve('/schedules')}>Schedules</a>
+        <a href={resolve('/observations')}>Observations</a>
+        <a href={resolve('/observations')}>Visibility Calculator</a>
     </nav>
     <nav>
         <h6 class="footer-title">Info</h6>

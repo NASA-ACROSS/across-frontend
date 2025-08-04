@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { base } from '$app/paths';
+import { resolve } from '$app/paths';
 import { CONFIG } from '../../../config/config.js';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
@@ -15,7 +15,7 @@ export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
     // Redirect on load when user is logged in
     if (user) {
-        throw redirect(302, `${base}/user/profile`);
+        throw redirect(302, resolve('/user/profile'));
     }
     return {};
 }
@@ -156,7 +156,7 @@ export const actions = {
             const userCredentials = new UserCredentials(userCredentialsCookie);
             await userCredentials.setCookie(cookies);
 
-            throw redirect(302, `${base}/user/profile`);
+            throw redirect(302, resolve('/user/profile'));
         }
 
         return {

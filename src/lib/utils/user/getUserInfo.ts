@@ -3,7 +3,7 @@ import { UserCredentials } from '$lib/types/User/UserCredentials';
 import { CONFIG } from '../../../config/config';
 import type { User } from '$lib/types/User/User';
 import { redirect, type Cookies } from '@sveltejs/kit';
-import { base } from '$app/paths';
+import { resolve } from '$app/paths';
 
 export const getUserInfo = async (
     userCookie: UserCredentialsCookie,
@@ -39,7 +39,7 @@ export const getUserInfo = async (
             `ERROR: getting user roles [${userCookie.email}] at [${Date.now()}] with status code [${response.status}]`
         );
         cookies.delete('user-login', { path: '/' });
-        throw redirect(302, `${base}/user/login`);
+        throw redirect(302, resolve('/user/login'));
     }
 
     const user = (await response.json()) as User;

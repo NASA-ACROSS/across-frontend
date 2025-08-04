@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { base } from '$app/paths';
+    import { resolve } from '$app/paths';
     import type { GroupInvite } from '$lib/types/User/GroupInvite';
     import InvitedUsers from './_components/InvitedUsers.svelte';
     import InviteUser from './_components/InviteUser.svelte';
@@ -37,7 +37,7 @@
 <Section>
     <Container title={'Manage - ' + group.name} icon="edit">
         <div slot="buttons">
-            <a class="btn btn-info text-lg" href="{base}/user/profile"
+            <a class="btn btn-info text-lg" href={resolve('/user/profile')}
                 >← <i class="bx bx-user mx-2"></i>Profile</a
             >
         </div>

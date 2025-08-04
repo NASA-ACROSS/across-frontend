@@ -14,7 +14,7 @@
 
     $: currentPath = page.url.pathname;
 
-    $: userEmail = user?.email;
+    $: userEmail = isLoggedIn ? user?.email : '';
 
     $: userInitials = isLoggedIn
         ? user?.first_name?.[0]?.toUpperCase() +
@@ -150,13 +150,15 @@
 
     {#key currentPath}
         <!-- profile -->
-        {#if userEmail}
-            <a
-                href="{base}/user/profile"
-                class="text-sm font-bold text-primary-content m-2"
-                >{userEmail}</a
-            >
-        {/if}
+        {#key userEmail}
+            {#if userEmail}
+                <a
+                    href="{base}/user/profile"
+                    class="text-sm font-bold text-primary-content m-2"
+                    >{userEmail}</a
+                >
+            {/if}
+        {/key}
         <div class="flex-none">
             <div class="dropdown dropdown-hover dropdown-end pr-3">
                 <a href="{base}/user/profile">

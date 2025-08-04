@@ -22,7 +22,7 @@
             <div
                 tabindex="0"
                 role="button"
-                class="btn btn-ghost text-primary-content lg:hidden"
+                class="btn btn-primary border-3 border-primary text-primary-content hover:bg-primary hover:text-primary-content focus:bg-primary focus:border-info lg:hidden"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -40,18 +40,38 @@
                 </svg>
             </div>
             <ul
-                tabindex="0"
-                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                class="menu menu-xl w-screen dropdown-content bg-primary text-primary-content z-1 -ms-2 pb-5"
             >
-                <li><a>Item 1</a></li>
                 <li>
-                    <a>Parent</a>
+                    <a>Data</a>
                     <ul class="p-2">
-                        <li><a>Submenu 1</a></li>
-                        <li><a>Submenu 2</a></li>
+                        <li class="hover:underline decoration-dashed">
+                            <a href={resolve('/schedules')}>Schedules</a>
+                        </li>
+                        <li class="hover:underline decoration-dashed">
+                            <a href={resolve('/observations')}>Observations</a>
+                        </li>
+                        <li class="hover:underline decoration-dashed">
+                            <a href={resolve('/observatories')}>Observatories</a
+                            >
+                        </li>
                     </ul>
                 </li>
-                <li><a>Item 3</a></li>
+                <li>
+                    <a>Tools</a>
+                    <ul>
+                        <li class="hover:underline decoration-dashed">
+                            <a href={resolve('/visibility-calculator')}
+                                >Visibility Calculator</a
+                            >
+                        </li>
+                        <li class="hover:underline decoration-dashed">
+                            <a href={resolve('/target-of-opportunity')}
+                                >Data Ingestion Status</a
+                            >
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </div>
         <a
@@ -91,7 +111,9 @@
                     <ul
                         class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm"
                     >
-                        <li><a href={resolve('/schedules')}>Schedules</a></li>
+                        <li>
+                            <a href={resolve('/schedules')}>Schedules</a>
+                        </li>
                         <li>
                             <a href={resolve('/observations')}>Observations</a>
                         </li>

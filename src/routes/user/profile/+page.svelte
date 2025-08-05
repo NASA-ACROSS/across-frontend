@@ -17,6 +17,7 @@
     import Section from '$lib/components/Section.svelte';
     import Container from '$lib/components/Container.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
+    import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
 
     export let data: PageData;
 
@@ -169,7 +170,7 @@
                 <div class="flex flex-sm-row flex-column mb-3 needs-validation">
                     <div class="input-group me-sm-3 mb-sm-0 mb-3 w-full">
                         <input
-                            class="input form-control form-control-lg rounded-3 ps-5 w-full disabled:bg-base-300 disabled:text-carbon-70"
+                            class="input form-control form-control-lg ps-5 w-full disabled:bg-base-300 disabled:text-carbon-70"
                             required
                             disabled
                             bind:value={user.email}
@@ -183,21 +184,21 @@
                 </div>
                 <div class="flex justify-end items-center">
                     {#if form?.successUpdateUserInformation}
-                        <p class="form-text fs-sm text-sm-start text-success">
+                        <FormInputFeedback>
                             Successfully updated user information!
-                        </p>
+                        </FormInputFeedback>
                     {/if}
                     {#if form?.failUpdateUserInformation}
-                        <p class="form-text text-sm text-danger">
+                        <FormInputFeedback type="error">
                             Something went wrong, please try again. If this
                             error persists, contact support.
-                        </p>
+                        </FormInputFeedback>
                     {/if}
                     {#if form?.failValidation}
-                        <p class="form-text text-sm text-danger">
+                        <FormInputFeedback type="error">
                             Form validation failed. Please try again. If this
                             error persists, contact support.
-                        </p>
+                        </FormInputFeedback>
                     {/if}
                     <button
                         type="submit"

@@ -2,6 +2,7 @@
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
     import Container from '$lib/components/Container.svelte';
+    import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
     import EmailInput from '$lib/components/inputs/EmailInput.svelte';
     import type { UserGroup } from '$lib/types/User/UserGroup';
     import type { ActionData, SubmitFunction } from '../$types';
@@ -9,7 +10,7 @@
     export let form: ActionData;
     export let group: UserGroup;
 
-    let isSubmittingInvite = false;
+    $: isSubmittingInvite = false;
 
     const enhancedForm: SubmitFunction = ({ formData }) => {
         // render state changes
@@ -38,7 +39,6 @@
     <form method="post" action="?/inviteUser" use:enhance={enhancedForm}>
         <EmailInput
             value={''}
-            disabled={isSubmittingInvite}
             autocomplete={false}
             includeButton={true}
             isLoading={isSubmittingInvite && !form?.successInvite}
@@ -46,23 +46,24 @@
             btnTxt="Invite"
         >
             {#if form?.successInvite}
-                <p class="text-sm text-start text-success">User Invited!</p>
+                <FormInputFeedback>User Invited!</FormInputFeedback>
             {/if}
             {#if form?.userInGroup}
-                <p class="text-sm text-start text-success">
+                <FormInputFeedback type="warning">
                     User is already invited or in group!
-                </p>
+                </FormInputFeedback>
             {/if}
             {#if form?.invalidEmail}
-                <p class="text-sm text-start text-success">
-                    Invalid Email Specified. User not found.
-                </p>
+                <FormInputFeedback type="error">
+                    User not found. Please instruct the user to register to
+                    create an account.
+                </FormInputFeedback>
             {/if}
             {#if form?.fail}
-                <p class="text-sm text-start text-success">
+                <FormInputFeedback type="error">
                     Something went wrong, please try again. If this error
                     persists, contact support.
-                </p>
+                </FormInputFeedback>
             {/if}
         </EmailInput>
     </form>

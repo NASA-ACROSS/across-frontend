@@ -25,12 +25,13 @@
     </nav>
     <nav>
         <h6 class="footer-title">Info</h6>
-        <a href="/">across.sciencecloud.nasa.gov</a>
-        <a href="http://gsfc.nasa.gov">Goddard Space Flight Center</a>
-        <a href="http://mfsc.nasa.gov">Marshall Space Flight Center</a>
-        <a href="https://www.nasa.gov/about/highlights/HP_Privacy.html"
-            >Privacy Policy</a
+        <a href="https://www.nasa.gov/goddard/">Goddard Space Flight Center</a>
+        <a href="https://www.nasa.gov/marshall/">Marshall Space Flight Center</a
         >
+        <a href="https://www.nasa.gov/vulnerability-disclosure-policy/"
+            >Vulnerability Disclosure Policy</a
+        >
+        <a href="https://www.nasa.gov/privacy/">Privacy Policy</a>
         <a href="https://www.nasa.gov/no-fear-act/">No Fear Act</a>
     </nav>
 </footer>

@@ -13,7 +13,7 @@
 </script>
 
 <div>
-    <div class="join w-full">
+    <div class="join w-full mb-4">
         <label
             class="input validator join-item w-full bg-nasa-white disabled:bg-nasa-green"
         >
@@ -51,7 +51,7 @@
                 >{btnTxt}</Button
             >
         {/if}
-        <div class="validator-hint hidden absolute mt-13">
+        <div class="validator-hint hidden text-left absolute mt-13">
             Enter valid email address
         </div>
     </div>

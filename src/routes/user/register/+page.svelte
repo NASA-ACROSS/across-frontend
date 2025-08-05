@@ -2,6 +2,7 @@
     import { resolve } from '$app/paths';
     import Container from '$lib/components/Container.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
+    import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
     import Section from '$lib/components/Section.svelte';
     import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
@@ -27,7 +28,7 @@
             <form method="post">
                 <label for="firstname">Name</label>
                 <div class="flex flex-row flex-grow mb-3 needs-validation join">
-                    <div class="join-item me-sm-3 mb-sm-0 mb-3 w-1/2">
+                    <div class="join-item mb-3 w-1/2">
                         <input
                             id="firstname"
                             class="input form-control ps-5 w-full"
@@ -43,7 +44,7 @@
                             maxlength={25}
                         />
                     </div>
-                    <div class="join-item me-sm-3 mb-sm-0 mb-3 w-1/2">
+                    <div class="join-item mb-3 w-1/2">
                         <input
                             class="input form-control form-control-lg ps-5 w-full"
                             pattern={frontendAlphaNumRegex}
@@ -81,7 +82,7 @@
                 <div class="flex flex-sm-row flex-column mb-3 needs-validation">
                     <div class="input-group mb-3 w-full">
                         <input
-                            class="input form-control form-control-lg rounded-3 ps-5 w-full"
+                            class="input form-control form-control-lg ps-5 w-full"
                             required
                             title="Email"
                             type="email"
@@ -94,45 +95,35 @@
                     </div>
                 </div>
 
-                <div class="flex justify-end items-center">
+                <div class="flex justify-end gap-3 items-center">
                     {#if form?.success}
-                        <p
-                            class="form-text fs-sm text-sm-start text-center text-success"
-                        >
+                        <FormInputFeedback>
                             Please check your email for a verification link!
-                        </p>
+                        </FormInputFeedback>
                     {/if}
                     {#if form?.userAlreadyExists}
-                        <p
-                            class="form-text fs-sm text-sm-start text-center text-danger"
-                        >
+                        <FormInputFeedback type="error">
                             Invalid Email or Username Specified. Account already
                             exists.
-                        </p>
+                        </FormInputFeedback>
                     {/if}
                     {#if form?.rateLimit}
-                        <p
-                            class="form-text fs-sm text-sm-start text-center text-danger"
-                        >
+                        <FormInputFeedback type="error">
                             You are being rate limited, please retry after {form?.retryAfter}
                             seconds.
-                        </p>
+                        </FormInputFeedback>
                     {/if}
                     {#if form?.failValidation}
-                        <p
-                            class="form-text fs-sm text-sm-start text-center text-danger"
-                        >
+                        <FormInputFeedback type="error">
                             Form validation failed. Please try again. If this
                             error persists, contact support.
-                        </p>
+                        </FormInputFeedback>
                     {/if}
                     {#if form?.fail}
-                        <p
-                            class="form-text fs-sm text-sm-start text-center text-danger"
-                        >
+                        <FormInputFeedback type="error">
                             Something went wrong, please try again. If this
                             error persists, contact support.
-                        </p>
+                        </FormInputFeedback>
                     {/if}
                     <button
                         class="btn btn-lg btn-info"
@@ -148,14 +139,14 @@
 
 <style>
     input:valid:not(:placeholder-shown) {
-        border: 1px solid rgba(160, 160, 255, 1);
+        border: 1px solid var(--color-info);
     }
 
     input:disabled {
-        border: 1px solid rgb(34, 197, 94) !important;
+        border: 1px solid var(--color-info) !important;
     }
 
     input:invalid:not(:placeholder-shown) {
-        border: 1px solid rgba(255, 0, 0, 1);
+        border: 1px solid var(--color-accent);
     }
 </style>

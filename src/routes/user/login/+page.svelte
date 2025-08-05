@@ -37,7 +37,7 @@
             ></span
         >
     </div>
-    <Container title="Login" containerClasses="w-1/3">
+    <Container title="Login" containerClasses="min-w-1/2 lg:min-w-1/3">
         <form class="pt-2" method="post" use:enhance={enhancedLogin} novalidate>
             <EmailInput
                 value={form?.email}
@@ -67,14 +67,9 @@
                 {/if}
 
                 {#if form?.notFound}
-                    <div class="mt-4">
-                        <p>
-                            The email address is not registered,
-                            <a href={resolve('/user/register')}
-                                >click here to register!</a
-                            >
-                        </p>
-                    </div>
+                    <FormInputFeedback type="error">
+                        The email address is not registered.
+                    </FormInputFeedback>
                 {/if}
             </EmailInput>
         </form>

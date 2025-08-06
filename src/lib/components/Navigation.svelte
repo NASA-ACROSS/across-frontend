@@ -5,6 +5,7 @@
     import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 
     export let user: UserCredentialsCookie | undefined;
+    export let API_URL: string = 'http://127.0.0.1:8000/docs';
 
     $: currentPath = page.url.pathname;
 
@@ -19,9 +20,8 @@
 <div class="navbar bg-primary shadow-sm h-22">
     <div class="navbar-start">
         <div class="dropdown">
-            <div
+            <button
                 tabindex="0"
-                role="button"
                 class="btn btn-primary border-3 border-primary text-primary-content hover:bg-primary hover:text-primary-content focus:bg-primary focus:border-info lg:hidden"
             >
                 <svg
@@ -38,7 +38,7 @@
                         d="M4 6h16M4 12h8m-8 6h16"
                     />
                 </svg>
-            </div>
+            </button>
             <ul
                 class="menu menu-xl w-screen dropdown-content bg-primary text-primary-content z-1 -ms-2 pb-5"
             >
@@ -66,7 +66,7 @@
                             >
                         </li>
                         <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/target-of-opportunity')}
+                            <a href={resolve('/data-ingestion-status')}
                                 >Data Ingestion Status</a
                             >
                         </li>
@@ -145,7 +145,7 @@
                             >
                         </li>
                         <li>
-                            <a href={resolve('/target-of-opportunity')}
+                            <a href={resolve('/data-ingestion-status')}
                                 >Data Ingestion Status</a
                             >
                         </li>
@@ -159,7 +159,7 @@
                     <a
                         class="text-lg font-bold text-primary-content"
                         data-sveltekit-reload
-                        href="http://127.0.0.1:8000/docs"
+                        href={API_URL + '/docs'}
                         >API
                     </a>
                 </div>

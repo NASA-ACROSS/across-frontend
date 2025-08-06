@@ -73,7 +73,7 @@
                     >
                         <div class="flex flex-row gap-2">
                             <button
-                                class="btn btn-info w-1/3"
+                                class="btn btn-info w-15 text-xl"
                                 type="submit"
                                 on:click={() => {
                                     selectedRole = role;
@@ -85,10 +85,10 @@
                                         aria-hidden="true"
                                     ></span>
                                 {:else}
-                                    Assign Role
+                                    +
                                 {/if}</button
                             >
-                            <span class="self-center">
+                            <span class="self-center text-lg">
                                 {role.name}
                             </span>
                         </div>

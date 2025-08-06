@@ -3,12 +3,17 @@
 
     export let name = 'email';
     export let value = '';
-    export let btnTxt = 'Send Link';
     export let placeholder = 'Enter an email address';
     export let disabled = false;
     export let autocomplete = true;
     export let required = true;
+    /**
+     * Button to submit `<form>` action in current context.
+     * Used for login and user invitation on group manage page.
+     * Customize text with `btnText`
+     */
     export let includeButton = false;
+    export let btnTxt = 'Send Link';
     export let isLoading;
 </script>
 

@@ -1,6 +1,8 @@
-<script>
+<script lang="ts">
     import { resolve } from '$app/paths';
     import ArrowButton from './ArrowButton.svelte';
+
+    export let API_URL: string = 'http://127.0.0.1:8000/docs';
 </script>
 
 <!-- Hero -->
@@ -25,9 +27,7 @@
                 <ArrowButton href={resolve('/observations')}>
                     Browse Observations
                 </ArrowButton>
-                <ArrowButton href="http://127.0.0.1:8000/docs">
-                    Explore API
-                </ArrowButton>
+                <ArrowButton href={API_URL + '/docs'}>Explore API</ArrowButton>
             </div>
         </div>
     </div>

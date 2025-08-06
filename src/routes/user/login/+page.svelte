@@ -40,7 +40,7 @@
     <Container title="Login" containerClasses="min-w-1/2 lg:min-w-1/3">
         <form class="pt-2" method="post" use:enhance={enhancedLogin} novalidate>
             <EmailInput
-                value={form?.email}
+                value={form?.email || ''}
                 disabled={isLoggingIn || form?.success || isButtonDisabled}
                 autocomplete={false}
                 includeButton={true}

@@ -19,9 +19,9 @@ export function load({ locals }: RequestEvent) {
 // https://github.com/ciscoheat/sveltekit-rate-limiter?tab=readme-ov-file#valid-units
 const limiter = new RetryAfterRateLimiter({
     // IP + User Agent limiter, 5 login requests per 15 mins, resetting every 15 minutes
-    IPUA: [5, '15m'],
+    IPUA: [50, '15m'],
     // IP address limiter, triple the limit to ensure multiple users from the same IP don't become limited
-    IP: [15, '15m'],
+    IP: [150, '15m'],
 });
 
 export const actions = {

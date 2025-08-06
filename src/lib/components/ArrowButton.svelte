@@ -3,6 +3,7 @@
     export let href: string | null = null;
     export let containerClasses = '';
     export let textClasses = '';
+    export let direction: 'right' | 'left' = 'right';
 </script>
 
 <div class="my-2 {containerClasses}">
@@ -16,7 +17,10 @@
                 {/if}
             </span>
             <svg
-                class="btn-xs btn-circle bg-accent border-none"
+                class="btn-xs btn-circle bg-accent border-none {direction ===
+                'left'
+                    ? 'left-arrow'
+                    : ''}"
                 viewBox="0 0 32 32"
                 fill="var(--color-nasa-white)"
                 xmlns="http://www.w3.org/2000/svg"
@@ -30,4 +34,7 @@
 </div>
 
 <style>
+    .left-arrow {
+        transform: scaleX(-1);
+    }
 </style>

@@ -34,6 +34,7 @@
                         </div>
 
                         <ArrowButton
+                            direction={selectedUser == user ? 'left' : 'right'}
                             on:click={() => {
                                 if (selectedUser == user) {
                                     selectedUser = undefined;
@@ -41,9 +42,7 @@
                                     selectedUser = user;
                                 }
                             }}
-                        >
-                            {selectedUser == user ? 'Unselect' : 'Select'}
-                        </ArrowButton>
+                        ></ArrowButton>
                     </li>
                 {/each}
             </ul>

@@ -11,7 +11,7 @@
     import type { GroupUser } from '$lib/types/User/GroupUser';
     import type { User } from '$lib/types/User/User';
     import Page from '$lib/components/Page.svelte';
-    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
 
     export let form: ActionData;
     export let data;
@@ -35,18 +35,18 @@
 </script>
 
 <Page>
-    <Container title={'Manage - ' + group.name} icon="edit">
+    <Section title={'Manage - ' + group.name} icon="edit">
         <div slot="buttons">
             <a class="btn btn-info text-lg" href={resolve('/user/profile')}
                 >← <i class="bx bx-user mx-2"></i>Profile</a
             >
         </div>
-    </Container>
+    </Section>
 
     <InviteUser {group} {form}></InviteUser>
     <InvitedUsers {invitedUsers}></InvitedUsers>
 
-    <Container title="User Role Management" icon="shield-quarter">
+    <Section title="User Role Management" icon="shield-quarter">
         <div class="flex gap-5">
             <GroupUsers {users} bind:selectedUser></GroupUsers>
 
@@ -54,5 +54,5 @@
 
             <AssignRole user={selectedUser} {group}></AssignRole>
         </div>
-    </Container>
+    </Section>
 </Page>

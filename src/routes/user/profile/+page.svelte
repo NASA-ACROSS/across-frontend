@@ -15,7 +15,7 @@
     import UserGroupInvites from './_components/UserGroupInvites.svelte';
     import type { UserGroup } from '$lib/types/User/UserGroup';
     import Page from '$lib/components/Page.svelte';
-    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
 
@@ -97,7 +97,7 @@
 </script>
 
 <Page>
-    <Container title="Profile" icon="user">
+    <Section title="Profile" icon="user">
         <div slot="buttons" class="">
             <a
                 data-sveltekit-preload-data="false"
@@ -210,7 +210,7 @@
                 </div>
             </form>
         </Fieldset>
-    </Container>
+    </Section>
 
     <UserGroupInvites {invitations} />
     <UserGroups {user} {userGroups} bind:leaveUserGroup {enhancedForm} />

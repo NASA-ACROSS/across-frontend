@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
     import Page from '$lib/components/Page.svelte';
     import type { UserInvite } from '$lib/types/User/UserInvite';
 
@@ -8,7 +8,7 @@
 
 {#if invitations && invitations?.length}
     <Page>
-        <Container
+        <Section
             title="My Group
                 Invitations"
             icon="envelope"
@@ -82,6 +82,6 @@
                     </div>
                 </div>
             {/each}
-        </Container>
+        </Section>
     </Page>
 {/if}

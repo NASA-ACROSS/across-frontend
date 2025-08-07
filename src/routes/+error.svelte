@@ -1,11 +1,11 @@
 <script>
     import { page } from '$app/stores';
-    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
     import Page from '$lib/components/Page.svelte';
 </script>
 
 <Page center={true}>
-    <Container>
+    <Section>
         <article class="prose">
             <div class="flex gap-5">
                 <h1>{$page.status}</h1>
@@ -17,5 +17,5 @@
                 <p>{$page.error.errorId}</p>
             {/if}
         </article>
-    </Container>
+    </Section>
 </Page>

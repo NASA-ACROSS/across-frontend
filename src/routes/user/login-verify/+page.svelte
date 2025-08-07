@@ -1,14 +1,14 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
-    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
     import Page from '$lib/components/Page.svelte';
 
     export let form;
 </script>
 
 <Page center={true}>
-    <Container title="Email Link Login">
+    <Section title="Email Link Login">
         {#if !form}
             <form method="post">
                 <div class="form-check">
@@ -36,5 +36,5 @@
                 >Visit login to try again</ArrowButton
             >
         {/if}
-    </Container>
+    </Section>
 </Page>

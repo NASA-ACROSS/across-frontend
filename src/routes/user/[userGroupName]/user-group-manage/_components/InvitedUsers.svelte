@@ -1,7 +1,7 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
     import type { GroupInvite } from '$lib/types/User/GroupInvite';
     import type { SubmitFunction } from '@sveltejs/kit';
 
@@ -28,7 +28,7 @@
     };
 </script>
 
-<Container title="Recently Invited Users" icon="time">
+<Section title="Recently Invited Users" icon="time">
     <div>
         {#if !invitedUsers?.length}
             <p>No pending invites</p>
@@ -59,4 +59,4 @@
             {/each}
         {/if}
     </div>
-</Container>
+</Section>

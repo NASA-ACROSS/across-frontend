@@ -1,7 +1,7 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
     import { resolve } from '$app/paths';
-    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
     import type { User } from '$lib/types/User/User';
     import type { UserGroup } from '$lib/types/User/UserGroup';
     import { isAdmin } from '$lib/utils/user/isAdmin';
@@ -13,7 +13,7 @@
 </script>
 
 {#if userGroups && userGroups?.length}
-    <Container title="My User Groups" icon="group">
+    <Section title="My User Groups" icon="group">
         {#each userGroups as userGroup}
             <!-- Button addon on the right -->
             <form
@@ -64,5 +64,5 @@
                 </div>
             </form>
         {/each}
-    </Container>
+    </Section>
 {/if}

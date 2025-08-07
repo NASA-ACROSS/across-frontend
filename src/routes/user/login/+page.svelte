@@ -3,7 +3,7 @@
     import type { ActionData } from './$types';
 
     import { enhance } from '$app/forms';
-    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
     import EmailInput from '$lib/components/inputs/EmailInput.svelte';
     import Page from '$lib/components/Page.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
@@ -37,7 +37,7 @@
             ></span
         >
     </div>
-    <Container title="Login" containerClasses="min-w-1/2 lg:min-w-1/3">
+    <Section title="Login" containerClasses="min-w-1/2 lg:min-w-1/3">
         <form class="pt-2" method="post" use:enhance={enhancedLogin} novalidate>
             <EmailInput
                 value={form?.email || ''}
@@ -80,6 +80,6 @@
         >
             Don't have an account? Register here
         </ArrowButton>
-    </Container>
+    </Section>
     <NasaSecurityBanner></NasaSecurityBanner>
 </Page>

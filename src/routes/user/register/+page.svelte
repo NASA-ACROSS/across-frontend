@@ -1,6 +1,6 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
-    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
@@ -23,7 +23,7 @@
             ></span
         >
     </div>
-    <Container title="Create Account" icon="user" containerClasses="w-2xl">
+    <Section title="Create Account" icon="user" containerClasses="w-2xl">
         <Fieldset title="User Information">
             <form method="post">
                 <label for="firstname">Name</label>
@@ -133,7 +133,7 @@
                 </div>
             </form>
         </Fieldset>
-    </Container>
+    </Section>
     <NasaSecurityBanner></NasaSecurityBanner>
 </Page>
 

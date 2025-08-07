@@ -1,12 +1,12 @@
 <script>
     import { resolve } from '$app/paths';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
-    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
     import Page from '$lib/components/Page.svelte';
 </script>
 
 <Page>
-    <Container
+    <Section
         title="Logout"
         icon="log-out"
         center={true}
@@ -14,5 +14,5 @@
     >
         <h1>You have successfully logged out!</h1>
         <ArrowButton href={resolve('/user/login')}>Login</ArrowButton>
-    </Container>
+    </Section>
 </Page>

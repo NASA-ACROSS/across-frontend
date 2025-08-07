@@ -1,7 +1,7 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import Container from '$lib/components/Container.svelte';
+    import Section from '$lib/components/Section.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
     import EmailInput from '$lib/components/inputs/EmailInput.svelte';
     import type { UserGroup } from '$lib/types/User/UserGroup';
@@ -35,7 +35,7 @@
     };
 </script>
 
-<Container title="Invite User to Group" icon="envelope">
+<Section title="Invite User to Group" icon="envelope">
     <form method="post" action="?/inviteUser" use:enhance={enhancedForm}>
         <EmailInput
             value={''}
@@ -67,4 +67,4 @@
             {/if}
         </EmailInput>
     </form>
-</Container>
+</Section>

@@ -14,35 +14,45 @@
         {#if !users?.length}
             <p>No Users in Group</p>
         {:else}
-            <ul class="list bg-base-200">
+            <ul class="list list-row bg-base-200">
                 {#each users as user}
                     <li
-                        class={`list-row flex justify-between ${selectedUser?.email == user?.email ? 'bg-nasa-red-tint underline' : ''}`}
+                        class={`list-row  ${selectedUser?.email == user?.email ? 'bg-nasa-red-tint underline' : ''}`}
                     >
-                        <div>
-                            <div class="text-lg">
-                                {user?.first_name}
-                                {user?.last_name}
-                            </div>
-                            <div
-                                class="text-md uppercase font-semibold opacity-60"
+                        <div class="list-col-grow">
+                            <button
+                                class="flex flex-row justify-between text-start w-full"
+                                on:click={() => {
+                                    if (selectedUser == user) {
+                                        selectedUser = undefined;
+                                    } else {
+                                        selectedUser = user;
+                                    }
+                                }}
                             >
-                                <a class="link" href="mailto:{user.email}"
-                                    >{user.email}</a
-                                >
-                            </div>
-                        </div>
+                                <div>
+                                    <div class="text-lg">
+                                        {user?.first_name}
+                                        {user?.last_name}
+                                    </div>
+                                    <div
+                                        class="text-md uppercase font-semibold opacity-60"
+                                    >
+                                        <a
+                                            class="link"
+                                            href="mailto:{user.email}"
+                                            >{user.email}</a
+                                        >
+                                    </div>
+                                </div>
 
-                        <ArrowButton
-                            direction={selectedUser == user ? 'left' : 'right'}
-                            on:click={() => {
-                                if (selectedUser == user) {
-                                    selectedUser = undefined;
-                                } else {
-                                    selectedUser = user;
-                                }
-                            }}
-                        ></ArrowButton>
+                                <ArrowButton
+                                    direction={selectedUser == user
+                                        ? 'left'
+                                        : 'right'}
+                                ></ArrowButton>
+                            </button>
+                        </div>
                     </li>
                 {/each}
             </ul>

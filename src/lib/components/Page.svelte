@@ -1,7 +1,7 @@
 <script lang="ts">
     export let title = '';
     export let icon: string | undefined = undefined;
-    export let center: boolean | undefined = false;
+    export let center: boolean = false;
 </script>
 
 <div

@@ -5,7 +5,7 @@
     import { enhance } from '$app/forms';
     import Container from '$lib/components/Container.svelte';
     import EmailInput from '$lib/components/inputs/EmailInput.svelte';
-    import Section from '$lib/components/Section.svelte';
+    import Page from '$lib/components/Page.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
     import { resolve } from '$app/paths';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
@@ -28,7 +28,7 @@
     };
 </script>
 
-<Section center={true}>
+<Page center={true}>
     <div role="alert" class="alert alert-info alert-soft mt-5">
         <span class=""
             >Login is not required to GET data from ACROSS. <a
@@ -82,4 +82,4 @@
         </ArrowButton>
     </Container>
     <NasaSecurityBanner></NasaSecurityBanner>
-</Section>
+</Page>

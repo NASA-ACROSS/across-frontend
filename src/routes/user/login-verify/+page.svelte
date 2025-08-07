@@ -2,12 +2,12 @@
     import { resolve } from '$app/paths';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import Container from '$lib/components/Container.svelte';
-    import Section from '$lib/components/Section.svelte';
+    import Page from '$lib/components/Page.svelte';
 
     export let form;
 </script>
 
-<Section center={true}>
+<Page center={true}>
     <Container title="Email Link Login">
         {#if !form}
             <form method="post">
@@ -37,4 +37,4 @@
             >
         {/if}
     </Container>
-</Section>
+</Page>

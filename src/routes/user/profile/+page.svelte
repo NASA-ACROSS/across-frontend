@@ -14,7 +14,7 @@
     import UserGroups from './_components/UserGroups.svelte';
     import UserGroupInvites from './_components/UserGroupInvites.svelte';
     import type { UserGroup } from '$lib/types/User/UserGroup';
-    import Section from '$lib/components/Section.svelte';
+    import Page from '$lib/components/Page.svelte';
     import Container from '$lib/components/Container.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
@@ -96,7 +96,7 @@
     });
 </script>
 
-<Section>
+<Page>
     <Container title="Profile" icon="user">
         <div slot="buttons" class="">
             <a
@@ -214,7 +214,7 @@
 
     <UserGroupInvites {invitations} />
     <UserGroups {user} {userGroups} bind:leaveUserGroup {enhancedForm} />
-</Section>
+</Page>
 
 <style>
     input:disabled.default-cursor {

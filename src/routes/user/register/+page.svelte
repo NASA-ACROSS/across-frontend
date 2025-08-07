@@ -4,14 +4,14 @@
     import Fieldset from '$lib/components/Fieldset.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
-    import Section from '$lib/components/Section.svelte';
+    import Page from '$lib/components/Page.svelte';
     import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
 
     /** @type {import('./$types').ActionData} */
     export let form;
 </script>
 
-<Section center={true}>
+<Page center={true}>
     <div
         role="alert"
         class="alert alert-info alert-soft mt-5 w-2xl justify-center"
@@ -135,7 +135,7 @@
         </Fieldset>
     </Container>
     <NasaSecurityBanner></NasaSecurityBanner>
-</Section>
+</Page>
 
 <style>
     input:valid:not(:placeholder-shown) {

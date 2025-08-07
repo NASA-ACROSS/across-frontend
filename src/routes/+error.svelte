@@ -1,10 +1,10 @@
 <script>
     import { page } from '$app/stores';
     import Container from '$lib/components/Container.svelte';
-    import Section from '$lib/components/Section.svelte';
+    import Page from '$lib/components/Page.svelte';
 </script>
 
-<Section center={true}>
+<Page center={true}>
     <Container>
         <article class="prose">
             <div class="flex gap-5">
@@ -18,4 +18,4 @@
             {/if}
         </article>
     </Container>
-</Section>
+</Page>

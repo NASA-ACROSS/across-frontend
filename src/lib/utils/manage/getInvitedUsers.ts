@@ -16,7 +16,7 @@ export const getInvitedUsers = async (
     let response;
     try {
         response = await fetch(
-            `${CONFIG.API_URL}/api/group/${userGroupId}/invite`,
+            `${CONFIG.API_URL}/group/${userGroupId}/invite`,
             options
         );
     } catch (e: unknown) {

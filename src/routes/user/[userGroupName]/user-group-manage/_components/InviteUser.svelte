@@ -1,13 +1,16 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
+    import Section from '$lib/components/Section.svelte';
+    import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
+    import EmailInput from '$lib/components/inputs/EmailInput.svelte';
     import type { UserGroup } from '$lib/types/User/UserGroup';
     import type { ActionData, SubmitFunction } from '../$types';
 
     export let form: ActionData;
     export let group: UserGroup;
 
-    let isSubmittingInvite = false;
+    $: isSubmittingInvite = false;
 
     const enhancedForm: SubmitFunction = ({ formData }) => {
         // render state changes
@@ -32,71 +35,36 @@
     };
 </script>
 
-<div class="container py-md-3">
-    <div class="pb-3 pt-3">
-        <h2>
-            <i class="bx bx-envelope opacity-70 me-2"></i>Invite User to Group
-        </h2>
-        <form method="post" action="?/inviteUser" use:enhance={enhancedForm}>
-            <label for="email">Email</label>
-            <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
-                <div class="input-group me-sm-3 mb-sm-0 mb-3">
-                    <input
-                        class="form-control form-control-lg rounded-3 ps-5"
-                        required
-                        value={''}
-                        disabled={isSubmittingInvite}
-                        autocomplete="off"
-                        name="email"
-                        type="email"
-                        placeholder="Enter an email to invite to {group.short_name}"
-                    />
-                </div>
-                <button
-                    class="btn btn-lg btn-primary"
-                    disabled={isSubmittingInvite}
-                    type="submit"
-                >
-                    {#if isSubmittingInvite && !form?.successInvite}
-                        <span
-                            class="spinner-border spinner-border-sm"
-                            role="status"
-                            aria-hidden="true"
-                        ></span>
-                    {:else}
-                        Invite
-                    {/if}
-                </button>
-            </div>
+<Section title="Invite User to Group" icon="envelope">
+    <form method="post" action="?/inviteUser" use:enhance={enhancedForm}>
+        <EmailInput
+            value={''}
+            autocomplete={false}
+            includeButton={true}
+            isLoading={isSubmittingInvite && !form?.successInvite}
+            placeholder="Enter an email to invite to {group.short_name}"
+            btnTxt="Invite"
+        >
             {#if form?.successInvite}
-                <p
-                    class="form-text fs-sm text-sm-start text-center text-success"
-                >
-                    User Invited!
-                </p>
+                <FormInputFeedback>User Invited!</FormInputFeedback>
             {/if}
             {#if form?.userInGroup}
-                <p
-                    class="form-text fs-sm text-sm-start text-center text-success"
-                >
+                <FormInputFeedback type="warning">
                     User is already invited or in group!
-                </p>
+                </FormInputFeedback>
             {/if}
             {#if form?.invalidEmail}
-                <p
-                    class="form-text fs-sm text-sm-start text-center text-danger"
-                >
-                    Invalid Email Specified. User not found.
-                </p>
+                <FormInputFeedback type="error">
+                    User not found. Please instruct the user to register to
+                    create an account.
+                </FormInputFeedback>
             {/if}
             {#if form?.fail}
-                <p
-                    class="form-text fs-sm text-sm-start text-center text-danger"
-                >
+                <FormInputFeedback type="error">
                     Something went wrong, please try again. If this error
                     persists, contact support.
-                </p>
+                </FormInputFeedback>
             {/if}
-        </form>
-    </div>
-</div>
+        </EmailInput>
+    </form>
+</Section>

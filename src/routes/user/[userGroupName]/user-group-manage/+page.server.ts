@@ -2,7 +2,7 @@ import type { PageServerLoad, RequestEvent } from './$types';
 
 import { CONFIG } from '../../../../config/config.js';
 import { fail, redirect } from '@sveltejs/kit';
-import { base } from '$app/paths';
+import { resolve } from '$app/paths';
 import type { User } from '$lib/types/User/User';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
     const userCookie = locals.user;
     // Redirect on load when user is logged in
     if (!userCookie) {
-        throw redirect(303, `${base}/user/login`);
+        throw redirect(302, resolve('/user/login'));
     }
 
     const user: User = await getUserInfo(userCookie, cookies);
@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 
     // redirect if we don't have necessary info or user lacks permission
     if (!user || !userGroup || !isAdmin(user, userGroup)) {
-        throw redirect(303, `${base}/user/profile`);
+        throw redirect(302, resolve('/user/profile'));
     }
 
     const invitedUsers = await getInvitedUsers(userCookie, userGroup.id);
@@ -44,9 +44,9 @@ export const actions = {
     inviteUser: async (event: RequestEvent) => {
         const request = event.request;
         const userCookie = event.locals.user as UserCredentialsCookie;
-        // Redirect on load when user is logged in
+        // Redirect on load when user is not logged in
         if (!userCookie) {
-            throw redirect(303, `${base}/user/login`);
+            throw redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 
@@ -71,7 +71,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/group/${groupId}/invite`,
+                `${CONFIG.API_URL}/group/${groupId}/invite`,
                 options
             );
         } catch (error: unknown) {
@@ -130,7 +130,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/group/${userGroupId}/invite/${userInviteId}`,
+                `${CONFIG.API_URL}/group/${userGroupId}/invite/${userInviteId}`,
                 options
             );
         } catch (error: unknown) {
@@ -182,7 +182,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}`,
+                `${CONFIG.API_URL}/group/${groupId}/user/${userId}`,
                 options
             );
         } catch (error: unknown) {
@@ -223,7 +223,7 @@ export const actions = {
 
         try {
             await fetch(
-                `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}/role/${roleId}`,
+                `${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`,
                 options
             );
         } catch (error: unknown) {
@@ -257,7 +257,7 @@ export const actions = {
 
         try {
             await fetch(
-                `${CONFIG.API_URL}/api/group/${groupId}/user/${userId}/role/${roleId}`,
+                `${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`,
                 options
             );
         } catch (error: unknown) {

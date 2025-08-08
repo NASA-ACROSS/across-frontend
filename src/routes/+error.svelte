@@ -1,14 +1,21 @@
 <script>
-    import { page } from "$app/stores";
+    import { page } from '$app/stores';
+    import Section from '$lib/components/Section.svelte';
+    import Page from '$lib/components/Page.svelte';
 </script>
 
-<section class="py-5 bg-secondary">
-    <div class="container py-md-3">
-        <h1>{$page.status}</h1>
-        <h2>{$page.error.message}</h2>
-        <h3>{$page.url}</h3>
-        {#if $page.error.errorId}
-            <p>{$page.error.errorId}</p>
-        {/if}
-    </div>
-</section>
+<Page center={true}>
+    <Section>
+        <article class="prose">
+            <div class="flex gap-5">
+                <h1>{$page.status}</h1>
+                <h1>{$page.error.message}</h1>
+            </div>
+
+            <h3>{$page.url}</h3>
+            {#if $page.error.errorId}
+                <p>{$page.error.errorId}</p>
+            {/if}
+        </article>
+    </Section>
+</Page>

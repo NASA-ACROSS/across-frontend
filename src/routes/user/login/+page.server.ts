@@ -1,18 +1,17 @@
 import { CONFIG } from '../../../config/config.js';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
-import { base } from '$app/paths';
+import { resolve } from '$app/paths';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
 import { emailRegex } from '$lib/utils/regex/emailRegex.js';
 import type { Actions } from './$types.js';
 
-export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
-    const user = locals.user;
+export function load({ locals }: RequestEvent) {
+    const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is logged in
-    if (user) {
-        throw redirect(302, `${base}/user/profile`);
+    if (userCookie) {
+        throw redirect(302, resolve('/user/profile'));
     }
-    return {};
 }
 
 // rate limit is defined as [number, unit]
@@ -20,9 +19,9 @@ export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
 // https://github.com/ciscoheat/sveltekit-rate-limiter?tab=readme-ov-file#valid-units
 const limiter = new RetryAfterRateLimiter({
     // IP + User Agent limiter, 5 login requests per 15 mins, resetting every 15 minutes
-    IPUA: [5, '15m'],
+    IPUA: [50, '15m'],
     // IP address limiter, triple the limit to ensure multiple users from the same IP don't become limited
-    IP: [15, '15m'],
+    IP: [150, '15m'],
 });
 
 export const actions = {
@@ -63,7 +62,7 @@ export const actions = {
         let response: Response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/auth/login?email=${encodeURIComponent(email)}`,
+                `${CONFIG.API_URL}/auth/login?email=${encodeURIComponent(email)}`,
                 options
             );
         } catch (error) {

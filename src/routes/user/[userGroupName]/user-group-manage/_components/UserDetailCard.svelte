@@ -51,74 +51,80 @@
     };
 </script>
 
-<div class="py-md-1 ms-3 me-3 col">
-    <h2>
+<div class="flex flex-col w-1/3">
+    <h2 class="text-2xl font-bold pb-2">
         <i class="bx bx-user-pin opacity-70 me-2"></i>Selected User
     </h2>
-    {#if !selectedUser}
-        <p>Select a User to Manage</p>
-    {:else}
-        <div class="card border-secondary">
+    <div class="card bg-base-200 border-secondary">
+        {#if !selectedUser}
+            <div class="card-body h-20 opacity-70 text-lg">
+                <p>Select a User to Manage</p>
+            </div>
+        {:else}
             <div class="card-body">
-                <h4 class="card-title">
+                <div class="card-title">
                     {selectedUser.first_name + ' ' + selectedUser.last_name}
-                </h4>
-                <p class="card-text fs-md text-muted">
+                </div>
+                <p class="text-xs uppercase font-semibold opacity-60">
                     {selectedUser.email}
                 </p>
             </div>
-            {#if userRoles?.length}
-                <h5 class="ps-3 mt-2">Roles:</h5>
-                <ul class="list-group list-group-flush">
-                    {#each userRoles as userRole}
-                        <li
-                            class="list-group-item d-flex justify-content-between"
-                        >
-                            <span class="fs-lg p-1">{userRole?.name}</span>
-                            <form
-                                id="{userRole.id}-role"
-                                method="post"
-                                use:enhance={enhancedForm}
-                                action="?/removeRole"
-                            >
-                                <button
-                                    class="btn btn-sm btn-danger me-2"
-                                    type="submit"
-                                    on:click={() => {
-                                        selectedRole = userRole;
-                                    }}
-                                    >{#if isRemovingRole}
-                                        <span
-                                            class="spinner-border spinner-border-sm"
-                                            role="status"
-                                            aria-hidden="true"
-                                        ></span>
-                                    {:else}
-                                        <i class="bx bx-trash opacity-70 me-2"
-                                        ></i>
-                                        Remove Role
-                                    {/if}</button
-                                >
-                            </form>
-                        </li>
-                    {/each}
-                </ul>
-            {/if}
             <div class="card-body">
-                <div class="d-flex flex-row-reverse">
+                {#if userRoles?.length}
+                    <h3 class="text-lg font-bold">Roles:</h3>
+                    <ul class="list-group list-group-flush">
+                        {#each userRoles as userRole}
+                            <li class="flex justify-between mb-2">
+                                <span class="self-center text-lg"
+                                    >{userRole?.name}</span
+                                >
+                                <form
+                                    id="{userRole.id}-role"
+                                    method="post"
+                                    use:enhance={enhancedForm}
+                                    action="?/removeRole"
+                                >
+                                    <button
+                                        class="btn btn-sm btn-accent"
+                                        type="submit"
+                                        on:click={() => {
+                                            selectedRole = userRole;
+                                        }}
+                                        >{#if isRemovingRole && selectedRole == userRole}
+                                            <span
+                                                class="loading loading-spinner"
+                                                role="status"
+                                                aria-hidden="true"
+                                            ></span>
+                                        {:else}
+                                            <i class="bx bx-trash opacity-70"
+                                            ></i>
+                                            Remove Role
+                                        {/if}</button
+                                    >
+                                </form>
+                            </li>
+                        {/each}
+                    </ul>
+                {:else}
+                    <h3 class="text-lg">No Roles Assigned</h3>
+                {/if}
+            </div>
+            <div class="card-body">
+                <div class="flex flex-row-reverse">
                     <form
                         id="{selectedUser.id}-remove"
                         method="post"
                         use:enhance={enhancedForm}
                         action="?/removeUser"
                     >
-                        <button type="submit" class="btn btn-sm btn-danger">
-                            <i class="bx bx-trash opacity-70 me-2"></i>
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="bx bx-log-out opacity-70 me-2"></i>
                             Remove User From Group
                         </button>
                     </form>
                 </div>
             </div>
-        </div>
-    {/if}
+        {/if}
+    </div>
 </div>

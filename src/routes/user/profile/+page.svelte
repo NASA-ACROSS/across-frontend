@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { base } from '$app/paths';
+    import { resolve } from '$app/paths';
     import _ from 'lodash';
     /** @type {import('./$types').ActionData} */
     export let form;
@@ -14,6 +14,10 @@
     import UserGroups from './_components/UserGroups.svelte';
     import UserGroupInvites from './_components/UserGroupInvites.svelte';
     import type { UserGroup } from '$lib/types/User/UserGroup';
+    import Page from '$lib/components/Page.svelte';
+    import Section from '$lib/components/Section.svelte';
+    import Fieldset from '$lib/components/Fieldset.svelte';
+    import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
 
     export let data: PageData;
 
@@ -24,8 +28,8 @@
     let originalUserData = structuredClone(data.user);
     let user = data.user;
     $: isUserDataUnchanged = _.isEqual(originalUserData, user);
-    $: form?.successUpdateUserInformation,
-        (originalUserData = structuredClone(data.user));
+    $: (form?.successUpdateUserInformation,
+        (originalUserData = structuredClone(data.user)));
 
     // safari browser should force a reload on cached navigation using back button
     if (browser) {
@@ -92,135 +96,125 @@
     });
 </script>
 
-<section class="pt-5 pb-2 bg-secondary">
-    <div class="container py-md-3">
-        <div class="d-flex justify-content-between align-items-end">
-            <h1>
-                <i class="bx bx-user opacity-70 me-2"></i>
-                Profile
-            </h1>
+<Page>
+    <Section title="Profile" icon="user">
+        <div slot="buttons" class="">
             <a
                 data-sveltekit-preload-data="false"
-                href="{base}/user/logout"
-                class="btn btn-lg btn-danger"
+                href={resolve('/user/logout')}
+                class="btn btn-accent text-xl"
             >
                 <i class="bx bx-log-out opacity-70 me-2"></i>Logout
             </a>
         </div>
-        <h3>
-            <i class="bx bx-edit-alt opacity-70 me-2"></i>
-            User Information
-        </h3>
-        <form
-            method="post"
-            action="?/updateUserInformation"
-            use:enhance={enhancedForm}
-        >
-            <label for="firstname">Name</label>
-            <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
-                <div class="input-group me-sm-3 mb-sm-0 mb-3">
-                    <input
-                        class="{!isUserDataUnchanged
-                            ? 'validation-border-color'
-                            : ''} form-control form-control-lg rounded-3 ps-5"
-                        required
-                        bind:value={user.first_name}
-                        pattern={frontendAlphaNumRegex}
-                        autocomplete="off"
-                        name="first_name"
-                        title="First name (alphanumeric, 25 character max)"
-                        type="text"
-                        placeholder="First"
-                    />
-                </div>
-                <div class="input-group me-sm-3 mb-sm-0 mb-3">
-                    <input
-                        class="{!isUserDataUnchanged
-                            ? 'validation-border-color'
-                            : ''} form-control form-control-lg rounded-3 ps-5"
-                        required
-                        bind:value={user.last_name}
-                        pattern={frontendAlphaNumRegex}
-                        autocomplete="off"
-                        name="last_name"
-                        title="Last name (alphanumeric, 25 character max)"
-                        type="text"
-                        placeholder="Last"
-                    />
-                </div>
-            </div>
-            <label for="username">Username</label>
-            <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
-                <div class="input-group me-sm-3 mb-sm-0 mb-3">
-                    <input
-                        class="{!isUserDataUnchanged
-                            ? 'validation-border-color'
-                            : ''} form-control form-control-lg rounded-3 ps-5"
-                        required
-                        bind:value={user.username}
-                        pattern={frontendAlphaNumRegex}
-                        autocomplete="off"
-                        name="username"
-                        title="Username (alphanumeric, 25 character max)"
-                        type="text"
-                        placeholder="Username"
-                    />
-                </div>
-            </div>
-            <label for="email">Email</label>
-            <div class="d-flex flex-sm-row flex-column mb-3 needs-validation">
-                <div class="input-group me-sm-3 mb-sm-0 mb-3">
-                    <input
-                        class="form-control form-control-lg rounded-3 ps-5"
-                        required
-                        disabled
-                        bind:value={user.email}
-                        autocomplete="off"
-                        name="email"
-                        title="Email"
-                        type="email"
-                        placeholder="Please enter your email"
-                    />
-                </div>
-            </div>
-            <button
-                type="submit"
-                class="btn btn-lg btn-primary"
-                disabled={isUserDataUnchanged}>Update</button
+
+        <Fieldset title="User Information">
+            <form
+                method="post"
+                action="?/updateUserInformation"
+                use:enhance={enhancedForm}
             >
-            {#if form?.successUpdateUserInformation}
-                <p
-                    class="form-text fs-sm text-sm-start text-center text-success"
-                >
-                    Successfully updated user information!
-                </p>
-            {/if}
-            {#if form?.failUpdateUserInformation}
-                <p
-                    class="form-text fs-sm text-sm-start text-center text-danger"
-                >
-                    Something went wrong, please try again. If this error
-                    persists, contact support.
-                </p>
-            {/if}
-            {#if form?.failValidation}
-                <p
-                    class="form-text fs-sm text-sm-start text-center text-danger"
-                >
-                    Form validation failed. Please try again. If this error
-                    persists, contact support.
-                </p>
-            {/if}
-        </form>
-    </div>
-</section>
+                <label for="firstname">Name</label>
+                <div class="flex flex-row flex-grow mb-3 needs-validation join">
+                    <div class="join-item me-sm-3 mb-sm-0 mb-3 w-1/2">
+                        <input
+                            id="firstname"
+                            class="{!isUserDataUnchanged
+                                ? 'validation-border-color'
+                                : ''} input form-control form-control-lg ps-5 w-full"
+                            required
+                            bind:value={user.first_name}
+                            pattern={frontendAlphaNumRegex}
+                            autocomplete="off"
+                            name="first_name"
+                            title="First name (alphanumeric, 25 character max)"
+                            type="text"
+                            placeholder="First"
+                        />
+                    </div>
+                    <div class="join-item me-sm-3 mb-sm-0 mb-3 w-1/2">
+                        <input
+                            class="{!isUserDataUnchanged
+                                ? 'validation-border-color'
+                                : ''} input form-control form-control-lg ps-5 w-full"
+                            required
+                            bind:value={user.last_name}
+                            pattern={frontendAlphaNumRegex}
+                            autocomplete="off"
+                            name="last_name"
+                            title="Last name (alphanumeric, 25 character max)"
+                            type="text"
+                            placeholder="Last"
+                        />
+                    </div>
+                </div>
+                <label for="username">Username</label>
+                <div class="flex flex-sm-row flex-column mb-3 needs-validation">
+                    <div class="input-group me-sm-3 mb-sm-0 mb-3 w-full">
+                        <input
+                            class="{!isUserDataUnchanged
+                                ? 'validation-border-color'
+                                : ''} input form-control form-control-lg ps-5 w-full"
+                            required
+                            bind:value={user.username}
+                            pattern={frontendAlphaNumRegex}
+                            autocomplete="off"
+                            name="username"
+                            title="Username (alphanumeric, 25 character max)"
+                            type="text"
+                            placeholder="Username"
+                        />
+                    </div>
+                </div>
+                <label for="email">Email</label>
+                <div class="flex flex-sm-row flex-column mb-3 needs-validation">
+                    <div class="input-group me-sm-3 mb-sm-0 mb-3 w-full">
+                        <input
+                            class="input form-control form-control-lg ps-5 w-full disabled:bg-base-300 disabled:text-carbon-70"
+                            required
+                            disabled
+                            bind:value={user.email}
+                            autocomplete="off"
+                            name="email"
+                            title="Email"
+                            type="email"
+                            placeholder="Please enter your email"
+                        />
+                    </div>
+                </div>
+                <div class="flex justify-end items-center">
+                    {#if form?.successUpdateUserInformation}
+                        <FormInputFeedback>
+                            Successfully updated user information!
+                        </FormInputFeedback>
+                    {/if}
+                    {#if form?.failUpdateUserInformation}
+                        <FormInputFeedback type="error">
+                            Something went wrong, please try again. If this
+                            error persists, contact support.
+                        </FormInputFeedback>
+                    {/if}
+                    {#if form?.failValidation}
+                        <FormInputFeedback type="error">
+                            Form validation failed. Please try again. If this
+                            error persists, contact support.
+                        </FormInputFeedback>
+                    {/if}
+                    <button
+                        type="submit"
+                        class="btn text-lg btn-info ml-5"
+                        disabled={isUserDataUnchanged}
+                    >
+                        Update
+                    </button>
+                </div>
+            </form>
+        </Fieldset>
+    </Section>
 
-<UserGroupInvites {invitations} />
-<UserGroups {user} {userGroups} bind:leaveUserGroup {enhancedForm} />
-
-<section class="pb-5 bg-secondary"></section>
-
-<section class="pb-5 bg-secondary"></section>
+    <UserGroupInvites {invitations} />
+    <UserGroups {user} {userGroups} bind:leaveUserGroup {enhancedForm} />
+</Page>
 
 <style>
     input:disabled.default-cursor {
@@ -229,10 +223,10 @@
     }
 
     input:valid:not(:placeholder-shown).validation-border-color {
-        border: 1px solid rgba(160, 160, 255, 1);
+        border: 1px solid var(--color-info);
     }
 
     input:invalid:not(:placeholder-shown).validation-border-color {
-        border: 1px solid rgba(255, 0, 0, 1);
+        border: 1px solid var(--color-error);
     }
 </style>

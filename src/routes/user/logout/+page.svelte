@@ -1,12 +1,18 @@
 <script>
-    import { base } from '$app/paths';
+    import { resolve } from '$app/paths';
+    import ArrowButton from '$lib/components/ArrowButton.svelte';
+    import Section from '$lib/components/Section.svelte';
+    import Page from '$lib/components/Page.svelte';
 </script>
 
-<section class="py-5 bg-secondary">
-    <div class="container py-md-3">
-        <h1>You have succesfully logged out!</h1>
-        <form action="{base}/user/login">
-            <button class="btn btn-lg btn-primary mb-3">Login</button>
-        </form>
-    </div>
-</section>
+<Page>
+    <Section
+        title="Logout"
+        icon="log-out"
+        center={true}
+        containerClasses="min-w-xs"
+    >
+        <h1>You have successfully logged out!</h1>
+        <ArrowButton href={resolve('/user/login')}>Login</ArrowButton>
+    </Section>
+</Page>

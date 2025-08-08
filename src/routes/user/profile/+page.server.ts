@@ -1,6 +1,5 @@
 import { redirect, fail } from '@sveltejs/kit';
-import { base } from '$app/paths';
-import { loggedIn } from '$lib/stores/login';
+import { resolve } from '$app/paths';
 import { CONFIG } from '../../../config/config';
 import type { CookieSerializeOptions } from 'cookie';
 import { UserCredentials } from '$lib/types/User/UserCredentials';
@@ -16,11 +15,8 @@ export async function load({ locals, cookies }: RequestEvent) {
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is not logged in
     if (!userCookie) {
-        loggedIn.set(false);
-        throw redirect(302, `${base}/user/login`);
+        throw redirect(302, resolve('/user/login'));
     }
-
-    loggedIn.set(true);
 
     const user: User = await getUserInfo(userCookie, cookies);
 
@@ -81,7 +77,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/user/${user.id}`,
+                `${CONFIG.API_URL}/user/${user.id}`,
                 options
             );
         } catch (error: unknown) {
@@ -259,7 +255,7 @@ export const actions = {
         let response;
         try {
             response = await fetch(
-                `${CONFIG.API_URL}/api/user/${userId}/group/${groupId}/`,
+                `${CONFIG.API_URL}/user/${userId}/group/${groupId}/`,
                 options
             );
         } catch (error: unknown) {

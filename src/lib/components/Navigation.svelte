@@ -1,159 +1,238 @@
 <script lang="ts">
-    import { base } from '$app/paths';
+    import { asset, resolve } from '$app/paths';
+    import { page } from '$app/state';
 
-    import { loggedIn } from '$lib/stores/login';
-    import { navHeight } from '$lib/stores/navHeight';
-    import { onMount } from 'svelte';
+    import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 
-    let isLoggedIn = false;
-    loggedIn.subscribe((value) => {
-        isLoggedIn = value;
-    });
-    let nav: HTMLElement;
+    export let user: UserCredentialsCookie | undefined;
+    export let API_URL: string = 'http://127.0.0.1:8000/docs';
 
-    const setNavHeight = () => {
-        if (nav) {
-            navHeight.set(nav?.clientHeight);
-        }
-    };
+    $: currentPath = page.url.pathname;
 
-    onMount(() => {
-        window.addEventListener('resize', setNavHeight);
-        setNavHeight();
-    });
+    $: userEmail = user?.email ? user.email : '';
+
+    $: userInitials = user
+        ? user?.first_name?.[0]?.toUpperCase() +
+          user?.last_name?.[0]?.toUpperCase()
+        : '';
 </script>
 
-<nav
-    bind:this={nav}
-    class="header navbar navbar-expand-lg bg-light navbar-sticky border-bottom"
->
-    <div class="container px-3">
-        <a href="{base}/" class="navbar-brand pe-3">
+<div class="navbar bg-primary shadow-sm h-22">
+    <div class="navbar-start">
+        <div class="dropdown">
+            <button
+                tabindex="0"
+                class="btn btn-primary border-3 border-primary text-primary-content hover:bg-primary hover:text-primary-content focus:bg-primary focus:border-info lg:hidden"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6h16M4 12h8m-8 6h16"
+                    />
+                </svg>
+            </button>
+            <ul
+                class="menu menu-xl w-screen dropdown-content bg-primary text-primary-content z-1 -ms-2 pb-5"
+            >
+                <li>
+                    <a>Data</a>
+                    <ul class="p-2">
+                        <li class="hover:underline decoration-dashed">
+                            <a href={resolve('/schedules')}>Schedules</a>
+                        </li>
+                        <li class="hover:underline decoration-dashed">
+                            <a href={resolve('/observations')}>Observations</a>
+                        </li>
+                        <li class="hover:underline decoration-dashed">
+                            <a href={resolve('/observatories')}>Observatories</a
+                            >
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a>Tools</a>
+                    <ul>
+                        <li class="hover:underline decoration-dashed">
+                            <a href={resolve('/visibility-calculator')}
+                                >Visibility Calculator</a
+                            >
+                        </li>
+                        <li class="hover:underline decoration-dashed">
+                            <a href={resolve('/data-ingestion-status')}
+                                >Data Ingestion Status</a
+                            >
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <a
+            href={resolve('/')}
+            role="button"
+            class="text-xl font-bold flex flex-row items-center pl-3"
+        >
             <img
-                src="{base}/assets/img/custom/logo-nasa.svg"
-                width="75"
+                src={asset('/assets/img/custom/logo-nasa.svg')}
+                width="60"
                 alt="NASA logo"
             />
-            <!-- <span class='navbar-title' >Multimessenger<br> Astrophysics</span> -->
-            <p class="navbar-title mt-0 mb-0" style="line-height:25px">
-                ACROSS<br /> Astrophysics Cross-Observatory Science Support
-            </p>
-        </a>
-        <button
-            type="button"
-            class="navbar-toggler ms-auto"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-        >
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="offcanvas offcanvas-end" id="navbarNav">
             <div
-                class="offcanvas-header shadow-sm border-bottom"
-                data-bs-dismiss="offcanvas"
+                class="align-center text-primary-content sm:hidden md:hidden lg:block hidden text-nowrap"
             >
-                <h6 class="offcanvas-title">Menu</h6>
-                <button type="button" class="btn-close"></button>
+                Astrophysics Cross-Observatory Science Support
             </div>
-            <div class="offcanvas-body">
-                <ul class="navbar-nav mb-lg-0 justify-content-end">
-                    <li class="nav-item">
-                        <a href="{base}/" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a
-                            href="{base}/data"
-                            class="nav-link dropdown-toggle"
-                            aria-current="page">Data</a
+            <div class="align-center text-primary-content lg:hidden">
+                ACROSS
+            </div>
+        </a>
+    </div>
+    <div class="navbar-end">
+        <ul class="menu menu-horizontal px-1 hidden lg:flex lg:items-center">
+            <li>
+                <div
+                    class="dropdown dropdown-hover dropdown-end m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info"
+                >
+                    <div
+                        tabindex="0"
+                        class="text-lg font-bold text-primary-content"
+                        role="button"
+                    >
+                        Data
+                        <div class="bx bx-chevron-down"></div>
+                    </div>
+                    <ul
+                        class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm"
+                    >
+                        <li>
+                            <a href={resolve('/schedules')}>Schedules</a>
+                        </li>
+                        <li>
+                            <a href={resolve('/observations')}>Observations</a>
+                        </li>
+                        <li>
+                            <a href={resolve('/observatories')}>Observatories</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div
+                    class="dropdown dropdown-hover dropdown-end m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info"
+                >
+                    <div
+                        tabindex="0"
+                        class="text-lg font-bold text-primary-content"
+                        role="button"
+                    >
+                        Tools
+                        <div class="bx bx-chevron-down"></div>
+                    </div>
+                    <ul
+                        class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm"
+                    >
+                        <li>
+                            <a href={resolve('/visibility-calculator')}
+                                >Visibility Calculator</a
+                            >
+                        </li>
+                        <li>
+                            <a href={resolve('/data-ingestion-status')}
+                                >Data Ingestion Status</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div
+                    class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info"
+                >
+                    <a
+                        class="text-lg font-bold text-primary-content"
+                        data-sveltekit-reload
+                        href={API_URL + '/docs'}
+                        >API
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    {#key currentPath}
+        <!-- profile -->
+        {#key userEmail}
+            {#if userEmail}
+                <a
+                    href={resolve('/user/profile')}
+                    class="text-sm font-bold text-primary-content m-2"
+                    >{userEmail}</a
+                >
+            {/if}
+        {/key}
+        <div class="flex-none">
+            <div class="dropdown dropdown-hover dropdown-end pr-3">
+                <a href={resolve('/user/profile')}>
+                    <div
+                        tabindex="0"
+                        role="button"
+                        class="btn btn-ghost btn-circle avatar avatar-placeholder -my-3"
+                    >
+                        <div
+                            class="bg-info text-neutral-content w-10 rounded-full"
                         >
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="{base}/schedules" class="dropdown-item"
-                                    >Schedules</a
-                                >
-                            </li>
-                            <li>
-                                <a
-                                    href="{base}/observations"
-                                    class="dropdown-item">Observations</a
-                                >
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a
-                            href="{base}/tools"
-                            class="nav-link dropdown-toggle"
-                            aria-current="page">Tools</a
-                        >
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a
-                                    href="{base}/visibility-calculator"
-                                    class="dropdown-item"
-                                    >Visibility Calculator</a
-                                >
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a
-                            data-sveltekit-reload
-                            href="{base}/about"
-                            class="nav-link">About</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a
-                            data-sveltekit-reload
-                            href="http://127.0.0.1:8000/docs"
-                            class="nav-link"
-                            aria-current="page">API</a
-                        >
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a
-                            data-sveltekit-reload
-                            href="{base}/user/profile"
-                            class="nav-link dropdown-toggle"
-                            aria-current="page">My ACROSS</a
-                        >
-                        <ul class="dropdown-menu">
-                            {#if isLoggedIn}
-                                <li>
-                                    <a
-                                        href="{base}/user/profile"
-                                        class="dropdown-item">My Profile</a
-                                    >
-                                </li>
-                                <li>
-                                    <a
-                                        data-sveltekit-preload-data="false"
-                                        href="{base}/user/logout"
-                                        class="dropdown-item">Logout</a
-                                    >
-                                </li>
-                            {:else}
-                                <li>
-                                    <a
-                                        href="{base}/user/register"
-                                        class="dropdown-item">Create Account</a
-                                    >
-                                </li>
-                                <li>
-                                    <a
-                                        href="{base}/user/login"
-                                        class="dropdown-item">Login</a
-                                    >
-                                </li>
-                            {/if}
-                        </ul>
-                    </li>
+                            <div class={user ? 'text-lg' : 'bx bx-user'}>
+                                {userInitials}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <ul
+                    role="link"
+                    class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow"
+                >
+                    {#if user}
+                        <li>
+                            <a
+                                class="justify-between text-primary-content hover:bg-info"
+                                href={resolve('/user/profile')}
+                            >
+                                Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                class="text-primary-content hover:bg-accent hover:text-primary"
+                                data-sveltekit-preload-data="false"
+                                href={resolve('/user/logout')}>Logout</a
+                            >
+                        </li>
+                    {:else}
+                        <li>
+                            <a
+                                class="justify-between text-primary-content"
+                                href={resolve('/user/register')}
+                            >
+                                Create Account
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                class="text-primary-content"
+                                href={resolve('/user/login')}>Login</a
+                            >
+                        </li>
+                    {/if}
                 </ul>
             </div>
         </div>
-    </div>
-</nav>
+    {/key}
+</div>

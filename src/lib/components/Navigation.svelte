@@ -30,13 +30,13 @@
                     <a>Data</a>
                     <ul class="p-2">
                         <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/schedules')}>Schedules</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/schedules')}>Schedules</a>
                         </li>
                         <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/observations')}>Observations</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/observations')}>Observations</a>
                         </li>
                         <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/observatories')}>Observatories</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/observatories')}>Observatories</a>
                         </li>
                     </ul>
                 </li>
@@ -44,10 +44,10 @@
                     <a>Tools</a>
                     <ul>
                         <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/visibility-calculator')}>Visibility Calculator</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/visibility-calculator')}>Visibility Calculator</a>
                         </li>
                         <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/ingestion-status')}>Data Ingestion Status</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/ingestion-status')}>Data Ingestion Status</a>
                         </li>
                     </ul>
                 </li>
@@ -69,13 +69,13 @@
                     </div>
                     <ul class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm">
                         <li>
-                            <a href={resolve('/schedules')}>Schedules</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/schedules')}>Schedules</a>
                         </li>
                         <li>
-                            <a href={resolve('/observations')}>Observations</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/observations')}>Observations</a>
                         </li>
                         <li>
-                            <a href={resolve('/observatories')}>Observatories</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/observatories')}>Observatories</a>
                         </li>
                     </ul>
                 </div>
@@ -88,10 +88,10 @@
                     </div>
                     <ul class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm">
                         <li>
-                            <a href={resolve('/visibility-calculator')}>Visibility Calculator</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/visibility-calculator')}>Visibility Calculator</a>
                         </li>
                         <li>
-                            <a href={resolve('/ingestion-status')}>Data Ingestion Status</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/ingestion-status')}>Data Ingestion Status</a>
                         </li>
                     </ul>
                 </div>

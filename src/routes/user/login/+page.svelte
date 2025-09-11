@@ -10,6 +10,7 @@
     import { resolve } from '$app/paths';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
+    import Alert from '$lib/components/Alert.svelte';
 
     export let form: ActionData;
 
@@ -29,15 +30,12 @@
 </script>
 
 <Page center={true}>
-    <div role="alert" class="alert alert-info alert-soft mt-5">
-        <span class=""
-            >Login is not required to GET data from ACROSS. <a
-                href={resolve('/help/documentation')}
-                class="link font-normal">See documentation for more details.</a
-            ></span
+    <Alert>
+        Login is not required to GET data from ACROSS. <a href={resolve('/help/documentation')} class="link font-normal">
+            See documentation for more details.</a
         >
-    </div>
-    <Section title="Login" containerClasses="min-w-1/2 lg:min-w-1/3">
+    </Alert>
+    <Section title="Login">
         <form class="pt-2" method="post" use:enhance={enhancedLogin} novalidate>
             <EmailInput
                 value={form?.email || ''}
@@ -47,9 +45,7 @@
                 isLoading={isLoggingIn && !form?.success}
             >
                 {#if form?.success}
-                    <FormInputFeedback>
-                        Please check your email for a login link!
-                    </FormInputFeedback>
+                    <FormInputFeedback>Please check your email for a login link!</FormInputFeedback>
                 {/if}
 
                 {#if form?.rateLimit}
@@ -60,26 +56,17 @@
                 {/if}
 
                 {#if form?.fail}
-                    <FormInputFeedback type="error">
-                        Something went wrong, please try again. If this error
-                        persists, contact support.
-                    </FormInputFeedback>
+                    <FormInputFeedback type="error">Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback>
                 {/if}
 
                 {#if form?.notFound}
-                    <FormInputFeedback type="error">
-                        The email address is not registered.
-                    </FormInputFeedback>
+                    <FormInputFeedback type="error">The email address is not registered.</FormInputFeedback>
                 {/if}
             </EmailInput>
         </form>
-        <ArrowButton
-            href={resolve('/user/register')}
-            containerClasses="mt-6 text-right justify-self-end"
-            textClasses="text-sm text-right"
-        >
+        <ArrowButton href={resolve('/user/register')} containerClasses="mt-6 text-right justify-self-end mb-10" textClasses="text-sm text-right">
             Don't have an account? Register here
         </ArrowButton>
+        <NasaSecurityBanner></NasaSecurityBanner>
     </Section>
-    <NasaSecurityBanner></NasaSecurityBanner>
 </Page>

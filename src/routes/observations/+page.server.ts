@@ -4,7 +4,6 @@ import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCooki
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { CONFIG } from '../../config/config';
 import type { RequestEvent } from './$types';
-import type { PageServerLoad } from './$types';
 
 const DEFAULTS = {
     pageLimit: 20,
@@ -33,7 +32,7 @@ type ObservationQueryParams = {
     depth_unit?: string;
 };
 
-export const load: PageServerLoad = async ({ fetch, url, locals, cookies }: RequestEvent) => {
+export async function load({ url, locals, cookies }: RequestEvent) {
     // Extract query parameters
     const page = Number(url.searchParams.get('page')) || 1;
     const sort = url.searchParams.get('sort') || '';
@@ -142,4 +141,4 @@ export const load: PageServerLoad = async ({ fetch, url, locals, cookies }: Requ
             error: 'Failed to load observations. Please try again later.',
         };
     }
-};
+}

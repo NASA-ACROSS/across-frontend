@@ -27,7 +27,8 @@
     let dateRangeEnd = data.queryParams?.date_range_end || '';
     let bandpassMin = data.queryParams?.bandpass_min || '';
     let bandpassMax = data.queryParams?.bandpass_max || '';
-    let bandpassType = data.queryParams?.bandpass_type || '';
+    let bandpassType: string = data.queryParams?.bandpass_type || '';
+    let bandpassUnit: string = data.queryParams?.bandpass_unit || '';
     let coneSearchRa = data.queryParams?.cone_search_ra || '';
     let coneSearchDec = data.queryParams?.cone_search_dec || '';
     let coneSearchRadius = data.queryParams?.cone_search_radius || '';
@@ -75,11 +76,18 @@
 
     // Bandpass type options
     const bandpassTypeOptions = ['ENERGY', 'FREQUENCY', 'WAVELENGTH'];
+    const bandpasssUnitOptions: {
+        [key: string]: string[];
+    } = {
+        ENERGY: ['eV', 'keV', 'MeV', 'GeV', 'TeV'],
+        FREQUENCY: ['Hz', 'kHz', 'MHz', 'GHz', 'THz'],
+        WAVELENGTH: ['nm', 'angstrom', 'um', 'mm'],
+    };
 
     // Depth unit options
     const depthUnitOptions = ['ab_mag', 'vega_mag', 'flux_erg', 'flux_jy'];
 
-    let selectedFilter = 'observation';
+    $: selectedFilter = 'observation';
 
     onMount(() => {
         console.log(page.url);
@@ -276,37 +284,55 @@
 
         return Array.from({ length: length }, (_, i) => start + i);
     }
+
+    function deselectFilter(currentFilterName: string) {
+        if (selectedFilter == currentFilterName) {
+            selectedFilter = '';
+        }
+    }
 </script>
 
 <Page center={true}>
     <Section title="Browse Observations" icon="data">
-        <div class="bg-base-200 p-4 mb-6 mx-auto">
-            <h2 class="font-bold mb-2" title="All filters applied during search">Query Filters</h2>
+        <div class="bg-base-200 p-4 mb-6 w-full">
+            <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">Query Filters</div>
+            <!-- <h2 class="font-bold mb-2"></h2> -->
 
             <!-- <div class="grid grid-cols-1 md:grid-cols-1 gap-4"> -->
             <!-- Accordion Join -->
-            <div class="join join-vertical bg-base-100">
+            <div class="join join-vertical bg-base-100 w-full">
                 <!-- Observation section -->
                 <div class="collapse collapse-arrow join-item border-base-300 border">
-                    <input type="radio" name="my-accordion" value="observation" bind:group={selectedFilter} checked="checked" />
-                    <div class="collapse-title font-semibold">
-                        <h3 class="text-lg font-medium mb-2">Observation Date & Type</h3>
+                    <input
+                        type="radio"
+                        name="my-accordion"
+                        value="observation"
+                        on:click={() => {
+                            deselectFilter('observation');
+                        }}
+                        bind:group={selectedFilter}
+                        checked="checked"
+                    />
+                    <div class="collapse-title font-semibold {objectName || dateRangeBegin || dateRangeEnd || status || type ? 'text-nasa-blue-shade' : ''}">
+                        <h3 class="text-lg mb-2">Observation Date & Type</h3>
                         {#if selectedFilter != 'observation'}
-                            {#if objectName}
-                                <span class="opacity-50">Object Name: {objectName}</span>
-                            {/if}
-                            {#if dateRangeBegin}
-                                <span class="opacity-50">Date Begin: {dateRangeBegin}</span>
-                            {/if}
-                            {#if dateRangeEnd}
-                                <span class="opacity-50">Date End: {dateRangeEnd}</span>
-                            {/if}
-                            {#if status}
-                                <span class="opacity-50">Status: {status}</span>
-                            {/if}
-                            {#if type}
-                                <span class="opacity-50">Type: {type}</span>
-                            {/if}
+                            <div class="opacity-60">
+                                {#if objectName}
+                                    <span class="font-thin">Object Name: </span><span>{objectName} </span>
+                                {/if}
+                                {#if dateRangeBegin}
+                                    <span class="font-thin">Date Begin: </span><span>{dateRangeBegin}</span>
+                                {/if}
+                                {#if dateRangeEnd}
+                                    <span class="font-thin">Date End: </span><span>{dateRangeEnd}</span>
+                                {/if}
+                                {#if status}
+                                    <span class="font-thin">Status: </span><span>{status}</span>
+                                {/if}
+                                {#if type}
+                                    <span class="font-thin">Type: </span><span>{type}</span>
+                                {/if}
+                            </div>
                         {/if}
                     </div>
                     <div class="collapse-content">
@@ -320,8 +346,8 @@
                                         id="object-name-input"
                                         type="text"
                                         bind:value={objectName}
-                                        placeholder="e.g. something"
-                                        class="input input-bordered w-full"
+                                        placeholder="e.g. GRW+70D5824"
+                                        class="input input-bordered text-lg w-full"
                                     />
                                 </div>
                             </div>
@@ -342,7 +368,7 @@
                                 <label class="label" for="observation-status-input">
                                     <span class="label-text">Status</span>
                                 </label>
-                                <select id="observation-status-input" bind:value={status} class="select select-bordered w-full">
+                                <select id="observation-status-input" bind:value={status} class="select select-bordered text-lg w-full">
                                     <option value="">Select status</option>
                                     {#each statusOptions as option}
                                         <option value={option}>{option}</option>
@@ -354,7 +380,7 @@
                                 <label class="label" for="observation-type-input">
                                     <span class="label-text">Type</span>
                                 </label>
-                                <select id="observation-type-input" bind:value={type} class="select select-bordered w-full">
+                                <select id="observation-type-input" bind:value={type} class="select select-bordered text-lg w-full">
                                     <option value="">Select Type</option>
                                     {#each typeOptions as option}
                                         <option value={option}>{option}</option>
@@ -367,71 +393,110 @@
 
                 <!-- Coordinate Cone Search -->
                 <div class="collapse collapse-arrow join-item border-base-300 border">
-                    <input type="radio" name="my-accordion" value="coordinate-search" bind:group={selectedFilter} checked="checked" />
-                    <div class="collapse-title font-semibold">
-                        <h3 class="text-lg font-medium mb-2">Coordinate Cone Search</h3>
+                    <input
+                        type="radio"
+                        name="my-accordion"
+                        value="coordinate-search"
+                        on:click={() => {
+                            deselectFilter('coordinate-search');
+                        }}
+                        bind:group={selectedFilter}
+                        checked="checked"
+                    />
+                    <div class="collapse-title font-semibold {coneSearchRa || coneSearchDec || coneSearchRadius ? 'text-nasa-blue-shade' : ''}">
+                        <h3 class="text-lg mb-2">Coordinate Cone Search</h3>
                         {#if selectedFilter != 'coordinate-search'}
-                            {#if coneSearchRa}
-                                <span class="opacity-50">RA: {coneSearchRa}</span>
-                            {/if}
-                            {#if coneSearchDec}
-                                <span class="opacity-50">DEC: {coneSearchDec}</span>
-                            {/if}
-                            {#if coneSearchRadius}
-                                <span class="opacity-50">Radius: {coneSearchRadius}</span>
-                            {/if}
+                            <div class="opacity-60">
+                                {#if coneSearchRa}
+                                    <span class="font-thin">RA: </span><span>{coneSearchRa} </span>
+                                {/if}
+                                {#if coneSearchDec}
+                                    <span class="font-thin">DEC: </span><span>{coneSearchDec} </span>
+                                {/if}
+                                {#if coneSearchRadius}
+                                    <span class="font-thin">Radius: </span><span>{coneSearchRadius} </span>
+                                {/if}
+                            </div>
                         {/if}
                     </div>
                     <div class="collapse-content bg-carbon-05">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
-                            <label class="label" for="ra-input">
-                                <span class="label-text">RA</span>
+                            <label class="input text-lg pe-0 w-full" for="ra-input">
+                                RA:
+                                <input
+                                    id="ra-input"
+                                    class="input validator input-bordered text-lg w-full"
+                                    type="number"
+                                    bind:value={coneSearchRa}
+                                    placeholder="Right Ascension"
+                                    min="0"
+                                    max="360"
+                                />
                             </label>
-                            <input id="ra-input" class="input input-bordered w-full" type="number" bind:value={coneSearchRa} placeholder="Right Ascension" />
 
-                            <label class="label" for="dec-input">
-                                <span class="label-text">DEC</span>
+                            <label class="input text-lg pe-0 w-full" for="dec-input">
+                                DEC:
+                                <input
+                                    id="dec-input"
+                                    type="number"
+                                    bind:value={coneSearchDec}
+                                    placeholder="Declination"
+                                    class="input input-bordered text-lg w-full"
+                                />
                             </label>
-                            <input id="dec-input" type="number" bind:value={coneSearchDec} placeholder="Declination" class="input input-bordered w-full" />
 
-                            <label class="label" for="radius-input">
-                                <span class="label-text">Radius</span>
+                            <label class="input text-lg pe-0 w-full" for="radius-input">
+                                Radius:
+                                <input
+                                    id="radius-input"
+                                    type="number"
+                                    bind:value={coneSearchRadius}
+                                    placeholder="Search radius"
+                                    class="input input-bordered text-lg w-full"
+                                />
                             </label>
-                            <input
-                                id="radius-input"
-                                type="number"
-                                bind:value={coneSearchRadius}
-                                placeholder="Search radius"
-                                class="input input-bordered w-full"
-                            />
                         </div>
                     </div>
                 </div>
 
-                <!-- Energy Regime -->
+                <!-- Energy Regime / Bandpass -->
                 <div class="collapse collapse-arrow join-item border-base-300 border">
-                    <input type="radio" name="my-accordion" value="energy-regime" bind:group={selectedFilter} checked="checked" />
-                    <div class="collapse-title font-semibold">
-                        <h3 class="text-lg font-medium mb-2">Energy Regime</h3>
+                    <input
+                        type="radio"
+                        name="my-accordion"
+                        value="energy-regime"
+                        on:click={() => {
+                            deselectFilter('energy-regime');
+                        }}
+                        bind:group={selectedFilter}
+                        checked="checked"
+                    />
+                    <div class="collapse-title font-semibold {bandpassType || bandpassMin || bandpassMax ? 'text-nasa-blue-shade' : ''}">
+                        <h3 class="text-lg mb-2">Energy Regime / Bandpass</h3>
                         {#if selectedFilter != 'energy-regime'}
-                            {#if bandpassType}
-                                <span class="opacity-50">Bandpass: {bandpassType}</span>
-                            {/if}
-                            {#if bandpassMin}
-                                <span class="opacity-50">Min: {bandpassMin}</span>
-                            {/if}
-                            {#if bandpassMax}
-                                <span class="opacity-50">Max: {bandpassMax}</span>
-                            {/if}
+                            <div class="opacity-60">
+                                {#if bandpassType}
+                                    <span class="font-thin">Bandpass: </span><span>{bandpassType}</span>
+                                {/if}
+                                {#if bandpassMin}
+                                    <span class="font-thin">Min: </span><span>{bandpassMin}</span>
+                                {/if}
+                                {#if bandpassMax}
+                                    <span class="font-thin">Max: </span><span>{bandpassMax}</span>
+                                {/if}
+                                {#if bandpassUnit}
+                                    <span class="font-thin">Unit: </span><span>{bandpassUnit}</span>
+                                {/if}
+                            </div>
                         {/if}
                     </div>
                     <div class="collapse-content">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
-                            <div class="form-control">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
                                 <label class="label" for="bandpass-type-input">
                                     <span class="label-text">Bandpass Type</span>
                                 </label>
-                                <select id="bandpass-type-input" bind:value={bandpassType} class="select select-bordered w-full">
+                                <select id="bandpass-type-input" bind:value={bandpassType} class="select select-bordered text-lg w-full">
                                     <option value="">Select type</option>
                                     {#each bandpassTypeOptions as option}
                                         <option value={option}>{option}</option>
@@ -439,7 +504,25 @@
                                 </select>
                             </div>
 
-                            <div class="form-control">
+                            <div>
+                                <label class="label" for="bandpass-type-input">
+                                    <span class="label-text">{bandpassType ? bandpassType : 'Bandpass'} Unit</span>
+                                </label>
+                                <select
+                                    id="bandpass-type-input"
+                                    bind:value={bandpassUnit}
+                                    class="select select-bordered text-lg {bandpassType ? '' : 'opacity-50'} w-full"
+                                >
+                                    <option class="opacity-50" value="">{bandpassType ? `Select ${bandpassType} unit` : '← Select Bandpass Type'}</option>
+                                    {#if bandpassType}
+                                        {#each bandpasssUnitOptions[bandpassType] as option}
+                                            <option value={option}>{option}</option>
+                                        {/each}
+                                    {/if}
+                                </select>
+                            </div>
+
+                            <!-- <div class="form-control">
                                 <label class="label" for="badpass-min-input">
                                     <span class="label-text">Min</span>
                                 </label>
@@ -451,50 +534,71 @@
                                         placeholder="Bandpass min"
                                         class="input input-bordered w-full"
                                     />
-                                    <span class="ml-2">{bandpassType}</span>
+                                    <span class="ml-2">{bandpassUnit}</span>
                                 </div>
-                            </div>
+                            </div> -->
 
-                            <div class="form-control">
-                                <label class="label" for="bandpass-max-input">
-                                    <span class="label-text">Max</span>
-                                </label>
-                                <div class="flex items-center">
-                                    <input
-                                        id="bandpass-max-input"
-                                        type="number"
-                                        bind:value={bandpassMax}
-                                        placeholder="Bandpass max"
-                                        class="input input-bordered w-full"
-                                    />
-                                    <span class="ml-2">{bandpassType}</span>
-                                </div>
-                            </div>
+                            <label class="input text-lg w-full" for="badpass-min-input">
+                                Min:
+                                <input
+                                    id="badpass-min-input"
+                                    type="number"
+                                    bind:value={bandpassMin}
+                                    placeholder="Bandpass min"
+                                    class="input input-bordered text-lg w-full"
+                                />
+                                {#if bandpassUnit}
+                                    <span class="label">{bandpassUnit}</span>
+                                {/if}
+                            </label>
+
+                            <label class="input text-lg w-full" for="bandpass-max-input">
+                                Max:
+                                <input
+                                    id="bandpass-max-input"
+                                    type="number"
+                                    bind:value={bandpassMax}
+                                    placeholder="Bandpass max"
+                                    class="input input-bordered text-lg w-full"
+                                />
+                                <span class="label">{bandpassUnit}</span>
+                            </label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Depth -->
                 <div class="collapse collapse-arrow join-item border-base-300 border">
-                    <input type="radio" name="my-accordion" value="depth" bind:group={selectedFilter} checked="checked" />
-                    <div class="collapse-title font-semibold">
-                        <h3 class="text-lg font-medium mb-2">Depth</h3>
+                    <input
+                        type="radio"
+                        name="my-accordion"
+                        value="depth"
+                        on:click={() => {
+                            deselectFilter('depth');
+                        }}
+                        bind:group={selectedFilter}
+                        checked="checked"
+                    />
+                    <div class="collapse-title font-semibold {depthUnit || depthValue ? 'text-nasa-blue-shade' : ''}">
+                        <h3 class="text-lg mb-2">Depth</h3>
                         {#if selectedFilter != 'depth'}
-                            {#if depthUnit}
-                                <span class="opacity-50">Unit: {depthUnit}</span>
-                            {/if}
-                            {#if depthValue}
-                                <span class="opacity-50">Value: {depthValue}</span>
-                            {/if}
+                            <div class="opacity-60">
+                                {#if depthUnit}
+                                    <span class="font-thin">Unit: </span><span>{depthUnit}</span>
+                                {/if}
+                                {#if depthValue}
+                                    <span class="font-thin">Value: </span><span>{depthValue}</span>
+                                {/if}
+                            </div>
                         {/if}
                     </div>
                     <div class="collapse-content">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
                             <div class="form-control">
                                 <label class="label">
                                     <span class="label-text">Depth Unit</span>
                                 </label>
-                                <select bind:value={depthUnit} class="select select-bordered w-full">
+                                <select bind:value={depthUnit} class="select select-bordered text-lg w-full">
                                     <option value="">Select type</option>
                                     {#each depthUnitOptions as option}
                                         <option value={option}>{option}</option>
@@ -502,14 +606,13 @@
                                 </select>
                             </div>
 
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text">Depth Value</span>
+                            <div class="self-end">
+                                <label class="input w-full">
+                                    Depth Value:
+                                    <input type="number" bind:value={depthValue} placeholder="Depth Value" class="input input-bordered text-lg w-full" />
+                                    <span class="label">{depthUnit}</span>
                                 </label>
-                                <div class="flex items-center">
-                                    <input type="number" bind:value={depthValue} placeholder="Depth Value" class="input input-bordered w-full" />
-                                    <span class="ml-2">{depthUnit}</span>
-                                </div>
+                                <div class="flex items-center"></div>
                             </div>
                         </div>
                     </div>
@@ -517,7 +620,7 @@
             </div>
 
             <div class="flex justify-end mt-4">
-                <button class="btn btn-primary" on:click={async () => await handleSearch()}>Search</button>
+                <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>
             </div>
         </div>
     </Section>
@@ -603,7 +706,7 @@
         {/if}
 
         <!-- Data Table -->
-        <div class="overflow-x-auto overflow-y-scroll max-h-256 w-full">
+        <div class="overflow-x-auto overflow-y-scroll max-h-256">
             <table class="table table-pin-rows table-zebra w-full">
                 <thead>
                     <tr class="bg-primary text-primary-content">
@@ -698,5 +801,10 @@
     .disabled-link {
         pointer-events: none;
         cursor: not-allowed;
+    }
+
+    /* remove ugly up/down arrows */
+    input[type='number'] {
+        appearance: textfield;
     }
 </style>

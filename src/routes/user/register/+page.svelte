@@ -127,6 +127,6 @@
     }
 
     input:invalid:not(:placeholder-shown) {
-        border: 1px solid var(--color-accent);
+        border: 1px solid var(--color-warning);
     }
 </style>

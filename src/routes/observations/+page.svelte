@@ -16,15 +16,19 @@
 
     // Query parameters
     let externalId = data.queryParams?.external_id || '';
-    let scheduleIds = data.queryParams?.schedule_ids || [];
+    let scheduleIds: string[] = data.queryParams?.schedule_ids || [];
     let observatoryIds = data.queryParams?.observatory_ids || [];
     let telescopeIds = data.queryParams?.telescope_ids || [];
     let instrumentIds = data.queryParams?.instrument_ids || [];
     let status = data.queryParams?.status || '';
     let proposal = data.queryParams?.proposal || '';
     let objectName = data.queryParams?.object_name || '';
-    let dateRangeBegin = data.queryParams?.date_range_begin || new Date().toISOString().slice(0, 11) + '00:00:00';
-    let dateRangeEnd = data.queryParams?.date_range_end || '';
+    let dateRangeBegin = data.queryParams?.date_range_begin; // || new Date().toISOString().slice(0, 11) + '00:00:00';
+    let dateBegin = dateRangeBegin?.split('T')[0];
+    let timeBegin = dateRangeBegin?.split('T')[1];
+    let dateRangeEnd = data.queryParams?.date_range_end; // || new Date().toISOString().slice(0, 11) + '23:59:59';
+    let dateEnd = dateRangeEnd?.split('T')[0];
+    let timeEnd = dateRangeEnd?.split('T')[1];
     let bandpassMin = data.queryParams?.bandpass_min || '';
     let bandpassMax = data.queryParams?.bandpass_max || '';
     let bandpassType: string = data.queryParams?.bandpass_type || '';
@@ -173,8 +177,9 @@
         if (type) params.append('type', type);
         if (depthValue) params.append('depth_value', depthValue);
         if (depthUnit) params.append('depth_unit', depthUnit);
+        if (scheduleIds) params.append('schedule_ids', scheduleIds.toString());
 
-        scheduleIds.forEach((id) => params.append('schedule_ids', id));
+        // scheduleIds.forEach((id) => params.append('schedule_ids', id));
         observatoryIds.forEach((id) => params.append('observatory_ids', id));
         telescopeIds.forEach((id) => params.append('telescope_ids', id));
         instrumentIds.forEach((id) => params.append('instrument_ids', id));
@@ -199,6 +204,10 @@
         const params = new URLSearchParams(page.url.searchParams);
         params.set('page', newPage.toString());
         return `?${params.toString()}`;
+    }
+
+    function handleRemoveSchedule(removeScheduleId: string) {
+        scheduleIds = scheduleIds.filter((scheduleId) => scheduleId != removeScheduleId);
     }
 
     async function toggleSort(column) {
@@ -313,18 +322,21 @@
                         bind:group={selectedFilter}
                         checked="checked"
                     />
-                    <div class="collapse-title font-semibold {objectName || dateRangeBegin || dateRangeEnd || status || type ? 'text-nasa-blue-shade' : ''}">
-                        <h3 class="text-lg mb-2">Observation Date & Type</h3>
+                    <div
+                        class="collapse-title font-semibold
+                        {objectName || dateBegin || timeBegin || dateEnd || timeEnd || status || type ? 'text-nasa-blue-shade' : ''}"
+                    >
+                        <h3 class="text-lg mb-2">Observation Name / Date / Type</h3>
                         {#if selectedFilter != 'observation'}
                             <div class="opacity-60">
                                 {#if objectName}
                                     <span class="font-thin">Object Name: </span><span>{objectName} </span>
                                 {/if}
-                                {#if dateRangeBegin}
-                                    <span class="font-thin">Date Begin: </span><span>{dateRangeBegin}</span>
+                                {#if dateBegin || timeBegin}
+                                    <span class="font-thin">Date Begin: </span><span>{dateBegin} {timeBegin}</span>
                                 {/if}
-                                {#if dateRangeEnd}
-                                    <span class="font-thin">Date End: </span><span>{dateRangeEnd}</span>
+                                {#if dateEnd || timeEnd}
+                                    <span class="font-thin">Date End: </span><span>{dateEnd} {timeEnd}</span>
                                 {/if}
                                 {#if status}
                                     <span class="font-thin">Status: </span><span>{status}</span>
@@ -336,9 +348,9 @@
                         {/if}
                     </div>
                     <div class="collapse-content">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
                             <div class="form-control">
-                                <label class="label" for="object-name-input">
+                                <label class="label text-lg" for="object-name-input">
                                     <span class="label-text">Object Name</span>
                                 </label>
                                 <div class="flex items-center">
@@ -353,19 +365,7 @@
                             </div>
 
                             <div class="form-control">
-                                <label class="label" for="date-range-begin-input">
-                                    <span class="label-text">Date Range Begin/End</span>
-                                </label>
-                                <div class="flex space-x-2">
-                                    <input id="date-range-begin-input" type="datetime-local" bind:value={dateRangeBegin} class="input w-1/2" />
-                                    <input type="datetime-local" bind:value={dateRangeEnd} class="input w-1/2" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                            <div class="form-control mb-4">
-                                <label class="label" for="observation-status-input">
+                                <label class="label text-lg" for="observation-status-input">
                                     <span class="label-text">Status</span>
                                 </label>
                                 <select id="observation-status-input" bind:value={status} class="select select-bordered text-lg w-full">
@@ -376,8 +376,8 @@
                                 </select>
                             </div>
 
-                            <div class="form-control mb-4">
-                                <label class="label" for="observation-type-input">
+                            <div class="form-control">
+                                <label class="label text-lg" for="observation-type-input">
                                     <span class="label-text">Type</span>
                                 </label>
                                 <select id="observation-type-input" bind:value={type} class="select select-bordered text-lg w-full">
@@ -386,6 +386,27 @@
                                         <option value={option}>{option}</option>
                                     {/each}
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+                            <div>
+                                <label class="label text-lg" for="date-begin-input">
+                                    <span class="label-text">Begin Date/Time</span>
+                                </label>
+                                <div class="grid grid-cols-2 space-x-2">
+                                    <input id="date-begin-input" type="date" bind:value={dateBegin} class="input w-full" />
+                                    <input id="time-begin-input" type="time" bind:value={timeBegin} class="input w-full" />
+                                </div>
+                            </div>
+                            <div>
+                                <label class="label text-lg" for="date-end-input">
+                                    <span class="label-text">End Date/Time</span>
+                                </label>
+                                <div class="grid grid-cols-2 space-x-2">
+                                    <input id="date-end-input" type="date" bind:value={dateEnd} class="input w-full" />
+                                    <input id="time-end-input" type="time" bind:value={timeEnd} class="input w-full" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -478,14 +499,16 @@
                                 {#if bandpassType}
                                     <span class="font-thin">Bandpass: </span><span>{bandpassType}</span>
                                 {/if}
-                                {#if bandpassMin}
-                                    <span class="font-thin">Min: </span><span>{bandpassMin}</span>
+                                {#if bandpassMin && bandpassMax}
+                                    <span>{bandpassMin} - {bandpassMax}</span>
+                                {:else if bandpassMax}
+                                    <span>{'< ' + bandpassMax}</span>
+                                {:else if bandpassMin}
+                                    <span>{'> ' + bandpassMin}</span>
                                 {/if}
-                                {#if bandpassMax}
-                                    <span class="font-thin">Max: </span><span>{bandpassMax}</span>
-                                {/if}
+
                                 {#if bandpassUnit}
-                                    <span class="font-thin">Unit: </span><span>{bandpassUnit}</span>
+                                    <span>{bandpassUnit}</span>
                                 {/if}
                             </div>
                         {/if}
@@ -493,7 +516,7 @@
                     <div class="collapse-content">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
-                                <label class="label" for="bandpass-type-input">
+                                <label class="label text-lg" for="bandpass-type-input">
                                     <span class="label-text">Bandpass Type</span>
                                 </label>
                                 <select id="bandpass-type-input" bind:value={bandpassType} class="select select-bordered text-lg w-full">
@@ -505,7 +528,7 @@
                             </div>
 
                             <div>
-                                <label class="label" for="bandpass-type-input">
+                                <label class="label text-lg" for="bandpass-type-input">
                                     <span class="label-text">{bandpassType ? bandpassType : 'Bandpass'} Unit</span>
                                 </label>
                                 <select
@@ -583,11 +606,11 @@
                         <h3 class="text-lg mb-2">Depth</h3>
                         {#if selectedFilter != 'depth'}
                             <div class="opacity-60">
-                                {#if depthUnit}
-                                    <span class="font-thin">Unit: </span><span>{depthUnit}</span>
-                                {/if}
                                 {#if depthValue}
-                                    <span class="font-thin">Value: </span><span>{depthValue}</span>
+                                    <span>{depthValue}</span>
+                                {/if}
+                                {#if depthUnit}
+                                    <span>{depthUnit}</span>
                                 {/if}
                             </div>
                         {/if}
@@ -595,10 +618,10 @@
                     <div class="collapse-content">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
                             <div class="form-control">
-                                <label class="label">
+                                <label class="label text-lg" for="depth-unit-input">
                                     <span class="label-text">Depth Unit</span>
                                 </label>
-                                <select bind:value={depthUnit} class="select select-bordered text-lg w-full">
+                                <select id="depth-unit-input" bind:value={depthUnit} class="select select-bordered text-lg w-full">
                                     <option value="">Select type</option>
                                     {#each depthUnitOptions as option}
                                         <option value={option}>{option}</option>
@@ -607,13 +630,69 @@
                             </div>
 
                             <div class="self-end">
-                                <label class="input w-full">
+                                <label class="input text-lg w-full">
                                     Depth Value:
                                     <input type="number" bind:value={depthValue} placeholder="Depth Value" class="input input-bordered text-lg w-full" />
-                                    <span class="label">{depthUnit}</span>
+                                    {#if depthUnit}
+                                        <span class="label">{depthUnit}</span>
+                                    {/if}
                                 </label>
                                 <div class="flex items-center"></div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter by Schedule -->
+                <div class="collapse collapse-arrow join-item border-base-300 border">
+                    <input
+                        type="radio"
+                        name="my-accordion"
+                        value="filter-schedule"
+                        on:click={() => {
+                            deselectFilter('filter-schedule');
+                        }}
+                        bind:group={selectedFilter}
+                        checked="checked"
+                    />
+                    <div class="collapse-title font-semibold {scheduleIds ? 'text-nasa-blue-shade' : ''}">
+                        <h3 class="text-lg mb-2">Filter By Schedule IDs</h3>
+                        {#if selectedFilter != 'filter-schedule'}
+                            <div class="opacity-60">
+                                {#if scheduleIds}
+                                    <span>{scheduleIds.length} </span><span class="font-thin">Schedule ID{scheduleIds.length > 1 ? 's' : ''} selected</span>
+                                {/if}
+                            </div>
+                        {/if}
+                    </div>
+                    <div class="collapse-content bg-carbon-05">
+                        <div class="grid grid-cols-1 gap-2 mb-4">
+                            <label class="input text-lg pe-0 w-full" for="schedule-input">
+                                Schedule ID:
+                                <input id="schedule-input" class="input validator input-bordered text-lg w-full" type="text" placeholder="UUID" />
+                                <button id="schedule-add" class="btn btn-info text-lg">Add Schedule ID</button>
+                            </label>
+                            {#if scheduleIds}
+                                <div class="overflow-x-auto overflow-y-auto min-h-20 max-h-38">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Schedule IDs</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="mx-4">
+                                            {#each scheduleIds as scheduleId}
+                                                <tr class="flex w-full">
+                                                    <span class="w-full self-center">{scheduleId}</span>
+                                                    <button class="btn btn-sm text-sm align-end" on:click={() => handleRemoveSchedule(scheduleId)}
+                                                        >Remove</button
+                                                    >
+                                                </tr>
+                                            {/each}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {/if}
                         </div>
                     </div>
                 </div>
@@ -738,12 +817,12 @@
                                                     {telescope_instrument?.observatoryName}
                                                 </p>
 
-                                                <div class="text-xs font-bold opacity-50">Telescope</div>
+                                                <!-- <div class="text-xs font-bold opacity-50">Telescope</div> -->
                                                 <p class="text-xs w-max">
                                                     {telescope_instrument?.telescopeName}
                                                 </p>
 
-                                                <div class="text-xs font-bold opacity-50">Instrument</div>
+                                                <!-- <div class="text-xs font-bold opacity-50">Instrument</div> -->
                                                 <p class="text-xs w-max">
                                                     {telescope_instrument?.instrumentName}
                                                 </p>
@@ -751,12 +830,12 @@
                                         {:else if column.id === 'date_ranges'}
                                             <div class="text-xs font-bold opacity-50">Begin</div>
                                             <p class="text-xs w-max">
-                                                {new Date(obs.date_range?.begin).toISOString().slice(0, -5).replace('T', ' ')}
+                                                {new Date(obs.date_range?.begin + 'Z').toISOString().slice(0, -5).replace('T', ' ')}
                                             </p>
 
                                             <div class="text-xs font-bold opacity-50">End</div>
                                             <p class="text-xs w-max">
-                                                {new Date(obs.date_range?.end).toISOString().slice(0, -5).replace('T', ' ')}
+                                                {new Date(obs.date_range?.end + 'Z').toISOString().slice(0, -5).replace('T', ' ')}
                                             </p>
                                         {:else if column.id === 'ra_dec'}
                                             <div class="text-xs font-bold opacity-50">RA</div>
@@ -770,7 +849,7 @@
                                         {:else if column.id === 'target_id'}
                                             {obs.external_observation_id || '-'}
                                         {:else if column.id === 'exposure_time'}
-                                            {obs.exposure_time || '-'} s
+                                            {obs.exposure_time?.toFixed(2) || '-'} s
                                         {:else if column.id === 'bandpass_name'}
                                             {obs.bandpass?.filter_name || '-'}
                                         {:else if column.id === 'observation_type'}

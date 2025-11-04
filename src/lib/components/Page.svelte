@@ -4,12 +4,8 @@
     export let center: boolean = false;
 </script>
 
-<div
-    class="pt-2 pb-8 w-auto bg-base-100 flex flex-col flex-grow {center
-        ? 'items-center'
-        : ''}"
->
-    <!--Section-->
+<div class="pt-2 pb-8 w-auto bg-base-100 flex flex-col flex-grow {center ? 'items-center' : ''}">
+    <!--Page-->
     {#if icon || title}
         <h1>
             {#if icon}

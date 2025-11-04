@@ -16,11 +16,12 @@
 
     // Query parameters
     let externalId = data.queryParams?.external_id || '';
-    let scheduleIds: string[] = data.queryParams?.schedule_ids || [];
+    let scheduleId = '';
+    let scheduleIds = (data.queryParams?.schedule_ids as string[]) || ([] as string[]);
     let observatoryIds = data.queryParams?.observatory_ids || [];
     let telescopeIds = data.queryParams?.telescope_ids || [];
     let instrumentIds = data.queryParams?.instrument_ids || [];
-    let status = data.queryParams?.status || '';
+    let status = data.queryParams?.status || 'planned';
     let proposal = data.queryParams?.proposal || '';
     let objectName = data.queryParams?.object_name || '';
     let dateRangeBegin = data.queryParams?.date_range_begin; // || new Date().toISOString().slice(0, 11) + '00:00:00';
@@ -91,7 +92,7 @@
     // Depth unit options
     const depthUnitOptions = ['ab_mag', 'vega_mag', 'flux_erg', 'flux_jy'];
 
-    $: selectedFilter = 'observation';
+    $: selectedFilter = '';
 
     onMount(() => {
         console.log(page.url);
@@ -177,7 +178,7 @@
         if (type) params.append('type', type);
         if (depthValue) params.append('depth_value', depthValue);
         if (depthUnit) params.append('depth_unit', depthUnit);
-        if (scheduleIds) params.append('schedule_ids', scheduleIds.toString());
+        if (scheduleIds.length) params.append('schedule_ids', scheduleIds.toString());
 
         // scheduleIds.forEach((id) => params.append('schedule_ids', id));
         observatoryIds.forEach((id) => params.append('observatory_ids', id));
@@ -208,6 +209,22 @@
 
     function handleRemoveSchedule(removeScheduleId: string) {
         scheduleIds = scheduleIds.filter((scheduleId) => scheduleId != removeScheduleId);
+    }
+
+    function handleAddSchedule(addScheduleId: string) {
+        if (addScheduleId != '') {
+            // can't use .push because svelte wont detect reactivity via pointer assignment
+            // must reassign for reactivity
+            scheduleIds = [...scheduleIds, addScheduleId];
+            // reset schedule input field
+            scheduleId = '';
+        }
+    }
+
+    function handleAddScheduleEnterKey(event: KeyboardEvent, addScheduleId: string) {
+        if (event.key === 'Enter') {
+            handleAddSchedule(addScheduleId);
+        }
     }
 
     async function toggleSort(column) {
@@ -320,7 +337,7 @@
                             deselectFilter('observation');
                         }}
                         bind:group={selectedFilter}
-                        checked="checked"
+                        checked={false}
                     />
                     <div
                         class="collapse-title font-semibold
@@ -422,7 +439,7 @@
                             deselectFilter('coordinate-search');
                         }}
                         bind:group={selectedFilter}
-                        checked="checked"
+                        checked={false}
                     />
                     <div class="collapse-title font-semibold {coneSearchRa || coneSearchDec || coneSearchRadius ? 'text-nasa-blue-shade' : ''}">
                         <h3 class="text-lg mb-2">Coordinate Cone Search</h3>
@@ -490,7 +507,7 @@
                             deselectFilter('energy-regime');
                         }}
                         bind:group={selectedFilter}
-                        checked="checked"
+                        checked={false}
                     />
                     <div class="collapse-title font-semibold {bandpassType || bandpassMin || bandpassMax ? 'text-nasa-blue-shade' : ''}">
                         <h3 class="text-lg mb-2">Energy Regime / Bandpass</h3>
@@ -545,22 +562,6 @@
                                 </select>
                             </div>
 
-                            <!-- <div class="form-control">
-                                <label class="label" for="badpass-min-input">
-                                    <span class="label-text">Min</span>
-                                </label>
-                                <div class="flex items-center">
-                                    <input
-                                        id="badpass-min-input"
-                                        type="number"
-                                        bind:value={bandpassMin}
-                                        placeholder="Bandpass min"
-                                        class="input input-bordered w-full"
-                                    />
-                                    <span class="ml-2">{bandpassUnit}</span>
-                                </div>
-                            </div> -->
-
                             <label class="input text-lg w-full" for="badpass-min-input">
                                 Min:
                                 <input
@@ -584,7 +585,9 @@
                                     placeholder="Bandpass max"
                                     class="input input-bordered text-lg w-full"
                                 />
-                                <span class="label">{bandpassUnit}</span>
+                                {#if bandpassUnit}
+                                    <span class="label">{bandpassUnit}</span>
+                                {/if}
                             </label>
                         </div>
                     </div>
@@ -600,7 +603,7 @@
                             deselectFilter('depth');
                         }}
                         bind:group={selectedFilter}
-                        checked="checked"
+                        checked={false}
                     />
                     <div class="collapse-title font-semibold {depthUnit || depthValue ? 'text-nasa-blue-shade' : ''}">
                         <h3 class="text-lg mb-2">Depth</h3>
@@ -653,13 +656,13 @@
                             deselectFilter('filter-schedule');
                         }}
                         bind:group={selectedFilter}
-                        checked="checked"
+                        checked={false}
                     />
-                    <div class="collapse-title font-semibold {scheduleIds ? 'text-nasa-blue-shade' : ''}">
+                    <div class="collapse-title font-semibold {scheduleIds.length ? 'text-nasa-blue-shade' : ''}">
                         <h3 class="text-lg mb-2">Filter By Schedule IDs</h3>
                         {#if selectedFilter != 'filter-schedule'}
                             <div class="opacity-60">
-                                {#if scheduleIds}
+                                {#if scheduleIds.length}
                                     <span>{scheduleIds.length} </span><span class="font-thin">Schedule ID{scheduleIds.length > 1 ? 's' : ''} selected</span>
                                 {/if}
                             </div>
@@ -669,30 +672,37 @@
                         <div class="grid grid-cols-1 gap-2 mb-4">
                             <label class="input text-lg pe-0 w-full" for="schedule-input">
                                 Schedule ID:
-                                <input id="schedule-input" class="input validator input-bordered text-lg w-full" type="text" placeholder="UUID" />
-                                <button id="schedule-add" class="btn btn-info text-lg">Add Schedule ID</button>
+                                <input
+                                    id="schedule-input"
+                                    bind:value={scheduleId}
+                                    on:keydown={(event) => handleAddScheduleEnterKey(event, scheduleId)}
+                                    class="input validator input-bordered text-lg w-full"
+                                    type="text"
+                                    placeholder="UUID"
+                                />
+                                <button id="schedule-add" on:click={() => handleAddSchedule(scheduleId)} class="btn btn-info text-lg">Add Schedule ID</button>
                             </label>
-                            {#if scheduleIds}
-                                <div class="overflow-x-auto overflow-y-auto min-h-20 max-h-38">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Schedule IDs</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="mx-4">
-                                            {#each scheduleIds as scheduleId}
-                                                <tr class="flex w-full">
-                                                    <span class="w-full self-center">{scheduleId}</span>
-                                                    <button class="btn btn-sm text-sm align-end" on:click={() => handleRemoveSchedule(scheduleId)}
-                                                        >Remove</button
-                                                    >
+                            {#key scheduleIds.length}
+                                {#if scheduleIds.length}
+                                    <div class="overflow-x-auto overflow-y-auto min-h-20 max-h-38">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>{scheduleIds.length} Schedule ID{scheduleIds.length > 1 ? 's' : ''}</th>
                                                 </tr>
-                                            {/each}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            {/if}
+                                            </thead>
+                                            <tbody class="mx-4">
+                                                {#each scheduleIds as id}
+                                                    <tr class="flex w-full">
+                                                        <span class="w-full self-center">{id}</span>
+                                                        <button class="btn btn-sm text-sm align-end" on:click={() => handleRemoveSchedule(id)}>Remove</button>
+                                                    </tr>
+                                                {/each}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {/if}
+                            {/key}
                         </div>
                     </div>
                 </div>
@@ -703,7 +713,7 @@
             </div>
         </div>
     </Section>
-    <Section title="Observations" icon="globe">
+    <Section title="Observations" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">
             <a data-sveltekit-preload-data="off" type="link" class="btn btn-sm" href={handlePageChange(1)}> &lt;&lt; </a>
@@ -717,7 +727,7 @@
                 &lt;
             </a>
 
-            {#each createPagesArray(currentPage, totalPages, 6) as pageNumber}
+            {#each createPagesArray(currentPage, totalPages, 4) as pageNumber}
                 {#if pageNumber === currentPage}
                     <span class="btn btn-sm btn-active">
                         {currentPage}
@@ -785,12 +795,12 @@
         {/if}
 
         <!-- Data Table -->
-        <div class="overflow-x-auto overflow-y-scroll max-h-256">
+        <div id="data-table" class="overflow-x-auto overflow-y-scroll max-h-256 pe-0 pb-0">
             <table class="table table-pin-rows table-zebra w-full">
                 <thead>
                     <tr class="bg-primary text-primary-content">
                         {#each selectedColumns as column}
-                            <th class="cursor-pointer hover:bg-nasa-blue" on:click={() => toggleSort(column.id)}>
+                            <th class="max-w-70 cursor-pointer hover:bg-nasa-blue" on:click={() => toggleSort(column.id)}>
                                 {column.label}
                                 {#if sortColumn === column.id}
                                     {sortDirection === 'asc' ? '↑' : '↓'}
@@ -813,17 +823,15 @@
                                     <td class="">
                                         {#if column.id === 'telescope_instrument'}
                                             {#each getTelescopeInstrument(obs?.instrument_id) as telescope_instrument}
-                                                <p class="font-bold w-max">
+                                                <p class="font-bold max-w-70 text-wrap">
                                                     {telescope_instrument?.observatoryName}
                                                 </p>
 
-                                                <!-- <div class="text-xs font-bold opacity-50">Telescope</div> -->
-                                                <p class="text-xs w-max">
+                                                <p class="text-xs max-w-70 text-wrap">
                                                     {telescope_instrument?.telescopeName}
                                                 </p>
 
-                                                <!-- <div class="text-xs font-bold opacity-50">Instrument</div> -->
-                                                <p class="text-xs w-max">
+                                                <p class="text-xs max-w-70 text-wrap">
                                                     {telescope_instrument?.instrumentName}
                                                 </p>
                                             {/each}
@@ -883,7 +891,15 @@
     }
 
     /* remove ugly up/down arrows */
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button,
     input[type='number'] {
         appearance: textfield;
+        -moz-appearance: textfield;
+        -webkit-appearance: none;
+    }
+
+    #data-table {
+        scrollbar-gutter: stable both-edges;
     }
 </style>

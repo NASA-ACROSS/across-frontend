@@ -21,15 +21,13 @@
     let observatoryIds = data.queryParams?.observatory_ids || [];
     let telescopeIds = data.queryParams?.telescope_ids || [];
     let instrumentIds = data.queryParams?.instrument_ids || [];
-    let status = data.queryParams?.status || 'planned';
+    let status = data.queryParams?.status || '';
     let proposal = data.queryParams?.proposal || '';
     let objectName = data.queryParams?.object_name || '';
-    let dateRangeBegin = data.queryParams?.date_range_begin; // || new Date().toISOString().slice(0, 11) + '00:00:00';
-    let dateBegin = dateRangeBegin?.split('T')[0];
-    let timeBegin = dateRangeBegin?.split('T')[1];
-    let dateRangeEnd = data.queryParams?.date_range_end; // || new Date().toISOString().slice(0, 11) + '23:59:59';
-    let dateEnd = dateRangeEnd?.split('T')[0];
-    let timeEnd = dateRangeEnd?.split('T')[1];
+    let dateBegin = data.queryParams?.date_range_begin?.split('T')[0];
+    let timeBegin = data.queryParams?.date_range_begin?.split('T')[1];
+    let dateEnd = data.queryParams?.date_range_end?.split('T')[0];
+    let timeEnd = data.queryParams?.date_range_end?.split('T')[1];
     let bandpassMin = data.queryParams?.bandpass_min || '';
     let bandpassMax = data.queryParams?.bandpass_max || '';
     let bandpassType: string = data.queryParams?.bandpass_type || '';
@@ -48,8 +46,10 @@
             label: 'Observatory/Telescope/Instrument',
             selected: true,
         },
-        { id: 'date_ranges', label: 'Date Ranges', selected: true },
-        { id: 'ra_dec', label: 'RA/DEC', selected: true },
+        { id: 'date_begin', label: 'Date Begin', selected: true },
+        { id: 'date_end', label: 'Date End', selected: true },
+        { id: 'ra', label: 'RA', selected: true },
+        { id: 'dec', label: 'DEC', selected: true },
         { id: 'target_id', label: 'Target Id', selected: true },
         { id: 'exposure_time', label: 'Exposure Time', selected: true },
         { id: 'bandpass_name', label: 'Bandpass Name', selected: true },
@@ -62,9 +62,10 @@
             selected: false,
         },
         { id: 'description', label: 'Description', selected: false },
+        { id: 'schedule_id', label: 'Schedule ID', selected: false },
     ];
 
-    const DEFAULT_COLUMNS = ['telescope_instrument', 'date_ranges', 'ra_dec', 'target_id', 'object_name'];
+    const DEFAULT_COLUMNS = ['telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'target_id', 'object_name', 'status'];
 
     $: selectedColumns = availableColumns.filter((col) => col.selected);
     let isCustomizeModalOpen = false;
@@ -95,7 +96,6 @@
     $: selectedFilter = '';
 
     onMount(() => {
-        console.log(page.url);
         // If URL params for columns exist, use those instead of cookie values
         if (data.urlColumns && data.urlColumns.length > 0) {
             updateColumnsFromUrlParams(data.urlColumns);
@@ -167,8 +167,8 @@
         if (status) params.append('status', status);
         if (proposal) params.append('proposal', proposal);
         if (objectName) params.append('object_name', objectName);
-        if (dateRangeBegin) params.append('date_range_begin', dateRangeBegin);
-        if (dateRangeEnd) params.append('date_range_end', dateRangeEnd);
+        if (dateBegin) params.append('date_range_begin', `${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`);
+        if (dateEnd) params.append('date_range_end', `${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
         if (bandpassMin) params.append('bandpass_min', bandpassMin);
         if (bandpassMax) params.append('bandpass_max', bandpassMax);
         if (bandpassType) params.append('bandpass_type', bandpassType);
@@ -208,14 +208,15 @@
     }
 
     function handleRemoveSchedule(removeScheduleId: string) {
-        scheduleIds = scheduleIds.filter((scheduleId) => scheduleId != removeScheduleId);
+        scheduleIds = scheduleIds.filter((scheduleId: string) => scheduleId != removeScheduleId);
     }
 
     function handleAddSchedule(addScheduleId: string) {
-        if (addScheduleId != '') {
-            // can't use .push because svelte wont detect reactivity via pointer assignment
+        // prevent empty or duplicate additions
+        if (addScheduleId != '' && !scheduleIds.includes(addScheduleId)) {
+            // can't use array.push here because svelte wont detect reactivity via pointer assignment
             // must reassign for reactivity
-            scheduleIds = [...scheduleIds, addScheduleId];
+            scheduleIds = [...scheduleIds, addScheduleId.trim()];
             // reset schedule input field
             scheduleId = '';
         }
@@ -311,17 +312,49 @@
         return Array.from({ length: length }, (_, i) => start + i);
     }
 
-    function deselectFilter(currentFilterName: string) {
+    function deselectAccordion(currentFilterName: string) {
         if (selectedFilter == currentFilterName) {
             selectedFilter = '';
         }
+    }
+
+    function resetFilters() {
+        externalId = '';
+        scheduleId = '';
+        scheduleIds = [];
+        observatoryIds = [];
+        telescopeIds = [];
+        instrumentIds = [];
+        status = '';
+        proposal = '';
+        objectName = '';
+        dateBegin = '';
+        timeBegin = '';
+        dateEnd = '';
+        timeEnd = '';
+        bandpassMin = '';
+        bandpassMax = '';
+        bandpassType = '';
+        bandpassUnit = '';
+        coneSearchRa = '';
+        coneSearchDec = '';
+        coneSearchRadius = '';
+        type = '';
+        depthValue = '';
+        depthUnit = '';
     }
 </script>
 
 <Page center={true}>
     <Section title="Browse Observations" icon="data">
         <div class="bg-base-200 p-4 mb-6 w-full">
-            <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">Query Filters</div>
+            <div class="flex justify-between">
+                <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">Query Filters</div>
+                <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}
+                    ><div class="bx bx-refresh"></div>
+                    Reset Filters</button
+                >
+            </div>
             <!-- <h2 class="font-bold mb-2"></h2> -->
 
             <!-- <div class="grid grid-cols-1 md:grid-cols-1 gap-4"> -->
@@ -334,7 +367,7 @@
                         name="my-accordion"
                         value="observation"
                         on:click={() => {
-                            deselectFilter('observation');
+                            deselectAccordion('observation');
                         }}
                         bind:group={selectedFilter}
                         checked={false}
@@ -436,7 +469,7 @@
                         name="my-accordion"
                         value="coordinate-search"
                         on:click={() => {
-                            deselectFilter('coordinate-search');
+                            deselectAccordion('coordinate-search');
                         }}
                         bind:group={selectedFilter}
                         checked={false}
@@ -504,7 +537,7 @@
                         name="my-accordion"
                         value="energy-regime"
                         on:click={() => {
-                            deselectFilter('energy-regime');
+                            deselectAccordion('energy-regime');
                         }}
                         bind:group={selectedFilter}
                         checked={false}
@@ -570,6 +603,7 @@
                                     bind:value={bandpassMin}
                                     placeholder="Bandpass min"
                                     class="input input-bordered text-lg w-full"
+                                    min="0"
                                 />
                                 {#if bandpassUnit}
                                     <span class="label">{bandpassUnit}</span>
@@ -584,6 +618,7 @@
                                     bind:value={bandpassMax}
                                     placeholder="Bandpass max"
                                     class="input input-bordered text-lg w-full"
+                                    min="0"
                                 />
                                 {#if bandpassUnit}
                                     <span class="label">{bandpassUnit}</span>
@@ -600,7 +635,7 @@
                         name="my-accordion"
                         value="depth"
                         on:click={() => {
-                            deselectFilter('depth');
+                            deselectAccordion('depth');
                         }}
                         bind:group={selectedFilter}
                         checked={false}
@@ -653,7 +688,7 @@
                         name="my-accordion"
                         value="filter-schedule"
                         on:click={() => {
-                            deselectFilter('filter-schedule');
+                            deselectAccordion('filter-schedule');
                         }}
                         bind:group={selectedFilter}
                         checked={false}
@@ -835,22 +870,19 @@
                                                     {telescope_instrument?.instrumentName}
                                                 </p>
                                             {/each}
-                                        {:else if column.id === 'date_ranges'}
-                                            <div class="text-xs font-bold opacity-50">Begin</div>
+                                        {:else if column.id === 'date_begin'}
                                             <p class="text-xs w-max">
                                                 {new Date(obs.date_range?.begin + 'Z').toISOString().slice(0, -5).replace('T', ' ')}
                                             </p>
-
-                                            <div class="text-xs font-bold opacity-50">End</div>
+                                        {:else if column.id === 'date_end'}
                                             <p class="text-xs w-max">
                                                 {new Date(obs.date_range?.end + 'Z').toISOString().slice(0, -5).replace('T', ' ')}
                                             </p>
-                                        {:else if column.id === 'ra_dec'}
-                                            <div class="text-xs font-bold opacity-50">RA</div>
+                                        {:else if column.id === 'ra'}
                                             <p class="text-xs">
                                                 {obs.pointing_position?.ra}°
                                             </p>
-                                            <div class="text-xs font-bold opacity-50">DEC</div>
+                                        {:else if column.id === 'dec'}
                                             <p class="text-xs">
                                                 {obs.pointing_position?.dec}°
                                             </p>

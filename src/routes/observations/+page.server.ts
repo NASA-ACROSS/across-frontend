@@ -91,11 +91,8 @@ export async function load({ url, locals, cookies }: RequestEvent) {
         apiParams.append('sort', sort);
         apiParams.append('order', order);
     }
-    console.log('apiParams', apiParams);
 
     apiUrl += apiParams.toString();
-
-    console.log('apiUrl', apiUrl);
 
     try {
         // Fetch observations
@@ -118,8 +115,6 @@ export async function load({ url, locals, cookies }: RequestEvent) {
         // For now, we'll create a simple mock mapping
         const userCookie = locals?.user as UserCredentialsCookie;
         const telescopes: Telescope[] = await getTelescopes(userCookie, cookies);
-
-        console.log(observations.length);
 
         return {
             observations,

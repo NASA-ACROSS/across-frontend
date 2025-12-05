@@ -1,29 +1,67 @@
-FROM node:20.10-bookworm-slim as build
+FROM node:20.10-bookworm-slim AS build
 
-ARG GIT_VERSION
-
-# internal public static env var for propagating version to frontend client
-ENV PUBLIC_BUILD_VERSION=$GIT_VERSION
+ARG BUILD_ENV=local
 
 WORKDIR /app
 
-COPY package.json ./
-COPY package-lock.json ./
+# Keeps npm from generating unnecessary files
+ENV NODE_ENV=development
+
+# Copy only the necessary files for dependency installation first
+COPY package*.json ./
+
+# Install dependencies
+# RUN --mount=type=ssh npm ci
 
 RUN npm ci --include=dev
 
-COPY . ./
+# Copy source for build (needed for action and deploy)
+COPY . .
 
+# Build the app
 RUN npm run build
 
-FROM node:20.10-bookworm-slim
+
+FROM node:20.10-bookworm-slim AS local
 
 WORKDIR /app
-COPY --from=build /app .
+
+COPY --from=build /app/node_modules /app/node_modules
+COPY --from=build /app/package*.json ./
+
+ENV NODE_ENV=development
+
+EXPOSE 3000
+
+
+# For GHA like test, lint, types
+FROM node:20.10-bookworm-slim AS action
+WORKDIR /app
+
+COPY --from=build /app/node_modules /app/node_modules
+COPY --from=build /app/build /app/build
+COPY --from=build /app/tests /app/tests
+COPY --from=build /app/package*.json ./
+
+# Copy source code for linting/testing
+COPY . .
 
 ENV NODE_ENV=production
 
-# ENV HOST=0.0.0.0
+
+FROM node:20.10-bookworm-slim AS deploy
+WORKDIR /app
+
+COPY --from=build /app/build /app/build
+COPY --from=build /app/package*.json ./
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
 EXPOSE 3000
 
-CMD ["node","build"]
+# Creates a non-root user with an explicit UID and adds permission to access the /app folder
+RUN useradd -m -u 5678 appuser && chown -R appuser /app
+USER appuser
+
+CMD ["node", "build"]

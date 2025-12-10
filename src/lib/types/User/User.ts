@@ -15,7 +15,4 @@ export type User = {
     group_roles: GroupRole[];
 };
 
-export type UserDetail = Pick<
-    User,
-    'id' | 'first_name' | 'last_name' | 'username' | 'email'
->;
+export type UserDetail = Pick<User, 'id' | 'first_name' | 'last_name' | 'username' | 'email'>;

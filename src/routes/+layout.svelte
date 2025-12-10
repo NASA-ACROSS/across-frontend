@@ -29,10 +29,7 @@
     <meta name="build-version" content={PUBLIC_CONFIG.BUILD_VERSION} />
 
     <!-- BoxIcons -->
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
 </svelte:head>
 
 <main class="min-h-screen m-0 flex flex-col content-between bg-primary">

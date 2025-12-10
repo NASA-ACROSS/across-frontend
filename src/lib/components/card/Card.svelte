@@ -4,8 +4,7 @@
     import InfoBadge from '../badge/InfoBadge.svelte';
 
     export let data: CardData;
-    export let img: { url: string; description: string } | undefined =
-        undefined;
+    export let img: { url: string; description: string } | undefined = undefined;
 </script>
 
 <div class="card m-3 border-0 shadow-sm card-hover">

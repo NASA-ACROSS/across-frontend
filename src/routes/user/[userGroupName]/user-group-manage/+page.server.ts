@@ -15,19 +15,17 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
     const userCookie = locals.user;
     // Redirect on load when user is logged in
     if (!userCookie) {
-        throw redirect(302, resolve('/user/login'));
+        redirect(302, resolve('/user/login'));
     }
 
     const user: User = await getUserInfo(userCookie, cookies);
 
     // find current group from route by short_name
-    const userGroup = user.groups.find(
-        (group) => group.short_name === params.userGroupName
-    );
+    const userGroup = user.groups.find((group) => group.short_name === params.userGroupName);
 
     // redirect if we don't have necessary info or user lacks permission
     if (!user || !userGroup || !isAdmin(user, userGroup)) {
-        throw redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('/user/profile'));
     }
 
     const invitedUsers = await getInvitedUsers(userCookie, userGroup.id);
@@ -46,7 +44,7 @@ export const actions = {
         const userCookie = event.locals.user as UserCredentialsCookie;
         // Redirect on load when user is not logged in
         if (!userCookie) {
-            throw redirect(302, resolve('/user/login'));
+            redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 
@@ -70,10 +68,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/group/${groupId}/invite`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/group/${groupId}/invite`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: inviting user to group [${email}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -81,24 +76,18 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: inviting user to group [${email}] at [${Date.now()}] with status code [500]`
-            );
+            console.error(`ERROR: inviting user to group [${email}] at [${Date.now()}] with status code [500]`);
             return fail(500, { fail: true });
         }
 
         if (response.status == 409) {
-            console.log(
-                `Attempted to invite a user [${email}] to group id [${groupId}] who was already in the group`
-            );
+            console.log(`Attempted to invite a user [${email}] to group id [${groupId}] who was already in the group`);
             return { userInGroup: true };
         }
 
         if (response.status == 404) {
             const errorResponse = (await response.json()) as ErrorResponse;
-            console.error(
-                `ERROR: inviting user to group NOT FOUND [${email}] at [${Date.now()}] with status code [404]`
-            );
+            console.error(`ERROR: inviting user to group NOT FOUND [${email}] at [${Date.now()}] with status code [404]`);
             return fail(500, {
                 error: errorResponse.detail,
                 invalidEmail: true,
@@ -115,9 +104,7 @@ export const actions = {
         const userInviteId = data.get('userInviteId') as string;
         const userGroupId = data.get('userGroupId') as string;
 
-        console.log(
-            `delete invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`
-        );
+        console.log(`delete invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`);
 
         const options = {
             method: 'DELETE',
@@ -129,10 +116,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/group/${userGroupId}/invite/${userInviteId}`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/group/${userGroupId}/invite/${userInviteId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -140,17 +124,13 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`
-            );
+            console.error(`ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`);
             return fail(500, { fail: true });
         }
 
         if (response.status == 400) {
             const errorResponse = (await response.json()) as ErrorResponse;
-            console.error(
-                `ERROR: deleting user invite id [${userInviteId}] NOT FOUND at [${Date.now()}] with status code [400]`
-            );
+            console.error(`ERROR: deleting user invite id [${userInviteId}] NOT FOUND at [${Date.now()}] with status code [400]`);
             return fail(500, {
                 error: errorResponse.detail,
                 invalidEmail: true,
@@ -167,9 +147,7 @@ export const actions = {
         const userId = data.get('userId') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(
-            `remove user from group userId: ${userId} userGroupId: ${groupId}`
-        );
+        console.log(`remove user from group userId: ${userId} userGroupId: ${groupId}`);
 
         const options = {
             method: 'DELETE',
@@ -181,10 +159,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/group/${groupId}/user/${userId}`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/group/${groupId}/user/${userId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -192,9 +167,7 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}] with status code [500]`
-            );
+            console.error(`ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}] with status code [500]`);
             return fail(500, { fail: true });
         }
 
@@ -209,9 +182,7 @@ export const actions = {
         const roleId = data.get('roleId') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(
-            `assign user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId}`
-        );
+        console.log(`assign user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId}`);
 
         const options = {
             method: 'PUT',
@@ -222,10 +193,7 @@ export const actions = {
         };
 
         try {
-            await fetch(
-                `${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`,
-                options
-            );
+            await fetch(`${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: assigning user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -243,9 +211,7 @@ export const actions = {
         const roleId = data.get('roleId') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(
-            `remove user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId}`
-        );
+        console.log(`remove user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId}`);
 
         const options = {
             method: 'DELETE',
@@ -256,10 +222,7 @@ export const actions = {
         };
 
         try {
-            await fetch(
-                `${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`,
-                options
-            );
+            await fetch(`${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: removing user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));

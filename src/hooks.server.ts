@@ -35,10 +35,7 @@ export const handleError: HandleServerError = ({ error, event, message }) => {
         errorCause,
     };
 
-    console.error(
-        `[ERROR] Unhandled exception in ${event?.url?.toString()}`,
-        errorLog
-    );
+    console.error(`[ERROR] Unhandled exception in ${event?.url?.toString()}`, errorLog);
 
     return {
         message,

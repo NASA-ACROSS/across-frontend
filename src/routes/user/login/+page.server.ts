@@ -10,7 +10,7 @@ export function load({ locals }: RequestEvent) {
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is logged in
     if (userCookie) {
-        throw redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('/user/profile'));
     }
 }
 
@@ -28,7 +28,7 @@ export const actions = {
     default: async (event) => {
         const data = await event.request.formData();
 
-        const email = data.get('email')?.toString();
+        const email = (data.get('email') as string)?.toString();
 
         if (!email?.match(emailRegex)) {
             return fail(400, {
@@ -61,15 +61,9 @@ export const actions = {
 
         let response: Response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/auth/login?email=${encodeURIComponent(email)}`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/auth/login?email=${encodeURIComponent(email)}`, options);
         } catch (error) {
-            console.error(
-                `ERROR: logging in user [${email}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
+            console.error(`ERROR: logging in user [${email}] at [${Date.now()}]`, JSON.stringify(error));
 
             if (error instanceof Error) {
                 return fail(500, { error: error.message, fail: true });
@@ -79,9 +73,7 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`
-            );
+            console.error(`ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`);
             return fail(500, { fail: true });
         }
 

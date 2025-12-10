@@ -15,9 +15,7 @@
 
     // cross match assignable roles with user's to create a list of user's current roles
     $: userRoles = selectedUser?.group_roles?.reduce((roles, userRole) => {
-        let matchingRole = assignableRoles?.find(
-            (role) => role.id == userRole.id
-        );
+        let matchingRole = assignableRoles?.find((role) => role.id == userRole.id);
 
         if (matchingRole) roles.push(matchingRole);
 
@@ -75,15 +73,8 @@
                     <ul class="list-group list-group-flush">
                         {#each userRoles as userRole}
                             <li class="flex justify-between mb-2">
-                                <span class="self-center text-lg"
-                                    >{userRole?.name}</span
-                                >
-                                <form
-                                    id="{userRole.id}-role"
-                                    method="post"
-                                    use:enhance={enhancedForm}
-                                    action="?/removeRole"
-                                >
+                                <span class="self-center text-lg">{userRole?.name}</span>
+                                <form id="{userRole.id}-role" method="post" use:enhance={enhancedForm} action="?/removeRole">
                                     <button
                                         class="btn btn-sm btn-accent"
                                         type="submit"
@@ -91,14 +82,9 @@
                                             selectedRole = userRole;
                                         }}
                                         >{#if isRemovingRole && selectedRole == userRole}
-                                            <span
-                                                class="loading loading-spinner"
-                                                role="status"
-                                                aria-hidden="true"
-                                            ></span>
+                                            <span class="loading loading-spinner" role="status" aria-hidden="true"></span>
                                         {:else}
-                                            <i class="bx bx-trash opacity-70"
-                                            ></i>
+                                            <i class="bx bx-trash opacity-70"></i>
                                             Remove Role
                                         {/if}</button
                                     >
@@ -112,12 +98,7 @@
             </div>
             <div class="card-body">
                 <div class="flex flex-row-reverse">
-                    <form
-                        id="{selectedUser.id}-remove"
-                        method="post"
-                        use:enhance={enhancedForm}
-                        action="?/removeUser"
-                    >
+                    <form id="{selectedUser.id}-remove" method="post" use:enhance={enhancedForm} action="?/removeUser">
                         <button type="submit" class="btn btn-sm btn-primary">
                             <i class="bx bx-log-out opacity-70 me-2"></i>
                             Remove User From Group

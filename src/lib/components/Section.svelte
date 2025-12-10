@@ -6,9 +6,7 @@
 
 <div class="lg:mx-13 lg:w-256 w-full mx-3 my-8 flex flex-col place-self-center">
     <div class="text-primary grow {containerClasses}">
-        <h2
-            class="text-3xl flex justify-between text-primary items-center pb-3"
-        >
+        <h2 class="text-3xl flex justify-between text-primary items-center pb-3">
             <div>
                 {#if icon}
                     <div class="bx bx-{icon} opacity-80" />

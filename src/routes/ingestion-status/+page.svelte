@@ -60,7 +60,7 @@
     };
 </script>
 
-<Page>
+<Page center={true}>
     <Section title="Observatory Data Ingestion Status" containerClasses={'w-full'} icon="globe">
         <div slot="buttons" class="text-xl">
             UTC: {utcNowFormatted}

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { PUBLIC_CONFIG } from '$config/config.public';
     import type { SubmitFunction } from '@sveltejs/kit';
     import type { ActionData } from './$types';
 
@@ -31,7 +32,7 @@
 
 <Page center={true}>
     <Alert>
-        Login is not required to GET data from ACROSS. <a href={resolve('/help/documentation')} class="link font-normal">
+        Login is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">
             See documentation for more details.</a
         >
     </Alert>

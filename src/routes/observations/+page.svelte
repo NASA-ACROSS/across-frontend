@@ -14,13 +14,12 @@
     $: totalPages = data.totalPages || 1;
     $: telescopes = data.telescopes;
 
+    const DEFAULT_COLUMNS = ['telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'target_id', 'object_name', 'status'];
+
     // Query parameters
     let externalId = data.queryParams?.external_id || '';
     let scheduleId = '';
     let scheduleIds = (data.queryParams?.schedule_ids as string[]) || ([] as string[]);
-    let observatoryIds = data.queryParams?.observatory_ids || [];
-    let telescopeIds = data.queryParams?.telescope_ids || [];
-    let instrumentIds = data.queryParams?.instrument_ids || [];
     let status = data.queryParams?.status || '';
     let proposal = data.queryParams?.proposal || '';
     let objectName = data.queryParams?.object_name || '';
@@ -64,8 +63,6 @@
         { id: 'description', label: 'Description', selected: false },
         { id: 'schedule_id', label: 'Schedule ID', selected: false },
     ];
-
-    const DEFAULT_COLUMNS = ['telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'target_id', 'object_name', 'status'];
 
     $: selectedColumns = availableColumns.filter((col) => col.selected);
     let isCustomizeModalOpen = false;
@@ -131,8 +128,9 @@
         if (cookieValue) {
             try {
                 const savedColumns = JSON.parse(decodeURIComponent(cookieValue));
-                availableColumns.forEach((col) => {
+                availableColumns = availableColumns.map((col) => {
                     col.selected = savedColumns.includes(col.id);
+                    return col;
                 });
                 selectedColumns = availableColumns.filter((col) => col.selected);
             } catch (e) {
@@ -151,12 +149,12 @@
     }
 
     function resetToDefaultColumns() {
-        availableColumns.forEach((col) => {
-            // Set default selections
-            col.selected = ['telescope_instrument', 'date_ranges', 'ra_dec', 'target_id', 'exposure_time', 'bandpass_name', 'observation_type'].includes(
-                col.id
-            );
+        // toggle selected
+        availableColumns = availableColumns.map((col) => {
+            col.selected = DEFAULT_COLUMNS.includes(col.id);
+            return col;
         });
+
         selectedColumns = availableColumns.filter((col) => col.selected);
     }
 
@@ -180,20 +178,16 @@
         if (depthUnit) params.append('depth_unit', depthUnit);
         if (scheduleIds.length) params.append('schedule_ids', scheduleIds.toString());
 
-        // scheduleIds.forEach((id) => params.append('schedule_ids', id));
-        observatoryIds.forEach((id) => params.append('observatory_ids', id));
-        telescopeIds.forEach((id) => params.append('telescope_ids', id));
-        instrumentIds.forEach((id) => params.append('instrument_ids', id));
-
         // Add columns parameter
         const columnParam = selectedColumns.map((col) => col.id).join(',');
         if (columnParam) params.append('columns', columnParam);
 
+        // TODO: add sorting
         // Add sort parameters if sorting is applied
-        if (sortColumn && sortDirection) {
-            params.append('sort', sortColumn);
-            params.append('order', sortDirection);
-        }
+        // if (sortColumn && sortDirection) {
+        //     params.append('sort', sortColumn);
+        //     params.append('order', sortDirection);
+        // }
 
         // Add page parameter
         params.append('page', '1'); // Reset to first page on new search
@@ -228,25 +222,25 @@
         }
     }
 
-    async function toggleSort(column) {
-        if (sortColumn === column) {
-            if (sortDirection === 'asc') {
-                sortDirection = 'desc';
-            } else if (sortDirection === 'desc') {
-                sortColumn = '';
-                sortDirection = 'asc';
-            }
-        } else {
-            sortColumn = column;
-            sortDirection = 'asc';
-        }
+    // TODO: add sort to table headings with on:click={() => toggleSort(column.id)}
+    // async function toggleSort(column) {
+    //     if (sortColumn === column) {
+    //         if (sortDirection === 'asc') {
+    //             sortDirection = 'desc';
+    //         } else if (sortDirection === 'desc') {
+    //             sortColumn = '';
+    //             sortDirection = 'asc';
+    //         }
+    //     } else {
+    //         sortColumn = column;
+    //         sortDirection = 'asc';
+    //     }
 
-        // Apply the sort
-        await handleSearch();
-    }
+    //     // Apply the sort
+    //     await handleSearch();
+    // }
 
     async function saveColumnSelection() {
-        selectedColumns = availableColumns.filter((col) => col.selected);
         saveColumnsToCookie();
         isCustomizeModalOpen = false;
 
@@ -318,13 +312,10 @@
         }
     }
 
-    function resetFilters() {
+    async function resetFilters() {
         externalId = '';
         scheduleId = '';
         scheduleIds = [];
-        observatoryIds = [];
-        telescopeIds = [];
-        instrumentIds = [];
         status = '';
         proposal = '';
         objectName = '';
@@ -342,6 +333,8 @@
         type = '';
         depthValue = '';
         depthUnit = '';
+
+        await handleSearch();
     }
 </script>
 
@@ -800,18 +793,20 @@
 
         <!-- Column Customization Modal -->
         {#if isCustomizeModalOpen}
-            <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div class="bg-base-100 p-6 w-full max-w-md">
+            <div class="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+                <div class="bg-base-100 p-6 w-full max-w-md shadow-2xl">
                     <h3 class="text-lg font-bold mb-4">Customize Columns</h3>
-
-                    <div class="max-h-60 overflow-y-auto mb-4">
+                    <p>Changes apply on selection</p>
+                    <div class="max-h-80 overflow-y-auto mb-4">
                         {#each availableColumns as column}
-                            <div class="form-control odd:bg-base-200">
-                                <label class="label cursor-pointer flex justify-between">
-                                    <span class="label-text ps-3">{column.label}</span>
-                                    <input type="checkbox" bind:checked={column.selected} class="checkbox me-3" />
-                                </label>
-                            </div>
+                            {#key column.id && column.selected}
+                                <div class="form-control odd:bg-base-200">
+                                    <label class="label cursor-pointer flex justify-between">
+                                        <span class="label-text ps-3">{column.label}</span>
+                                        <input type="checkbox" bind:checked={column.selected} class="checkbox me-3" />
+                                    </label>
+                                </div>
+                            {/key}
                         {/each}
                     </div>
 
@@ -821,8 +816,7 @@
                             <button class="btn btn-sm btn-outline" on:click={loadColumnsFromCookie}> Load My Columns </button>
                         </div>
                         <div>
-                            <button class="btn btn-sm btn-ghost mr-2" on:click={() => (isCustomizeModalOpen = false)}> Cancel </button>
-                            <button class="btn btn-sm btn-primary" on:click={saveColumnSelection}> Apply </button>
+                            <button class="btn btn-sm btn-primary" on:click={saveColumnSelection}> Save & Close </button>
                         </div>
                     </div>
                 </div>
@@ -830,12 +824,12 @@
         {/if}
 
         <!-- Data Table -->
-        <div id="data-table" class="overflow-x-auto overflow-y-scroll max-h-256 pe-0 pb-0">
+        <div id="data-table" class="overflow-x-auto overflow-y-scroll max-h-256 ps-0 pe-0 pb-0">
             <table class="table table-pin-rows table-zebra w-full">
                 <thead>
                     <tr class="bg-primary text-primary-content">
                         {#each selectedColumns as column}
-                            <th class="max-w-70 cursor-pointer hover:bg-nasa-blue" on:click={() => toggleSort(column.id)}>
+                            <th class="max-w-70 cursor-pointer hover:bg-nasa-blue">
                                 {column.label}
                                 {#if sortColumn === column.id}
                                     {sortDirection === 'asc' ? '↑' : '↓'}
@@ -902,6 +896,8 @@
                                             {obs.proposal_reference || '-'}
                                         {:else if column.id === 'description'}
                                             {obs.description || '-'}
+                                        {:else if column.id === 'schedule_id'}
+                                            {obs.schedule_id || '-'}
                                         {:else}
                                             -
                                         {/if}
@@ -932,6 +928,6 @@
     }
 
     #data-table {
-        scrollbar-gutter: stable both-edges;
+        scrollbar-gutter: stable;
     }
 </style>

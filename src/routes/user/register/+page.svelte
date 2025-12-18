@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { resolve } from '$app/paths';
+    import { PUBLIC_CONFIG } from '$config/config.public';
     import Section from '$lib/components/Section.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
@@ -14,7 +14,7 @@
 
 <Page center={true}>
     <Alert>
-        Registration is not required to GET data from ACROSS. <a href={resolve('/help/documentation')} class="link font-normal"
+        Registration is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal"
             >See documentation for more details.</a
         >
     </Alert>

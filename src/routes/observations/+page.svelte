@@ -8,13 +8,14 @@
 
     export let data;
 
+    const DEFAULT_COLUMNS = ['telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'target_id', 'object_name', 'status'];
+    const COOKIE_NAME = 'observation_columns';
+
     // Observation data and pagination
     $: observations = data.observations || [];
     $: currentPage = data.currentPage || 1;
     $: totalPages = data.totalPages || 1;
     $: telescopes = data.telescopes;
-
-    const DEFAULT_COLUMNS = ['telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'target_id', 'object_name', 'status'];
 
     // Query parameters
     let externalId = data.queryParams?.external_id || '';
@@ -65,11 +66,12 @@
     ];
 
     $: selectedColumns = availableColumns.filter((col) => col.selected);
-    let isCustomizeModalOpen = false;
-    let sortColumn = '';
-    let sortDirection = 'asc'; // 'asc', 'desc', or ''
 
-    const COOKIE_NAME = 'observation_columns';
+    let isCustomizeModalOpen = false;
+
+    // TODO: add sorting
+    // let sortColumn = '';
+    // let sortDirection = 'asc'; // 'asc', 'desc', or ''
 
     // Status options
     const statusOptions = ['planned', 'scheduled', 'unscheduled', 'performed', 'aborted'];
@@ -795,8 +797,15 @@
         {#if isCustomizeModalOpen}
             <div class="fixed inset-0 bg-transparent flex items-center justify-center z-50">
                 <div class="bg-base-100 p-6 w-full max-w-md shadow-2xl">
-                    <h3 class="text-lg font-bold mb-4">Customize Columns</h3>
-                    <p>Changes apply on selection</p>
+                    <div class="text-lg font-bold mb-4 flex flex-row justify-between">
+                        <h3 class="flex">Customize Columns</h3>
+                        <button
+                            class="justify-end btn btn-sm btn-primary max-h-8"
+                            title="Close without saving selections to cookie"
+                            on:click={() => (isCustomizeModalOpen = false)}>X</button
+                        >
+                    </div>
+                    <p class="italic">Changes apply on selection</p>
                     <div class="max-h-80 overflow-y-auto mb-4">
                         {#each availableColumns as column}
                             {#key column.id && column.selected}
@@ -816,7 +825,13 @@
                             <button class="btn btn-sm btn-outline" on:click={loadColumnsFromCookie}> Load My Columns </button>
                         </div>
                         <div>
-                            <button class="btn btn-sm btn-primary" on:click={saveColumnSelection}> Save & Close </button>
+                            <button
+                                class="btn btn-sm btn-primary"
+                                on:click={saveColumnSelection}
+                                title="Save column selections to cookie to be loaded next visit and close this modal"
+                            >
+                                Save & Close
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -831,9 +846,9 @@
                         {#each selectedColumns as column}
                             <th class="max-w-70 cursor-pointer hover:bg-nasa-blue">
                                 {column.label}
-                                {#if sortColumn === column.id}
+                                <!-- {#if sortColumn === column.id}
                                     {sortDirection === 'asc' ? '↑' : '↓'}
-                                {/if}
+                                {/if} -->
                             </th>
                         {/each}
                     </tr>

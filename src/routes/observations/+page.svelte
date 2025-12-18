@@ -403,7 +403,7 @@
                                         id="object-name-input"
                                         type="text"
                                         bind:value={objectName}
-                                        placeholder="e.g. GRW+70D5824"
+                                        placeholder="e.g. CRAB PULSAR"
                                         class="input input-bordered text-lg w-full"
                                     />
                                 </div>

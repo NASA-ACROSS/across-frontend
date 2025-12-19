@@ -24,6 +24,7 @@ type ObservationQueryParams = {
     bandpass_min?: string | number;
     bandpass_max?: string | number;
     bandpass_type?: string;
+    bandpass_unit?: string;
     cone_search_ra?: string | number;
     cone_search_dec?: string | number;
     cone_search_radius?: string | number;
@@ -42,7 +43,7 @@ export async function load({ url, locals, cookies }: RequestEvent) {
     const urlColumns = url.searchParams.get('columns')?.split(',') || [];
 
     // Build query params object for the API call
-    const queryParams: ObservationQueryParams = {};
+    const queryParams: ObservationQueryParams = {} as ObservationQueryParams;
 
     // Single value params
     if (url.searchParams.has('external_id')) queryParams.external_id = url.searchParams.get('external_id') || undefined;
@@ -131,7 +132,7 @@ export async function load({ url, locals, cookies }: RequestEvent) {
             observations: [],
             currentPage: 1,
             totalPages: 1,
-            queryParams: {},
+            queryParams: {} as ObservationQueryParams,
             urlColumns: [],
             error: 'Failed to load observations. Please try again later.',
         };

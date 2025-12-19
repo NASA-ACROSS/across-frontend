@@ -5,7 +5,7 @@
     import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 
     export let user: UserCredentialsCookie | undefined;
-    export let API_URL: string = 'http://127.0.0.1:8000/docs';
+    export let API_DOCS_URL: string;
 
     $: currentPath = page.url.pathname;
 
@@ -98,7 +98,7 @@
             </li>
             <li>
                 <div class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
-                    <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={API_URL + '/docs'}>API </a>
+                    <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={API_DOCS_URL}>API </a>
                 </div>
             </li>
         </ul>

@@ -26,7 +26,7 @@
 </svelte:head>
 
 <main class="min-h-screen m-0 flex flex-col content-between bg-primary">
-    <Navigation user={data.user} API_URL={data.API_URL}></Navigation>
+    <Navigation user={data.user} API_DOCS_URL={data.API_DOCS_URL}></Navigation>
 
     <slot />
 

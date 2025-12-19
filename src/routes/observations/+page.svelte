@@ -104,15 +104,14 @@
 
         // Default to DEFAULT_COLUMNS if nothing is selected
         if (selectedColumns.length === 0) {
-            selectedColumns = [...DEFAULT_COLUMNS];
             availableColumns = availableColumns.map((col) => {
-                const isDefault = DEFAULT_COLUMNS.some((defCol) => defCol.id === col.id);
+                const isDefault = DEFAULT_COLUMNS.some((defCol) => defCol === col.id);
                 return { ...col, selected: isDefault };
             });
         }
     });
 
-    function updateColumnsFromUrlParams(columnIds) {
+    function updateColumnsFromUrlParams(columnIds: string[]) {
         availableColumns.forEach((col) => {
             col.selected = columnIds.includes(col.id);
         });
@@ -169,14 +168,14 @@
         if (objectName) params.append('object_name', objectName);
         if (dateBegin) params.append('date_range_begin', `${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`);
         if (dateEnd) params.append('date_range_end', `${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
-        if (bandpassMin) params.append('bandpass_min', bandpassMin);
-        if (bandpassMax) params.append('bandpass_max', bandpassMax);
+        if (bandpassMin) params.append('bandpass_min', bandpassMin.toString());
+        if (bandpassMax) params.append('bandpass_max', bandpassMax.toString());
         if (bandpassType) params.append('bandpass_type', bandpassType);
-        if (coneSearchRa) params.append('cone_search_ra', coneSearchRa);
-        if (coneSearchDec) params.append('cone_search_dec', coneSearchDec);
-        if (coneSearchRadius) params.append('cone_search_radius', coneSearchRadius);
+        if (coneSearchRa) params.append('cone_search_ra', coneSearchRa.toString());
+        if (coneSearchDec) params.append('cone_search_dec', coneSearchDec.toString());
+        if (coneSearchRadius) params.append('cone_search_radius', coneSearchRadius.toString());
         if (type) params.append('type', type);
-        if (depthValue) params.append('depth_value', depthValue);
+        if (depthValue) params.append('depth_value', depthValue.toString());
         if (depthUnit) params.append('depth_unit', depthUnit);
         if (scheduleIds.length) params.append('schedule_ids', scheduleIds.toString());
 

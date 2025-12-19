@@ -30,8 +30,8 @@
     let timeEnd = data.queryParams?.date_range_end?.split('T')[1];
     let bandpassMin = data.queryParams?.bandpass_min || '';
     let bandpassMax = data.queryParams?.bandpass_max || '';
+    let bandpassRegime: string = data.queryParams?.bandpass_regime || '';
     let bandpassType: string = data.queryParams?.bandpass_type || '';
-    let bandpassUnit: string = data.queryParams?.bandpass_unit || '';
     let coneSearchRa = data.queryParams?.cone_search_ra || '';
     let coneSearchDec = data.queryParams?.cone_search_dec || '';
     let coneSearchRadius = data.queryParams?.cone_search_radius || '';
@@ -171,6 +171,7 @@
         if (bandpassMin) params.append('bandpass_min', bandpassMin.toString());
         if (bandpassMax) params.append('bandpass_max', bandpassMax.toString());
         if (bandpassType) params.append('bandpass_type', bandpassType);
+        if (bandpassRegime) params.append('bandpass_regime', bandpassRegime);
         if (coneSearchRa) params.append('cone_search_ra', coneSearchRa.toString());
         if (coneSearchDec) params.append('cone_search_dec', coneSearchDec.toString());
         if (coneSearchRadius) params.append('cone_search_radius', coneSearchRadius.toString());
@@ -326,8 +327,8 @@
         timeEnd = '';
         bandpassMin = '';
         bandpassMax = '';
+        bandpassRegime = '';
         bandpassType = '';
-        bandpassUnit = '';
         coneSearchRa = '';
         coneSearchDec = '';
         coneSearchRadius = '';
@@ -536,12 +537,12 @@
                         bind:group={selectedFilter}
                         checked={false}
                     />
-                    <div class="collapse-title font-semibold {bandpassType || bandpassMin || bandpassMax ? 'text-nasa-blue-shade' : ''}">
+                    <div class="collapse-title font-semibold {bandpassRegime || bandpassMin || bandpassMax ? 'text-nasa-blue-shade' : ''}">
                         <h3 class="text-lg mb-2">Energy Regime / Bandpass</h3>
                         {#if selectedFilter != 'energy-regime'}
                             <div class="opacity-60">
-                                {#if bandpassType}
-                                    <span class="font-thin">Bandpass: </span><span>{bandpassType}</span>
+                                {#if bandpassRegime}
+                                    <span class="font-thin">Bandpass: </span><span>{bandpassRegime}</span>
                                 {/if}
                                 {#if bandpassMin && bandpassMax}
                                     <span>{bandpassMin} - {bandpassMax}</span>
@@ -551,8 +552,8 @@
                                     <span>{'> ' + bandpassMin}</span>
                                 {/if}
 
-                                {#if bandpassUnit}
-                                    <span>{bandpassUnit}</span>
+                                {#if bandpassType}
+                                    <span>{bandpassType}</span>
                                 {/if}
                             </div>
                         {/if}
@@ -561,10 +562,15 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
                                 <label class="label text-lg" for="bandpass-type-input">
-                                    <span class="label-text">Bandpass Type</span>
+                                    <span class="label-text">Bandpass Regime</span>
                                 </label>
-                                <select id="bandpass-type-input" bind:value={bandpassType} class="select select-bordered text-lg w-full">
-                                    <option value="">Select type</option>
+                                <select
+                                    id="bandpass-type-input"
+                                    bind:value={bandpassRegime}
+                                    on:change={() => (bandpassType = '')}
+                                    class="select select-bordered text-lg w-full"
+                                >
+                                    <option value="">Select Regime</option>
                                     {#each bandpassTypeOptions as option}
                                         <option value={option}>{option}</option>
                                     {/each}
@@ -573,18 +579,20 @@
 
                             <div>
                                 <label class="label text-lg" for="bandpass-type-input">
-                                    <span class="label-text">{bandpassType ? bandpassType : 'Bandpass'} Unit</span>
+                                    <span class="label-text">{bandpassRegime ? bandpassRegime : 'Bandpass'} Type</span>
                                 </label>
                                 <select
                                     id="bandpass-type-input"
-                                    bind:value={bandpassUnit}
-                                    class="select select-bordered text-lg {bandpassType ? '' : 'opacity-50'} w-full"
+                                    bind:value={bandpassType}
+                                    class="select select-bordered text-lg {bandpassRegime ? '' : 'opacity-50'} w-full"
                                 >
-                                    <option class="opacity-50" value="">{bandpassType ? `Select ${bandpassType} unit` : '← Select Bandpass Type'}</option>
-                                    {#if bandpassType}
-                                        {#each bandpasssUnitOptions[bandpassType] as option}
-                                            <option value={option}>{option}</option>
-                                        {/each}
+                                    <option class="opacity-50" value="">{bandpassRegime ? `Select ${bandpassRegime} unit` : '← Select Bandpass Type'}</option>
+                                    {#if bandpassRegime}
+                                        {#key bandpassRegime}
+                                            {#each bandpasssUnitOptions[bandpassRegime] as option}
+                                                <option value={option}>{option}</option>
+                                            {/each}
+                                        {/key}
                                     {/if}
                                 </select>
                             </div>
@@ -599,8 +607,8 @@
                                     class="input input-bordered text-lg w-full"
                                     min="0"
                                 />
-                                {#if bandpassUnit}
-                                    <span class="label">{bandpassUnit}</span>
+                                {#if bandpassType}
+                                    <span class="label">{bandpassType}</span>
                                 {/if}
                             </label>
 
@@ -614,8 +622,8 @@
                                     class="input input-bordered text-lg w-full"
                                     min="0"
                                 />
-                                {#if bandpassUnit}
-                                    <span class="label">{bandpassUnit}</span>
+                                {#if bandpassType}
+                                    <span class="label">{bandpassType}</span>
                                 {/if}
                             </label>
                         </div>

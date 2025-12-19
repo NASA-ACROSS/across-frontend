@@ -24,7 +24,7 @@ type ObservationQueryParams = {
     bandpass_min?: string | number;
     bandpass_max?: string | number;
     bandpass_type?: string;
-    bandpass_unit?: string;
+    bandpass_regime?: string;
     cone_search_ra?: string | number;
     cone_search_dec?: string | number;
     cone_search_radius?: string | number;
@@ -33,11 +33,14 @@ type ObservationQueryParams = {
     depth_unit?: string;
 };
 
+// This is not an api param, but is used to select the energy regime in the frontend, so it should be preserved and shared for WYSIWYG
+const excluded_params = ['bandpass_regime'];
+
 export async function load({ url, locals, cookies }: RequestEvent) {
     // Extract query parameters
     const page = Number(url.searchParams.get('page')) || 1;
-    const sort = url.searchParams.get('sort') || '';
-    const order = url.searchParams.get('order') || 'asc';
+    // const sort = url.searchParams.get('sort') || '';
+    // const order = url.searchParams.get('order') || 'asc';
 
     // Extract column preferences from URL if present
     const urlColumns = url.searchParams.get('columns')?.split(',') || [];
@@ -54,6 +57,7 @@ export async function load({ url, locals, cookies }: RequestEvent) {
     if (url.searchParams.has('date_range_end')) queryParams.date_range_end = url.searchParams.get('date_range_end') || undefined;
     if (url.searchParams.has('bandpass_min')) queryParams.bandpass_min = url.searchParams.get('bandpass_min') || undefined;
     if (url.searchParams.has('bandpass_max')) queryParams.bandpass_max = url.searchParams.get('bandpass_max') || undefined;
+    if (url.searchParams.has('bandpass_regime')) queryParams.bandpass_regime = url.searchParams.get('bandpass_regime') || undefined;
     if (url.searchParams.has('bandpass_type')) queryParams.bandpass_type = url.searchParams.get('bandpass_type') || undefined;
     if (url.searchParams.has('cone_search_ra')) queryParams.cone_search_ra = url.searchParams.get('cone_search_ra') || undefined;
     if (url.searchParams.has('cone_search_dec')) queryParams.cone_search_dec = url.searchParams.get('cone_search_dec') || undefined;
@@ -78,7 +82,8 @@ export async function load({ url, locals, cookies }: RequestEvent) {
             if (Array.isArray(value)) {
                 value.forEach((item) => apiParams.append(key, item));
             } else {
-                apiParams.append(key, String(value));
+                // only add valid api params
+                if (!excluded_params.includes(key)) apiParams.append(key, String(value));
             }
         }
     });
@@ -88,10 +93,10 @@ export async function load({ url, locals, cookies }: RequestEvent) {
     apiParams.append('page', String(page));
 
     // Add sorting params if provided
-    if (sort) {
-        apiParams.append('sort', sort);
-        apiParams.append('order', order);
-    }
+    // if (sort) {
+    //     apiParams.append('sort', sort);
+    //     apiParams.append('order', order);
+    // }
 
     apiUrl += apiParams.toString();
 

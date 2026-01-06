@@ -440,7 +440,7 @@
                                     <span class="label-text">Begin Date/Time</span>
                                 </label>
                                 <div class="grid grid-cols-2 space-x-2">
-                                    <input id="date-begin-input" type="date" bind:value={dateBegin} class="input w-full" />
+                                    <input id="date-begin-input" type="date" bind:value={dateBegin} class="input w-full text-primary" />
                                     <input id="time-begin-input" type="time" bind:value={timeBegin} class="input w-full" />
                                 </div>
                             </div>
@@ -951,5 +951,12 @@
 
     #data-table {
         scrollbar-gutter: stable;
+    }
+
+    #date-begin-input::-webkit-calendar-picker-indicator,
+    #date-end-input::-webkit-calendar-picker-indicator,
+    #time-begin-input::-webkit-calendar-picker-indicator,
+    #time-end-input::-webkit-calendar-picker-indicator {
+        filter: invert();
     }
 </style>

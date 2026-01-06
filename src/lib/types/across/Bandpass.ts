@@ -1,11 +1,11 @@
 // Energy units enum
-type EnergyUnit = 'eV' | 'keV' | 'MeV' | 'GeV' | 'TeV';
+export type EnergyUnit = 'eV' | 'keV' | 'MeV' | 'GeV' | 'TeV';
 
 // Frequency units enum
-type FrequencyUnit = 'Hz' | 'kHz' | 'MHz' | 'GHz' | 'THz';
+export type FrequencyUnit = 'Hz' | 'kHz' | 'MHz' | 'GHz' | 'THz';
 
 // Wavelength units enum
-type WavelengthUnit = 'nm' | 'angstrom' | 'um' | 'mm';
+export type WavelengthUnit = 'nm' | 'angstrom' | 'um' | 'mm';
 
 // Base interface for all bandpass types
 interface BaseBandpass {

@@ -1,4 +1,4 @@
-import type { Bandpass } from './Bandpass';
+import type { Bandpass, WavelengthUnit, EnergyUnit, FrequencyUnit } from './Bandpass';
 
 type Position = {
     ra: number; // Range 0-360 degrees
@@ -59,27 +59,6 @@ export type ObservationsResponse = {
     page_limit: number;
     items: Observation[];
 };
-
-enum WavelengthUnit {
-    NANOMETER = 'nm',
-    ANGSTROM = 'angstrom',
-    MICRON = 'um',
-    MILLIMETER = 'mm',
-}
-enum EnergyUnit {
-    eV = 'eV',
-    keV = 'keV',
-    MeV = 'MeV',
-    GeV = 'GeV',
-    TeV = 'TeV',
-}
-enum FrequencyUnit {
-    Hz = 'Hz',
-    kHz = 'kHz',
-    MHz = 'MHz',
-    GHz = 'GHz',
-    THz = 'THz',
-}
 
 enum DepthUnit {
     AB_MAG = 'ab_mag',

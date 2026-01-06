@@ -905,7 +905,7 @@
                                         {:else if column.id === 'target_id'}
                                             {obs.external_observation_id || '-'}
                                         {:else if column.id === 'exposure_time'}
-                                            {obs.exposure_time?.toFixed(2) || '-'} s
+                                            {`${obs.exposure_time?.toFixed(2)}s` || '-'}
                                         {:else if column.id === 'bandpass_name'}
                                             {obs.bandpass?.filter_name || '-'}
                                         {:else if column.id === 'observation_type'}

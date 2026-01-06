@@ -11,26 +11,26 @@ const DEFAULTS = {
 };
 
 type ObservationQueryParams = {
-    external_id?: string;
-    schedule_ids?: string[];
-    observatory_ids?: string[];
-    telescope_ids?: string[];
-    instrument_ids?: string[];
-    status?: string;
-    proposal?: string;
-    object_name?: string;
-    date_range_begin?: string;
-    date_range_end?: string;
-    bandpass_min?: string | number;
-    bandpass_max?: string | number;
-    bandpass_type?: string;
-    bandpass_regime?: string;
-    cone_search_ra?: string | number;
-    cone_search_dec?: string | number;
-    cone_search_radius?: string | number;
-    type?: string;
-    depth_value?: string | number;
-    depth_unit?: string;
+    external_id?: string | null;
+    schedule_ids?: string[] | null;
+    observatory_ids?: string[] | null;
+    telescope_ids?: string[] | null;
+    instrument_ids?: string[] | null;
+    status?: string | null;
+    proposal?: string | null;
+    object_name?: string | null;
+    date_range_begin?: string | null;
+    date_range_end?: string | null;
+    bandpass_min?: string | number | null;
+    bandpass_max?: string | number | null;
+    bandpass_type?: string | null;
+    bandpass_regime?: string | null;
+    cone_search_ra?: string | number | null;
+    cone_search_dec?: string | number | null;
+    cone_search_radius?: string | number | null;
+    type?: string | null;
+    depth_value?: string | number | null;
+    depth_unit?: string | null;
 };
 
 // This is not an api param, but is used to select the energy regime in the frontend, so it should be preserved and shared for WYSIWYG
@@ -49,22 +49,22 @@ export async function load({ url, locals, cookies }: RequestEvent) {
     const queryParams: ObservationQueryParams = {} as ObservationQueryParams;
 
     // Single value params
-    if (url.searchParams.has('external_id')) queryParams.external_id = url.searchParams.get('external_id') || undefined;
-    if (url.searchParams.has('status')) queryParams.status = url.searchParams.get('status') || undefined;
-    if (url.searchParams.has('proposal')) queryParams.proposal = url.searchParams.get('proposal') || undefined;
-    if (url.searchParams.has('object_name')) queryParams.object_name = url.searchParams.get('object_name') || undefined;
-    if (url.searchParams.has('date_range_begin')) queryParams.date_range_begin = url.searchParams.get('date_range_begin') || undefined;
-    if (url.searchParams.has('date_range_end')) queryParams.date_range_end = url.searchParams.get('date_range_end') || undefined;
-    if (url.searchParams.has('bandpass_min')) queryParams.bandpass_min = url.searchParams.get('bandpass_min') || undefined;
-    if (url.searchParams.has('bandpass_max')) queryParams.bandpass_max = url.searchParams.get('bandpass_max') || undefined;
-    if (url.searchParams.has('bandpass_regime')) queryParams.bandpass_regime = url.searchParams.get('bandpass_regime') || undefined;
-    if (url.searchParams.has('bandpass_type')) queryParams.bandpass_type = url.searchParams.get('bandpass_type') || undefined;
-    if (url.searchParams.has('cone_search_ra')) queryParams.cone_search_ra = url.searchParams.get('cone_search_ra') || undefined;
-    if (url.searchParams.has('cone_search_dec')) queryParams.cone_search_dec = url.searchParams.get('cone_search_dec') || undefined;
-    if (url.searchParams.has('cone_search_radius')) queryParams.cone_search_radius = url.searchParams.get('cone_search_radius') || undefined;
-    if (url.searchParams.has('type')) queryParams.type = url.searchParams.get('type') || undefined;
-    if (url.searchParams.has('depth_value')) queryParams.depth_value = url.searchParams.get('depth_value') || undefined;
-    if (url.searchParams.has('depth_unit')) queryParams.depth_unit = url.searchParams.get('depth_unit') || undefined;
+    if (url.searchParams.has('external_id')) queryParams.external_id = url.searchParams.get('external_id');
+    if (url.searchParams.has('status')) queryParams.status = url.searchParams.get('status');
+    if (url.searchParams.has('proposal')) queryParams.proposal = url.searchParams.get('proposal');
+    if (url.searchParams.has('object_name')) queryParams.object_name = url.searchParams.get('object_name');
+    if (url.searchParams.has('date_range_begin')) queryParams.date_range_begin = url.searchParams.get('date_range_begin');
+    if (url.searchParams.has('date_range_end')) queryParams.date_range_end = url.searchParams.get('date_range_end');
+    if (url.searchParams.has('bandpass_min')) queryParams.bandpass_min = url.searchParams.get('bandpass_min');
+    if (url.searchParams.has('bandpass_max')) queryParams.bandpass_max = url.searchParams.get('bandpass_max');
+    if (url.searchParams.has('bandpass_regime')) queryParams.bandpass_regime = url.searchParams.get('bandpass_regime');
+    if (url.searchParams.has('bandpass_type')) queryParams.bandpass_type = url.searchParams.get('bandpass_type');
+    if (url.searchParams.has('cone_search_ra')) queryParams.cone_search_ra = url.searchParams.get('cone_search_ra');
+    if (url.searchParams.has('cone_search_dec')) queryParams.cone_search_dec = url.searchParams.get('cone_search_dec');
+    if (url.searchParams.has('cone_search_radius')) queryParams.cone_search_radius = url.searchParams.get('cone_search_radius');
+    if (url.searchParams.has('type')) queryParams.type = url.searchParams.get('type');
+    if (url.searchParams.has('depth_value')) queryParams.depth_value = url.searchParams.get('depth_value');
+    if (url.searchParams.has('depth_unit')) queryParams.depth_unit = url.searchParams.get('depth_unit');
 
     // Array params
     queryParams.schedule_ids = url.searchParams.get('schedule_ids')?.split(',') || [];

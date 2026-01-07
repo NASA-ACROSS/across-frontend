@@ -8,7 +8,7 @@
 
     export let data;
 
-    const DEFAULT_COLUMNS = ['telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'target_id', 'object_name', 'status'];
+    const DEFAULT_COLUMNS = ['object_name', 'telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'target_id', 'status'];
     const COOKIE_NAME = 'observation_columns';
 
     // Observation data and pagination
@@ -41,6 +41,7 @@
 
     // Column customization
     $: availableColumns = [
+        { id: 'object_name', label: 'Object Name', selected: true },
         {
             id: 'telescope_instrument',
             label: 'Observatory/Telescope/Instrument',
@@ -54,7 +55,6 @@
         { id: 'exposure_time', label: 'Exposure Time', selected: true },
         { id: 'bandpass_name', label: 'Bandpass Name', selected: true },
         { id: 'observation_type', label: 'Observation Type', selected: true },
-        { id: 'object_name', label: 'Object Name', selected: false },
         { id: 'status', label: 'Status', selected: false },
         {
             id: 'proposal_reference',
@@ -168,15 +168,15 @@
         if (objectName) params.append('object_name', objectName);
         if (dateBegin) params.append('date_range_begin', `${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`);
         if (dateEnd) params.append('date_range_end', `${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
-        if (bandpassMin) params.append('bandpass_min', bandpassMin.toString());
-        if (bandpassMax) params.append('bandpass_max', bandpassMax.toString());
+        if (bandpassMin.toString()) params.append('bandpass_min', bandpassMin.toString());
+        if (bandpassMax.toString()) params.append('bandpass_max', bandpassMax.toString());
         if (bandpassType) params.append('bandpass_type', bandpassType);
         if (bandpassRegime) params.append('bandpass_regime', bandpassRegime);
-        if (coneSearchRa) params.append('cone_search_ra', coneSearchRa.toString());
-        if (coneSearchDec) params.append('cone_search_dec', coneSearchDec.toString());
-        if (coneSearchRadius) params.append('cone_search_radius', coneSearchRadius.toString());
+        if (coneSearchRa.toString()) params.append('cone_search_ra', coneSearchRa.toString());
+        if (coneSearchDec.toString()) params.append('cone_search_dec', coneSearchDec.toString());
+        if (coneSearchRadius.toString()) params.append('cone_search_radius', coneSearchRadius.toString());
         if (type) params.append('type', type);
-        if (depthValue) params.append('depth_value', depthValue.toString());
+        if (depthValue.toString()) params.append('depth_value', depthValue.toString());
         if (depthUnit) params.append('depth_unit', depthUnit);
         if (scheduleIds.length) params.append('schedule_ids', scheduleIds.toString());
 
@@ -184,6 +184,7 @@
         const columnParam = selectedColumns.map((col) => col.id).join(',');
         if (columnParam) params.append('columns', columnParam);
 
+        console.log(params.get('cone_search_ra'), params.get('cone_search_dec'), params.get('cone_search_radius'));
         // TODO: add sorting
         // Add sort parameters if sorting is applied
         // if (sortColumn && sortDirection) {

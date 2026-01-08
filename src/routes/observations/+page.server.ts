@@ -33,8 +33,31 @@ type ObservationQueryParams = {
     depth_unit?: string | null;
 };
 
+type ErrorResponse = {
+    detail: string;
+};
+
+const knownErrors = [
+    'Cone search parameters are not complete. Please provide all cone search parameters.',
+    'Depth parameters are not complete. Please provide all depth parameters.',
+    'Bandpass parameters are not complete. Please provide all bandpass parameters.',
+    'Max wavelength cannot be less than min wavelength.',
+    'Frequency values must be positive.',
+    'Energy values must be positive.',
+    'Wavelength values must be positive.',
+];
+
 // This is not an api param, but is used to select the energy regime in the frontend, so it should be preserved and shared for WYSIWYG
 const excluded_params = ['bandpass_regime'];
+
+const isKnownError = (errorText: string): string => {
+    for (const knownError of knownErrors) {
+        if (errorText.includes(knownError)) {
+            return knownError;
+        }
+    }
+    return 'There was an error processing the request, please modify your selection and try again';
+};
 
 export async function load({ url, locals, cookies }: RequestEvent) {
     // Extract query parameters
@@ -105,7 +128,17 @@ export async function load({ url, locals, cookies }: RequestEvent) {
         const response = await fetch(apiUrl);
 
         if (!response.ok) {
-            throw new Error(`API responded with status: ${response.status}`);
+            console.log(`API responded with status: ${response.status} for request URL ${apiUrl}`);
+            const text = (await response.json()) as ErrorResponse;
+            const knownError = isKnownError(text.detail);
+            return {
+                observations: [],
+                currentPage: 1,
+                totalPages: 1,
+                queryParams: {} as ObservationQueryParams,
+                urlColumns: [],
+                error: knownError,
+            };
         }
 
         const observationsResponse = (await response.json()) as ObservationsResponse;

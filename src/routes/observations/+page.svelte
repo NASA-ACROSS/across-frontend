@@ -8,6 +8,9 @@
 
     export let data;
 
+    $: error = data.error;
+    let scheduleIdError: string = '';
+
     const DEFAULT_COLUMNS = ['object_name', 'telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'target_id', 'status'];
     const COOKIE_NAME = 'observation_columns';
 
@@ -168,15 +171,15 @@
         if (objectName) params.append('object_name', objectName);
         if (dateBegin) params.append('date_range_begin', `${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`);
         if (dateEnd) params.append('date_range_end', `${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
-        if (bandpassMin.toString()) params.append('bandpass_min', bandpassMin.toString());
-        if (bandpassMax.toString()) params.append('bandpass_max', bandpassMax.toString());
+        if (bandpassMin?.toString()) params.append('bandpass_min', bandpassMin.toString());
+        if (bandpassMax?.toString()) params.append('bandpass_max', bandpassMax.toString());
         if (bandpassType) params.append('bandpass_type', bandpassType);
         if (bandpassRegime) params.append('bandpass_regime', bandpassRegime);
-        if (coneSearchRa.toString()) params.append('cone_search_ra', coneSearchRa.toString());
-        if (coneSearchDec.toString()) params.append('cone_search_dec', coneSearchDec.toString());
-        if (coneSearchRadius.toString()) params.append('cone_search_radius', coneSearchRadius.toString());
+        if (coneSearchRa?.toString()) params.append('cone_search_ra', coneSearchRa.toString());
+        if (coneSearchDec?.toString()) params.append('cone_search_dec', coneSearchDec.toString());
+        if (coneSearchRadius?.toString()) params.append('cone_search_radius', coneSearchRadius.toString());
         if (type) params.append('type', type);
-        if (depthValue.toString()) params.append('depth_value', depthValue.toString());
+        if (depthValue?.toString()) params.append('depth_value', depthValue.toString());
         if (depthUnit) params.append('depth_unit', depthUnit);
         if (scheduleIds.length) params.append('schedule_ids', scheduleIds.toString());
 
@@ -184,7 +187,6 @@
         const columnParam = selectedColumns.map((col) => col.id).join(',');
         if (columnParam) params.append('columns', columnParam);
 
-        console.log(params.get('cone_search_ra'), params.get('cone_search_dec'), params.get('cone_search_radius'));
         // TODO: add sorting
         // Add sort parameters if sorting is applied
         // if (sortColumn && sortDirection) {
@@ -204,17 +206,34 @@
         return `?${params.toString()}`;
     }
 
+    function isValidUUID(uuidString: string) {
+        const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        return regex.test(uuidString);
+    }
+
     function handleRemoveSchedule(removeScheduleId: string) {
         scheduleIds = scheduleIds.filter((scheduleId: string) => scheduleId != removeScheduleId);
     }
 
     function handleAddSchedule(addScheduleId: string) {
-        // prevent empty or duplicate additions
-        if (addScheduleId != '' && !scheduleIds.includes(addScheduleId)) {
+        // reset error text
+        scheduleIdError = '';
+        // early return and display known errors
+        if (!isValidUUID(addScheduleId)) {
+            scheduleIdError = 'Must be a valid UUID like AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE';
+            return;
+        }
+        if (scheduleIds.includes(addScheduleId)) {
+            scheduleIdError = 'Duplicate ID detected, ignoring.';
+            return;
+        }
+
+        // prevent empty
+        if (addScheduleId != '') {
             // can't use array.push here because svelte wont detect reactivity via pointer assignment
             // must reassign for reactivity
             scheduleIds = [...scheduleIds, addScheduleId.trim()];
-            // reset schedule input field
+            // reset schedule id input field
             scheduleId = '';
         }
     }
@@ -336,6 +355,7 @@
         type = '';
         depthValue = '';
         depthUnit = '';
+        scheduleIdError = '';
 
         await handleSearch();
     }
@@ -494,6 +514,8 @@
                                     id="ra-input"
                                     class="input validator input-bordered text-lg w-full"
                                     type="number"
+                                    inputmode="numeric"
+                                    pattern="\d*"
                                     bind:value={coneSearchRa}
                                     placeholder="Right Ascension"
                                     min="0"
@@ -506,6 +528,8 @@
                                 <input
                                     id="dec-input"
                                     type="number"
+                                    inputmode="numeric"
+                                    pattern="\d*"
                                     bind:value={coneSearchDec}
                                     placeholder="Declination"
                                     class="input input-bordered text-lg w-full"
@@ -517,6 +541,8 @@
                                 <input
                                     id="radius-input"
                                     type="number"
+                                    inputmode="numeric"
+                                    pattern="\d*"
                                     bind:value={coneSearchRadius}
                                     placeholder="Search radius"
                                     class="input input-bordered text-lg w-full"
@@ -603,14 +629,16 @@
                                 <input
                                     id="badpass-min-input"
                                     type="number"
+                                    inputmode="numeric"
                                     bind:value={bandpassMin}
                                     placeholder="Bandpass min"
-                                    class="input input-bordered text-lg w-full"
+                                    class="input validator input-bordered text-lg w-full"
                                     min="0"
                                 />
                                 {#if bandpassType}
                                     <span class="label">{bandpassType}</span>
                                 {/if}
+                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
                             </label>
 
                             <label class="input text-lg w-full" for="bandpass-max-input">
@@ -618,14 +646,16 @@
                                 <input
                                     id="bandpass-max-input"
                                     type="number"
+                                    inputmode="numeric"
                                     bind:value={bandpassMax}
                                     placeholder="Bandpass max"
-                                    class="input input-bordered text-lg w-full"
+                                    class="input validator input-bordered text-lg w-full"
                                     min="0"
                                 />
                                 {#if bandpassType}
                                     <span class="label">{bandpassType}</span>
                                 {/if}
+                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
                             </label>
                         </div>
                     </div>
@@ -673,10 +703,18 @@
                             <div class="self-end">
                                 <label class="input text-lg w-full">
                                     Depth Value:
-                                    <input type="number" bind:value={depthValue} placeholder="Depth Value" class="input input-bordered text-lg w-full" />
+                                    <input
+                                        type="number"
+                                        inputmode="numeric"
+                                        pattern="\d*"
+                                        bind:value={depthValue}
+                                        placeholder="Depth Value"
+                                        class="input validator input-bordered text-lg w-full"
+                                    />
                                     {#if depthUnit}
                                         <span class="label">{depthUnit}</span>
                                     {/if}
+                                    <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
                                 </label>
                                 <div class="flex items-center"></div>
                             </div>
@@ -720,6 +758,7 @@
                                 />
                                 <button id="schedule-add" on:click={() => handleAddSchedule(scheduleId)} class="btn btn-info text-lg">Add Schedule ID</button>
                             </label>
+                            <p class="self-center pe-3 text-error {scheduleIdError ? '' : 'hidden'}">{scheduleIdError}</p>
                             {#key scheduleIds.length}
                                 {#if scheduleIds.length}
                                     <div class="overflow-x-auto overflow-y-auto min-h-20 max-h-38">
@@ -747,6 +786,7 @@
             </div>
 
             <div class="flex justify-end mt-4">
+                <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
                 <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>
             </div>
         </div>
@@ -906,7 +946,7 @@
                                         {:else if column.id === 'target_id'}
                                             {obs.external_observation_id || '-'}
                                         {:else if column.id === 'exposure_time'}
-                                            {`${obs.exposure_time?.toFixed(2)}s` || '-'}
+                                            {obs?.exposure_time?.toFixed(2) ? `${obs?.exposure_time?.toFixed(2)} s` : '-'}
                                         {:else if column.id === 'bandpass_name'}
                                             {obs.bandpass?.filter_name || '-'}
                                         {:else if column.id === 'observation_type'}

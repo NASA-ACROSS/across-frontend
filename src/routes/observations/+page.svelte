@@ -521,6 +521,7 @@
                                     min="0"
                                     max="360"
                                 />
+                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
                             </label>
 
                             <label class="input text-lg pe-0 w-full" for="dec-input">
@@ -532,8 +533,9 @@
                                     pattern="\d*"
                                     bind:value={coneSearchDec}
                                     placeholder="Declination"
-                                    class="input input-bordered text-lg w-full"
+                                    class="input validator input-bordered text-lg w-full"
                                 />
+                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
                             </label>
 
                             <label class="input text-lg pe-0 w-full" for="radius-input">
@@ -545,8 +547,9 @@
                                     pattern="\d*"
                                     bind:value={coneSearchRadius}
                                     placeholder="Search radius"
-                                    class="input input-bordered text-lg w-full"
+                                    class="input validator input-bordered text-lg w-full"
                                 />
+                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
                             </label>
                         </div>
                     </div>

@@ -18,7 +18,7 @@
         "prepare": "husky"
     },
     "devDependencies": {
-        "@playwright/test": "^1.28.1",
+        "@playwright/test": "^1.57.0",
         "@sveltejs/adapter-auto": "^3.0.0",
         "@sveltejs/adapter-node": "^5.0.1",
         "@sveltejs/kit": "^2.0.0",

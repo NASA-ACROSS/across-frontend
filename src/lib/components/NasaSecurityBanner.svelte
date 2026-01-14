@@ -1,4 +1,4 @@
-<div role="alert" class="alert alert-warning alert-soft max-w-2xl flex flex-col">
+<div role="alert" class="alert alert-warning alert-soft flex flex-col place-self-center lg:max-w-256 w-full">
     <span class="">NASA IT Security Warning Banner</span>
     <span class="text-xs">
         By accessing and using this information system, you acknowledge and consent to the following: You are accessing a U.S. Government information system,

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { PUBLIC_CONFIG } from '$config/config.public';
     import type { SubmitFunction } from '@sveltejs/kit';
     import type { ActionData } from './$types';
 
@@ -10,6 +11,7 @@
     import { resolve } from '$app/paths';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
+    import Alert from '$lib/components/Alert.svelte';
 
     export let form: ActionData;
 
@@ -29,14 +31,12 @@
 </script>
 
 <Page center={true}>
-    <div role="alert" class="alert alert-info alert-soft mt-5">
-        <span class=""
-            >Login is not required to GET data from ACROSS. <a href={resolve('/help/documentation')} class="link font-normal"
-                >See documentation for more details.</a
-            ></span
+    <Alert>
+        Login is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">
+            See documentation for more details.</a
         >
-    </div>
-    <Section title="Login" containerClasses="min-w-1/2 lg:min-w-1/3">
+    </Alert>
+    <Section title="Login">
         <form class="pt-2" method="post" use:enhance={enhancedLogin} novalidate>
             <EmailInput
                 value={form?.email || ''}
@@ -65,9 +65,9 @@
                 {/if}
             </EmailInput>
         </form>
-        <ArrowButton href={resolve('/user/register')} containerClasses="mt-6 text-right justify-self-end" textClasses="text-sm text-right">
+        <ArrowButton href={resolve('/user/register')} containerClasses="mt-6 text-right justify-self-end mb-10" textClasses="text-sm text-right">
             Don't have an account? Register here
         </ArrowButton>
+        <NasaSecurityBanner></NasaSecurityBanner>
     </Section>
-    <NasaSecurityBanner></NasaSecurityBanner>
 </Page>

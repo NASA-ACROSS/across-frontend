@@ -50,7 +50,7 @@
     --color-success-content: oklch(97% 0.021 166.113);
     --color-warning: var(--color-nasa-orange);
     --color-warning-content: oklch(98% 0.026 102.212);
-    --color-error: var(--color-nasa-red);
+    --color-error: var(--color-nasa-orange);
     --color-error-content: oklch(100% 0 0);
     --radius-selector: 0rem;
     --radius-field: 0rem;

@@ -6,4 +6,4 @@
     export let data: PageData;
 </script>
 
-<Hero API_URL={data.API_URL}></Hero>
+<Hero API_DOCS_URL={data.API_DOCS_URL}></Hero>

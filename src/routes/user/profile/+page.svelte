@@ -18,6 +18,7 @@
     import Section from '$lib/components/Section.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
+    import DangerZone from './_components/DangerZone.svelte';
 
     export let data: PageData;
 
@@ -185,6 +186,8 @@
 
     <UserGroupInvites {invitations} />
     <UserGroups {user} {userGroups} bind:leaveUserGroup {enhancedForm} />
+
+    <DangerZone />
 </Page>
 
 <style>

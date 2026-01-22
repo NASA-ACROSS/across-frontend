@@ -109,12 +109,9 @@ export const actions = {
     },
     acceptInvite: async (event: RequestEvent) => {
         const { request, cookies } = event;
-        // NOTE: The following block is for temporary testing purposes
-        //       We need to come back to these once we finish porting
-        //       over API features
         const user = event.locals.user;
         if (!user) {
-            return fail(500, { fail: true });
+            throw redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 
@@ -151,12 +148,9 @@ export const actions = {
     },
     rejectInvite: async (event: RequestEvent) => {
         const { request, cookies } = event;
-        // NOTE: The following block is for temporary testing purposes
-        //       We need to come back to these once we finish porting
-        //       over API features
         const user = event.locals.user;
         if (!user) {
-            return fail(500, { fail: true });
+            throw redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 
@@ -193,12 +187,9 @@ export const actions = {
     },
     leaveGroup: async (event: RequestEvent) => {
         const { request, cookies } = event;
-        // NOTE: The following block is for temporary testing purposes
-        //       We need to come back to these once we finish porting
-        //       over API features
         const user = event.locals.user;
         if (!user) {
-            return fail(500, { fail: true });
+            throw redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 
@@ -232,5 +223,40 @@ export const actions = {
         }
 
         return { successLeaveGroup: true };
+    },
+    deleteUser: async (event: RequestEvent) => {
+        const { cookies } = event;
+        const user = event.locals.user;
+        if (!user) {
+            throw redirect(302, resolve('/user/login'));
+        }
+
+        console.log(`Deleting user. email: ${user.email} userId: ${user.id}`);
+        const userCred = new UserCredentials(user);
+        const userAccessToken = await userCred.getAccessToken(cookies);
+
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${userAccessToken}`,
+            },
+        };
+
+        let response;
+        try {
+            response = await fetch(`${CONFIG.API_URL}/user/${user.id}`, options);
+        } catch (error: unknown) {
+            const errorLog = `ERROR: deleting user id [${user.id}] at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
+        }
+
+        if (response.status == 500) {
+            console.error(`ERROR: deleting user id [${user.id}] at [${Date.now()}] with status code [500]`);
+            return fail(500, { fail: true });
+        }
+
+        throw redirect(302, resolve('/user/logout'));
     },
 };

@@ -25,7 +25,12 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export const actions = {
-    default: async (event) => {
+    default: async (event: RequestEvent) => {
+        event.cookies.delete('user-login', {
+            path: '/',
+        });
+        event.locals.user = undefined;
+
         const data = await event.request.formData();
 
         const email = data.get('email')?.toString();
@@ -77,12 +82,10 @@ export const actions = {
             return fail(500, { fail: true });
         }
 
-        if (response.status == 400) {
+        if (response.status == 401) {
             const errorResponse = (await response.json()) as { detail: string };
-
-            console.warn(errorResponse.detail, JSON.stringify({ email }));
-
-            return fail(400, { notFound: true });
+            console.warn(errorResponse.detail, JSON.stringify({ email: email, ip: event.getClientAddress() }));
+            return fail(401, { notFound: true });
         }
 
         return { success: true, email };

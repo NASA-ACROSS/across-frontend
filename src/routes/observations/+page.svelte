@@ -11,7 +11,7 @@
     $: error = data.error;
     let scheduleIdError: string = '';
 
-    const DEFAULT_COLUMNS = ['object_name', 'telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'target_id', 'status'];
+    const DEFAULT_COLUMNS = ['object_name', 'telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'bandpass_name', 'status'];
     const COOKIE_NAME = 'observation_columns';
 
     // Observation data and pagination
@@ -19,6 +19,7 @@
     $: currentPage = data.currentPage || 1;
     $: totalPages = data.totalPages || 1;
     $: telescopes = data.telescopes;
+    $: totalCount = data.totalCount || 0;
 
     // Query parameters
     let externalId = data.queryParams?.external_id || '';
@@ -52,13 +53,13 @@
         },
         { id: 'date_begin', label: 'Date Begin', selected: true },
         { id: 'date_end', label: 'Date End', selected: true },
-        { id: 'ra', label: 'RA', selected: true },
-        { id: 'dec', label: 'DEC', selected: true },
-        { id: 'target_id', label: 'Target Id', selected: true },
+        { id: 'ra', label: 'RA°', selected: true },
+        { id: 'dec', label: 'DEC°', selected: true },
+        { id: 'target_id', label: 'Target Id', selected: false },
         { id: 'exposure_time', label: 'Exposure Time', selected: true },
         { id: 'bandpass_name', label: 'Bandpass Name', selected: true },
-        { id: 'observation_type', label: 'Observation Type', selected: true },
-        { id: 'status', label: 'Status', selected: false },
+        { id: 'observation_type', label: 'Observation Type', selected: false },
+        { id: 'status', label: 'Status', selected: true },
         {
             id: 'proposal_reference',
             label: 'Proposal Reference',
@@ -491,7 +492,7 @@
                         checked={false}
                     />
                     <div class="collapse-title font-semibold {coneSearchRa || coneSearchDec || coneSearchRadius ? 'text-nasa-blue-shade' : ''}">
-                        <h3 class="text-lg mb-2">Coordinate Cone Search</h3>
+                        <h3 class="text-lg mb-2">Coordinate Cone Search (J2000)</h3>
                         {#if selectedFilter != 'coordinate-search'}
                             <div class="opacity-60">
                                 {#if coneSearchRa}
@@ -507,21 +508,21 @@
                         {/if}
                     </div>
                     <div class="collapse-content bg-carbon-05">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap- mb-4">
                             <label class="input text-lg pe-0 w-full" for="ra-input">
                                 RA:
                                 <input
                                     id="ra-input"
                                     class="input validator input-bordered text-lg w-full"
                                     type="number"
-                                    inputmode="numeric"
-                                    pattern="\d*"
+                                    inputmode="decimal"
+                                    step="any"
                                     bind:value={coneSearchRa}
-                                    placeholder="Right Ascension"
+                                    placeholder="decimal° (0-359.999)"
                                     min="0"
-                                    max="360"
+                                    max="359.99999999"
                                 />
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
+                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (0 to 359.99999999)</p>
                             </label>
 
                             <label class="input text-lg pe-0 w-full" for="dec-input">
@@ -529,13 +530,15 @@
                                 <input
                                     id="dec-input"
                                     type="number"
-                                    inputmode="numeric"
-                                    pattern="\d*"
+                                    inputmode="decimal"
+                                    step="any"
                                     bind:value={coneSearchDec}
-                                    placeholder="Declination"
+                                    placeholder="decimal° (-90 to 90)"
+                                    min="-90"
+                                    max="90"
                                     class="input validator input-bordered text-lg w-full"
                                 />
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
+                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (-90 to 90)</p>
                             </label>
 
                             <label class="input text-lg pe-0 w-full" for="radius-input">
@@ -543,13 +546,14 @@
                                 <input
                                     id="radius-input"
                                     type="number"
-                                    inputmode="numeric"
-                                    pattern="\d*"
+                                    inputmode="decimal"
+                                    step="any"
                                     bind:value={coneSearchRadius}
-                                    placeholder="Search radius"
+                                    placeholder="decimal° (> 0)"
                                     class="input validator input-bordered text-lg w-full"
+                                    min="0"
                                 />
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
+                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be decimal greater than 0</p>
                             </label>
                         </div>
                     </div>
@@ -641,7 +645,7 @@
                                 {#if bandpassType}
                                     <span class="label">{bandpassType}</span>
                                 {/if}
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
+                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be decimal greater than 0</p>
                             </label>
 
                             <label class="input text-lg w-full" for="bandpass-max-input">
@@ -658,7 +662,7 @@
                                 {#if bandpassType}
                                     <span class="label">{bandpassType}</span>
                                 {/if}
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
+                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be decimal greater than 0</p>
                             </label>
                         </div>
                     </div>
@@ -794,7 +798,7 @@
             </div>
         </div>
     </Section>
-    <Section title="Observations" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
+    <Section title="Observations (Total: {totalCount})" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">
             <a data-sveltekit-preload-data="off" type="link" class="btn btn-sm" href={handlePageChange(1)}> &lt;&lt; </a>
@@ -940,11 +944,11 @@
                                             </p>
                                         {:else if column.id === 'ra'}
                                             <p class="text-xs">
-                                                {obs.pointing_position?.ra}°
+                                                {obs.pointing_position?.ra}
                                             </p>
                                         {:else if column.id === 'dec'}
                                             <p class="text-xs">
-                                                {obs.pointing_position?.dec}°
+                                                {obs.pointing_position?.dec}
                                             </p>
                                         {:else if column.id === 'target_id'}
                                             {obs.external_observation_id || '-'}
@@ -974,6 +978,53 @@
                     {/if}
                 </tbody>
             </table>
+        </div>
+        <div style="float: right; padding-top: 1rem;" class="flex space-x-2">
+            <a data-sveltekit-preload-data="off" type="link" class="btn btn-sm" href={handlePageChange(1)}> &lt;&lt; </a>
+            <a
+                data-sveltekit-noscroll
+                data-sveltekit-preload-data="off"
+                type="link"
+                class="btn btn-sm {currentPage == 1 ? 'disabled-link' : ''}"
+                href={handlePageChange(currentPage - 1)}
+            >
+                &lt;
+            </a>
+
+            {#each createPagesArray(currentPage, totalPages, 4) as pageNumber}
+                {#if pageNumber === currentPage}
+                    <span class="btn btn-sm btn-active">
+                        {currentPage}
+                    </span>
+                {:else}
+                    <a data-sveltekit-noscroll data-sveltekit-preload-data="off" type="button" class="btn btn-sm" href={handlePageChange(pageNumber)}>
+                        {pageNumber}
+                    </a>
+                {/if}
+            {/each}
+
+            <a
+                data-sveltekit-noscroll
+                data-sveltekit-preload-data="off"
+                type="button"
+                class="btn btn-sm {totalPages > currentPage ? '' : 'disabled-link'}"
+                href={handlePageChange(currentPage + 1)}
+            >
+                &gt;
+            </a>
+
+            <a data-sveltekit-noscroll data-sveltekit-preload-data="off" type="button" class="btn btn-sm" href={handlePageChange(totalPages)}> &gt;&gt; </a>
+
+            <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
+                Customize
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                        fill-rule="evenodd"
+                        d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                        clip-rule="evenodd"
+                    />
+                </svg>
+            </button>
         </div>
     </Section>
 </Page>

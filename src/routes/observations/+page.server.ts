@@ -162,6 +162,7 @@ export async function load({ url, locals, cookies }: RequestEvent) {
             queryParams,
             urlColumns,
             telescopes,
+            totalCount,
         };
     } catch (error) {
         console.error('Error fetching observations:', error);
@@ -172,6 +173,7 @@ export async function load({ url, locals, cookies }: RequestEvent) {
             totalPages: 1,
             queryParams: {} as ObservationQueryParams,
             urlColumns: [],
+            totalCount: 0,
             error: 'Failed to load observations. Please try again later.',
         };
     }

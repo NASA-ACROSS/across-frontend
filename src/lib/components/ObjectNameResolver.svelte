@@ -142,7 +142,7 @@
         <button type="button" class="btn btn-primary" on:click={handleResolve} disabled={isResolving}>
             {#if isResolving}
                 <span class="loading loading-spinner loading-sm"></span>
-                Resolving...
+                Resolving Coordinates...
             {:else}
                 Resolve
             {/if}

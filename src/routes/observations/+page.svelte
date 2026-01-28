@@ -5,6 +5,7 @@
     import { goto } from '$app/navigation';
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
+    import ObjectNameResolver from '$lib/components/ObjectNameResolver.svelte';
 
     export let data;
 
@@ -507,6 +508,15 @@
                         {/if}
                     </div>
                     <div class="collapse-content bg-carbon-05">
+                        <!-- Object Name Resolver Component -->
+                        <ObjectNameResolver
+                            on:apply={(e) => {
+                                coneSearchRa = e.detail.ra.toString();
+                                coneSearchDec = e.detail.dec.toString();
+                                handleSearch();
+                            }}
+                        />
+
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
                             <label class="input text-lg pe-0 w-full" for="ra-input">
                                 RA:

@@ -30,11 +30,19 @@
     }
 </script>
 
-<a data-sveltekit-noscroll data-sveltekit-preload-data="off" type="link" class="btn btn-sm" href={handlePageChange(1)}> &lt;&lt; </a>
 <a
     data-sveltekit-noscroll
     data-sveltekit-preload-data="off"
-    type="link"
+    role="button"
+    class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''}"
+    href={handlePageChange(1)}
+>
+    &lt;&lt;
+</a>
+<a
+    data-sveltekit-noscroll
+    data-sveltekit-preload-data="off"
+    role="button"
     class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''}"
     href={handlePageChange(currentPage - 1)}
 >
@@ -47,7 +55,7 @@
             {currentPage}
         </span>
     {:else}
-        <a data-sveltekit-noscroll data-sveltekit-preload-data="off" type="button" class="btn btn-sm" href={handlePageChange(pageNumber)}>
+        <a data-sveltekit-noscroll data-sveltekit-preload-data="off" role="button" class="btn btn-sm" href={handlePageChange(pageNumber)}>
             {pageNumber}
         </a>
     {/if}
@@ -56,18 +64,19 @@
 <a
     data-sveltekit-noscroll
     data-sveltekit-preload-data="off"
-    type="button"
+    role="button"
     class="btn btn-sm {totalPages > currentPage ? '' : 'pointer-events-none cursor-not-allowed'}"
     href={handlePageChange(currentPage + 1)}
 >
     &gt;
 </a>
 
-<a data-sveltekit-noscroll data-sveltekit-preload-data="off" type="button" class="btn btn-sm" href={handlePageChange(totalPages)}> &gt;&gt; </a>
-
-<style>
-    .disabled-link {
-        pointer-events: none;
-        cursor: not-allowed;
-    }
-</style>
+<a
+    data-sveltekit-noscroll
+    data-sveltekit-preload-data="off"
+    role="button"
+    class="btn btn-sm {totalPages > currentPage ? '' : 'pointer-events-none cursor-not-allowed'}"
+    href={handlePageChange(totalPages)}
+>
+    &gt;&gt;
+</a>

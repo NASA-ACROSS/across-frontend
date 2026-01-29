@@ -130,7 +130,7 @@
             />
             <div class="max-h-60 overflow-y-auto border border-base-200 p-2 flex-1">
                 {#each filteredObservatories as observatory}
-                    <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-blue-50">
+                    <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-nasa-blue-lite">
                         <input
                             type="checkbox"
                             value={observatory.id}
@@ -160,7 +160,7 @@
             />
             <div class="max-h-60 overflow-y-auto border border-base-200 p-2 flex-1">
                 {#each filteredTelescopes as telescope}
-                    <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-blue-50">
+                    <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-nasa-blue-lite">
                         <input
                             type="checkbox"
                             value={telescope.id}
@@ -190,7 +190,7 @@
             />
             <div class="max-h-60 overflow-y-auto border border-base-200 p-2 flex-1">
                 {#each filteredInstruments as instrument}
-                    <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-blue-50">
+                    <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-nasa-blue-lite">
                         <input
                             type="checkbox"
                             value={instrument.id}

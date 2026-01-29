@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher, tick } from 'svelte';
 
     /**
      * Generic Object Name Resolver Component
@@ -29,10 +29,18 @@
     let resolverUsed: string | null = null;
     let resolverError: string = '';
     let isResolving = false;
+    let dialog: HTMLDialogElement;
+
+    $: if (dialog && resolverStatus === 'resolved' && !dialog.open) {
+        dialog.showModal();
+    }
 
     function resetResolver(status: typeof resolverStatus = 'idle') {
         resolverStatus = status;
         isResolving = false;
+        if (dialog && dialog.open) {
+            dialog.close();
+        }
     }
 
     function extractCoordinates(apiData: any) {
@@ -103,17 +111,34 @@
         }
     }
 
-    function handleApply() {
+    async function handleApply() {
         if (resolvedRa !== null && resolvedDec !== null) {
-            dispatch('apply', { ra: resolvedRa, dec: resolvedDec, resolver: resolverUsed });
+            console.log('handleApply called with:', { ra: resolvedRa, dec: resolvedDec, resolver: resolverUsed });
+            const raValue = resolvedRa;
+            const decValue = resolvedDec;
+            const resolverValue = resolverUsed;
+
+            resetResolver();
+
+            // Wait for DOM to update
+            await tick();
+
+            // Then clear and dispatch
+            targetNameInput = '';
             resolvedRa = null;
             resolvedDec = null;
             resolverUsed = null;
-            resetResolver();
+            resolverError = '';
+
+            console.log('Dispatching apply event with:', { ra: raValue, dec: decValue, resolver: resolverValue });
+            dispatch('apply', { ra: raValue, dec: decValue, resolver: resolverValue });
+        } else {
+            console.log('handleApply: values are null', { ra: resolvedRa, dec: resolvedDec });
         }
     }
 
     function handleDiscard() {
+        targetNameInput = '';
         resolvedRa = null;
         resolvedDec = null;
         resolverUsed = null;
@@ -156,36 +181,36 @@
     {/if}
 </div>
 
-<!-- Resolver Confirmation Alert -->
-{#if resolverStatus === 'resolved'}
-    <div class="alert alert-info mb-6 w-fit relative px-4">
-        <div class="flex flex-col gap-3">
-            <div class="text-center">
-                <p class="font-semibold">Coordinates Resolved!</p>
-                <p class="text-sm">RA: {resolvedRa?.toFixed(4)}° | DEC: {resolvedDec?.toFixed(4)}°</p>
-                {#if resolverUsed}
-                    <p class="text-xs opacity-75 mt-1">Resolved via: {resolverUsed}</p>
-                {/if}
-            </div>
-            <div class="flex gap-2 justify-center">
-                <button type="button" class="btn btn-sm btn-outline" on:click={handleApply}> Yes, use these coordinates </button>
-                <button type="button" class="btn btn-sm btn-failure" on:click={handleDiscard}> No, discard </button>
-            </div>
+<!-- Resolver Confirmation Modal -->
+<dialog
+    class="modal"
+    bind:this={dialog}
+    on:close={() => {
+        if (resolverStatus === 'resolved') resetResolver();
+    }}
+>
+    <div class="modal-box">
+        <div class="text-center mb-6">
+            <h3 class="font-bold text-lg mb-2">Coordinates Resolved!</h3>
+            <p class="text-sm">RA: {resolvedRa?.toFixed(4)}° | DEC: {resolvedDec?.toFixed(4)}°</p>
+            {#if resolverUsed}
+                <p class="text-xs opacity-75 mt-2">Resolved via: {resolverUsed}</p>
+            {/if}
         </div>
-        <button
-            type="button"
-            class="absolute top-2 right-2 text-2xl font-bold leading-none hover:opacity-70"
-            title="Close"
-            on:click={() => {
-                resolverStatus = 'idle';
-                resolvedRa = null;
-                resolvedDec = null;
-            }}
-        >
-            ✕
-        </button>
+        <div class="modal-action flex justify-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline" on:click={handleApply}> Yes, use these coordinates </button>
+            <button type="button" class="btn btn-sm btn-failure" on:click={handleDiscard}> No, discard </button>
+        </div>
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
     </div>
-{:else if resolverStatus === 'discarded'}
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+{#if resolverStatus === 'discarded'}
     <div class="alert alert-warning mb-6">
         <span>Coordinates discarded</span>
     </div>

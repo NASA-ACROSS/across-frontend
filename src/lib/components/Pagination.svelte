@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { CONFIG } from '../../config/config';
+
     export let currentPage: number = 1;
     export let totalPages: number = 1;
     export let searchParams: URLSearchParams = new URLSearchParams();
@@ -40,7 +42,7 @@
     &lt;
 </a>
 
-{#each createPagesArray(currentPage, totalPages, 4) as pageNumber}
+{#each createPagesArray(currentPage, totalPages, CONFIG.PAGINATION_BUTTONS) as pageNumber}
     {#if pageNumber === currentPage}
         <span class="btn btn-sm btn-active">
             {currentPage}

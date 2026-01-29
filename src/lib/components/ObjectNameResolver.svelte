@@ -179,6 +179,7 @@
 <!-- Resolver Confirmation Modal -->
 <dialog
     class="modal"
+    class:modal-open={resolverStatus === 'resolved' || resolverStatus === 'error'}
     bind:this={dialog}
     on:close={() => {
         if (resolverStatus === 'resolved' || resolverStatus === 'error') resetResolver();
@@ -186,21 +187,36 @@
 >
     <div class="modal-box">
         {#if resolverStatus === 'resolved'}
-            <div class="text-center mb-6">
-                <h3 class="font-bold text-lg mb-2">Coordinates Resolved!</h3>
-                <p class="text-sm">RA: {resolvedRa?.toFixed(4)}° | DEC: {resolvedDec?.toFixed(4)}°</p>
-                {#if resolverUsed}
-                    <p class="text-xs opacity-75 mt-2">Resolved via: {resolverUsed}</p>
-                {/if}
+            <div role="alert" class="alert alert-success mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                    <h3 class="font-bold">Coordinates Resolved!</h3>
+                    <div class="text-sm">RA: {resolvedRa?.toFixed(4)}° | DEC: {resolvedDec?.toFixed(4)}°</div>
+                    {#if resolverUsed}
+                        <div class="text-xs opacity-75 mt-1">Resolved via: {resolverUsed}</div>
+                    {/if}
+                </div>
             </div>
             <div class="modal-action flex justify-center gap-2">
                 <button type="button" class="btn btn-sm btn-outline" on:click={handleApply}> Yes, use these coordinates </button>
-                <button type="button" class="btn btn-sm btn-failure" on:click={handleDiscard}> No, discard </button>
+                <button type="button" class="btn btn-sm btn-error" on:click={handleDiscard}> No, discard </button>
             </div>
         {:else if resolverStatus === 'error'}
-            <div class="text-center mb-6">
-                <h3 class="font-bold text-lg mb-2 text-error">Resolution Failed</h3>
-                <p class="text-sm">{resolverError}</p>
+            <div role="alert" class="alert alert-error mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                </svg>
+                <div>
+                    <h3 class="font-bold">Resolution Failed</h3>
+                    <div class="text-sm">{resolverError}</div>
+                </div>
             </div>
             <div class="modal-action flex justify-center gap-2">
                 <button type="button" class="btn btn-sm btn-outline" on:click={() => resetResolver()}> Close </button>

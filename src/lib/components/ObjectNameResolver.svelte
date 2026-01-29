@@ -137,6 +137,7 @@
                 bind:value={targetNameInput}
                 placeholder="e.g. Crab, M31, NGC 2237"
                 class="input input-bordered text-lg w-full"
+                on:keydown={(e) => e.key === 'Enter' && handleResolve()}
             />
         </div>
         <button type="button" class="btn btn-primary" on:click={handleResolve} disabled={isResolving}>
@@ -167,8 +168,8 @@
                 {/if}
             </div>
             <div class="flex gap-2 justify-center">
-                <button type="button" class="btn btn-sm btn-success" on:click={handleApply}> Yes, use these coordinates </button>
-                <button type="button" class="btn btn-sm btn-outline" on:click={handleDiscard}> No, discard </button>
+                <button type="button" class="btn btn-sm btn-outline" on:click={handleApply}> Yes, use these coordinates </button>
+                <button type="button" class="btn btn-sm btn-failure" on:click={handleDiscard}> No, discard </button>
             </div>
         </div>
         <button

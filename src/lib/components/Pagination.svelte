@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { CONFIG } from '../../config/config';
-
     export let currentPage: number = 1;
     export let totalPages: number = 1;
     export let searchParams: URLSearchParams = new URLSearchParams();
+    export let numButtons: number = 10;
 
     function handlePageChange(newPage: number): string {
         const params = new URLSearchParams(searchParams);
@@ -36,13 +35,13 @@
     data-sveltekit-noscroll
     data-sveltekit-preload-data="off"
     type="link"
-    class="btn btn-sm {currentPage == 1 ? 'disabled-link' : ''}"
+    class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''}"
     href={handlePageChange(currentPage - 1)}
 >
     &lt;
 </a>
 
-{#each createPagesArray(currentPage, totalPages, CONFIG.PAGINATION_BUTTONS) as pageNumber}
+{#each createPagesArray(currentPage, totalPages, numButtons) as pageNumber}
     {#if pageNumber === currentPage}
         <span class="btn btn-sm btn-active">
             {currentPage}
@@ -58,7 +57,7 @@
     data-sveltekit-noscroll
     data-sveltekit-preload-data="off"
     type="button"
-    class="btn btn-sm {totalPages > currentPage ? '' : 'disabled-link'}"
+    class="btn btn-sm {totalPages > currentPage ? '' : 'pointer-events-none cursor-not-allowed'}"
     href={handlePageChange(currentPage + 1)}
 >
     &gt;

@@ -21,6 +21,7 @@
     $: totalPages = data.totalPages || 1;
     $: telescopes = data.telescopes;
     $: totalCount = data.totalCount || 0;
+    $: pagination_buttons = data.pagination_buttons;
 
     // Query parameters
     let externalId = data.queryParams?.external_id || '';
@@ -777,7 +778,7 @@
     <Section title="Observations (Total: {totalCount})" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">
-            <Pagination {currentPage} {totalPages} searchParams={page.url.searchParams} />
+            <Pagination {currentPage} {totalPages} searchParams={page.url.searchParams} numButtons={pagination_buttons} />
 
             <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
                 Customize
@@ -923,7 +924,7 @@
             </table>
         </div>
         <div style="float: right; padding-top: 1rem;" class="flex space-x-2">
-            <Pagination {currentPage} {totalPages} searchParams={page.url.searchParams} />
+            <Pagination {currentPage} {totalPages} searchParams={page.url.searchParams} numButtons={pagination_buttons} />
 
             <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
                 Customize

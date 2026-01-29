@@ -23,7 +23,7 @@
 
     // Internal state
     let targetNameInput = '';
-    let resolverStatus: 'idle' | 'resolving' | 'resolved' | 'discarded' = 'idle';
+    let resolverStatus: 'idle' | 'resolving' | 'resolved' | 'discarded' | 'error' = 'idle';
     let resolvedRa: number | null = null;
     let resolvedDec: number | null = null;
     let resolverUsed: string | null = null;
@@ -31,7 +31,7 @@
     let isResolving = false;
     let dialog: HTMLDialogElement;
 
-    $: if (dialog && resolverStatus === 'resolved' && !dialog.open) {
+    $: if (dialog && (resolverStatus === 'resolved' || resolverStatus === 'error') && !dialog.open) {
         dialog.showModal();
     }
 
@@ -81,7 +81,7 @@
 
             if (result?.error || !response.ok) {
                 resolverError = result?.error || 'Failed to resolve target coordinates';
-                resetResolver();
+                resolverStatus = 'error';
                 return;
             }
 
@@ -100,12 +100,12 @@
                 resolverStatus = 'resolved';
             } else {
                 resolverError = 'Failed to resolve target coordinates - no RA/DEC in response';
-                resetResolver();
+                resolverStatus = 'error';
             }
         } catch (error) {
             console.error('Error resolving target name:', error);
             resolverError = 'Failed to resolve target coordinates. Please try again.';
-            resetResolver();
+            resolverStatus = 'error';
         } finally {
             isResolving = false;
         }
@@ -174,11 +174,6 @@
             {/if}
         </button>
     </div>
-    {#if resolverError}
-        <div class="alert alert-error mt-3">
-            <span>{resolverError}</span>
-        </div>
-    {/if}
 </div>
 
 <!-- Resolver Confirmation Modal -->
@@ -186,32 +181,33 @@
     class="modal"
     bind:this={dialog}
     on:close={() => {
-        if (resolverStatus === 'resolved') resetResolver();
+        if (resolverStatus === 'resolved' || resolverStatus === 'error') resetResolver();
     }}
 >
     <div class="modal-box">
-        <div class="text-center mb-6">
-            <h3 class="font-bold text-lg mb-2">Coordinates Resolved!</h3>
-            <p class="text-sm">RA: {resolvedRa?.toFixed(4)}° | DEC: {resolvedDec?.toFixed(4)}°</p>
-            {#if resolverUsed}
-                <p class="text-xs opacity-75 mt-2">Resolved via: {resolverUsed}</p>
-            {/if}
-        </div>
-        <div class="modal-action flex justify-center gap-2">
-            <button type="button" class="btn btn-sm btn-outline" on:click={handleApply}> Yes, use these coordinates </button>
-            <button type="button" class="btn btn-sm btn-failure" on:click={handleDiscard}> No, discard </button>
-        </div>
-        <form method="dialog">
-            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-        </form>
+        {#if resolverStatus === 'resolved'}
+            <div class="text-center mb-6">
+                <h3 class="font-bold text-lg mb-2">Coordinates Resolved!</h3>
+                <p class="text-sm">RA: {resolvedRa?.toFixed(4)}° | DEC: {resolvedDec?.toFixed(4)}°</p>
+                {#if resolverUsed}
+                    <p class="text-xs opacity-75 mt-2">Resolved via: {resolverUsed}</p>
+                {/if}
+            </div>
+            <div class="modal-action flex justify-center gap-2">
+                <button type="button" class="btn btn-sm btn-outline" on:click={handleApply}> Yes, use these coordinates </button>
+                <button type="button" class="btn btn-sm btn-failure" on:click={handleDiscard}> No, discard </button>
+            </div>
+        {:else if resolverStatus === 'error'}
+            <div class="text-center mb-6">
+                <h3 class="font-bold text-lg mb-2 text-error">Resolution Failed</h3>
+                <p class="text-sm">{resolverError}</p>
+            </div>
+            <div class="modal-action flex justify-center gap-2">
+                <button type="button" class="btn btn-sm btn-outline" on:click={() => resetResolver()}> Close </button>
+            </div>
+        {/if}
     </div>
     <form method="dialog" class="modal-backdrop">
         <button>close</button>
     </form>
 </dialog>
-
-{#if resolverStatus === 'discarded'}
-    <div class="alert alert-warning mb-6">
-        <span>Coordinates discarded</span>
-    </div>
-{/if}

@@ -8,6 +8,7 @@
     import Pagination from '$lib/components/Pagination.svelte';
 
     export let data;
+    export let currentSearchParams: URLSearchParams = new URLSearchParams(page.url.searchParams);
 
     $: error = data.error;
     let scheduleIdError: string = '';
@@ -199,7 +200,7 @@
 
         // Add page parameter
         params.append('page', '1'); // Reset to first page on new search
-
+        currentSearchParams = params;
         await goto(`?${params.toString()}`, { noScroll: true, invalidateAll: true });
     }
 
@@ -778,7 +779,7 @@
     <Section title="Observations (Total: {totalCount})" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">
-            <Pagination {currentPage} {totalPages} searchParams={page.url.searchParams} numButtons={pagination_buttons} />
+            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={pagination_buttons} />
 
             <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
                 Customize
@@ -924,7 +925,7 @@
             </table>
         </div>
         <div class="flex ml-auto w-fit space-x-2 pt-4">
-            <Pagination {currentPage} {totalPages} searchParams={page.url.searchParams} numButtons={pagination_buttons} />
+            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={pagination_buttons} />
 
             <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
                 Customize

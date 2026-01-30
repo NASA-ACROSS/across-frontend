@@ -1,13 +1,17 @@
 <script lang="ts">
     export let currentPage: number = 1;
     export let totalPages: number = 1;
+    export let numButtons: number = 4;
+
     export let searchParams: URLSearchParams = new URLSearchParams();
-    export let numButtons: number = 10;
+
+    // Make the function reactive to searchParams changes
+    $: pagesArray = createPagesArray(currentPage, totalPages, numButtons);
 
     function handlePageChange(newPage: number): string {
-        const params = new URLSearchParams(searchParams);
-        params.set('page', newPage.toString());
-        return `?${params.toString()}`;
+        console.log(newPage, searchParams.toString());
+        searchParams.set('page', newPage.toString());
+        return `?${searchParams.toString()}`;
     }
 
     function createPagesArray(currentPage: number, totalPages: number, numButtons: number): number[] {
@@ -49,7 +53,7 @@
     &lt;
 </a>
 
-{#each createPagesArray(currentPage, totalPages, numButtons) as pageNumber}
+{#each pagesArray as pageNumber}
     {#if pageNumber === currentPage}
         <span class="btn btn-sm btn-active">
             {currentPage}
@@ -65,7 +69,7 @@
     data-sveltekit-noscroll
     data-sveltekit-preload-data="off"
     role="button"
-    class="btn btn-sm {totalPages > currentPage ? '' : 'pointer-events-none cursor-not-allowed'}"
+    class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''}"
     href={handlePageChange(currentPage + 1)}
 >
     &gt;
@@ -75,7 +79,7 @@
     data-sveltekit-noscroll
     data-sveltekit-preload-data="off"
     role="button"
-    class="btn btn-sm {totalPages > currentPage ? '' : 'pointer-events-none cursor-not-allowed'}"
+    class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''}"
     href={handlePageChange(totalPages)}
 >
     &gt;&gt;

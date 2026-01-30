@@ -14,6 +14,7 @@
 
     const DEFAULT_COLUMNS = ['object_name', 'telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'bandpass_name', 'status'];
     const COOKIE_NAME = 'observation_columns';
+    const PAGINATION_BUTTONS = 4;
 
     // Observation data and pagination
     $: observations = data.observations || [];
@@ -21,7 +22,6 @@
     $: totalPages = data.totalPages || 1;
     $: telescopes = data.telescopes;
     $: totalCount = data.totalCount || 0;
-    $: pagination_buttons = data.pagination_buttons;
     $: currentSearchParams = new URLSearchParams(page.url.searchParams);
 
     // Query parameters
@@ -779,7 +779,7 @@
     <Section title="Observations (Total: {totalCount})" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">
-            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={pagination_buttons} />
+            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
 
             <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
                 Customize
@@ -925,7 +925,7 @@
             </table>
         </div>
         <div class="flex ml-auto w-fit space-x-2 pt-4">
-            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={pagination_buttons} />
+            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
 
             <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
                 Customize

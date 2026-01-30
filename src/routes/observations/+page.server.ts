@@ -163,7 +163,6 @@ export async function load({ url, locals, cookies }: RequestEvent) {
             urlColumns,
             telescopes,
             totalCount,
-            pagination_buttons: CONFIG.PAGINATION_BUTTONS,
         };
     } catch (error) {
         console.error('Error fetching observations:', error);

@@ -923,7 +923,7 @@
                 </tbody>
             </table>
         </div>
-        <div style="float: right; padding-top: 1rem;" class="flex space-x-2">
+        <div class="flex ml-auto w-fit space-x-2 pt-4">
             <Pagination {currentPage} {totalPages} searchParams={page.url.searchParams} numButtons={pagination_buttons} />
 
             <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>

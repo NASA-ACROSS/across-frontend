@@ -2,16 +2,23 @@
     export let currentPage: number = 1;
     export let totalPages: number = 1;
     export let numButtons: number = 4;
+    export let searchParams: URLSearchParams;
 
-    export let searchParams: URLSearchParams = new URLSearchParams();
-
-    // Make the function reactive to searchParams changes
+    // Make all hrefs reactive to searchParams, currentPage, and totalPages changes
+    $: firstPageHref = buildHref(1, searchParams);
+    $: prevPageHref = buildHref(currentPage - 1, searchParams);
+    $: nextPageHref = buildHref(currentPage + 1, searchParams);
+    $: lastPageHref = buildHref(totalPages, searchParams);
     $: pagesArray = createPagesArray(currentPage, totalPages, numButtons);
+    $: pageHrefs = pagesArray.map((pageNum) => ({
+        pageNum,
+        href: buildHref(pageNum, searchParams),
+    }));
 
-    function handlePageChange(newPage: number): string {
-        console.log(newPage, searchParams.toString());
-        searchParams.set('page', newPage.toString());
-        return `?${searchParams.toString()}`;
+    function buildHref(newPage: number, params: URLSearchParams): string {
+        const newParams = new URLSearchParams(params);
+        newParams.set('page', newPage.toString());
+        return `?${newParams.toString()}`;
     }
 
     function createPagesArray(currentPage: number, totalPages: number, numButtons: number): number[] {
@@ -37,30 +44,28 @@
 <a
     data-sveltekit-noscroll
     data-sveltekit-preload-data="off"
-    role="button"
     class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''}"
-    href={handlePageChange(1)}
+    href={firstPageHref}
 >
     &lt;&lt;
 </a>
 <a
     data-sveltekit-noscroll
     data-sveltekit-preload-data="off"
-    role="button"
     class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''}"
-    href={handlePageChange(currentPage - 1)}
+    href={prevPageHref}
 >
     &lt;
 </a>
 
-{#each pagesArray as pageNumber}
-    {#if pageNumber === currentPage}
+{#each pageHrefs as { pageNum, href }}
+    {#if pageNum === currentPage}
         <span class="btn btn-sm btn-active">
             {currentPage}
         </span>
     {:else}
-        <a data-sveltekit-noscroll data-sveltekit-preload-data="off" role="button" class="btn btn-sm" href={handlePageChange(pageNumber)}>
-            {pageNumber}
+        <a data-sveltekit-noscroll data-sveltekit-preload-data="off" class="btn btn-sm" {href}>
+            {pageNum}
         </a>
     {/if}
 {/each}
@@ -68,9 +73,8 @@
 <a
     data-sveltekit-noscroll
     data-sveltekit-preload-data="off"
-    role="button"
     class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''}"
-    href={handlePageChange(currentPage + 1)}
+    href={nextPageHref}
 >
     &gt;
 </a>
@@ -78,9 +82,8 @@
 <a
     data-sveltekit-noscroll
     data-sveltekit-preload-data="off"
-    role="button"
     class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''}"
-    href={handlePageChange(totalPages)}
+    href={lastPageHref}
 >
     &gt;&gt;
 </a>

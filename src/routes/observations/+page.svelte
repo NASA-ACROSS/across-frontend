@@ -8,7 +8,6 @@
     import Pagination from '$lib/components/Pagination.svelte';
 
     export let data;
-    export let currentSearchParams: URLSearchParams = new URLSearchParams(page.url.searchParams);
 
     $: error = data.error;
     let scheduleIdError: string = '';
@@ -23,6 +22,7 @@
     $: telescopes = data.telescopes;
     $: totalCount = data.totalCount || 0;
     $: pagination_buttons = data.pagination_buttons;
+    $: currentSearchParams = new URLSearchParams(page.url.searchParams);
 
     // Query parameters
     let externalId = data.queryParams?.external_id || '';

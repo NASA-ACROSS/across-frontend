@@ -5,6 +5,7 @@
     import { goto } from '$app/navigation';
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
+    import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
 
     export let data;
@@ -20,9 +21,21 @@
     $: observations = data.observations || [];
     $: currentPage = data.currentPage || 1;
     $: totalPages = data.totalPages || 1;
-    $: telescopes = data.telescopes;
+    $: telescopes = data.telescopes || [];
     $: totalCount = data.totalCount || 0;
     $: currentSearchParams = new URLSearchParams(page.url.searchParams);
+
+    // Observatory/Telescope/Instrument selector state
+    $: observatories = telescopes
+        .map((telescope) => telescope.observatory)
+        .filter((value, index, self) => self.findIndex((obs) => obs.id === value.id) === index);
+    $: instruments = telescopes
+        .flatMap((telescope) => telescope.instruments || [])
+        .filter((value, index, self) => self.findIndex((inst) => inst.id === value.id) === index);
+
+    let selectedObservatories: string[] = [];
+    let selectedTelescopes: string[] = [];
+    let selectedInstruments: string[] = [];
 
     // Query parameters
     let externalId = data.queryParams?.external_id || '';
@@ -187,6 +200,11 @@
         if (depthUnit) params.append('depth_unit', depthUnit);
         if (scheduleIds.length) params.append('schedule_ids', scheduleIds.toString());
 
+        // Add observatory/telescope/instrument filters
+        if (selectedObservatories.length) params.append('observatory_ids', selectedObservatories.join(','));
+        if (selectedTelescopes.length) params.append('telescope_ids', selectedTelescopes.join(','));
+        if (selectedInstruments.length) params.append('instrument_ids', selectedInstruments.join(','));
+
         // Add columns parameter
         const columnParam = selectedColumns.map((col) => col.id).join(',');
         if (columnParam) params.append('columns', columnParam);
@@ -335,6 +353,9 @@
         depthValue = '';
         depthUnit = '';
         scheduleIdError = '';
+        selectedObservatories = [];
+        selectedTelescopes = [];
+        selectedInstruments = [];
 
         await handleSearch();
     }
@@ -355,6 +376,52 @@
             <!-- <div class="grid grid-cols-1 md:grid-cols-1 gap-4"> -->
             <!-- Accordion Join -->
             <div class="join join-vertical bg-base-100 w-full">
+                <!-- Observatory/Telescope/Instrument Filter -->
+                <div class="collapse collapse-arrow join-item border-base-300 border">
+                    <input
+                        type="radio"
+                        name="my-accordion"
+                        value="observatory-telescope-instrument"
+                        on:click={() => {
+                            deselectAccordion('observatory-telescope-instrument');
+                        }}
+                        bind:group={selectedFilter}
+                        checked={false}
+                    />
+                    <div
+                        class="collapse-title font-semibold {selectedObservatories.length || selectedTelescopes.length || selectedInstruments.length
+                            ? 'text-nasa-blue-shade'
+                            : ''}"
+                    >
+                        <h3 class="text-lg mb-2">Observatory / Telescope / Instrument</h3>
+                        {#if selectedFilter != 'observatory-telescope-instrument'}
+                            <div class="opacity-60">
+                                {#if selectedObservatories.length}
+                                    <span class="font-thin">Observatories: </span><span>{selectedObservatories.length} </span>
+                                {/if}
+                                {#if selectedTelescopes.length}
+                                    <span class="font-thin">Telescopes: </span><span>{selectedTelescopes.length} </span>
+                                {/if}
+                                {#if selectedInstruments.length}
+                                    <span class="font-thin">Instruments: </span><span>{selectedInstruments.length} </span>
+                                {/if}
+                            </div>
+                        {/if}
+                    </div>
+                    <div class="collapse-content">
+                        <div class="py-4">
+                            <ObservatoryTelescopeInstrumentSelector
+                                {observatories}
+                                {telescopes}
+                                {instruments}
+                                bind:selectedObservatories
+                                bind:selectedTelescopes
+                                bind:selectedInstruments
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Observation section -->
                 <div class="collapse collapse-arrow join-item border-base-300 border">
                     <input

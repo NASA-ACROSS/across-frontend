@@ -25,9 +25,7 @@
     // Internal state
     let targetNameInput = '';
     let resolverStatus: 'idle' | 'resolving' | 'resolved' | 'discarded' | 'error' = 'idle';
-    let resolvedRa: number | null = null;
-    let resolvedDec: number | null = null;
-    let resolverUsed: string = '';
+    let resolvedData: NameResolver | null = null;
     let resolverError: string = '';
     let isResolving = false;
     let dialog: HTMLDialogElement;
@@ -44,7 +42,7 @@
         }
     }
 
-    function extractCoordinates(apiData: any): { ra?: number; dec?: number; resolver: string } {
+    function extractCoordinates(apiData: any): NameResolver | null {
         // Handle array format: [metadata, boolean, mapping, ra, dec, resolver]
         if (Array.isArray(apiData) && apiData.length >= 6) {
             return { ra: apiData[3], dec: apiData[4], resolver: apiData[5] || '' };
@@ -60,7 +58,7 @@
             };
         }
 
-        return { ra: undefined, dec: undefined, resolver: '' };
+        return null;
     }
 
     async function handleResolve() {
@@ -92,12 +90,14 @@
                 apiData = JSON.parse(apiData);
             }
 
-            const { ra, dec, resolver } = extractCoordinates(apiData);
+            const resolved = extractCoordinates(apiData);
 
-            if (ra !== undefined && dec !== undefined) {
-                resolvedRa = parseFloat(String(ra));
-                resolvedDec = parseFloat(String(dec));
-                resolverUsed = resolver;
+            if (resolved && resolved.ra !== undefined && resolved.dec !== undefined) {
+                resolvedData = {
+                    ra: parseFloat(String(resolved.ra)),
+                    dec: parseFloat(String(resolved.dec)),
+                    resolver: resolved.resolver,
+                };
                 resolverStatus = 'resolved';
             } else {
                 resolverError = 'Failed to resolve target coordinates - no RA/DEC in response';
@@ -113,19 +113,17 @@
     }
 
     async function handleApply() {
-        if (resolvedRa !== null && resolvedDec !== null) {
-            const data: NameResolver = { ra: resolvedRa, dec: resolvedDec, resolver: resolverUsed };
+        if (resolvedData) {
+            const data = resolvedData;
 
             resetResolver();
 
             // Wait for DOM to update
             await tick();
 
-            // Then clear and dispatch
+            // Clear state
             targetNameInput = '';
-            resolvedRa = null;
-            resolvedDec = null;
-            resolverUsed = '';
+            resolvedData = null;
             resolverError = '';
 
             dispatch('apply', data);
@@ -134,9 +132,7 @@
 
     function handleDiscard() {
         targetNameInput = '';
-        resolvedRa = null;
-        resolvedDec = null;
-        resolverUsed = '';
+        resolvedData = null;
         resolverError = '';
         resetResolver('discarded');
         setTimeout(() => resetResolver(), 2000);
@@ -188,9 +184,9 @@
                 </svg>
                 <div>
                     <h3 class="font-bold">Coordinates Resolved!</h3>
-                    <div class="text-sm">RA: {resolvedRa?.toFixed(4)}° | DEC: {resolvedDec?.toFixed(4)}°</div>
-                    {#if resolverUsed}
-                        <div class="text-xs opacity-75 mt-1">Resolved via: {resolverUsed}</div>
+                    <div class="text-sm">RA: {resolvedData?.ra.toFixed(4)}° | DEC: {resolvedData?.dec.toFixed(4)}°</div>
+                    {#if resolvedData?.resolver}
+                        <div class="text-xs opacity-75 mt-1">Resolved via: {resolvedData.resolver}</div>
                     {/if}
                 </div>
             </div>

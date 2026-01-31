@@ -1,5 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher, tick } from 'svelte';
+    import type { NameResolver } from '$lib/types/across/NameResolver';
 
     /**
      * Generic Object Name Resolver Component
@@ -9,7 +10,7 @@
      * <ObjectNameResolver on:apply={(e) => { ra = e.detail.ra; dec = e.detail.dec; }} />
      *
      * Events:
-     * - apply: Fired when coordinates are applied { ra: number, dec: number, resolver: string | null }
+     * - apply: Fired when coordinates are applied with NameResolver data
      *
      * Props:
      * - title: Optional custom title (default: "Resolve Object Name to Coordinates")
@@ -18,7 +19,7 @@
     export let title: string = 'Resolve Object Name to Coordinates';
 
     const dispatch = createEventDispatcher<{
-        apply: { ra: number; dec: number; resolver: string | null };
+        apply: NameResolver;
     }>();
 
     // Internal state
@@ -26,7 +27,7 @@
     let resolverStatus: 'idle' | 'resolving' | 'resolved' | 'discarded' | 'error' = 'idle';
     let resolvedRa: number | null = null;
     let resolvedDec: number | null = null;
-    let resolverUsed: string | null = null;
+    let resolverUsed: string = '';
     let resolverError: string = '';
     let isResolving = false;
     let dialog: HTMLDialogElement;
@@ -43,10 +44,10 @@
         }
     }
 
-    function extractCoordinates(apiData: any) {
+    function extractCoordinates(apiData: any): { ra?: number; dec?: number; resolver: string } {
         // Handle array format: [metadata, boolean, mapping, ra, dec, resolver]
         if (Array.isArray(apiData) && apiData.length >= 6) {
-            return { ra: apiData[3], dec: apiData[4], resolver: apiData[5] };
+            return { ra: apiData[3], dec: apiData[4], resolver: apiData[5] || '' };
         }
 
         // Handle object format
@@ -55,11 +56,11 @@
             return {
                 ra: data.ra,
                 dec: data.dec,
-                resolver: data.resolver || data.service || data.source || data.provider,
+                resolver: data.resolver || '',
             };
         }
 
-        return { ra: undefined, dec: undefined, resolver: undefined };
+        return { ra: undefined, dec: undefined, resolver: '' };
     }
 
     async function handleResolve() {
@@ -96,7 +97,7 @@
             if (ra !== undefined && dec !== undefined) {
                 resolvedRa = parseFloat(String(ra));
                 resolvedDec = parseFloat(String(dec));
-                resolverUsed = resolver || null;
+                resolverUsed = resolver;
                 resolverStatus = 'resolved';
             } else {
                 resolverError = 'Failed to resolve target coordinates - no RA/DEC in response';
@@ -113,10 +114,7 @@
 
     async function handleApply() {
         if (resolvedRa !== null && resolvedDec !== null) {
-            console.log('handleApply called with:', { ra: resolvedRa, dec: resolvedDec, resolver: resolverUsed });
-            const raValue = resolvedRa;
-            const decValue = resolvedDec;
-            const resolverValue = resolverUsed;
+            const data: NameResolver = { ra: resolvedRa, dec: resolvedDec, resolver: resolverUsed };
 
             resetResolver();
 
@@ -127,13 +125,10 @@
             targetNameInput = '';
             resolvedRa = null;
             resolvedDec = null;
-            resolverUsed = null;
+            resolverUsed = '';
             resolverError = '';
 
-            console.log('Dispatching apply event with:', { ra: raValue, dec: decValue, resolver: resolverValue });
-            dispatch('apply', { ra: raValue, dec: decValue, resolver: resolverValue });
-        } else {
-            console.log('handleApply: values are null', { ra: resolvedRa, dec: resolvedDec });
+            dispatch('apply', data);
         }
     }
 
@@ -141,7 +136,7 @@
         targetNameInput = '';
         resolvedRa = null;
         resolvedDec = null;
-        resolverUsed = null;
+        resolverUsed = '';
         resolverError = '';
         resetResolver('discarded');
         setTimeout(() => resetResolver(), 2000);

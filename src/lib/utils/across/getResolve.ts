@@ -1,4 +1,5 @@
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { NameResolver } from '$lib/types/across/NameResolver';
 import { UserCredentials } from '$lib/types/User/UserCredentials';
 import { CONFIG } from '../../../config/config';
 import { fail, type Cookies, type RequestEvent } from '@sveltejs/kit';
@@ -9,9 +10,10 @@ import { fail, type Cookies, type RequestEvent } from '@sveltejs/kit';
  * @param userCookie - Auth cookie for the current user session.
  * @param cookies - SvelteKit cookies helper (for token retrieval).
  * @param targetName - Object name to resolve (e.g. "Crab", "M31").
+ * @returns The resolved object data containing ra, dec, and resolver information.
  */
 
-export const getResolve = async (userCookie: UserCredentialsCookie, cookies: Cookies, targetName: string) => {
+export const getResolve = async (userCookie: UserCredentialsCookie, cookies: Cookies, targetName: string): Promise<NameResolver> => {
     let accessToken;
     if (userCookie) {
         const userCredentials = new UserCredentials(userCookie);
@@ -50,7 +52,15 @@ export const getResolve = async (userCookie: UserCredentialsCookie, cookies: Coo
         console.error(`ERROR: resolving object at [${Date.now()}] with status code [${response.status}]`);
     }
 
-    const resolved = (await response.json()) as Record<string, unknown>;
+    // Handle rate limiting
+    if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After');
+        const waitTime = retryAfter ? parseInt(retryAfter, 10) : 60;
+        console.warn(`API rate limited. Retry after ${waitTime} seconds`);
+        throw new Error(`Rate limited. Please try again in ${waitTime} seconds.`);
+    }
+
+    const resolved = (await response.json()) as NameResolver;
 
     return resolved;
 };
@@ -75,6 +85,8 @@ export const resolveTarget = async ({ request, locals, cookies }: RequestEvent) 
         return { success: true, data };
     } catch (error) {
         console.error('Error resolving target name:', error);
-        return fail(500, { error: 'Failed to resolve target coordinates. Please try again.' });
+        const errorMessage = error instanceof Error ? error.message : 'Failed to resolve target coordinates. Please try again.';
+        const statusCode = errorMessage.includes('Rate limited') ? 429 : 500;
+        return fail(statusCode, { error: errorMessage });
     }
 };

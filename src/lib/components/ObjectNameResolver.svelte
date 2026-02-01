@@ -140,7 +140,7 @@
 </script>
 
 <!-- Object Name Resolver -->
-<div class="mb-6 p-4 bg-base-100 rounded-lg border border-base-300">
+<div class="mb-6 p-4 bg-base-100 border border-base-300">
     <h4 class="text-md font-semibold mb-3">{title}</h4>
     <div class="flex gap-2 items-end">
         <div class="form-control flex-1">

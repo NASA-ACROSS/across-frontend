@@ -18,9 +18,9 @@ export type Schedule = {
     checksum: string;
 };
 
-export type Paginate<T> = {
+export type SchedulesResponse = {
     total_number: number;
     page?: number;
     page_limit?: number;
-    items: T[];
+    items: Schedule[];
 };

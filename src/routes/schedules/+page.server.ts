@@ -50,8 +50,6 @@ const isKnownError = (errorText: string): string => {
 export async function load({ url, locals, cookies }: RequestEvent) {
     // Extract query parameters
     const page = Number(url.searchParams.get('page')) || 1;
-    // const sort = url.searchParams.get('sort') || '';
-    // const order = url.searchParams.get('order') || 'asc';
 
     // Extract column preferences from URL if present
     const urlColumns = url.searchParams.get('columns')?.split(',') || [];
@@ -91,16 +89,10 @@ export async function load({ url, locals, cookies }: RequestEvent) {
     apiParams.append('page_limit', DEFAULTS.pageLimit.toString()); // Number of results per page
     apiParams.append('page', String(page));
 
-    // Add sorting params if provided
-    // if (sort) {
-    //     apiParams.append('sort', sort);
-    //     apiParams.append('order', order);
-    // }
-
     apiUrl += apiParams.toString();
 
     try {
-        // Fetch observations
+        // Fetch schedules
         const response = await fetch(apiUrl);
 
         if (!response.ok) {
@@ -125,7 +117,7 @@ export async function load({ url, locals, cookies }: RequestEvent) {
         const totalCount = schedulesResponse.total_number;
         const totalPages = Math.ceil(totalCount / DEFAULTS.pageLimit);
 
-        // Fetch instrument details for mapping IDs to names
+        // Fetch telescope details for mapping IDs to names
         // In a real implementation, you might have a separate endpoint for this
         // For now, we'll create a simple mock mapping
         const userCookie = locals?.user as UserCredentialsCookie;

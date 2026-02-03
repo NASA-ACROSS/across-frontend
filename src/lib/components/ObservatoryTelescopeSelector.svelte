@@ -1,7 +1,6 @@
 <script lang="ts">
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
-    import { createEventDispatcher } from 'svelte';
 
     export let observatories: TelescopeObservatory[] = [];
     export let telescopes: Telescope[] = [];
@@ -12,26 +11,12 @@
     let observatorySearch = '';
     let telescopeSearch = '';
 
-    const dispatch = createEventDispatcher<{
-        selectionChange: {
-            observatoryIds: string[];
-            telescopeIds: string[];
-        };
-    }>();
-
     $: filteredObservatories = observatories.filter(
         (obs) => obs.name.toLowerCase().includes(observatorySearch.toLowerCase()) || obs.short_name.toLowerCase().includes(observatorySearch.toLowerCase())
     );
     $: filteredTelescopes = telescopes.filter(
         (tel) => tel.name.toLowerCase().includes(telescopeSearch.toLowerCase()) || tel.short_name.toLowerCase().includes(telescopeSearch.toLowerCase())
     );
-
-    function dispatchChange() {
-        dispatch('selectionChange', {
-            observatoryIds: selectedObservatories,
-            telescopeIds: selectedTelescopes,
-        });
-    }
 
     function toggleObservatory(observatoryId: string) {
         const isCurrentlySelected = selectedObservatories.includes(observatoryId);
@@ -48,7 +33,6 @@
                 .filter((id) => !selectedTelescopes.includes(id));
             selectedTelescopes = [...selectedTelescopes, ...telescopesToAdd];
         }
-        dispatchChange();
     }
 
     function toggleTelescope(telescopeId: string) {
@@ -56,6 +40,16 @@
 
         if (isCurrentlySelected) {
             selectedTelescopes = selectedTelescopes.filter((id) => id !== telescopeId);
+            // Unselect observatory if no telescopes remain selected for it
+            const telescope = telescopes.find((tel) => tel.id === telescopeId);
+            if (telescope) {
+                const hasSelectedTelescopes = telescopes
+                    .filter((tel) => tel.observatory.id === telescope.observatory.id)
+                    .some((tel) => selectedTelescopes.includes(tel.id));
+                if (!hasSelectedTelescopes) {
+                    selectedObservatories = selectedObservatories.filter((id) => id !== telescope.observatory.id);
+                }
+            }
         } else {
             selectedTelescopes = [...selectedTelescopes, telescopeId];
             const telescope = telescopes.find((tel) => tel.id === telescopeId);
@@ -65,7 +59,6 @@
                 }
             }
         }
-        dispatchChange();
     }
 </script>
 

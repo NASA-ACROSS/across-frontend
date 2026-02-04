@@ -23,7 +23,7 @@
     }>();
 
     // Internal state
-    let targetNameInput = '';
+    let objectNameInput = '';
     let resolvedData: NameResolver | null = null;
     let resolverError: string = '';
     let isResolving = false;
@@ -31,7 +31,7 @@
 
     function resetResolver() {
         isResolving = false;
-        targetNameInput = '';
+        objectNameInput = '';
         resolvedData = null;
         resolverError = '';
 
@@ -41,8 +41,8 @@
     }
 
     async function handleResolve() {
-        const targetName = targetNameInput.trim();
-        if (!targetName) {
+        const objectName = objectNameInput.trim();
+        if (!objectName) {
             resolverError = '';
             resetResolver();
             return;
@@ -53,13 +53,13 @@
 
         try {
             const formData = new FormData();
-            formData.append('targetName', targetNameInput.trim());
-            const response = await fetch('?/resolveTarget', { method: 'POST', body: formData });
+            formData.append('objectName', objectName);
+            const response = await fetch('?/resolveObject', { method: 'POST', body: formData });
             const result = await response.json();
 
             // Handle errors from SvelteKit fail() responses
             if (result?.type === 'failure' || !response.ok) {
-                let errorMsg = 'Failed to resolve target coordinates';
+                let errorMsg = 'Failed to resolve object coordinates';
 
                 // Extract error from fail() response data
                 if (result?.data) {
@@ -106,11 +106,11 @@
                 };
                 dialog?.showModal();
             } else {
-                resolverError = 'Failed to resolve target coordinates - no RA/DEC in response';
+                resolverError = 'Failed to resolve object coordinates - no RA/DEC in response';
                 dialog?.showModal();
             }
         } catch (error) {
-            resolverError = 'Failed to resolve target coordinates. Please try again.';
+            resolverError = 'Failed to resolve object coordinates. Please try again.';
             dialog?.showModal();
         } finally {
             isResolving = false;
@@ -131,13 +131,13 @@
     <h4 class="text-md font-semibold mb-3">{title}</h4>
     <div class="flex gap-2 items-end">
         <div class="form-control flex-1">
-            <label class="label text-lg" for="target-name-resolver-input">
+            <label class="label text-lg" for="object-name-resolver-input">
                 <span class="label-text">Object Name</span>
             </label>
             <input
-                id="target-name-resolver-input"
+                id="object-name-resolver-input"
                 type="text"
-                bind:value={targetNameInput}
+                bind:value={objectNameInput}
                 placeholder="e.g. Crab, M31, NGC 2237"
                 class="input input-bordered text-lg w-full"
                 on:keydown={(e) => e.key === 'Enter' && handleResolve()}

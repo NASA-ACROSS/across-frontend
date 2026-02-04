@@ -30,14 +30,18 @@
     let isResolving = false;
     let dialog: HTMLDialogElement;
 
-    $: if (dialog && (resolverStatus === 'resolved' || resolverStatus === 'error') && !dialog.open) {
+    $: if (!isDialogOpen) {
         dialog.showModal();
     }
 
-    function resetResolver(status: typeof resolverStatus = 'idle') {
-        resolverStatus = status;
+    function resetResolver() {
         isResolving = false;
-        if (dialog && dialog.open) {
+        targetNameInput = '';
+        resolvedData = null;
+        resolverError = '';
+
+        if (dialog?.open) {
+            isDialogOpen = false;
             dialog.close();
         }
     }
@@ -62,7 +66,8 @@
     }
 
     async function handleResolve() {
-        if (!targetNameInput.trim()) {
+        const targetName = targetNameInput.trim()
+        if (!targetName) {
             resolverError = '';
             resetResolver();
             return;
@@ -109,6 +114,7 @@
             resolverStatus = 'error';
         } finally {
             isResolving = false;
+            isDialogOpen = true;
         }
     }
 
@@ -172,12 +178,10 @@
     class="modal"
     class:modal-open={resolverStatus === 'resolved' || resolverStatus === 'error'}
     bind:this={dialog}
-    on:close={() => {
-        if (resolverStatus === 'resolved' || resolverStatus === 'error') resetResolver();
-    }}
+    on:close={() => resetResolver()}
 >
     <div class="modal-box">
-        {#if resolverStatus === 'resolved'}
+        {#if resolvedData}
             <div role="alert" class="alert alert-success mb-6">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -192,9 +196,9 @@
             </div>
             <div class="modal-action flex justify-center gap-2">
                 <button type="button" class="btn btn-sm btn-outline" on:click={handleApply}> Yes, use these coordinates </button>
-                <button type="button" class="btn btn-sm btn-error" on:click={handleDiscard}> No, discard </button>
+                <button type="button" class="btn btn-sm btn-error" on:click={resetResolver}> No, discard </button>
             </div>
-        {:else if resolverStatus === 'error'}
+        {:else if resolverError}
             <div role="alert" class="alert alert-error mb-6">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
                     <path

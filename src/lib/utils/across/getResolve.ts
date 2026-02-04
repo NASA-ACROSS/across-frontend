@@ -13,7 +13,7 @@ import { fail, type Cookies, type RequestEvent } from '@sveltejs/kit';
  * @returns The resolved object data containing ra, dec, and resolver information.
  */
 
-export const getResolve = async (userCookie: UserCredentialsCookie, cookies: Cookies, targetName: string): Promise<NameResolver> => {
+const getResolve = async (userCookie: UserCredentialsCookie, cookies: Cookies, targetName: string): Promise<NameResolver> => {
     let accessToken;
     if (userCookie) {
         const userCredentials = new UserCredentials(userCookie);
@@ -42,22 +42,26 @@ export const getResolve = async (userCookie: UserCredentialsCookie, cookies: Coo
     try {
         response = await fetch(url, options);
     } catch (e) {
-        console.error(`ERROR: catch resolving object at [${Date.now()}]`, JSON.stringify(e));
         throw new Error('Unexpected Error while resolving object');
     }
 
-    // catch known errors from api and hide error from user
-    const errorCodes = [500, 404, 401];
-    if (errorCodes.includes(response.status)) {
-        console.error(`ERROR: resolving object at [${Date.now()}] with status code [${response.status}]`);
+    // Handle specific error codes
+    if (response.status === 404) {
+        throw new Error('Object not found. Please check the name and try again.');
     }
 
-    // Handle rate limiting
     if (response.status === 429) {
         const retryAfter = response.headers.get('Retry-After');
         const waitTime = retryAfter ? parseInt(retryAfter, 10) : 60;
-        console.warn(`API rate limited. Retry after ${waitTime} seconds`);
         throw new Error(`Rate limited. Please try again in ${waitTime} seconds.`);
+    }
+
+    if (response.status === 500) {
+        throw new Error('Server error while resolving object. Please try again later.');
+    }
+
+    if (!response.ok) {
+        throw new Error(`Failed to resolve object. Status code: ${response.status}`);
     }
 
     // Return result as NameResolver

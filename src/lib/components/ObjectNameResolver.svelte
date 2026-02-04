@@ -57,13 +57,29 @@
             const response = await fetch('?/resolveTarget', { method: 'POST', body: formData });
             const result = await response.json();
 
-            if (result?.error || !response.ok) {
-                resolverError = result?.error || 'Failed to resolve target coordinates';
+            // Handle errors from SvelteKit fail() responses
+            if (result?.type === 'failure' || !response.ok) {
+                let errorMsg = 'Failed to resolve target coordinates';
+
+                // Extract error from fail() response data
+                if (result?.data) {
+                    let errorData = result.data;
+                    if (typeof errorData === 'string') {
+                        errorData = JSON.parse(errorData);
+                    }
+                    if (Array.isArray(errorData) && errorData.length > 1) {
+                        errorMsg = errorData[1];
+                    } else if (errorData?.error) {
+                        errorMsg = errorData.error;
+                    }
+                }
+
+                resolverError = errorMsg;
                 dialog?.showModal();
                 return;
             }
 
-            // Parse if data is still stringified
+            // // Parse if data is still stringified
             let data = result.data;
             if (typeof data === 'string') {
                 data = JSON.parse(data);
@@ -139,7 +155,7 @@
 </div>
 
 <!-- Resolver Confirmation Modal -->
-<dialog class="modal" class:modal-open={isResolving || resolverError} bind:this={dialog} on:close={() => resetResolver()}>
+<dialog class="modal" class:modal-open={resolverError} bind:this={dialog} on:close={() => resetResolver()}>
     <div class="modal-box">
         {#if resolvedData}
             <div role="alert" class="alert alert-success mb-6">

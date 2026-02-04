@@ -581,7 +581,6 @@
                             on:apply={(e) => {
                                 coneSearchRa = e.detail.ra.toString();
                                 coneSearchDec = e.detail.dec.toString();
-                                handleSearch();
                             }}
                         />
 

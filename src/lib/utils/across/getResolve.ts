@@ -60,9 +60,8 @@ export const getResolve = async (userCookie: UserCredentialsCookie, cookies: Coo
         throw new Error(`Rate limited. Please try again in ${waitTime} seconds.`);
     }
 
-    const resolved = (await response.json()) as NameResolver;
-
-    return resolved;
+    // Return result as NameResolver
+    return (await response.json()) as NameResolver;
 };
 
 /**

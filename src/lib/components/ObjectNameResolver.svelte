@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher, tick } from 'svelte';
+    import { createEventDispatcher } from 'svelte';
     import type { NameResolver } from '$lib/types/across/NameResolver';
 
     /**
@@ -24,15 +24,10 @@
 
     // Internal state
     let targetNameInput = '';
-    let resolverStatus: 'idle' | 'resolving' | 'resolved' | 'discarded' | 'error' = 'idle';
     let resolvedData: NameResolver | null = null;
     let resolverError: string = '';
     let isResolving = false;
     let dialog: HTMLDialogElement;
-
-    $: if (!isDialogOpen) {
-        dialog.showModal();
-    }
 
     function resetResolver() {
         isResolving = false;
@@ -41,32 +36,12 @@
         resolverError = '';
 
         if (dialog?.open) {
-            isDialogOpen = false;
             dialog.close();
         }
     }
 
-    function extractCoordinates(apiData: any): NameResolver | null {
-        // Handle array format: [metadata, boolean, mapping, ra, dec, resolver]
-        if (Array.isArray(apiData) && apiData.length >= 6) {
-            return { ra: apiData[3], dec: apiData[4], resolver: apiData[5] || '' };
-        }
-
-        // Handle object format
-        if (apiData && typeof apiData === 'object') {
-            const data = apiData.data || apiData;
-            return {
-                ra: data.ra,
-                dec: data.dec,
-                resolver: data.resolver || '',
-            };
-        }
-
-        return null;
-    }
-
     async function handleResolve() {
-        const targetName = targetNameInput.trim()
+        const targetName = targetNameInput.trim();
         if (!targetName) {
             resolverError = '';
             resetResolver();
@@ -74,7 +49,6 @@
         }
 
         isResolving = true;
-        resolverStatus = 'resolving';
         resolverError = '';
 
         try {
@@ -85,17 +59,28 @@
 
             if (result?.error || !response.ok) {
                 resolverError = result?.error || 'Failed to resolve target coordinates';
-                resolverStatus = 'error';
+                dialog?.showModal();
                 return;
             }
 
-            // Parse string data if needed
-            let apiData = result?.data;
-            if (typeof apiData === 'string') {
-                apiData = JSON.parse(apiData);
+            // Parse if data is still stringified
+            let data = result.data;
+            if (typeof data === 'string') {
+                data = JSON.parse(data);
             }
 
-            const resolved = extractCoordinates(apiData);
+            // Transform array format to object if needed
+            // API returns: [metadata, boolean, mapping, ra, dec, resolver]
+            let resolved: NameResolver;
+            if (Array.isArray(data) && data.length >= 6) {
+                resolved = {
+                    ra: data[3],
+                    dec: data[4],
+                    resolver: data[5] || '',
+                };
+            } else {
+                resolved = data as NameResolver;
+            }
 
             if (resolved && resolved.ra !== undefined && resolved.dec !== undefined) {
                 resolvedData = {
@@ -103,45 +88,25 @@
                     dec: parseFloat(String(resolved.dec)),
                     resolver: resolved.resolver,
                 };
-                resolverStatus = 'resolved';
+                dialog?.showModal();
             } else {
                 resolverError = 'Failed to resolve target coordinates - no RA/DEC in response';
-                resolverStatus = 'error';
+                dialog?.showModal();
             }
         } catch (error) {
-            console.error('Error resolving target name:', error);
             resolverError = 'Failed to resolve target coordinates. Please try again.';
-            resolverStatus = 'error';
+            dialog?.showModal();
         } finally {
             isResolving = false;
-            isDialogOpen = true;
         }
     }
 
-    async function handleApply() {
+    function handleApply() {
         if (resolvedData) {
             const data = resolvedData;
-
             resetResolver();
-
-            // Wait for DOM to update
-            await tick();
-
-            // Clear state
-            targetNameInput = '';
-            resolvedData = null;
-            resolverError = '';
-
             dispatch('apply', data);
         }
-    }
-
-    function handleDiscard() {
-        targetNameInput = '';
-        resolvedData = null;
-        resolverError = '';
-        resetResolver('discarded');
-        setTimeout(() => resetResolver(), 2000);
     }
 </script>
 
@@ -174,12 +139,7 @@
 </div>
 
 <!-- Resolver Confirmation Modal -->
-<dialog
-    class="modal"
-    class:modal-open={resolverStatus === 'resolved' || resolverStatus === 'error'}
-    bind:this={dialog}
-    on:close={() => resetResolver()}
->
+<dialog class="modal" class:modal-open={isResolving || resolverError} bind:this={dialog} on:close={() => resetResolver()}>
     <div class="modal-box">
         {#if resolvedData}
             <div role="alert" class="alert alert-success mb-6">

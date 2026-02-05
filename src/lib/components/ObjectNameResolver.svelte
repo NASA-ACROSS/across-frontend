@@ -21,7 +21,7 @@
     // Internal state
     let objectNameInput = '';
     let resolvedData: NameResolver | null = null;
-    let resolverError: string = '';
+    let error: Error | null = null;
     let isResolving = false;
     let dialog: HTMLDialogElement;
 
@@ -29,7 +29,7 @@
         isResolving = false;
         objectNameInput = '';
         resolvedData = null;
-        resolverError = '';
+        error = null;
 
         if (dialog?.open) {
             dialog.close();
@@ -38,14 +38,10 @@
 
     async function handleResolve() {
         const objectName = objectNameInput.trim();
-        if (!objectName) {
-            resolverError = '';
-            resetResolver();
-            return;
-        }
+        if (!objectName) return;
 
         isResolving = true;
-        resolverError = '';
+        error = null;
 
         try {
             const formData = new FormData();
@@ -53,60 +49,22 @@
             const response = await fetch('?/resolveObject', { method: 'POST', body: formData });
             const result = await response.json();
 
-            // Handle errors from SvelteKit fail() responses
-            if (result?.type === 'failure' || !response.ok) {
-                let errorMsg = 'Failed to resolve object coordinates';
-
-                // Extract error from fail() response data
-                if (result?.data) {
-                    let errorData = result.data;
-                    if (typeof errorData === 'string') {
-                        errorData = JSON.parse(errorData);
-                    }
-                    if (Array.isArray(errorData) && errorData.length > 1) {
-                        errorMsg = errorData[1];
-                    } else if (errorData?.error) {
-                        errorMsg = errorData.error;
-                    }
-                }
-
-                resolverError = errorMsg;
-                dialog?.showModal();
-                return;
+            // Handle failure
+            if (result.type === 'failure') {
+                const errorData = JSON.parse(result.data);
+                throw new Error(errorData[1]);
             }
 
-            // // Parse if data is still stringified
-            let data = result.data;
-            if (typeof data === 'string') {
-                data = JSON.parse(data);
-            }
-
-            // Transform array format to object if needed
-            // API returns: [metadata, boolean, mapping, ra, dec, resolver]
-            let resolved: NameResolver;
-            if (Array.isArray(data) && data.length >= 6) {
-                resolved = {
-                    ra: data[3],
-                    dec: data[4],
-                    resolver: data[5] || '',
-                };
-            } else {
-                resolved = data as NameResolver;
-            }
-
-            if (resolved && resolved.ra !== undefined && resolved.dec !== undefined) {
-                resolvedData = {
-                    ra: parseFloat(String(resolved.ra)),
-                    dec: parseFloat(String(resolved.dec)),
-                    resolver: resolved.resolver,
-                };
-                dialog?.showModal();
-            } else {
-                resolverError = 'Failed to resolve object coordinates - no RA/DEC in response';
-                dialog?.showModal();
-            }
-        } catch (error) {
-            resolverError = 'Failed to resolve object coordinates. Please try again.';
+            // Handle success - parse devalue array and extract NameResolver
+            const dataArray = JSON.parse(result.data);
+            resolvedData = {
+                ra: dataArray[3],
+                dec: dataArray[4],
+                resolver: dataArray[5],
+            };
+            dialog?.showModal();
+        } catch (err) {
+            error = err instanceof Error ? err : new Error(String(err));
             dialog?.showModal();
         } finally {
             isResolving = false;
@@ -151,7 +109,7 @@
 </div>
 
 <!-- Resolver Confirmation Modal -->
-<dialog class="modal" class:modal-open={resolverError} bind:this={dialog} on:close={() => resetResolver()}>
+<dialog class="modal" bind:this={dialog} on:close={() => resetResolver()}>
     <div class="modal-box">
         {#if resolvedData}
             <div role="alert" class="alert alert-success mb-6">
@@ -160,8 +118,8 @@
                 </svg>
                 <div>
                     <h3 class="font-bold">Coordinates Resolved!</h3>
-                    <div class="text-sm">RA: {resolvedData?.ra.toFixed(4)}° | DEC: {resolvedData?.dec.toFixed(4)}°</div>
-                    {#if resolvedData?.resolver}
+                    <div class="text-sm">RA: {resolvedData.ra.toFixed(4)}° | DEC: {resolvedData.dec.toFixed(4)}°</div>
+                    {#if resolvedData.resolver}
                         <div class="text-xs opacity-75 mt-1">Resolved via: {resolvedData.resolver}</div>
                     {/if}
                 </div>
@@ -170,7 +128,7 @@
                 <button type="button" class="btn btn-sm btn-outline" on:click={handleApply}> Yes, use these coordinates </button>
                 <button type="button" class="btn btn-sm btn-error" on:click={resetResolver}> No, discard </button>
             </div>
-        {:else if resolverError}
+        {:else if error}
             <div role="alert" class="alert alert-error mb-6">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
                     <path
@@ -182,7 +140,7 @@
                 </svg>
                 <div>
                     <h3 class="font-bold">Resolution Failed</h3>
-                    <div class="text-sm">{resolverError}</div>
+                    <div class="text-sm">{error.message}</div>
                 </div>
             </div>
             <div class="modal-action flex justify-center gap-2">

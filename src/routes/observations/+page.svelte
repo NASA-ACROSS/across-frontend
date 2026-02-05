@@ -577,12 +577,7 @@
                     </div>
                     <div class="collapse-content bg-carbon-05">
                         <!-- Object Name Resolver Component -->
-                        <ObjectNameResolver
-                            on:apply={(e) => {
-                                coneSearchRa = e.detail.ra.toString();
-                                coneSearchDec = e.detail.dec.toString();
-                            }}
-                        />
+                        <ObjectNameResolver bind:ra={coneSearchRa} bind:dec={coneSearchDec} />
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
                             <label class="input text-lg pe-0 w-full" for="ra-input">

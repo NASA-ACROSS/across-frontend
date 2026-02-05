@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
     import type { NameResolver } from '$lib/types/across/NameResolver';
 
     /**
@@ -7,20 +6,17 @@
      * Can be used in any form where RA/Dec coordinates need to be populated
      *
      * Usage:
-     * <ObjectNameResolver on:apply={(e) => { ra = e.detail.ra; dec = e.detail.dec; }} />
-     *
-     * Events:
-     * - apply: Fired when coordinates are applied with NameResolver data
+     * <ObjectNameResolver bind:ra bind:dec />
      *
      * Props:
      * - title: Optional custom title (default: "Resolve Object Name to Coordinates")
+     * - ra: Two-way bound RA value
+     * - dec: Two-way bound DEC value
      */
 
     export let title: string = 'Resolve Object Name to Coordinates';
-
-    const dispatch = createEventDispatcher<{
-        apply: NameResolver;
-    }>();
+    export let ra: string | number = '';
+    export let dec: string | number = '';
 
     // Internal state
     let objectNameInput = '';
@@ -119,9 +115,9 @@
 
     function handleApply() {
         if (resolvedData) {
-            const data = resolvedData;
+            ra = resolvedData.ra;
+            dec = resolvedData.dec;
             resetResolver();
-            dispatch('apply', data);
         }
     }
 </script>

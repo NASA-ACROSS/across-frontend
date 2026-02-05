@@ -15,7 +15,7 @@
     }
 </script>
 
-<script lang="ts">
+<script lang="ts" generics="T">
     /**
      * A generic multi-select component with search filtering and scrolling.
      *
@@ -23,8 +23,6 @@
      * 1. **Simple Mode:** Pass `bind:selected`. The component manages add/remove logic internally.
      * 2. **Controlled Mode:** Pass `onToggle`. The parent handles logic (useful for complex cascading selections).
      */
-
-    type T = $$Generic;
 
     /** Generic list of options to be used in selection */
     export let options: Option<T>[] = [];

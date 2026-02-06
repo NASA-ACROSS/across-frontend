@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { enhance } from '$app/forms';
     import type { NameResolver } from '$lib/types/across/NameResolver';
 
     /**
@@ -36,39 +37,22 @@
         }
     }
 
-    async function handleResolve() {
-        const objectName = objectNameInput.trim();
-        if (!objectName) return;
-
+    function onResolveSubmit() {
         isResolving = true;
         error = null;
 
-        try {
-            const formData = new FormData();
-            formData.append('objectName', objectName);
-            const response = await fetch('?/resolveObject', { method: 'POST', body: formData });
-            const result = await response.json();
+        return async ({ result }: { result: { type: string; data?: unknown } }) => {
+            isResolving = false;
 
-            // Handle failure
             if (result.type === 'failure') {
-                const errorData = JSON.parse(result.data);
-                throw new Error(errorData[1]);
+                const failureData = result.data as { error?: string };
+                error = new Error(failureData?.error || 'Failed to resolve object coordinates');
+            } else if (result.type === 'success') {
+                resolvedData = (result.data as { data: NameResolver }).data;
             }
 
-            // Handle success - parse devalue array and extract NameResolver
-            const dataArray = JSON.parse(result.data);
-            resolvedData = {
-                ra: dataArray[3],
-                dec: dataArray[4],
-                resolver: dataArray[5],
-            };
             dialog?.showModal();
-        } catch (err) {
-            error = err instanceof Error ? err : new Error(String(err));
-            dialog?.showModal();
-        } finally {
-            isResolving = false;
-        }
+        };
     }
 
     function handleApply() {
@@ -83,29 +67,31 @@
 <!-- Object Name Resolver -->
 <div class="mb-6 p-4 bg-base-100 border border-base-300">
     <h4 class="text-md font-semibold mb-3">{title}</h4>
-    <div class="flex gap-2 items-end">
-        <div class="form-control flex-1">
-            <label class="label text-lg" for="object-name-resolver-input">
-                <span class="label-text">Object Name</span>
-            </label>
-            <input
-                id="object-name-resolver-input"
-                type="text"
-                bind:value={objectNameInput}
-                placeholder="e.g. Crab, M31, NGC 2237"
-                class="input input-bordered text-lg w-full"
-                on:keydown={(e) => e.key === 'Enter' && handleResolve()}
-            />
+    <form method="POST" action="?/resolveObject" use:enhance={onResolveSubmit}>
+        <div class="flex gap-2 items-end">
+            <div class="form-control flex-1">
+                <label class="label text-lg" for="object-name-resolver-input">
+                    <span class="label-text">Object Name</span>
+                </label>
+                <input
+                    id="object-name-resolver-input"
+                    name="objectName"
+                    type="text"
+                    bind:value={objectNameInput}
+                    placeholder="e.g. Crab, M31, NGC 2237"
+                    class="input input-bordered text-lg w-full"
+                />
+            </div>
+            <button type="submit" class="btn btn-primary" disabled={isResolving}>
+                {#if isResolving}
+                    <span class="loading loading-spinner loading-sm"></span>
+                    Resolving Coordinates...
+                {:else}
+                    Resolve
+                {/if}
+            </button>
         </div>
-        <button type="button" class="btn btn-primary" on:click={handleResolve} disabled={isResolving}>
-            {#if isResolving}
-                <span class="loading loading-spinner loading-sm"></span>
-                Resolving Coordinates...
-            {:else}
-                Resolve
-            {/if}
-        </button>
-    </div>
+    </form>
 </div>
 
 <!-- Resolver Confirmation Modal -->

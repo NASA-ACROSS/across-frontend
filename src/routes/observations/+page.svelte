@@ -6,6 +6,7 @@
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
+    import Pagination from '$lib/components/Pagination.svelte';
 
     export let data;
 
@@ -14,6 +15,7 @@
 
     const DEFAULT_COLUMNS = ['object_name', 'telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'bandpass_name', 'status'];
     const COOKIE_NAME = 'observation_columns';
+    const PAGINATION_BUTTONS = 4;
 
     // Observation data and pagination
     $: observations = data.observations || [];
@@ -21,6 +23,7 @@
     $: totalPages = data.totalPages || 1;
     $: telescopes = data.telescopes || [];
     $: totalCount = data.totalCount || 0;
+    $: currentSearchParams = new URLSearchParams(page.url.searchParams);
 
     // Observatory/Telescope/Instrument selector state
     $: observatories = telescopes
@@ -215,14 +218,8 @@
 
         // Add page parameter
         params.append('page', '1'); // Reset to first page on new search
-
+        currentSearchParams = params;
         await goto(`?${params.toString()}`, { noScroll: true, invalidateAll: true });
-    }
-
-    function handlePageChange(newPage: number) {
-        const params = new URLSearchParams(page.url.searchParams);
-        params.set('page', newPage.toString());
-        return `?${params.toString()}`;
     }
 
     function isValidUUID(uuidString: string) {
@@ -327,25 +324,6 @@
             ] as ObservatoryTelescopeInstrumentName[]
         )!;
     };
-
-    function createPagesArray(currentPage: number, totalPages: number, numButtons: number) {
-        let pagesBefore = Math.floor(numButtons / 2);
-        let pagesAfter = Math.ceil(numButtons / 2);
-
-        let start = currentPage - pagesBefore;
-        if (start < 1) {
-            start = 1;
-        }
-        let end = currentPage + pagesAfter;
-        if (end > totalPages) {
-            end = totalPages;
-            pagesAfter = end - currentPage;
-        }
-
-        const length = Math.min(totalPages, pagesBefore + 1 + pagesAfter);
-
-        return Array.from({ length: length }, (_, i) => start + i);
-    }
 
     function deselectAccordion(currentFilterName: string) {
         if (selectedFilter == currentFilterName) {
@@ -868,40 +846,7 @@
     <Section title="Observations (Total: {totalCount})" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">
-            <a data-sveltekit-noscroll data-sveltekit-preload-data="off" type="link" class="btn btn-sm" href={handlePageChange(1)}> &lt;&lt; </a>
-            <a
-                data-sveltekit-noscroll
-                data-sveltekit-preload-data="off"
-                type="link"
-                class="btn btn-sm {currentPage == 1 ? 'disabled-link' : ''}"
-                href={handlePageChange(currentPage - 1)}
-            >
-                &lt;
-            </a>
-
-            {#each createPagesArray(currentPage, totalPages, 4) as pageNumber}
-                {#if pageNumber === currentPage}
-                    <span class="btn btn-sm btn-active">
-                        {currentPage}
-                    </span>
-                {:else}
-                    <a data-sveltekit-noscroll data-sveltekit-preload-data="off" type="button" class="btn btn-sm" href={handlePageChange(pageNumber)}>
-                        {pageNumber}
-                    </a>
-                {/if}
-            {/each}
-
-            <a
-                data-sveltekit-noscroll
-                data-sveltekit-preload-data="off"
-                type="button"
-                class="btn btn-sm {totalPages > currentPage ? '' : 'disabled-link'}"
-                href={handlePageChange(currentPage + 1)}
-            >
-                &gt;
-            </a>
-
-            <a data-sveltekit-noscroll data-sveltekit-preload-data="off" type="button" class="btn btn-sm" href={handlePageChange(totalPages)}> &gt;&gt; </a>
+            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
 
             <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
                 Customize
@@ -1046,41 +991,8 @@
                 </tbody>
             </table>
         </div>
-        <div style="float: right; padding-top: 1rem;" class="flex space-x-2">
-            <a data-sveltekit-preload-data="off" type="link" class="btn btn-sm" href={handlePageChange(1)}> &lt;&lt; </a>
-            <a
-                data-sveltekit-noscroll
-                data-sveltekit-preload-data="off"
-                type="link"
-                class="btn btn-sm {currentPage == 1 ? 'disabled-link' : ''}"
-                href={handlePageChange(currentPage - 1)}
-            >
-                &lt;
-            </a>
-
-            {#each createPagesArray(currentPage, totalPages, 4) as pageNumber}
-                {#if pageNumber === currentPage}
-                    <span class="btn btn-sm btn-active">
-                        {currentPage}
-                    </span>
-                {:else}
-                    <a data-sveltekit-noscroll data-sveltekit-preload-data="off" type="button" class="btn btn-sm" href={handlePageChange(pageNumber)}>
-                        {pageNumber}
-                    </a>
-                {/if}
-            {/each}
-
-            <a
-                data-sveltekit-noscroll
-                data-sveltekit-preload-data="off"
-                type="button"
-                class="btn btn-sm {totalPages > currentPage ? '' : 'disabled-link'}"
-                href={handlePageChange(currentPage + 1)}
-            >
-                &gt;
-            </a>
-
-            <a data-sveltekit-noscroll data-sveltekit-preload-data="off" type="button" class="btn btn-sm" href={handlePageChange(totalPages)}> &gt;&gt; </a>
+        <div class="flex ml-auto w-fit space-x-2 pt-4">
+            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
 
             <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
                 Customize
@@ -1097,11 +1009,6 @@
 </Page>
 
 <style>
-    .disabled-link {
-        pointer-events: none;
-        cursor: not-allowed;
-    }
-
     /* remove ugly up/down arrows */
     input[type='number']::-webkit-inner-spin-button,
     input[type='number']::-webkit-outer-spin-button,

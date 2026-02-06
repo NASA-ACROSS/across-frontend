@@ -2,6 +2,7 @@ import type { ObservationsResponse } from '$lib/types/across/Observation';
 import type { Telescope } from '$lib/types/across/Telescope';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
+import { resolveObject } from '$lib/utils/across/resolveObject';
 import { CONFIG } from '../../config/config';
 import type { RequestEvent } from './$types';
 
@@ -178,3 +179,5 @@ export async function load({ url, locals, cookies }: RequestEvent) {
         };
     }
 }
+
+export const actions = { resolveObject };

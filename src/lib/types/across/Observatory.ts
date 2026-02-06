@@ -9,11 +9,5 @@ export type Observatory = {
     type: string;
     telescopes: ObservatoryTelescope[];
     reference_url: string;
-    ephemeris_types: [
-        {
-            ephemeris_type: string;
-            priority: number;
-            parameters: TLEParameters | JPLParameters;
-        },
-    ];
+    ephemeris_types: [{ ephemeris_type: string; priority: number; parameters: TLEParameters | JPLParameters }];
 };

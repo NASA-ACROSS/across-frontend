@@ -1,8 +1,21 @@
 <script lang="ts">
+    import { beforeNavigate, afterNavigate } from '$app/navigation';
+
     export let currentPage: number = 1;
     export let totalPages: number = 1;
     export let numButtons: number = 4;
     export let searchParams: URLSearchParams;
+
+    // Track if we're currently navigating
+    let isLoading = false;
+
+    beforeNavigate(() => {
+        isLoading = true;
+    });
+
+    afterNavigate(() => {
+        isLoading = false;
+    });
 
     // Make all hrefs reactive to searchParams, currentPage, and totalPages changes
     $: firstPageHref = buildHref(1, searchParams);
@@ -41,49 +54,67 @@
     }
 </script>
 
-<a
-    data-sveltekit-noscroll
-    data-sveltekit-preload-data="off"
-    class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''}"
-    href={firstPageHref}
->
-    &lt;&lt;
-</a>
-<a
-    data-sveltekit-noscroll
-    data-sveltekit-preload-data="off"
-    class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''}"
-    href={prevPageHref}
->
-    &lt;
-</a>
-
-{#each pageHrefs as { pageNum, href }}
-    {#if pageNum === currentPage}
-        <span class="btn btn-sm btn-active">
-            {currentPage}
-        </span>
-    {:else}
-        <a data-sveltekit-noscroll data-sveltekit-preload-data="off" class="btn btn-sm" {href}>
-            {pageNum}
-        </a>
+<div class="flex items-center gap-2">
+    {#if isLoading}
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+            <span class="loading loading-spinner loading-xs"></span>
+        </div>
     {/if}
-{/each}
 
-<a
-    data-sveltekit-noscroll
-    data-sveltekit-preload-data="off"
-    class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''}"
-    href={nextPageHref}
->
-    &gt;
-</a>
+    <a
+        data-sveltekit-noscroll
+        data-sveltekit-preload-data="off"
+        class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading ? 'pointer-events-none cursor-wait' : ''}"
+        href={firstPageHref}
+        aria-disabled={currentPage == 1 || isLoading}
+    >
+        &lt;&lt;
+    </a>
+    <a
+        data-sveltekit-noscroll
+        data-sveltekit-preload-data="off"
+        class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading ? 'pointer-events-none cursor-wait' : ''}"
+        href={prevPageHref}
+        aria-disabled={currentPage == 1 || isLoading}
+    >
+        &lt;
+    </a>
 
-<a
-    data-sveltekit-noscroll
-    data-sveltekit-preload-data="off"
-    class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''}"
-    href={lastPageHref}
->
-    &gt;&gt;
-</a>
+    {#each pageHrefs as { pageNum, href }}
+        {#if pageNum === currentPage}
+            <span class="btn btn-sm btn-active">
+                {currentPage}
+            </span>
+        {:else}
+            <a
+                data-sveltekit-noscroll
+                data-sveltekit-preload-data="off"
+                class="btn btn-sm {isLoading ? 'pointer-events-none cursor-wait' : ''}"
+                {href}
+                aria-disabled={isLoading}
+            >
+                {pageNum}
+            </a>
+        {/if}
+    {/each}
+
+    <a
+        data-sveltekit-noscroll
+        data-sveltekit-preload-data="off"
+        class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading ? 'pointer-events-none cursor-wait' : ''}"
+        href={nextPageHref}
+        aria-disabled={currentPage == totalPages || isLoading}
+    >
+        &gt;
+    </a>
+
+    <a
+        data-sveltekit-noscroll
+        data-sveltekit-preload-data="off"
+        class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading ? 'pointer-events-none cursor-wait' : ''}"
+        href={lastPageHref}
+        aria-disabled={currentPage == totalPages || isLoading}
+    >
+        &gt;&gt;
+    </a>
+</div>

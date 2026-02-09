@@ -7,6 +7,8 @@
     import Section from '$lib/components/Section.svelte';
     import ObservatoryTelescopeSelector from '$lib/components/ObservatoryTelescopeSelector.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
+    import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
+    import type { Telescope } from '$lib/types/across/Telescope';
 
     export let data;
 
@@ -29,8 +31,8 @@
         .map((telescope) => telescope.observatory)
         .filter((value, index, self) => self.findIndex((obs) => obs.id === value.id) === index);
 
-    let selectedObservatories: string[] = [];
-    let selectedTelescopes: string[] = [];
+    let selectedObservatories: TelescopeObservatory[] = [];
+    let selectedTelescopes: Telescope[] = [];
 
     // Query parameters
     let name = data.queryParams?.name || '';
@@ -137,8 +139,8 @@
         if (dateEnd) params.append('date_range_end', `${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
 
         // Add observatory/telescope filters
-        if (selectedObservatories.length) params.append('observatory_ids', selectedObservatories.join(','));
-        if (selectedTelescopes.length) params.append('telescope_ids', selectedTelescopes.join(','));
+        if (selectedObservatories.length) params.append('observatory_ids', selectedObservatories.map((obs) => obs.id).join(','));
+        if (selectedTelescopes.length) params.append('telescope_ids', selectedTelescopes.map((tel) => tel.id).join(','));
 
         // Add columns parameter
         const columnParam = selectedColumns.map((col) => col.id).join(',');
@@ -454,12 +456,15 @@
                                 {column.label}
                             </th>
                         {/each}
+                        <th class="max-w-70 cursor-pointer hover:bg-nasa-blue">Observations</th>
                     </tr>
                 </thead>
                 <tbody>
                     {#if schedules.length === 0}
                         <tr>
-                            <td colspan={selectedColumns.length} class="text-center py-4"> No schedules found. Adjust your search criteria and try again. </td>
+                            <td colspan={selectedColumns.length + 1} class="text-center py-4">
+                                No schedules found. Adjust your search criteria and try again.
+                            </td>
                         </tr>
                     {:else}
                         {#each schedules as schedule}
@@ -498,6 +503,9 @@
                                         {/if}
                                     </td>
                                 {/each}
+                                <td>
+                                    <a href="/observations?schedule_ids={schedule.id}" class="btn btn-xs btn-primary"> View </a>
+                                </td>
                             </tr>
                         {/each}
                     {/if}

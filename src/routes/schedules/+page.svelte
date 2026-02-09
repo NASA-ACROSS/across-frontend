@@ -7,6 +7,7 @@
     import Section from '$lib/components/Section.svelte';
     import ObservatoryTelescopeSelector from '$lib/components/ObservatoryTelescopeSelector.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
+    import ArrowButton from '$lib/components/ArrowButton.svelte';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
     import type { Telescope } from '$lib/types/across/Telescope';
 
@@ -504,7 +505,7 @@
                                     </td>
                                 {/each}
                                 <td>
-                                    <a href="/observations?schedule_ids={schedule.id}" class="btn btn-xs btn-primary"> View </a>
+                                    <ArrowButton href="/observations?schedule_ids={schedule.id}" />
                                 </td>
                             </tr>
                         {/each}

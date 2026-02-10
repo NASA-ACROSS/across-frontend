@@ -8,6 +8,9 @@
     import ObjectNameResolver from '$lib/components/ObjectNameResolver.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
+    import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
+    import type { Telescope } from '$lib/types/across/Telescope';
+    import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
 
     export let data;
 
@@ -34,9 +37,9 @@
         .flatMap((telescope) => telescope.instruments || [])
         .filter((value, index, self) => self.findIndex((inst) => inst.id === value.id) === index);
 
-    let selectedObservatories: string[] = [];
-    let selectedTelescopes: string[] = [];
-    let selectedInstruments: string[] = [];
+    let selectedObservatories: TelescopeObservatory[] = [];
+    let selectedTelescopes: Telescope[] = [];
+    let selectedInstruments: TelescopeInstrument[] = [];
 
     // Query parameters
     let externalId = data.queryParams?.external_id || '';
@@ -202,9 +205,9 @@
         if (scheduleIds.length) params.append('schedule_ids', scheduleIds.toString());
 
         // Add observatory/telescope/instrument filters
-        if (selectedObservatories.length) params.append('observatory_ids', selectedObservatories.join(','));
-        if (selectedTelescopes.length) params.append('telescope_ids', selectedTelescopes.join(','));
-        if (selectedInstruments.length) params.append('instrument_ids', selectedInstruments.join(','));
+        if (selectedObservatories.length) params.append('observatory_ids', selectedObservatories.map((obs) => obs.id).join(','));
+        if (selectedTelescopes.length) params.append('telescope_ids', selectedTelescopes.map((tel) => tel.id).join(','));
+        if (selectedInstruments.length) params.append('instrument_ids', selectedInstruments.map((inst) => inst.id).join(','));
 
         // Add columns parameter
         const columnParam = selectedColumns.map((col) => col.id).join(',');

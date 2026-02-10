@@ -2,206 +2,195 @@
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
-    import { createEventDispatcher } from 'svelte';
+    import MultiSelect, { type Option } from './MultiSelect.svelte';
 
     export let observatories: TelescopeObservatory[] = [];
     export let telescopes: Telescope[] = [];
     export let instruments: TelescopeInstrument[] = [];
 
-    export let selectedObservatories: string[] = [];
-    export let selectedTelescopes: string[] = [];
-    export let selectedInstruments: string[] = [];
+    export let selectedObservatories: TelescopeObservatory[] = [];
+    export let selectedTelescopes: Telescope[] = [];
+    export let selectedInstruments: TelescopeInstrument[] = [];
 
-    let observatorySearch = '';
-    let telescopeSearch = '';
-    let instrumentSearch = '';
+    $: observatoryOptions = observatories.map(mapObservatoryToOption);
+    $: telescopeOptions = telescopes.map(mapTelescopeToOption);
+    $: instrumentOptions = instruments.map(mapInstrumentToOption);
 
-    const dispatch = createEventDispatcher<{
-        selectionChange: {
-            observatoryIds: string[];
-            telescopeIds: string[];
-            instrumentIds: string[];
+    $: selectedObservatoryOptions = selectedObservatories.map(mapObservatoryToOption);
+    $: selectedTelescopeOptions = selectedTelescopes.map(mapTelescopeToOption);
+    $: selectedInstrumentOptions = selectedInstruments.map(mapInstrumentToOption);
+
+    function mapObservatoryToOption(item: TelescopeObservatory): Option<TelescopeObservatory> {
+        return {
+            value: item,
+            displayName: item.name,
+            key: item.id,
+            searchableText: `${item.name} ${item.short_name}`,
         };
-    }>();
-
-    $: filteredObservatories = observatories.filter(
-        (obs) => obs.name.toLowerCase().includes(observatorySearch.toLowerCase()) || obs.short_name.toLowerCase().includes(observatorySearch.toLowerCase())
-    );
-    $: filteredTelescopes = telescopes.filter(
-        (tel) => tel.name.toLowerCase().includes(telescopeSearch.toLowerCase()) || tel.short_name.toLowerCase().includes(telescopeSearch.toLowerCase())
-    );
-    $: filteredInstruments = instruments.filter(
-        (inst) => inst.name.toLowerCase().includes(instrumentSearch.toLowerCase()) || inst.short_name.toLowerCase().includes(instrumentSearch.toLowerCase())
-    );
-
-    function dispatchChange() {
-        dispatch('selectionChange', {
-            observatoryIds: selectedObservatories,
-            telescopeIds: selectedTelescopes,
-            instrumentIds: selectedInstruments,
-        });
     }
 
-    function toggleObservatory(observatoryId: string) {
-        const isCurrentlySelected = selectedObservatories.includes(observatoryId);
+    function mapTelescopeToOption(item: Telescope): Option<Telescope> {
+        return {
+            value: item,
+            displayName: item.name,
+            key: item.id,
+            searchableText: `${item.name} ${item.short_name}`,
+        };
+    }
 
-        if (isCurrentlySelected) {
-            selectedObservatories = selectedObservatories.filter((id) => id !== observatoryId);
-            const telescopesToRemove = telescopes.filter((tel) => tel.observatory.id === observatoryId).map((tel) => tel.id);
-            selectedTelescopes = selectedTelescopes.filter((id) => !telescopesToRemove.includes(id));
-            const instrumentsToRemove = telescopes
-                .filter((tel) => tel.observatory.id === observatoryId)
-                .flatMap((tel) => tel.instruments.map((inst) => inst.id));
-            selectedInstruments = selectedInstruments.filter((id) => !instrumentsToRemove.includes(id));
+    function mapInstrumentToOption(item: TelescopeInstrument): Option<TelescopeInstrument> {
+        return {
+            value: item,
+            displayName: item.name,
+            key: item.id,
+            searchableText: `${item.name} ${item.short_name}`,
+        };
+    }
+
+    function updateSelections(obsIds: Set<string>, telIds: Set<string>, instIds: Set<string>) {
+        selectedObservatories = observatories.filter((obs) => obsIds.has(obs.id));
+        selectedTelescopes = telescopes.filter((tel) => telIds.has(tel.id));
+        selectedInstruments = instruments.filter((inst) => instIds.has(inst.id));
+    }
+
+    function buildSelectedSets() {
+        const obsSet = new Set(selectedObservatories.map((o) => o.id));
+        const telSet = new Set(selectedTelescopes.map((t) => t.id));
+        const instSet = new Set(selectedInstruments.map((i) => i.id));
+
+        return { obsSet, telSet, instSet };
+    }
+
+    function toggleObservatory(observatory: TelescopeObservatory) {
+        const { obsSet, telSet, instSet } = buildSelectedSets();
+
+        const obsId = observatory.id;
+        const isSelected = obsSet.has(obsId);
+
+        if (isSelected) {
+            obsSet.delete(obsId);
+            // cascade unselect all telescopes and instruments
+            telescopes
+                .filter((t) => t.observatory.id === obsId)
+                .forEach((t) => {
+                    telSet.delete(t.id);
+                    t.instruments.forEach((inst) => instSet.delete(inst.id));
+                });
         } else {
-            selectedObservatories = [...selectedObservatories, observatoryId];
-            const telescopesToAdd = telescopes
-                .filter((tel) => tel.observatory.id === observatoryId)
-                .map((tel) => tel.id)
-                .filter((id) => !selectedTelescopes.includes(id));
-            selectedTelescopes = [...selectedTelescopes, ...telescopesToAdd];
-            const instrumentsToAdd = telescopes
-                .filter((tel) => tel.observatory.id === observatoryId)
-                .flatMap((tel) => tel.instruments.map((inst) => inst.id))
-                .filter((id) => !selectedInstruments.includes(id));
-            selectedInstruments = [...selectedInstruments, ...instrumentsToAdd];
+            obsSet.add(obsId);
+            // cascade select all telescopes and instruments
+            telescopes
+                .filter((t) => t.observatory.id === obsId)
+                .forEach((t) => {
+                    telSet.add(t.id);
+                    t.instruments.forEach((inst) => instSet.add(inst.id));
+                });
         }
-        dispatchChange();
+
+        updateSelections(obsSet, telSet, instSet);
     }
 
-    function toggleTelescope(telescopeId: string) {
-        const isCurrentlySelected = selectedTelescopes.includes(telescopeId);
+    function toggleTelescope(telescope: Telescope) {
+        const { obsSet, telSet, instSet } = buildSelectedSets();
 
-        if (isCurrentlySelected) {
-            selectedTelescopes = selectedTelescopes.filter((id) => id !== telescopeId);
-            const telescope = telescopes.find((tel) => tel.id === telescopeId);
-            if (telescope) {
-                const instrumentsToRemove = telescope.instruments.map((inst) => inst.id);
-                selectedInstruments = selectedInstruments.filter((id) => !instrumentsToRemove.includes(id));
+        const telId = telescope.id;
+        const isSelected = telSet.has(telId);
+
+        if (isSelected) {
+            telSet.delete(telId);
+            // cascade unselect all instruments
+            telescope.instruments.forEach((inst) => instSet.delete(inst.id));
+
+            // check if we need to unselect the observatory
+            const obsId = telescope.observatory.id;
+            const hasSelectedTelescopes = telescopes.some((tel) => tel.observatory.id === obsId && telSet.has(tel.id));
+
+            if (!hasSelectedTelescopes) {
+                obsSet.delete(obsId);
             }
         } else {
-            selectedTelescopes = [...selectedTelescopes, telescopeId];
-            const telescope = telescopes.find((tel) => tel.id === telescopeId);
+            telSet.add(telId);
+            // cascade select all instruments
+            telescope.instruments.forEach((inst) => instSet.add(inst.id));
+
+            // select the observatory if it's not already selected
+            if (!obsSet.has(telescope.observatory.id)) {
+                obsSet.add(telescope.observatory.id);
+            }
+        }
+
+        updateSelections(obsSet, telSet, instSet);
+    }
+
+    function toggleInstrument(instrument: TelescopeInstrument) {
+        const { obsSet, telSet, instSet } = buildSelectedSets();
+
+        const instId = instrument.id;
+        const isSelected = instSet.has(instId);
+
+        if (isSelected) {
+            instSet.delete(instId);
+
+            // find the telescope this instrument belongs to
+            const telescope = telescopes.find((tel) => tel.instruments.some((inst) => inst.id === instId));
             if (telescope) {
-                const instrumentsToAdd = telescope.instruments.map((inst) => inst.id).filter((id) => !selectedInstruments.includes(id));
-                selectedInstruments = [...selectedInstruments, ...instrumentsToAdd];
-                if (!selectedObservatories.includes(telescope.observatory.id)) {
-                    selectedObservatories = [...selectedObservatories, telescope.observatory.id];
+                // check if we need to unselect the telescope
+                const hasSelectedInstruments = telescope.instruments.some((inst) => instSet.has(inst.id));
+                if (!hasSelectedInstruments) {
+                    telSet.delete(telescope.id);
+
+                    // check if we need to unselect the observatory
+                    const obsId = telescope.observatory.id;
+                    const hasSelectedTelescopes = telescopes.some((tel) => tel.observatory.id === obsId && telSet.has(tel.id));
+                    if (!hasSelectedTelescopes) {
+                        obsSet.delete(obsId);
+                    }
+                }
+            }
+        } else {
+            instSet.add(instId);
+
+            // find and select the parent telescope and observatory
+            const telescope = telescopes.find((tel) => tel.instruments.some((inst) => inst.id === instId));
+            if (telescope) {
+                if (!telSet.has(telescope.id)) {
+                    telSet.add(telescope.id);
+                }
+                if (!obsSet.has(telescope.observatory.id)) {
+                    obsSet.add(telescope.observatory.id);
                 }
             }
         }
-        dispatchChange();
-    }
 
-    function toggleInstrument(instrumentId: string) {
-        const isCurrentlySelected = selectedInstruments.includes(instrumentId);
-
-        if (isCurrentlySelected) {
-            selectedInstruments = selectedInstruments.filter((id) => id !== instrumentId);
-        } else {
-            selectedInstruments = [...selectedInstruments, instrumentId];
-            const telescope = telescopes.find((tel) => tel.instruments.some((inst) => inst.id === instrumentId));
-            if (telescope) {
-                if (!selectedTelescopes.includes(telescope.id)) {
-                    selectedTelescopes = [...selectedTelescopes, telescope.id];
-                }
-                if (!selectedObservatories.includes(telescope.observatory.id)) {
-                    selectedObservatories = [...selectedObservatories, telescope.observatory.id];
-                }
-            }
-        }
-        dispatchChange();
+        updateSelections(obsSet, telSet, instSet);
     }
 </script>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="min-w-0">
-        <label class="label text-lg" for="observatory-select-input">
-            <span class="label-text">Observatory Select</span>
-        </label>
-        <div class="border border-base-300 p-2 bg-base-100 h-full flex flex-col">
-            <input
-                id="observatory-select-input"
-                type="text"
-                placeholder="Search observatories..."
-                bind:value={observatorySearch}
-                class="input input-bordered input-sm w-full mb-2"
-                title="Search by full name or short name"
-            />
-            <div class="max-h-60 overflow-y-auto border border-base-200 p-2 flex-1">
-                {#each filteredObservatories as observatory}
-                    <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-nasa-blue-lite">
-                        <input
-                            type="checkbox"
-                            value={observatory.id}
-                            checked={selectedObservatories.includes(observatory.id)}
-                            on:change={() => toggleObservatory(observatory.id)}
-                            class="checkbox checkbox-primary checkbox-sm mr-2.5 shrink-0"
-                        />
-                        <span class="text-sm">{observatory.name}</span>
-                    </label>
-                {/each}
-            </div>
-        </div>
-    </div>
+    <MultiSelect
+        label="Observatory Select"
+        placeholder="Search observatories..."
+        options={observatoryOptions}
+        selected={selectedObservatoryOptions}
+        onToggle={toggleObservatory}
+        title="Search by full name or short name"
+    />
 
-    <div class="min-w-0">
-        <label class="label text-lg" for="telescope-select-input">
-            <span class="label-text">Telescope Select</span>
-        </label>
-        <div class="border border-base-300 p-2 bg-base-100 h-full flex flex-col">
-            <input
-                id="telescope-select-input"
-                type="text"
-                placeholder="Search telescopes..."
-                bind:value={telescopeSearch}
-                class="input input-bordered input-sm w-full mb-2"
-                title="Search by full name or short name"
-            />
-            <div class="max-h-60 overflow-y-auto border border-base-200 p-2 flex-1">
-                {#each filteredTelescopes as telescope}
-                    <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-nasa-blue-lite">
-                        <input
-                            type="checkbox"
-                            value={telescope.id}
-                            checked={selectedTelescopes.includes(telescope.id)}
-                            on:change={() => toggleTelescope(telescope.id)}
-                            class="checkbox checkbox-primary checkbox-sm mr-2.5 shrink-0"
-                        />
-                        <span class="text-sm">{telescope.name}</span>
-                    </label>
-                {/each}
-            </div>
-        </div>
-    </div>
+    <MultiSelect
+        label="Telescope Select"
+        placeholder="Search telescopes..."
+        options={telescopeOptions}
+        selected={selectedTelescopeOptions}
+        onToggle={toggleTelescope}
+        title="Search by full name or short name"
+    />
 
-    <div class="min-w-0">
-        <label class="label text-lg" for="instrument-select-input">
-            <span class="label-text">Instrument Select</span>
-        </label>
-        <div class="border border-base-300 p-2 bg-base-100 h-full flex flex-col">
-            <input
-                id="instrument-select-input"
-                type="text"
-                placeholder="Search instruments..."
-                bind:value={instrumentSearch}
-                class="input input-bordered input-sm w-full mb-2"
-                title="Search by full name or short name"
-            />
-            <div class="max-h-60 overflow-y-auto border border-base-200 p-2 flex-1">
-                {#each filteredInstruments as instrument}
-                    <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-nasa-blue-lite">
-                        <input
-                            type="checkbox"
-                            value={instrument.id}
-                            checked={selectedInstruments.includes(instrument.id)}
-                            on:change={() => toggleInstrument(instrument.id)}
-                            class="checkbox checkbox-primary checkbox-sm mr-2.5 shrink-0"
-                        />
-                        <span class="text-sm">{instrument.name}</span>
-                    </label>
-                {/each}
-            </div>
-        </div>
-    </div>
+    <MultiSelect
+        label="Instrument Select"
+        placeholder="Search instruments..."
+        options={instrumentOptions}
+        selected={selectedInstrumentOptions}
+        onToggle={toggleInstrument}
+        title="Search by full name or short name"
+    />
 </div>

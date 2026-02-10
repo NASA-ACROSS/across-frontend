@@ -8,11 +8,10 @@
 <Page center={true}>
     <Section title="Playground">
         <p class="text-lg text-gray-700">This page is only visible in local development mode.</p>
-        <div class="my-6 max-w-md">
+        <div class="my-6 max-w-md h-60">
             <h2 class="text-2xl font-semibold mb-3">MultiSelect Component</h2>
             <MultiSelect
                 label="Fruits"
-                title="Search options"
                 options={[
                     { key: '1', displayName: 'apple', searchableText: 'apple', value: 'apple' },
                     { key: '2', displayName: 'banana', searchableText: 'banana', value: 'banana' },

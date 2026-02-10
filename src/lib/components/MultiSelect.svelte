@@ -38,9 +38,6 @@
     /** Label text displayed above the component. Default: 'Select From' */
     export let label: string = 'Select From';
 
-    /** Tooltip text for the search input. */
-    export let title: string = '';
-
     /**
      * Optional callback. If provided, internal selection logic is bypassed
      * and this function is called with the value `T`.
@@ -77,8 +74,15 @@
         <span class="text-xs justify-end">({selected.length}/{options.length})</span>
     </label>
     <div class="border border-base-300 p-2 bg-base-100 h-full flex flex-col">
-        <input id="select-input" type="text" class="input input-bordered input-sm w-full mb-2" {placeholder} bind:value={search} {title} />
-        <div class="max-h-60 overflow-y-auto border border-base-200 p-2 flex-1">
+        <label class="input w-full flex mb-2">
+            <input type="text" class="grow" {placeholder} bind:value={search} />
+            {#if search.length > 0}
+                <button type="button" class="btn btn-ghost btn-xs bx bx-x opacity-70 text-xl" on:click={() => (search = '')} title="Clear Search" />
+            {:else}
+                <i class="p-2 bx bx-search text-lg opacity-70"></i>
+            {/if}
+        </label>
+        <div class="max-h-60 overflow-y-auto border border-base-200 p-2">
             {#each filtered as option}
                 <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-nasa-blue-lite">
                     <input

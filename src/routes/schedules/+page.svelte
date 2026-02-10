@@ -217,6 +217,12 @@
 
 <Page center={true}>
     <Section title="Browse Schedules" icon="calendar">
+        <p class="text-sm text-gray-500 mb-4 italic">
+            Note: These results show the most up-to-date versions of schedules. To view all schedule history, visit the <a
+                href="/schedules/history"
+                class="link link-primary">/schedules/history</a
+            > page (work in progress).
+        </p>
         <div class="bg-base-200 p-4 mb-6 w-full">
             <div class="flex justify-between">
                 <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">Query Filters</div>

@@ -85,7 +85,17 @@
                 <i class="p-2 bx bx-search text-lg opacity-70"></i>
             {/if}
         </label>
-        <div class="max-h-60 overflow-y-auto border border-base-200 p-2">
+        {#if onToggle === null}
+            <div class="flex justify-end p-1">
+                {#if options.length !== selected.length}
+                    <button class="bx bx-select-all text-xl opacity-70 cursor-pointer" on:click={() => (selected = [...filtered])}></button>
+                {/if}
+                {#if selected.length > 0}
+                    <button class="ml-2 bx bx-select-none text-xl opacity-70 cursor-pointer" on:click={() => (selected = [])}></button>
+                {/if}
+            </div>
+        {/if}
+        <div class="max-h-60 overflow-y-auto border border-base-200 p-2 flex-1">
             {#each filtered as option}
                 <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-nasa-blue-lite">
                     <input

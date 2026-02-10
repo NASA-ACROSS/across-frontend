@@ -13,8 +13,6 @@
     $: userEmail = user?.email ? user.email : '';
 
     $: userInitials = user ? user?.first_name?.[0]?.toUpperCase() + user?.last_name?.[0]?.toUpperCase() : '';
-
-    $: console.log(PUBLIC_CONFIG.BUILD_VERSION);
 </script>
 
 <div class="navbar bg-primary shadow-sm h-22">

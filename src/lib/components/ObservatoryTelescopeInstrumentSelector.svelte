@@ -12,33 +12,15 @@
     export let selectedTelescopes: Telescope[] = [];
     export let selectedInstruments: TelescopeInstrument[] = [];
 
-    $: observatoryOptions = observatories.map(mapObservatoryToOption);
-    $: telescopeOptions = telescopes.map(mapTelescopeToOption);
-    $: instrumentOptions = instruments.map(mapInstrumentToOption);
+    $: observatoryOptions = observatories.map(mapToOption);
+    $: telescopeOptions = telescopes.map(mapToOption);
+    $: instrumentOptions = instruments.map(mapToOption);
 
-    $: selectedObservatoryOptions = selectedObservatories.map(mapObservatoryToOption);
-    $: selectedTelescopeOptions = selectedTelescopes.map(mapTelescopeToOption);
-    $: selectedInstrumentOptions = selectedInstruments.map(mapInstrumentToOption);
+    $: selectedObservatoryOptions = selectedObservatories.map(mapToOption);
+    $: selectedTelescopeOptions = selectedTelescopes.map(mapToOption);
+    $: selectedInstrumentOptions = selectedInstruments.map(mapToOption);
 
-    function mapObservatoryToOption(item: TelescopeObservatory): Option<TelescopeObservatory> {
-        return {
-            value: item,
-            displayName: item.name,
-            key: item.id,
-            searchableText: `${item.name} ${item.short_name}`,
-        };
-    }
-
-    function mapTelescopeToOption(item: Telescope): Option<Telescope> {
-        return {
-            value: item,
-            displayName: item.name,
-            key: item.id,
-            searchableText: `${item.name} ${item.short_name}`,
-        };
-    }
-
-    function mapInstrumentToOption(item: TelescopeInstrument): Option<TelescopeInstrument> {
+    function mapToOption<T extends { id: string; name: string; short_name: string }>(item: T): Option<T> {
         return {
             value: item,
             displayName: item.name,

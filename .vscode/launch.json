@@ -5,7 +5,10 @@
             "command": "npm run dev",
             "name": "Run development server",
             "request": "launch",
-            "type": "node-terminal"
+            "type": "node-terminal",
+            "env": {
+                "PUBLIC_BUILD_VERSION": "local"
+            }
         }
     ]
 }

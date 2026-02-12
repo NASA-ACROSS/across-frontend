@@ -12,14 +12,6 @@
     export let selectedTelescopes: Telescope[] = [];
     export let selectedInstruments: TelescopeInstrument[] = [];
 
-    $: observatoryOptions = observatories.map(mapToOption);
-    $: telescopeOptions = telescopes.map(mapToOption);
-    $: instrumentOptions = instruments.map(mapToOption);
-
-    $: selectedObservatoryOptions = selectedObservatories.map(mapToOption);
-    $: selectedTelescopeOptions = selectedTelescopes.map(mapToOption);
-    $: selectedInstrumentOptions = selectedInstruments.map(mapToOption);
-
     function mapToOption<T extends { id: string; name: string; short_name: string }>(item: T): Option<T> {
         return {
             value: item,
@@ -152,8 +144,8 @@
     <MultiSelect
         label="Observatory Select"
         placeholder="Search observatories..."
-        options={observatoryOptions}
-        selected={selectedObservatoryOptions}
+        options={observatories.map(mapToOption)}
+        selected={selectedObservatories.map(mapToOption)}
         onToggle={toggleObservatory}
         title="Search by full name or short name"
     />
@@ -161,8 +153,8 @@
     <MultiSelect
         label="Telescope Select"
         placeholder="Search telescopes..."
-        options={telescopeOptions}
-        selected={selectedTelescopeOptions}
+        options={telescopes.map(mapToOption)}
+        selected={selectedTelescopes.map(mapToOption)}
         onToggle={toggleTelescope}
         title="Search by full name or short name"
     />
@@ -170,8 +162,8 @@
     <MultiSelect
         label="Instrument Select"
         placeholder="Search instruments..."
-        options={instrumentOptions}
-        selected={selectedInstrumentOptions}
+        options={instruments.map(mapToOption)}
+        selected={selectedInstruments.map(mapToOption)}
         onToggle={toggleInstrument}
         title="Search by full name or short name"
     />

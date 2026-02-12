@@ -74,6 +74,7 @@
 <div class="min-w-0">
     <label class="label text-lg" for="select-input">
         <span class="label-text">{label}</span>
+        <span class="text-xs justify-end">({selected.length}/{options.length})</span>
     </label>
     <div class="border border-base-300 p-2 bg-base-100 h-full flex flex-col">
         <input id="select-input" type="text" class="input input-bordered input-sm w-full mb-2" {placeholder} bind:value={search} {title} />

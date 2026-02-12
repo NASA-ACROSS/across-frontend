@@ -1,7 +1,7 @@
 /**
  * public configuration environment variables are needed at build time
  *
- * PUBLIC_BUILD_VERSION=local-dev npm run build
+ * PUBLIC_BUILD_VERSION=local npm run build
  */
 import { PUBLIC_BUILD_VERSION } from '$env/static/public';
 

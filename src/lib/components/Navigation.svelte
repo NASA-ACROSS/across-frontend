@@ -1,6 +1,7 @@
 <script lang="ts">
     import { asset, resolve } from '$app/paths';
     import { page } from '$app/state';
+    import { PUBLIC_CONFIG } from '$config/config.public';
 
     import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 
@@ -60,6 +61,11 @@
         </a>
     </div>
     <div class="navbar-end">
+        {#if PUBLIC_CONFIG.BUILD_VERSION === 'local'}
+            <div class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
+                <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={resolve('/playground')}>Playground</a>
+            </div>
+        {/if}
         <ul class="menu menu-horizontal px-1 hidden lg:flex lg:items-center">
             <li>
                 <div class="dropdown dropdown-hover dropdown-end m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">

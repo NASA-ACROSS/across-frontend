@@ -5,8 +5,8 @@
     import Page from '$lib/components/Page.svelte';
 </script>
 
-<Page>
-    <Section title="Logout" icon="log-out" center={true} containerClasses="min-w-xs">
+<Page center={true}>
+    <Section title="Logout" icon="log-out" containerClasses="w-xs">
         <h1>You have successfully logged out!</h1>
         <ArrowButton href={resolve('/user/login')}>Login</ArrowButton>
     </Section>

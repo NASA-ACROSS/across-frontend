@@ -8,7 +8,7 @@
 </script>
 
 <Page center={true}>
-    <Section title="Email Link Login">
+    <Section title="Email Link Login" containerClasses="w-xs">
         {#if !form}
             <form method="post">
                 <div class="form-check">

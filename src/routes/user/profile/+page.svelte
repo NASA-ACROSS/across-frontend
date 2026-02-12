@@ -96,7 +96,7 @@
     });
 </script>
 
-<Page>
+<Page center={true}>
     <Section title="Profile" icon="user">
         <div slot="buttons" class="">
             <a data-sveltekit-preload-data="false" href={resolve('/user/logout')} class="btn btn-accent text-xl">

@@ -252,9 +252,9 @@ export const actions = {
             return fail(500, { error: errorLog, fail: true });
         }
 
-        if (response.status == 500) {
-            console.error(`ERROR: deleting user id [${user.id}] at [${Date.now()}] with status code [500]`);
-            return fail(500, { fail: true });
+        if (response.status != 200) {
+            console.error(`ERROR: deleting user id [${user.id}] at [${Date.now()}] with status code [${response.status}]`);
+            return fail(response.status, { fail: true });
         }
 
         throw redirect(302, resolve('/user/logout'));

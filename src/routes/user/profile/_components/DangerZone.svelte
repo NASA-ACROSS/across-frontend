@@ -24,12 +24,14 @@
         <!-- Delete User Modal -->
         {#if isDeleteModalOpen}
             <div class="fixed inset-0 bg-transparent flex items-center justify-center z-50">
-                <div class="bg-base-100 p-6 w-full max-w-lg shadow-2xl border-3 border-accent">
+                <div class="bg-base-100 p-6 w-full max-w-xl shadow-2xl border-3 border-accent">
                     <div class="text-lg font-bold mb-4 flex flex-row justify-between">
                         <h3 class="flex">Confirm User Delete</h3>
                         <button class="justify-end btn btn-sm btn-primary max-h-8" title="Close" on:click={() => (isDeleteModalOpen = false)}>X</button>
                     </div>
                     <p class="bold text-accent">I understand that I am about to delete my user account.</p>
+                    <p class="bold text-accent">This action will expire my service accounts.</p>
+                    <p class="bold text-accent">This action will remove me from all groups and remove my group roles.</p>
                     <p class="bold text-accent pb-6">I will have to contact support to re-activate my account.</p>
 
                     <div class="flex justify-between">

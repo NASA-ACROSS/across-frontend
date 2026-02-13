@@ -1,4 +1,4 @@
-name: Main Branch
+name: Main
 on:
   push:
     branches: [main]
@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   do:
-    uses: ACROSS-Team/github-action-workflows/.github/workflows/ecspresso-main-branch.yml@main
+    uses: NASA-ACROSS/github-action-workflows/.github/workflows/ecspresso-main-branch.yml@main
     with:
       organization: '${{ github.event.repository.owner.login }}'
       repository: '${{ github.event.repository.name }}'

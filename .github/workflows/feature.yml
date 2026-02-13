@@ -3,11 +3,6 @@ on:
   pull_request:
     branches: ['main']
     types: [opened, synchronize, reopened, closed, labeled]
-    paths-ignore:
-      # release-pr _should_ be the only PR to ever modify this.
-      - .release-please-manifest.json
-      - CHANGELOG.md
-      - release-please-config.json
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -21,7 +16,7 @@ permissions:
 
 jobs:
   do:
-    uses: ACROSS-Team/github-action-workflows/.github/workflows/ecspresso-feature-branch.yml@main
+    uses: NASA-ACROSS/github-action-workflows/.github/workflows/ecspresso-feature-branch.yml@ecspress-feature-branch-only-builds
     with:
       organization: '${{ github.event.repository.owner.login }}'
       repository: '${{ github.event.repository.name }}'
@@ -31,7 +26,7 @@ jobs:
       runtime: node
       image-name: frontend
       app: frontend
-      output-web-url: false
+      output-web-url: true
 
     secrets:
       github-private-actions-pat: ${{ secrets.PRIVATE_CONFIG_READ_ACCESS }}

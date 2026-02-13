@@ -1,10 +1,13 @@
 FROM node:20.10-bookworm-slim AS build
 
+# Declare the build arguments
 ARG BUILD_ENV=local
+# set the build version to the build environment by default, can be overridden by passing a different value during build time
+ARG BUILD_VERSION=$BUILD_ENV
 
 WORKDIR /app
 
-# Keeps npm from generating unnecessary files
+ENV PUBLIC_BUILD_VERSION=$BUILD_VERSION
 ENV NODE_ENV=development
 
 # Copy only the necessary files for dependency installation first

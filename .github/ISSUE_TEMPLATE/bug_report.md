@@ -1,19 +1,19 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: "[BUG] Title"
+title: '[BUG] Title'
 labels: bug
 assignees: ''
-
 ---
 
 ## TODO:
+
 - [ ] Please check for similar existing issues before submitting.
 - [ ] Please fill out the template below
 - [ ] Please remove this section before submitting.
 
+## Bug Report Details :warning::bug:
 
-## Bug Report Details :warning::bug: 
 ### Description
 
 [Description of the bug]  

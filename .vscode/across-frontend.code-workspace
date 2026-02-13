@@ -1,16 +1,14 @@
 {
-	"folders": [
-		{
-			"path": "../"
-		}
-	],
-	"settings": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
-		"eslint.validate": [
-			"svelte"
-		],
-		"[svelte]": {
-			"editor.defaultFormatter": "svelte.svelte-vscode"
-		},
-	},
+    "folders": [
+        {
+            "path": "../",
+        },
+    ],
+    "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "eslint.validate": ["svelte"],
+        "[svelte]": {
+            "editor.defaultFormatter": "svelte.svelte-vscode",
+        },
+    },
 }

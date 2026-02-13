@@ -28,8 +28,7 @@
     let originalUserData = structuredClone(data.user);
     let user = data.user;
     $: isUserDataUnchanged = _.isEqual(originalUserData, user);
-    $: (form?.successUpdateUserInformation,
-        (originalUserData = structuredClone(data.user)));
+    $: (form?.successUpdateUserInformation, (originalUserData = structuredClone(data.user)));
 
     // safari browser should force a reload on cached navigation using back button
     if (browser) {
@@ -99,29 +98,19 @@
 <Page>
     <Section title="Profile" icon="user">
         <div slot="buttons" class="">
-            <a
-                data-sveltekit-preload-data="false"
-                href={resolve('/user/logout')}
-                class="btn btn-accent text-xl"
-            >
+            <a data-sveltekit-preload-data="false" href={resolve('/user/logout')} class="btn btn-accent text-xl">
                 <i class="bx bx-log-out opacity-70 me-2"></i>Logout
             </a>
         </div>
 
         <Fieldset title="User Information">
-            <form
-                method="post"
-                action="?/updateUserInformation"
-                use:enhance={enhancedForm}
-            >
+            <form method="post" action="?/updateUserInformation" use:enhance={enhancedForm}>
                 <label for="firstname">Name</label>
                 <div class="flex flex-row flex-grow mb-3 needs-validation join">
                     <div class="join-item me-sm-3 mb-sm-0 mb-3 w-1/2">
                         <input
                             id="firstname"
-                            class="{!isUserDataUnchanged
-                                ? 'validation-border-color'
-                                : ''} input form-control form-control-lg ps-5 w-full"
+                            class="{!isUserDataUnchanged ? 'validation-border-color' : ''} input form-control form-control-lg ps-5 w-full"
                             required
                             bind:value={user.first_name}
                             pattern={frontendAlphaNumRegex}
@@ -134,9 +123,7 @@
                     </div>
                     <div class="join-item me-sm-3 mb-sm-0 mb-3 w-1/2">
                         <input
-                            class="{!isUserDataUnchanged
-                                ? 'validation-border-color'
-                                : ''} input form-control form-control-lg ps-5 w-full"
+                            class="{!isUserDataUnchanged ? 'validation-border-color' : ''} input form-control form-control-lg ps-5 w-full"
                             required
                             bind:value={user.last_name}
                             pattern={frontendAlphaNumRegex}
@@ -152,9 +139,7 @@
                 <div class="flex flex-sm-row flex-column mb-3 needs-validation">
                     <div class="input-group me-sm-3 mb-sm-0 mb-3 w-full">
                         <input
-                            class="{!isUserDataUnchanged
-                                ? 'validation-border-color'
-                                : ''} input form-control form-control-lg ps-5 w-full"
+                            class="{!isUserDataUnchanged ? 'validation-border-color' : ''} input form-control form-control-lg ps-5 w-full"
                             required
                             bind:value={user.username}
                             pattern={frontendAlphaNumRegex}
@@ -184,29 +169,15 @@
                 </div>
                 <div class="flex justify-end items-center">
                     {#if form?.successUpdateUserInformation}
-                        <FormInputFeedback>
-                            Successfully updated user information!
-                        </FormInputFeedback>
+                        <FormInputFeedback>Successfully updated user information!</FormInputFeedback>
                     {/if}
                     {#if form?.failUpdateUserInformation}
-                        <FormInputFeedback type="error">
-                            Something went wrong, please try again. If this
-                            error persists, contact support.
-                        </FormInputFeedback>
+                        <FormInputFeedback type="error">Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback>
                     {/if}
                     {#if form?.failValidation}
-                        <FormInputFeedback type="error">
-                            Form validation failed. Please try again. If this
-                            error persists, contact support.
-                        </FormInputFeedback>
+                        <FormInputFeedback type="error">Form validation failed. Please try again. If this error persists, contact support.</FormInputFeedback>
                     {/if}
-                    <button
-                        type="submit"
-                        class="btn text-lg btn-info ml-5"
-                        disabled={isUserDataUnchanged}
-                    >
-                        Update
-                    </button>
+                    <button type="submit" class="btn text-lg btn-info ml-5" disabled={isUserDataUnchanged}> Update </button>
                 </div>
             </form>
         </Fieldset>

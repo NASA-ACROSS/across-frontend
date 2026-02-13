@@ -27,9 +27,7 @@
         users = data.groupData.users;
 
         if (selectedUser) {
-            selectedUser =
-                users.find((user: User) => user.id == selectedUser?.id) ||
-                undefined;
+            selectedUser = users.find((user: User) => user.id == selectedUser?.id) || undefined;
         }
     });
 </script>
@@ -37,9 +35,7 @@
 <Page>
     <Section title={'Manage - ' + group.name} icon="edit">
         <div slot="buttons">
-            <a class="btn btn-info text-lg" href={resolve('/user/profile')}
-                >← <i class="bx bx-user mx-2"></i>Profile</a
-            >
+            <a class="btn btn-info text-lg" href={resolve('/user/profile')}>← <i class="bx bx-user mx-2"></i>Profile</a>
         </div>
     </Section>
 

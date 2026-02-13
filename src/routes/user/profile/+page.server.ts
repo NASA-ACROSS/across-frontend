@@ -31,21 +31,9 @@ export const actions = {
         const data = await request.formData();
 
         // validate and sanitize input
-        const first_name: string = validate(
-            data.get('first_name') as string,
-            backendAlphaNumRegex,
-            'first_name'
-        )!;
-        const last_name: string = validate(
-            data.get('last_name') as string,
-            backendAlphaNumRegex,
-            'last_name'
-        )!;
-        const username: string = validate(
-            data.get('username') as string,
-            backendAlphaNumRegex,
-            'username'
-        )!;
+        const first_name: string = validate(data.get('first_name') as string, backendAlphaNumRegex, 'first_name')!;
+        const last_name: string = validate(data.get('last_name') as string, backendAlphaNumRegex, 'last_name')!;
+        const username: string = validate(data.get('username') as string, backendAlphaNumRegex, 'username')!;
 
         const userPutBody = {
             first_name,
@@ -55,10 +43,7 @@ export const actions = {
 
         // reject if any inputs are null after sanitization, this should never happen
         if (first_name === null || last_name === null || username === null) {
-            console.error(
-                `ERROR: could not validate user input to update user info, something is null.`,
-                JSON.stringify(userPutBody, null, 2)
-            );
+            console.error(`ERROR: could not validate user input to update user info, something is null.`, JSON.stringify(userPutBody, null, 2));
             return fail(500, { failValidation: true });
         }
 
@@ -76,10 +61,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/user/${user.id}`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/user/${user.id}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: updating user information [${username}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -95,9 +77,7 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: updating user information with [${username}] at [${Date.now()}] with status code [500]`
-            );
+            console.error(`ERROR: updating user information with [${username}] at [${Date.now()}] with status code [500]`);
             return fail(500, { failUpdateUserInformation: true });
         }
 
@@ -116,10 +96,7 @@ export const actions = {
         }
 
         locals.user = cookieUserData;
-        const encryptedCredentials = await aesGcmEncrypt(
-            JSON.stringify(cookieUserData),
-            CONFIG.API_TOKEN
-        );
+        const encryptedCredentials = await aesGcmEncrypt(JSON.stringify(cookieUserData), CONFIG.API_TOKEN);
 
         cookies.set('user-login', encryptedCredentials, cookieOptions);
 
@@ -158,10 +135,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/user/${userCred.userCookie.id}/invite/${userInviteId}`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/user/${userCred.userCookie.id}/invite/${userInviteId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -169,9 +143,7 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`
-            );
+            console.error(`ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`);
             return fail(500, { fail: true });
         }
 
@@ -205,10 +177,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/user/${userCred.userCookie.id}/invite/${userInviteId}`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/user/${userCred.userCookie.id}/invite/${userInviteId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -216,9 +185,7 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`
-            );
+            console.error(`ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`);
             return fail(500, { fail: true });
         }
 
@@ -238,9 +205,7 @@ export const actions = {
         const userId = data.get('userId') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(
-            `leaving group userGroupId: ${groupId}  userId: ${userId} `
-        );
+        console.log(`leaving group userGroupId: ${groupId}  userId: ${userId} `);
         const userCred = new UserCredentials(user);
         const userAccessToken = await userCred.getAccessToken(cookies);
 
@@ -254,10 +219,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/user/${userId}/group/${groupId}/`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/user/${userId}/group/${groupId}/`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: leaving group id [${groupId}] for user id [${userId}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -265,9 +227,7 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: leaving group id [${groupId}] for user id [${userId}] at [${Date.now()}] with status code [500]`
-            );
+            console.error(`ERROR: leaving group id [${groupId}] for user id [${userId}] at [${Date.now()}] with status code [500]`);
             return fail(500, { fail: true });
         }
 

@@ -49,21 +49,13 @@
                 <FormInputFeedback>User Invited!</FormInputFeedback>
             {/if}
             {#if form?.userInGroup}
-                <FormInputFeedback type="warning">
-                    User is already invited or in group!
-                </FormInputFeedback>
+                <FormInputFeedback type="warning">User is already invited or in group!</FormInputFeedback>
             {/if}
             {#if form?.invalidEmail}
-                <FormInputFeedback type="error">
-                    User not found. Please instruct the user to register to
-                    create an account.
-                </FormInputFeedback>
+                <FormInputFeedback type="error">User not found. Please instruct the user to register to create an account.</FormInputFeedback>
             {/if}
             {#if form?.fail}
-                <FormInputFeedback type="error">
-                    Something went wrong, please try again. If this error
-                    persists, contact support.
-                </FormInputFeedback>
+                <FormInputFeedback type="error">Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback>
             {/if}
         </EmailInput>
     </form>

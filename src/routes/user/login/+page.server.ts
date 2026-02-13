@@ -61,15 +61,9 @@ export const actions = {
 
         let response: Response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/auth/login?email=${encodeURIComponent(email)}`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/auth/login?email=${encodeURIComponent(email)}`, options);
         } catch (error) {
-            console.error(
-                `ERROR: logging in user [${email}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
+            console.error(`ERROR: logging in user [${email}] at [${Date.now()}]`, JSON.stringify(error));
 
             if (error instanceof Error) {
                 return fail(500, { error: error.message, fail: true });
@@ -79,9 +73,7 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`
-            );
+            console.error(`ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`);
             return fail(500, { fail: true });
         }
 

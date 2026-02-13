@@ -1,9 +1,7 @@
 <!doctype html>
 <html lang="en" class="bg-primary">
     <script>
-        localStorage.theme === 'dark' ||
-        (!('theme' in localStorage) &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches)
+        localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
             ? document.documentElement.classList.add('dark-mode')
             : document.documentElement.classList.remove('dark-mode');
     </script>

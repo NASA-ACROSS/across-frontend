@@ -3,12 +3,7 @@ type ErrorWithCause = {
 };
 
 function isErrorWithCause(error: unknown): error is ErrorWithCause {
-    return (
-        typeof error === 'object' &&
-        error !== null &&
-        'cause' in error &&
-        typeof (error as Record<string, unknown>).cause === 'string'
-    );
+    return typeof error === 'object' && error !== null && 'cause' in error && typeof (error as Record<string, unknown>).cause === 'string';
 }
 
 export function getErrorCause(error: unknown) {

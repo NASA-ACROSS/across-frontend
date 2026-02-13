@@ -28,7 +28,7 @@ export const getUserInfo = async (userCookie: UserCredentialsCookie, cookies: Co
     if (errorCodes.includes(response.status)) {
         console.error(`ERROR: getting user roles [${userCookie.email}] at [${Date.now()}] with status code [${response.status}]`);
         cookies.delete('user-login', { path: '/' });
-        throw redirect(302, resolve('/user/login'));
+        redirect(302, resolve('/user/login'));
     }
 
     const user = (await response.json()) as User;

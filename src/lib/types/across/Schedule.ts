@@ -17,10 +17,3 @@ export type Schedule = {
     created_by_id: string;
     checksum: string;
 };
-
-export type SchedulesResponse = {
-    total_number: number;
-    page?: number;
-    page_limit?: number;
-    items: Schedule[];
-};

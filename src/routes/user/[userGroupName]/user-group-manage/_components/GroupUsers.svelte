@@ -16,9 +16,7 @@
         {:else}
             <ul class="list list-row bg-base-200">
                 {#each users as user}
-                    <li
-                        class={`list-row  ${selectedUser?.email == user?.email ? 'bg-nasa-red-tint underline' : ''}`}
-                    >
+                    <li class={`list-row  ${selectedUser?.email == user?.email ? 'bg-nasa-red-tint underline' : ''}`}>
                         <div class="list-col-grow">
                             <button
                                 class="flex flex-row justify-between text-start w-full"
@@ -35,22 +33,12 @@
                                         {user?.first_name}
                                         {user?.last_name}
                                     </div>
-                                    <div
-                                        class="text-md uppercase font-semibold opacity-60"
-                                    >
-                                        <a
-                                            class="link"
-                                            href="mailto:{user.email}"
-                                            >{user.email}</a
-                                        >
+                                    <div class="text-md uppercase font-semibold opacity-60">
+                                        <a class="link" href="mailto:{user.email}">{user.email}</a>
                                     </div>
                                 </div>
 
-                                <ArrowButton
-                                    direction={selectedUser == user
-                                        ? 'left'
-                                        : 'right'}
-                                ></ArrowButton>
+                                <ArrowButton direction={selectedUser == user ? 'left' : 'right'}></ArrowButton>
                             </button>
                         </div>
                     </li>

@@ -17,17 +17,11 @@
                 {/if}
             </span>
             <svg
-                class="btn-xs btn-circle bg-accent border-none {direction ===
-                'left'
-                    ? 'left-arrow'
-                    : ''}"
+                class="btn-xs btn-circle bg-accent border-none {direction === 'left' ? 'left-arrow' : ''}"
                 viewBox="0 0 32 32"
                 fill="var(--color-nasa-white)"
                 xmlns="http://www.w3.org/2000/svg"
-                ><path
-                    d="M8 16.956h12.604l-3.844 4.106 1.252 1.338L24 16l-5.988-6.4-1.252 1.338 3.844 4.106H8v1.912z"
-                    class=""
-                ></path></svg
+                ><path d="M8 16.956h12.604l-3.844 4.106 1.252 1.338L24 16l-5.988-6.4-1.252 1.338 3.844 4.106H8v1.912z" class=""></path></svg
             >
         </button>
     </a>

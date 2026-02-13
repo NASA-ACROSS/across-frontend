@@ -1,10 +1,7 @@
 import { CONFIG } from '../../../config/config.js';
 import type { CookieSerializeOptions } from 'cookie';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
-import type {
-    UserCredentialsCookie,
-    AccessDataResponse,
-} from './UserCredentialsCookie';
+import type { UserCredentialsCookie, AccessDataResponse } from './UserCredentialsCookie';
 import { jwtDecode } from 'jwt-decode';
 import type { Cookies } from '@sveltejs/kit';
 
@@ -28,10 +25,7 @@ export class UserCredentials {
         try {
             response = await fetch(`${CONFIG.API_URL}/auth/refresh`, options);
         } catch (error) {
-            console.error(
-                `ERROR: refreshing access token for user [${this.userCookie.id}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
+            console.error(`ERROR: refreshing access token for user [${this.userCookie.id}] at [${Date.now()}]`, JSON.stringify(error));
             return '';
         }
 
@@ -66,18 +60,12 @@ export class UserCredentials {
             return this.userCookie.access_token;
         }
         // If no access token, log an error
-        console.error(
-            'ERROR: no access token saved in user cookie for user ',
-            this.userCookie.id
-        );
+        console.error('ERROR: no access token saved in user cookie for user ', this.userCookie.id);
         return '';
     }
 
     async setCookie(cookies: Cookies) {
-        const encryptedCredentials = await aesGcmEncrypt(
-            JSON.stringify(this.userCookie),
-            CONFIG.API_TOKEN
-        );
+        const encryptedCredentials = await aesGcmEncrypt(JSON.stringify(this.userCookie), CONFIG.API_TOKEN);
 
         const cookieOptions: CookieSerializeOptions & { path: string } = {
             path: '/',

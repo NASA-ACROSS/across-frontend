@@ -12,7 +12,7 @@ export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
     // Redirect on load when user is logged in
     if (user) {
-        throw redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('/user/profile'));
     }
     return {};
 }
@@ -145,7 +145,7 @@ export const actions = {
             const userCredentials = new UserCredentials(userCredentialsCookie);
             await userCredentials.setCookie(cookies);
 
-            throw redirect(302, resolve('/user/profile'));
+            redirect(302, resolve('/user/profile'));
         }
 
         return {

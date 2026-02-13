@@ -1,9 +1,10 @@
-import type { SchedulesResponse } from '$lib/types/across/Schedule';
+import type { Paginate } from '$lib/types/Paginate';
 import type { Telescope } from '$lib/types/across/Telescope';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { CONFIG } from '../../config/config';
 import type { RequestEvent } from './$types';
+import type { Schedule } from '$lib/types/across/Schedule';
 
 const DEFAULTS = {
     pageLimit: 20,
@@ -109,7 +110,7 @@ export async function load({ url, locals, cookies }: RequestEvent) {
             };
         }
 
-        const schedulesResponse = (await response.json()) as SchedulesResponse;
+        const schedulesResponse = (await response.json()) as Paginate<Schedule>;
         const schedules = schedulesResponse.items;
 
         // In a real implementation, the total count might be returned in headers or response metadata

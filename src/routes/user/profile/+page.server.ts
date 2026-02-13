@@ -15,7 +15,7 @@ export async function load({ locals, cookies }: RequestEvent) {
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is not logged in
     if (!userCookie) {
-        throw redirect(302, resolve('/user/login'));
+        redirect(302, resolve('/user/login'));
     }
 
     const user: User = await getUserInfo(userCookie, cookies);

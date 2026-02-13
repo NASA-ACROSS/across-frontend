@@ -22,7 +22,7 @@ export function load({ locals }: RequestEvent) {
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is logged in
     if (userCookie) {
-        throw redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('/user/profile'));
     }
 }
 

@@ -10,7 +10,7 @@ export function load({ locals }: RequestEvent) {
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is logged in
     if (userCookie) {
-        throw redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('/user/profile'));
     }
 }
 
@@ -28,9 +28,9 @@ export const actions = {
     default: async (event) => {
         const data = await event.request.formData();
 
-        const email = data.get('email')?.toString();
+        const email = data.get('email');
 
-        if (!email?.match(emailRegex)) {
+        if (typeof email !== 'string' || !email.match(emailRegex)) {
             return fail(400, {
                 invalidEmail: true,
                 message: 'Please provide a valid email.',

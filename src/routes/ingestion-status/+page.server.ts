@@ -5,7 +5,8 @@ import { getSchedules } from '$lib/utils/across/getSchedules';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import type { Telescope } from '$lib/types/across/Telescope';
 import type { Observatory } from '$lib/types/across/Observatory';
-import type { Paginate, Schedule } from '$lib/types/across/Schedule';
+import type { Schedule } from '$lib/types/across/Schedule';
+import type { Paginate } from '$lib/types/Paginate';
 import { DateTime } from 'luxon';
 
 export async function load({ locals, cookies }: RequestEvent) {

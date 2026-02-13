@@ -3,7 +3,7 @@ import { PUBLIC_CONFIG } from '$config/config.public';
 
 export const load = () => {
     if (PUBLIC_CONFIG.BUILD_VERSION !== 'local') {
-        throw error(404);
+        error(404);
     }
 
     return {};

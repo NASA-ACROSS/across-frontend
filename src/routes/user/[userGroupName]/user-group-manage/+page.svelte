@@ -9,7 +9,6 @@
     import AssignRole from './_components/AssignRole.svelte';
     import UserDetailCard from './_components/UserDetailCard.svelte';
     import type { GroupUser } from '$lib/types/User/GroupUser';
-    import type { User } from '$lib/types/User/User';
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
 
@@ -27,7 +26,7 @@
         users = data.groupData.users;
 
         if (selectedUser) {
-            selectedUser = users.find((user: User) => user.id == selectedUser?.id) || undefined;
+            selectedUser = users.find((user: GroupUser) => user.id == selectedUser?.id) || undefined;
         }
     });
 </script>

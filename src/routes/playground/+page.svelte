@@ -12,6 +12,7 @@
             <h2 class="text-2xl font-semibold mb-3">MultiSelect Component</h2>
             <MultiSelect
                 label="Fruits"
+                title="Search by fruit name"
                 options={[
                     { key: '1', displayName: 'apple', searchableText: 'apple', value: 'apple' },
                     { key: '2', displayName: 'banana', searchableText: 'banana', value: 'banana' },

@@ -15,7 +15,7 @@ export async function load({ locals, cookies }: RequestEvent) {
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is not logged in
     if (!userCookie) {
-        throw redirect(302, resolve('/user/login'));
+        redirect(302, resolve('/user/login'));
     }
 
     const user: User = await getUserInfo(userCookie, cookies);
@@ -111,7 +111,7 @@ export const actions = {
         const { request, cookies } = event;
         const user = event.locals.user;
         if (!user) {
-            throw redirect(302, resolve('/user/login'));
+            redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 
@@ -150,7 +150,7 @@ export const actions = {
         const { request, cookies } = event;
         const user = event.locals.user;
         if (!user) {
-            throw redirect(302, resolve('/user/login'));
+            redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 
@@ -189,7 +189,7 @@ export const actions = {
         const { request, cookies } = event;
         const user = event.locals.user;
         if (!user) {
-            throw redirect(302, resolve('/user/login'));
+            redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 
@@ -228,7 +228,7 @@ export const actions = {
         const { cookies } = event;
         const user = event.locals.user;
         if (!user) {
-            throw redirect(302, resolve('/user/login'));
+            redirect(302, resolve('/user/login'));
         }
 
         console.log(`Deleting user. email: ${user.email} userId: ${user.id}`);
@@ -257,6 +257,6 @@ export const actions = {
             return fail(response.status, { fail: true });
         }
 
-        throw redirect(302, resolve('/user/logout'));
+        redirect(302, resolve('/user/logout'));
     },
 };

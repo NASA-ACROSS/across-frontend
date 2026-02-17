@@ -53,9 +53,7 @@
                             </button>
                         </div>
                         <div>
-                            <button class="btn btn-sm btn-primary" type="button" title="Delete my User Account" on:click={() => (isDeleteModalOpen = false)}>
-                                Cancel
-                            </button>
+                            <button class="btn btn-sm btn-primary" type="button" title="Cancel" on:click={() => (isDeleteModalOpen = false)}> Cancel </button>
                         </div>
                     </div>
                 </div>

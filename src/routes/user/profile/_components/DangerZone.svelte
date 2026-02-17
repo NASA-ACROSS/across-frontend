@@ -32,6 +32,7 @@
                     <p class="bold text-accent">I understand that I am about to delete my user account.</p>
                     <p class="bold text-accent">This action will expire my service accounts.</p>
                     <p class="bold text-accent">This action will remove me from all groups and remove my group roles.</p>
+                    <p class="bold text-accent">I will not be able to register a new account with the same email.</p>
                     <p class="bold text-accent pb-6">I will have to contact support to re-activate my account.</p>
 
                     <div class="flex justify-between">

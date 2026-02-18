@@ -83,13 +83,13 @@
     }
 </script>
 
-<div class="min-w-0 min-h-50 max-h-full flex flex-col">
+<div class="min-w-0 flex flex-col h-full">
     <!-- Total options selected -->
     <label class="label text-lg" for="select-input">
         <span class="label-text">{label}</span>
         <span class="text-xs justify-end">({selected.length}/{options.length})</span>
     </label>
-    <div class="border border-base-300 p-2 bg-base-100 flex flex-col flex-1 overflow-hidden">
+    <div class="border border-base-300 p-2 bg-base-100 flex flex-col min-h-0 overflow-hidden">
         <label class="input w-full flex mb-2">
             <input type="text" class="grow" {placeholder} bind:value={search} {title} />
             {#if search.length > 0}
@@ -115,7 +115,7 @@
                 {/if}
             </div>
         {/if}
-        <div class="overflow-y-auto border border-base-200 p-2 flex-1">
+        <div class="overflow-y-auto border border-base-200 p-2 min-h-0">
             {#each filtered as option}
                 <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-nasa-blue-lite">
                     <input

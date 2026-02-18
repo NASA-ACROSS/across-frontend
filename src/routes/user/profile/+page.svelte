@@ -18,6 +18,7 @@
     import Section from '$lib/components/Section.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
+    import DangerZone from './_components/DangerZone.svelte';
 
     export let data: PageData;
 
@@ -95,7 +96,7 @@
     });
 </script>
 
-<Page>
+<Page center={true}>
     <Section title="Profile" icon="user">
         <div slot="buttons" class="">
             <a data-sveltekit-preload-data="false" href={resolve('/user/logout')} class="btn btn-accent text-xl">
@@ -185,6 +186,8 @@
 
     <UserGroupInvites {invitations} />
     <UserGroups {user} {userGroups} bind:leaveUserGroup {enhancedForm} />
+
+    <DangerZone />
 </Page>
 
 <style>

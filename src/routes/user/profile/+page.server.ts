@@ -15,7 +15,7 @@ export async function load({ locals, cookies }: RequestEvent) {
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is not logged in
     if (!userCookie) {
-        throw redirect(302, resolve('/user/login'));
+        redirect(302, resolve('/user/login'));
     }
 
     const user: User = await getUserInfo(userCookie, cookies);
@@ -109,12 +109,9 @@ export const actions = {
     },
     acceptInvite: async (event: RequestEvent) => {
         const { request, cookies } = event;
-        // NOTE: The following block is for temporary testing purposes
-        //       We need to come back to these once we finish porting
-        //       over API features
         const user = event.locals.user;
         if (!user) {
-            return fail(500, { fail: true });
+            redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 
@@ -151,12 +148,9 @@ export const actions = {
     },
     rejectInvite: async (event: RequestEvent) => {
         const { request, cookies } = event;
-        // NOTE: The following block is for temporary testing purposes
-        //       We need to come back to these once we finish porting
-        //       over API features
         const user = event.locals.user;
         if (!user) {
-            return fail(500, { fail: true });
+            redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 
@@ -193,12 +187,9 @@ export const actions = {
     },
     leaveGroup: async (event: RequestEvent) => {
         const { request, cookies } = event;
-        // NOTE: The following block is for temporary testing purposes
-        //       We need to come back to these once we finish porting
-        //       over API features
         const user = event.locals.user;
         if (!user) {
-            return fail(500, { fail: true });
+            redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 
@@ -232,5 +223,40 @@ export const actions = {
         }
 
         return { successLeaveGroup: true };
+    },
+    deleteUser: async (event: RequestEvent) => {
+        const { cookies } = event;
+        const user = event.locals.user;
+        if (!user) {
+            redirect(302, resolve('/user/login'));
+        }
+
+        console.log(`Deleting user. email: ${user.email} userId: ${user.id}`);
+        const userCred = new UserCredentials(user);
+        const userAccessToken = await userCred.getAccessToken(cookies);
+
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${userAccessToken}`,
+            },
+        };
+
+        let response;
+        try {
+            response = await fetch(`${CONFIG.API_URL}/user/${user.id}`, options);
+        } catch (error: unknown) {
+            const errorLog = `ERROR: deleting user id [${user.id}] at [${Date.now()}]`;
+            console.error(errorLog, JSON.stringify(error));
+            return fail(500, { error: errorLog, fail: true });
+        }
+
+        if (response.status != 200) {
+            console.error(`ERROR: deleting user id [${user.id}] at [${Date.now()}] with status code [${response.status}]`);
+            return fail(response.status, { fail: true });
+        }
+
+        redirect(302, resolve('/user/logout'));
     },
 };

@@ -32,7 +32,7 @@
     });
 </script>
 
-<Page>
+<Page center={true}>
     <Section title={'Manage - ' + group.name} icon="edit">
         <div slot="buttons">
             <a class="btn btn-info text-lg" href={resolve('/user/profile')}>← <i class="bx bx-user mx-2"></i>Profile</a>

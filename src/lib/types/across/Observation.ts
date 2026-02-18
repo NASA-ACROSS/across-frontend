@@ -1,4 +1,4 @@
-import type { Bandpass, WavelengthUnit, EnergyUnit, FrequencyUnit } from './Bandpass';
+import type { Bandpass } from './Bandpass';
 
 type Position = {
     ra: number; // Range 0-360 degrees
@@ -10,9 +10,16 @@ type DateRange = {
     end: string; // ISO date format
 };
 
+enum DepthUnit {
+    AB_MAG = 'ab_mag',
+    VEGA_MAG = 'vega_mag',
+    FLUX_ERG = 'flux_erg',
+    FLUX_JY = 'flux_jy',
+}
+
 type Depth = {
     value: number;
-    unit: string;
+    unit: DepthUnit;
 };
 
 type ObservationType = 'imaging' | 'timing' | 'spectroscopy' | 'slew';
@@ -51,40 +58,4 @@ export type Observation = {
     schedule_id: string;
     created_on: Date;
     created_by_id: string;
-};
-
-export type ObservationsResponse = {
-    total_number: number;
-    page: number;
-    page_limit: number;
-    items: Observation[];
-};
-
-enum DepthUnit {
-    AB_MAG = 'ab_mag',
-    VEGA_MAG = 'vega_mag',
-    FLUX_ERG = 'flux_erg',
-    FLUX_JY = 'flux_jy',
-}
-
-export type ObservationRequest = {
-    external_id?: string;
-    schedule_ids?: string[];
-    observatory_ids?: string[];
-    telescope_ids?: string[];
-    instrument_ids?: string[];
-    status?: ObservationStatus | undefined;
-    proposal?: string;
-    object_name?: string;
-    date_range_begin?: Date;
-    date_range_end?: Date;
-    bandpass_min?: number;
-    bandpass_max?: number;
-    bandpass_type?: WavelengthUnit | EnergyUnit | FrequencyUnit;
-    cone_search_ra?: number;
-    cone_search_dec?: number;
-    cone_search_radius?: number;
-    type?: ObservationType;
-    depth_value?: number;
-    depth_unit?: DepthUnit;
 };

@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
     const userCookie = locals.user;
     // Redirect on load when user is logged in
     if (!userCookie) {
-        throw redirect(302, resolve('/user/login'));
+        redirect(302, resolve('/user/login'));
     }
 
     const user: User = await getUserInfo(userCookie, cookies);
@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 
     // redirect if we don't have necessary info or user lacks permission
     if (!user || !userGroup || !isAdmin(user, userGroup)) {
-        throw redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('/user/profile'));
     }
 
     const invitedUsers = await getInvitedUsers(userCookie, userGroup.id);
@@ -44,7 +44,7 @@ export const actions = {
         const userCookie = event.locals.user as UserCredentialsCookie;
         // Redirect on load when user is not logged in
         if (!userCookie) {
-            throw redirect(302, resolve('/user/login'));
+            redirect(302, resolve('/user/login'));
         }
         const data = await request.formData();
 

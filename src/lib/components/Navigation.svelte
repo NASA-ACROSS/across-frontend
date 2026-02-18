@@ -28,7 +28,7 @@
             </button>
             <ul class="menu menu-xl w-screen dropdown-content bg-primary text-primary-content z-1 -ms-2 pb-5">
                 <li>
-                    <a>Data</a>
+                    <p>Data</p>
                     <ul class="p-2">
                         <li class="hover:underline decoration-dashed">
                             <a data-sveltekit-preload-data="tap" href={resolve('/schedules')}>Schedules</a>
@@ -36,17 +36,11 @@
                         <li class="hover:underline decoration-dashed">
                             <a data-sveltekit-preload-data="tap" href={resolve('/observations')}>Observations</a>
                         </li>
-                        <li class="hover:underline decoration-dashed">
-                            <a data-sveltekit-preload-data="tap" href={resolve('/observatories')}>Observatories</a>
-                        </li>
                     </ul>
                 </li>
                 <li>
-                    <a>Tools</a>
+                    <p>Tools</p>
                     <ul>
-                        <li class="hover:underline decoration-dashed">
-                            <a data-sveltekit-preload-data="tap" href={resolve('/visibility-calculator')}>Visibility Calculator</a>
-                        </li>
                         <li class="hover:underline decoration-dashed">
                             <a data-sveltekit-preload-data="tap" href={resolve('/ingestion-status')}>Data Ingestion Status</a>
                         </li>
@@ -80,9 +74,6 @@
                         <li>
                             <a data-sveltekit-preload-data="tap" href={resolve('/observations')}>Observations</a>
                         </li>
-                        <li>
-                            <a data-sveltekit-preload-data="tap" href={resolve('/observatories')}>Observatories</a>
-                        </li>
                     </ul>
                 </div>
             </li>
@@ -94,9 +85,6 @@
                     </div>
                     <ul class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm">
                         <li>
-                            <a data-sveltekit-preload-data="tap" href={resolve('/visibility-calculator')}>Visibility Calculator</a>
-                        </li>
-                        <li>
                             <a data-sveltekit-preload-data="tap" href={resolve('/ingestion-status')}>Data Ingestion Status</a>
                         </li>
                     </ul>
@@ -104,7 +92,9 @@
             </li>
             <li>
                 <div class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
-                    <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={API_DOCS_URL}>API </a>
+                    <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={API_DOCS_URL} target="_blank" rel="noopener noreferrer"
+                        >API
+                    </a>
                 </div>
             </li>
         </ul>
@@ -128,7 +118,7 @@
                         </div>
                     </div>
                 </a>
-                <ul role="link" class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow">
+                <ul class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow">
                     {#if user}
                         <li>
                             <a class="justify-between text-primary-content hover:bg-info" href={resolve('/user/profile')}> Profile </a>

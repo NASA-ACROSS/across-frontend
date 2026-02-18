@@ -191,11 +191,6 @@
 </Page>
 
 <style>
-    input:disabled.default-cursor {
-        cursor: default;
-        pointer-events: none;
-    }
-
     input:valid:not(:placeholder-shown).validation-border-color {
         border: 1px solid var(--color-info);
     }

@@ -2,7 +2,8 @@ import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCooki
 import { UserCredentials } from '$lib/types/User/UserCredentials';
 import { CONFIG } from '../../../config/config';
 import { type Cookies } from '@sveltejs/kit';
-import type { Paginate, Schedule } from '$lib/types/across/Schedule';
+import type { Schedule } from '$lib/types/across/Schedule';
+import type { Paginate } from '$lib/types/Paginate';
 
 export const getSchedules = async (userCookie: UserCredentialsCookie, cookies: Cookies, telescopeIds: string[]) => {
     let accessToken;

@@ -100,12 +100,18 @@
         </label>
         <!-- when using custom toggle, disable select all/none -->
         {#if onToggle === null}
-            <div class="flex justify-end p-1">
+            <div class="flex justify-start pb-1">
                 {#if showSelectAll}
-                    <button class="bx bx-select-all text-xl opacity-70 cursor-pointer" on:click={selectAll}></button>
+                    <button class="text-xl opacity-70 cursor-pointer flex items-center pr-1" on:click={selectAll}
+                        ><p class="bx bx-select-all"></p>
+                        <p class="text-sm opacity-70 ps-1 font-sans">Select All</p></button
+                    >
                 {/if}
                 {#if showSelectNone}
-                    <button class="ml-2 bx bx-select-none text-xl opacity-70 cursor-pointer" on:click={selectNone}></button>
+                    <button class="text-xl opacity-70 cursor-pointer flex items-center" on:click={selectNone}
+                        ><p class="bx bx-select-none"></p>
+                        <p class="text-sm opacity-70 ps-1 font-sans">Select None</p></button
+                    >
                 {/if}
             </div>
         {/if}

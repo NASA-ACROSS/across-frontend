@@ -140,7 +140,7 @@
     }
 </script>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-full auto-rows-fr">
     <MultiSelect
         label="Observatory Select"
         placeholder="Search observatories..."

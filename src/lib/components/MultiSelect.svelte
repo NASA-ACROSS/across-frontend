@@ -52,31 +52,44 @@
 
     $: filtered = options.filter((option) => option.searchableText.toLowerCase().includes(search.toLowerCase()));
     $: selectedSet = new Set(selected.map((item: Option<T>) => item.key || item));
+    $: showSelectAll = filtered.length !== filtered.filter((opt) => selectedSet.has(opt.key)).length;
+    $: showSelectNone = filtered.some((opt) => selectedSet.has(opt.key));
 
     function toggle(option: Option<T>) {
         if (onToggle) {
             onToggle(option.value);
         } else {
-            // fallback behavior if no onToggle is provided: manage selection internally
+            // default behavior if no onToggle is provided: manage selection internally
             const isSelected = selectedSet.has(option.key);
-            if (isSelected) {
-                selectedSet.delete(option.key);
-            } else {
-                selectedSet.add(option.key);
-            }
+
+            if (isSelected) selectedSet.delete(option.key);
+            else selectedSet.add(option.key);
 
             // Update the selected array based on the new set
             selected = options.filter((opt) => selectedSet.has(opt.key));
         }
     }
+
+    function selectAll() {
+        const filteredKeys = new Set(filtered.map((opt) => opt.key));
+
+        selected = selected.filter((opt) => !filteredKeys.has(opt.key)).concat(filtered);
+    }
+
+    function selectNone() {
+        // clear all filtered options from selected
+        const filteredKeys = new Set(filtered.map((opt) => opt.key));
+        selected = selected.filter((opt) => !filteredKeys.has(opt.key));
+    }
 </script>
 
-<div class="min-w-0">
+<div class="min-w-0 flex flex-col h-full">
+    <!-- Total options selected -->
     <label class="label text-lg" for="select-input">
         <span class="label-text">{label}</span>
         <span class="text-xs justify-end">({selected.length}/{options.length})</span>
     </label>
-    <div class="border border-base-300 p-2 bg-base-100 h-full flex flex-col">
+    <div class="border border-base-300 p-2 bg-base-100 flex flex-col min-h-0 overflow-hidden">
         <label class="input w-full flex mb-2">
             <input type="text" class="grow" {placeholder} bind:value={search} {title} />
             {#if search.length > 0}
@@ -85,7 +98,24 @@
                 <i class="p-2 bx bx-search text-lg opacity-70"></i>
             {/if}
         </label>
-        <div class="max-h-60 overflow-y-auto border border-base-200 p-2">
+        <!-- when using custom toggle, disable select all/none -->
+        {#if onToggle === null}
+            <div class="flex justify-start pb-1">
+                {#if showSelectAll}
+                    <button class="text-xl opacity-70 cursor-pointer flex items-center pr-1" on:click={selectAll}
+                        ><p class="bx bx-select-all"></p>
+                        <p class="text-sm opacity-70 ps-1 font-sans">Select All</p></button
+                    >
+                {/if}
+                {#if showSelectNone}
+                    <button class="text-xl opacity-70 cursor-pointer flex items-center" on:click={selectNone}
+                        ><p class="bx bx-select-none"></p>
+                        <p class="text-sm opacity-70 ps-1 font-sans">Select None</p></button
+                    >
+                {/if}
+            </div>
+        {/if}
+        <div class="overflow-y-auto border border-base-200 p-2 min-h-0">
             {#each filtered as option}
                 <label class="flex items-center px-1.5 py-2 cursor-pointer select-none transition-colors hover:bg-nasa-blue-lite">
                     <input

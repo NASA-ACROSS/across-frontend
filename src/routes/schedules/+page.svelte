@@ -259,7 +259,7 @@
                         {/if}
                     </div>
                     <div class="collapse-content">
-                        <div class="py-4">
+                        <div class="py-4 h-200 md:min-h-80 md:max-h-100">
                             <ObservatoryTelescopeSelector {observatories} {telescopes} bind:selectedObservatories bind:selectedTelescopes />
                         </div>
                     </div>

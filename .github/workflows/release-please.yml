@@ -49,7 +49,7 @@ jobs:
             secret-outputs-passphrase: '${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}'
 
     release:
-        needs: [release-please]
+        needs: [release-please, build]
         if: needs.release-please.outputs.release_created
         uses: NASA-ACROSS/github-action-workflows/.github/workflows/ecspresso-release.yml@main
         with:

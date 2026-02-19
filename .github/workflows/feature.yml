@@ -26,7 +26,7 @@ jobs:
             runtime: node
             image-name: frontend
             app: frontend
-            output-web-url: true
+            output-web-url: false
 
         secrets:
             github-private-actions-pat: ${{ secrets.PRIVATE_CONFIG_READ_ACCESS }}

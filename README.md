@@ -1,5 +1,9 @@
 # across-frontend
 
+[![CI](https://github.com/NASA-ACROSS/across-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/NASA-ACROSS/across-frontend/actions/workflows/ci.yml)
+[![Main](https://github.com/NASA-ACROSS/across-frontend/actions/workflows/main.yml/badge.svg)](https://github.com/NASA-ACROSS/across-frontend/actions/workflows/main.yml)
+[![Release](https://github.com/NASA-ACROSS/across-frontend/actions/workflows/release-please.yml/badge.svg)](https://github.com/NASA-ACROSS/across-frontend/actions/workflows/release-please.yml)
+
 ## Developing
 
 Install dependencies with `npm ci`.

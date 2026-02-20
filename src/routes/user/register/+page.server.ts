@@ -2,12 +2,14 @@ import { emailRegex } from '$lib/utils/regex/emailRegex.js';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex.js';
 import { validate } from '$lib/utils/regex/validate.js';
 import { CONFIG } from '../../../config/config.js';
+import { PUBLIC_BUILD_VERSION } from '$env/static/public';
 import { fail, redirect } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
+import { resolve } from '$app/paths';
 import type { RequestEvent } from './$types.js';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
-import { resolve } from '$app/paths';
 import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute.js';
+import type { MagicLinkDTO } from '$lib/types/auth/MagicLinkDTO';
 
 // rate limit is defined as [number, unit]
 // see documentation for more info
@@ -103,6 +105,13 @@ export const actions = {
         if (response.status == 500 || response.status == 422) {
             console.error(`ERROR: register user with [${email}, ${username}] at [${Date.now()}] with status code [${response.status}]`);
             return fail(500, { fail: true });
+        }
+
+        if (PUBLIC_BUILD_VERSION == 'local') {
+            const magicLinkDict = (await response.json()) as MagicLinkDTO;
+            if (typeof magicLinkDict?.magic_link === 'string') {
+                redirect(302, magicLinkDict.magic_link);
+            }
         }
 
         return { success: true, firstname, lastname, username, email };

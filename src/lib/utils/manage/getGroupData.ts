@@ -1,6 +1,6 @@
 import type { Group } from '$lib/types/User/Group';
 
-export const getGroupData = async (userGroupId: number, fetch: typeof globalThis.fetch): Promise<Group> => {
+export const getGroupData = async (userGroupId: string, fetch: typeof globalThis.fetch): Promise<Group> => {
     const response = await fetch(`/api/group/${userGroupId}`, {
         method: 'GET',
     });

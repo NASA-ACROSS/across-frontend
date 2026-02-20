@@ -19,11 +19,11 @@
     import Fieldset from '$lib/components/Fieldset.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
     import DangerZone from './_components/DangerZone.svelte';
+    import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
+    import ArrowButton from '$lib/components/ArrowButton.svelte';
 
     export let data: PageData;
 
-    // user selected role
-    let roleSelection: string = '';
     let leaveUserGroup: UserGroup;
 
     let originalUserData = structuredClone(data.user);
@@ -63,10 +63,6 @@
             formData.set('firstname', user.first_name);
             formData.set('lastname', user.last_name);
             formData.set('username', user.username);
-        } else if (action.href.includes('requestRole')) {
-            formData.set('role', roleSelection);
-        } else if (action.href.includes('cancelRequestedRole')) {
-            formData.set('role', roleSelection);
         } else if (action.href.includes('leaveGroup')) {
             formData.set('userId', user.id.toString());
             formData.set('groupId', leaveUserGroup.id.toString());
@@ -99,7 +95,7 @@
 <Page title="Profile" icon="user">
     <div slot="buttons" class="">
         <a data-sveltekit-preload-data="false" data-sveltekit-reload href={resolve('/user/logout')} class="btn btn-accent text-xl">
-            <i class="bx bx-log-out opacity-70 me-2"></i>Logout
+            <i class="bx bx-door-open-alt opacity-70 me-2"></i>Logout
         </a>
     </div>
     <Section>
@@ -189,6 +185,10 @@
 
     <UserGroupInvites {invitations} />
     <UserGroups {user} {userGroups} bind:leaveUserGroup {enhancedForm} />
+
+    <Section title="My Service Accounts" icon="server">
+        <ArrowButton href={resolve('/user/service-accounts/')}>Manage Service Accounts</ArrowButton>
+    </Section>
 
     <DangerZone />
 </Page>

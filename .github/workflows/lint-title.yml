@@ -1,8 +1,8 @@
-name: CI
+name: Lint Title
 on:
     pull_request:
         branches: ['main']
-        types: [opened, synchronize, reopened]
+        types: [opened, reopened, edited]
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
@@ -13,7 +13,7 @@ permissions:
     pull-requests: write
 
 jobs:
-    checks:
-        uses: NASA-ACROSS/github-action-workflows/.github/workflows/workflow-ci-checks.yml@main
-        with:
-            runtime: node
+    do:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: NASA-ACROSS/github-action-commitlint@v1.0.1

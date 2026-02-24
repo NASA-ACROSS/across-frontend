@@ -1,5 +1,4 @@
 import { CONFIG } from '../../../config/config.js';
-import { PUBLIC_BUILD_VERSION } from '$env/static/public';
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
@@ -7,7 +6,7 @@ import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCooki
 import { emailRegex } from '$lib/utils/regex/emailRegex.js';
 import type { Actions } from './$types.js';
 import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute';
-import type { MagicLinkDTO } from '$lib/types/auth/MagicLinkDTO';
+import { autoLogin } from '$lib/utils/user/autoLogin.js';
 
 export function load({ locals }: RequestEvent) {
     localOnlyRoute();
@@ -93,12 +92,7 @@ export const actions = {
             return fail(401, { notFound: true });
         }
 
-        if (PUBLIC_BUILD_VERSION == 'local') {
-            const magicLinkDict = (await response.json()) as MagicLinkDTO;
-            if (typeof magicLinkDict?.magic_link === 'string') {
-                redirect(302, magicLinkDict.magic_link);
-            }
-        }
+        await autoLogin(response);
 
         return { success: true, email };
     },

@@ -13,10 +13,7 @@ export async function handleLogin(
     const encryptedUserCookie = event.cookies.get('user-login');
     try {
         if (encryptedUserCookie) {
-            const decryptedCookie = await aesGcmDecrypt(
-                encryptedUserCookie,
-                CONFIG.API_TOKEN
-            );
+            const decryptedCookie = await aesGcmDecrypt(encryptedUserCookie, CONFIG.API_TOKEN);
             const user = JSON.parse(decryptedCookie) as UserCredentialsCookie;
 
             if (decryptedCookie) {
@@ -25,10 +22,7 @@ export async function handleLogin(
         }
         return event;
     } catch (e) {
-        console.error(
-            '[ERROR] handleLogin failed to decrypt or parse cookie',
-            e
-        );
+        console.error('[ERROR] handleLogin failed to decrypt or parse cookie', e);
         event.cookies.delete('user-login', { path: '/' });
         event.locals.user = undefined;
 

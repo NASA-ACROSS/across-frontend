@@ -1,29 +1,24 @@
 <script lang="ts">
-    import { resolve } from '$app/paths';
+    import { PUBLIC_CONFIG } from '$config/config.public';
     import Section from '$lib/components/Section.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
     import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
     import Page from '$lib/components/Page.svelte';
     import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
+    import Alert from '$lib/components/Alert.svelte';
 
     /** @type {import('./$types').ActionData} */
     export let form;
 </script>
 
 <Page center={true}>
-    <div
-        role="alert"
-        class="alert alert-info alert-soft mt-5 w-2xl justify-center"
-    >
-        <span class=""
-            >Registration is not required to GET data from ACROSS. <a
-                href={resolve('/help/documentation')}
-                class="link font-normal">See documentation for more details.</a
-            ></span
+    <Alert>
+        Registration is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal"
+            >See documentation for more details.</a
         >
-    </div>
-    <Section title="Create Account" icon="user" containerClasses="w-2xl">
+    </Alert>
+    <Section title="Create Account" icon="user">
         <Fieldset title="User Information">
             <form method="post">
                 <label for="firstname">Name</label>
@@ -97,15 +92,10 @@
 
                 <div class="flex justify-end gap-3 items-center">
                     {#if form?.success}
-                        <FormInputFeedback>
-                            Please check your email for a verification link!
-                        </FormInputFeedback>
+                        <FormInputFeedback>Please check your email for a verification link!</FormInputFeedback>
                     {/if}
                     {#if form?.userAlreadyExists}
-                        <FormInputFeedback type="error">
-                            Invalid Email or Username Specified. Account already
-                            exists.
-                        </FormInputFeedback>
+                        <FormInputFeedback type="error">Invalid Email or Username Specified. Account already exists.</FormInputFeedback>
                     {/if}
                     {#if form?.rateLimit}
                         <FormInputFeedback type="error">
@@ -114,22 +104,12 @@
                         </FormInputFeedback>
                     {/if}
                     {#if form?.failValidation}
-                        <FormInputFeedback type="error">
-                            Form validation failed. Please try again. If this
-                            error persists, contact support.
-                        </FormInputFeedback>
+                        <FormInputFeedback type="error">Form validation failed. Please try again. If this error persists, contact support.</FormInputFeedback>
                     {/if}
                     {#if form?.fail}
-                        <FormInputFeedback type="error">
-                            Something went wrong, please try again. If this
-                            error persists, contact support.
-                        </FormInputFeedback>
+                        <FormInputFeedback type="error">Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback>
                     {/if}
-                    <button
-                        class="btn btn-lg btn-info"
-                        type="submit"
-                        disabled={form?.success}>Register</button
-                    >
+                    <button class="btn btn-lg btn-info" type="submit" disabled={form?.success}>Register</button>
                 </div>
             </form>
         </Fieldset>
@@ -147,6 +127,6 @@
     }
 
     input:invalid:not(:placeholder-shown) {
-        border: 1px solid var(--color-accent);
+        border: 1px solid var(--color-warning);
     }
 </style>

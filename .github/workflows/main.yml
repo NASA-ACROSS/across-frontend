@@ -1,0 +1,30 @@
+name: Main
+on:
+    push:
+        branches: [main]
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: false
+
+permissions:
+    id-token: write
+    deployments: write
+    pull-requests: write
+    contents: read
+
+jobs:
+    do:
+        uses: NASA-ACROSS/github-action-workflows/.github/workflows/ecspresso-main-branch.yml@remove-release-please-from-main
+        with:
+            organization: '${{ github.event.repository.owner.login }}'
+            repository: '${{ github.event.repository.name }}'
+            image-name: frontend
+            app: frontend
+        secrets:
+            github-private-actions-pat: ${{ secrets.PRIVATE_CONFIG_READ_ACCESS }}
+            registry: ${{ secrets.ECR_REGISTRY }}
+            secret-outputs-passphrase: ${{ secrets.GHA_SECRET_OUTPUT_PASSPHRASE }}
+            ecr-region: ${{ secrets.ECR_REGION }}
+            ecr-iam-role: ${{ secrets.ECR_IAM_ROLE }}
+            release-please-token: ${{ secrets.RELEASE_PLEASE_TOKEN }}

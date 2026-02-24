@@ -1,0 +1,8 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "frontend",
+            "image": "{{ must_env `IMAGE` }}"
+        }
+    ]
+}

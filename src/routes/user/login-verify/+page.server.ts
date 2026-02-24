@@ -3,10 +3,7 @@ import { resolve } from '$app/paths';
 import { CONFIG } from '../../../config/config.js';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
-import type {
-    UserCredentialsCookie,
-    AccessDataResponse,
-} from '$lib/types/User/UserCredentialsCookie.js';
+import type { UserCredentialsCookie, AccessDataResponse } from '$lib/types/User/UserCredentialsCookie.js';
 import type { User } from '$lib/types/User/User.js';
 import { UserCredentials } from '$lib/types/User/UserCredentials.js';
 import type { RequestEvent } from './$types.js';
@@ -15,7 +12,7 @@ export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
     const user = locals.user;
     // Redirect on load when user is logged in
     if (user) {
-        throw redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('/user/profile'));
     }
     return {};
 }
@@ -59,10 +56,7 @@ export const actions = {
         // trade verification token for access token
         let response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/auth/verify?token=${verificationToken}`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/auth/verify?token=${verificationToken}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: login-verify for verificationToken [${verificationToken}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -104,9 +98,7 @@ export const actions = {
             }
 
             // get user id from access token
-            const decodedToken: JwtPayload = jwtDecode(
-                credentials.access_token
-            );
+            const decodedToken: JwtPayload = jwtDecode(credentials.access_token);
             const userId = decodedToken.sub;
 
             // Get the User info using the ID
@@ -123,10 +115,7 @@ export const actions = {
 
                 let userResponse;
                 try {
-                    userResponse = await fetch(
-                        `${CONFIG.API_URL}/user/${userId}`,
-                        userOptions
-                    );
+                    userResponse = await fetch(`${CONFIG.API_URL}/user/${userId}`, userOptions);
                 } catch (error: unknown) {
                     const errorLog = `ERROR: getting information for user [${userId}] at [${Date.now()}]`;
                     console.error(errorLog, JSON.stringify(error));
@@ -156,7 +145,7 @@ export const actions = {
             const userCredentials = new UserCredentials(userCredentialsCookie);
             await userCredentials.setCookie(cookies);
 
-            throw redirect(302, resolve('/user/profile'));
+            redirect(302, resolve('/user/profile'));
         }
 
         return {

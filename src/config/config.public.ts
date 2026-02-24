@@ -1,7 +1,13 @@
+/**
+ * public configuration environment variables are needed at build time
+ *
+ * PUBLIC_BUILD_VERSION=local npm run build
+ */
 import { PUBLIC_BUILD_VERSION } from '$env/static/public';
 
 type PublicConfig = {
     BUILD_VERSION: string;
+    DOCUMENTATION_URL: string;
 };
 
 /**
@@ -13,4 +19,5 @@ type PublicConfig = {
  */
 export const PUBLIC_CONFIG: PublicConfig = {
     BUILD_VERSION: PUBLIC_BUILD_VERSION,
+    DOCUMENTATION_URL: 'https://science.data.nasa.gov/data-sites/across',
 };

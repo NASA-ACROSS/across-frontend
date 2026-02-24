@@ -1,11 +1,12 @@
 <script lang="ts">
     import { asset, resolve } from '$app/paths';
     import { page } from '$app/state';
+    import { PUBLIC_CONFIG } from '$config/config.public';
 
     import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 
     export let user: UserCredentialsCookie | undefined;
-    export let API_URL: string = 'http://127.0.0.1:8000/docs';
+    export let API_DOCS_URL: string;
 
     $: currentPath = page.url.pathname;
 
@@ -27,27 +28,21 @@
             </button>
             <ul class="menu menu-xl w-screen dropdown-content bg-primary text-primary-content z-1 -ms-2 pb-5">
                 <li>
-                    <a>Data</a>
+                    <p>Data</p>
                     <ul class="p-2">
                         <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/schedules')}>Schedules</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/schedules')}>Schedules</a>
                         </li>
                         <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/observations')}>Observations</a>
-                        </li>
-                        <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/observatories')}>Observatories</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/observations')}>Observations</a>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    <a>Tools</a>
+                    <p>Tools</p>
                     <ul>
                         <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/visibility-calculator')}>Visibility Calculator</a>
-                        </li>
-                        <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/ingestion-status')}>Data Ingestion Status</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/ingestion-status')}>Data Ingestion Status</a>
                         </li>
                     </ul>
                 </li>
@@ -60,6 +55,11 @@
         </a>
     </div>
     <div class="navbar-end">
+        {#if PUBLIC_CONFIG.BUILD_VERSION === 'local'}
+            <div class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
+                <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={resolve('/playground')}>Playground</a>
+            </div>
+        {/if}
         <ul class="menu menu-horizontal px-1 hidden lg:flex lg:items-center">
             <li>
                 <div class="dropdown dropdown-hover dropdown-end m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
@@ -69,13 +69,10 @@
                     </div>
                     <ul class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm">
                         <li>
-                            <a href={resolve('/schedules')}>Schedules</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/schedules')}>Schedules</a>
                         </li>
                         <li>
-                            <a href={resolve('/observations')}>Observations</a>
-                        </li>
-                        <li>
-                            <a href={resolve('/observatories')}>Observatories</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/observations')}>Observations</a>
                         </li>
                     </ul>
                 </div>
@@ -88,17 +85,16 @@
                     </div>
                     <ul class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm">
                         <li>
-                            <a href={resolve('/visibility-calculator')}>Visibility Calculator</a>
-                        </li>
-                        <li>
-                            <a href={resolve('/ingestion-status')}>Data Ingestion Status</a>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/ingestion-status')}>Data Ingestion Status</a>
                         </li>
                     </ul>
                 </div>
             </li>
             <li>
                 <div class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
-                    <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={API_URL + '/docs'}>API </a>
+                    <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={API_DOCS_URL} target="_blank" rel="noopener noreferrer"
+                        >API
+                    </a>
                 </div>
             </li>
         </ul>
@@ -122,7 +118,7 @@
                         </div>
                     </div>
                 </a>
-                <ul role="link" class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow">
+                <ul class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow">
                     {#if user}
                         <li>
                             <a class="justify-between text-primary-content hover:bg-info" href={resolve('/user/profile')}> Profile </a>

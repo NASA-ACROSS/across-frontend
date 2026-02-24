@@ -5,7 +5,10 @@ import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCooki
 // for information about these interfaces
 declare global {
     namespace App {
-        // interface Error { }
+        interface Error {
+            message: string;
+            errorId: string;
+        }
         interface Locals {
             user: UserCredentialsCookie | undefined;
         }

@@ -8,11 +8,8 @@
                 <!-- Text -->
                 <h1 class="pb-2 pb-md-3">About ACROSS</h1>
                 <p class="" style="max-width: 600px;">
-                    The ACROSS (Astrophysics Cross-Observatory Science Support)
-                    System aggregates and normalizes supported mission schedule
-                    and observation data to provide a single queryable source
-                    for science situational awareness of NASA's ground and space
-                    observatories.
+                    The ACROSS (Astrophysics Cross-Observatory Science Support) System aggregates and normalizes supported mission schedule and observation data
+                    to provide a single queryable source for science situational awareness of NASA's ground and space observatories.
                 </p>
             </div>
         </div>

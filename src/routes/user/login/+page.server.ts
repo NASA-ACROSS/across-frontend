@@ -10,7 +10,7 @@ export function load({ locals }: RequestEvent) {
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is logged in
     if (userCookie) {
-        throw redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('/user/profile'));
     }
 }
 
@@ -25,12 +25,17 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export const actions = {
-    default: async (event) => {
+    default: async (event: RequestEvent) => {
+        event.cookies.delete('user-login', {
+            path: '/',
+        });
+        event.locals.user = undefined;
+
         const data = await event.request.formData();
 
-        const email = data.get('email')?.toString();
+        const email = data.get('email');
 
-        if (!email?.match(emailRegex)) {
+        if (typeof email !== 'string' || !email.match(emailRegex)) {
             return fail(400, {
                 invalidEmail: true,
                 message: 'Please provide a valid email.',
@@ -61,15 +66,9 @@ export const actions = {
 
         let response: Response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/auth/login?email=${encodeURIComponent(email)}`,
-                options
-            );
+            response = await fetch(`${CONFIG.API_URL}/auth/login?email=${encodeURIComponent(email)}`, options);
         } catch (error) {
-            console.error(
-                `ERROR: logging in user [${email}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
+            console.error(`ERROR: logging in user [${email}] at [${Date.now()}]`, JSON.stringify(error));
 
             if (error instanceof Error) {
                 return fail(500, { error: error.message, fail: true });
@@ -79,18 +78,14 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`
-            );
+            console.error(`ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`);
             return fail(500, { fail: true });
         }
 
-        if (response.status == 400) {
+        if (response.status == 401) {
             const errorResponse = (await response.json()) as { detail: string };
-
-            console.warn(errorResponse.detail, JSON.stringify({ email }));
-
-            return fail(400, { notFound: true });
+            console.warn(errorResponse.detail, JSON.stringify({ email: email, ip: event.getClientAddress() }));
+            return fail(401, { notFound: true });
         }
 
         return { success: true, email };

@@ -7,6 +7,7 @@
     import Section from '$lib/components/Section.svelte';
     import ObjectNameResolver from '$lib/components/ObjectNameResolver.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
+    import DateRangeInputs from '$lib/components/DateRangeInputs.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
     import type { Telescope } from '$lib/types/across/Telescope';
@@ -505,26 +506,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                            <div>
-                                <label class="label text-lg" for="date-begin-input">
-                                    <span class="label-text">Begin Date/Time</span>
-                                </label>
-                                <div class="grid grid-cols-2 space-x-2">
-                                    <input id="date-begin-input" type="date" bind:value={dateBegin} class="input w-full text-primary" />
-                                    <input id="time-begin-input" type="time" bind:value={timeBegin} class="input w-full" />
-                                </div>
-                            </div>
-                            <div>
-                                <label class="label text-lg" for="date-end-input">
-                                    <span class="label-text">End Date/Time</span>
-                                </label>
-                                <div class="grid grid-cols-2 space-x-2">
-                                    <input id="date-end-input" type="date" bind:value={dateEnd} class="input w-full" />
-                                    <input id="time-end-input" type="time" bind:value={timeEnd} class="input w-full" />
-                                </div>
-                            </div>
-                        </div>
+                        <DateRangeInputs bind:dateBegin bind:timeBegin bind:dateEnd bind:timeEnd />
                     </div>
                 </div>
 

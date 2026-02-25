@@ -1,15 +1,25 @@
 <script lang="ts">
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
-    import ObjectNameResolver from '$lib/components/ObjectNameResolver.svelte';
+    import CoordinateSearch from '$lib/components/CoordinateSearch.svelte';
+    import DateRangeInputs from '$lib/components/DateRangeInputs.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
+    import { goto } from '$app/navigation';
+    import { page } from '$app/state';
+    import { onMount } from 'svelte';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
+    import type { VisibilityWindow } from '$lib/types/across/VisibilityWindow';
 
     export let data;
 
+    $: error = data.error || null;
     $: telescopes = data.telescopes || [];
+    $: joint_visibility_windows = data.joint_visibility_windows || [];
+    $: visibility_window_instrument_ids = data.visibility_window_instrument_ids || [];
+    $: observatory_visibility_windows = data.observatory_visibility_windows || {};
+    $: currentSearchParams = new URLSearchParams(page.url.searchParams);
 
     // Observatory/Telescope/Instrument selector state
     $: observatories = telescopes
@@ -18,6 +28,17 @@
     $: instruments = telescopes
         .flatMap((telescope) => telescope.instruments || [])
         .filter((value, index, self) => self.findIndex((inst) => inst.id === value.id) === index);
+
+    // Create observatory short names dictionary for efficient lookups
+    $: observatoryShortNames = telescopes.reduce(
+        (acc, telescope) => {
+            if (!acc[telescope.observatory.id]) {
+                acc[telescope.observatory.id] = telescope.observatory.short_name;
+            }
+            return acc;
+        },
+        {} as Record<string, string>
+    );
 
     let selectedObservatories: TelescopeObservatory[] = [];
     let selectedTelescopes: Telescope[] = [];
@@ -37,24 +58,94 @@
     let hires = false;
     let min_visibility_duration = '';
 
-    function calculateVisibility() {
-        // TODO: Implement visibility calculation logic
-        console.log('Calculate Visibility:', {
-            observatories: selectedObservatories,
-            telescopes: selectedTelescopes,
-            instruments: selectedInstruments,
-            ra,
-            dec,
-            dateBegin,
-            timeBegin,
-            dateEnd,
-            timeEnd,
-            hires,
-            min_visibility_duration,
-        });
+    // Validation
+    $: isValid = selectedInstruments.length > 0 && ra !== '' && dec !== '' && dateBegin !== '' && dateEnd !== '';
+    let localError = '';
+
+    // Populate inputs from URL parameters
+    onMount(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Populate coordinates
+        if (urlParams.has('ra')) ra = urlParams.get('ra') || '';
+        if (urlParams.has('dec')) dec = urlParams.get('dec') || '';
+
+        // Populate date range
+        const dateRangeBegin = urlParams.get('date_range_begin');
+        if (dateRangeBegin) {
+            const [date, time] = dateRangeBegin.split('T');
+            dateBegin = date;
+            timeBegin = time || '';
+        }
+
+        const dateRangeEnd = urlParams.get('date_range_end');
+        if (dateRangeEnd) {
+            const [date, time] = dateRangeEnd.split('T');
+            dateEnd = date;
+            timeEnd = time || '';
+        }
+
+        // Populate optional parameters
+        if (urlParams.has('hires')) hires = urlParams.get('hires') === 'true';
+        if (urlParams.has('min_visibility_duration')) min_visibility_duration = urlParams.get('min_visibility_duration') || '';
+
+        // Populate instrument selection
+        const instrumentIds = urlParams.get('instrument_ids')?.split(',') || [];
+        if (instrumentIds.length > 0) {
+            selectedInstruments = instruments.filter((inst) => instrumentIds.includes(inst.id));
+
+            // Auto-select parent telescopes and observatories
+            const telescopeIds = new Set<string>();
+            const observatoryIds = new Set<string>();
+
+            selectedInstruments.forEach((inst) => {
+                const telescope = telescopes.find((tel) => tel.instruments.some((i) => i.id === inst.id));
+                if (telescope) {
+                    telescopeIds.add(telescope.id);
+                    observatoryIds.add(telescope.observatory.id);
+                }
+            });
+
+            selectedTelescopes = telescopes.filter((tel) => telescopeIds.has(tel.id));
+            selectedObservatories = observatories.filter((obs) => observatoryIds.has(obs.id));
+        }
+    });
+
+    async function calculateVisibility() {
+        // Validate required fields
+        if (!isValid) {
+            localError = 'Required fields: At least one instrument, RA, DEC, Begin Date, and End Date';
+            return;
+        }
+
+        // Validate date range
+        const beginDateTime = new Date(`${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`);
+        const endDateTime = new Date(`${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
+
+        if (beginDateTime >= endDateTime) {
+            localError = 'Begin Date/Time must be before End Date/Time';
+            return;
+        }
+
+        localError = '';
+        const params = new URLSearchParams();
+
+        if (dateBegin) params.append('date_range_begin', `${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`);
+        if (dateEnd) params.append('date_range_end', `${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
+        if (ra) params.append('ra', ra);
+        if (dec) params.append('dec', dec);
+        if (hires) params.append('hires', 'true');
+        if (min_visibility_duration) params.append('min_visibility_duration', min_visibility_duration);
+
+        if (selectedInstruments.length) params.append('instrument_ids', selectedInstruments.map((inst) => inst.id).join(','));
+
+        currentSearchParams = params;
+
+        console.log('Navigating with search params:', params.toString());
+        await goto(`?${params.toString()}`, { noScroll: true, invalidateAll: true });
     }
 
-    function resetFilters() {
+    async function resetFilters() {
         selectedObservatories = [];
         selectedTelescopes = [];
         selectedInstruments = [];
@@ -65,7 +156,18 @@
         dateEnd = '';
         timeEnd = '';
         hires = false;
-        minvis_duration = '';
+        min_visibility_duration = '';
+
+        await calculateVisibility();
+    }
+
+    function formatConstraintReason(reason: string, observatoryId: string, observatoryShortNames: Record<string, string>): string {
+        const shortName = observatoryShortNames[observatoryId] || 'Observatory';
+        if (!observatoryShortNames[observatoryId]) {
+            // THIS BREAKS BECAUSE FOR SOME REASON THE SERVER PUTS THE TELESCOPE ID HERE INSTEAD OF THE OBSERVATORY ID. LOGGING TO INVESTIGATE.
+            console.log('Observatory ID not found:', observatoryId, 'Available keys:', Object.keys(observatoryShortNames), 'Dict:', observatoryShortNames);
+        }
+        return reason.replace(/Observatory/g, shortName);
     }
 </script>
 
@@ -100,65 +202,12 @@
 
             <div class="bg-base-100 p-4 mb-4">
                 <h3 class="text-lg font-semibold mb-4">Object Name Resolver / Coordinates (J2000)</h3>
-                <ObjectNameResolver bind:ra bind:dec />
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                    <label class="input text-lg pe-0 w-full" for="ra-input">
-                        RA:
-                        <input
-                            id="ra-input"
-                            class="input validator input-bordered text-lg w-full"
-                            type="number"
-                            inputmode="decimal"
-                            step="any"
-                            bind:value={ra}
-                            placeholder="decimal° (0-359.999)"
-                            min="0"
-                            max="359.99999999"
-                        />
-                        <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (0 to 359.99999999)</p>
-                    </label>
-
-                    <label class="input text-lg pe-0 w-full" for="dec-input">
-                        DEC:
-                        <input
-                            id="dec-input"
-                            type="number"
-                            inputmode="decimal"
-                            step="any"
-                            bind:value={dec}
-                            placeholder="decimal° (-90 to 90)"
-                            min="-90"
-                            max="90"
-                            class="input validator input-bordered text-lg w-full"
-                        />
-                        <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (-90 to 90)</p>
-                    </label>
-                </div>
+                <CoordinateSearch bind:ra bind:dec />
             </div>
 
             <div class="bg-base-100 p-4 mb-4">
                 <h3 class="text-lg font-semibold mb-4">Date Range</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                    <div>
-                        <label class="label text-lg" for="date-begin-input">
-                            <span class="label-text">Begin Date/Time</span>
-                        </label>
-                        <div class="grid grid-cols-2 space-x-2">
-                            <input id="date-begin-input" type="date" bind:value={dateBegin} class="input w-full text-primary" />
-                            <input id="time-begin-input" type="time" bind:value={timeBegin} class="input w-full" />
-                        </div>
-                    </div>
-                    <div>
-                        <label class="label text-lg" for="date-end-input">
-                            <span class="label-text">End Date/Time</span>
-                        </label>
-                        <div class="grid grid-cols-2 space-x-2">
-                            <input id="date-end-input" type="date" bind:value={dateEnd} class="input w-full" />
-                            <input id="time-end-input" type="time" bind:value={timeEnd} class="input w-full" />
-                        </div>
-                    </div>
-                </div>
+                <DateRangeInputs bind:dateBegin bind:timeBegin bind:dateEnd bind:timeEnd />
             </div>
 
             <div class="bg-base-100 p-4 mb-4">
@@ -190,17 +239,114 @@
             </div>
 
             <div class="flex justify-end mt-4">
-                <button class="btn btn-primary text-lg" on:click={calculateVisibility}>Calculate Visibility</button>
+                <p class="self-center pe-3 text-error">{error || localError}</p>
+                <button class="btn btn-info text-lg" on:click={async () => await calculateVisibility()}> Calculate Visibility </button>
             </div>
         </div>
     </Section>
-</Page>
 
-<style>
-    #date-begin-input::-webkit-calendar-picker-indicator,
-    #date-end-input::-webkit-calendar-picker-indicator,
-    #time-begin-input::-webkit-calendar-picker-indicator,
-    #time-end-input::-webkit-calendar-picker-indicator {
-        filter: invert();
-    }
-</style>
+    {#if joint_visibility_windows.length > 0}
+        <Section title="Joint Visibility Windows" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
+            <div class="overflow-x-auto">
+                <table class="table table-pin-rows table-zebra w-full">
+                    <thead>
+                        <tr class="bg-primary text-primary-content">
+                            <th class="text-center">Window #</th>
+                            <th>Start Reason</th>
+                            <th>Begin</th>
+                            <th>End</th>
+                            <th>End Reason</th>
+                            <th class="text-center">Max Visibility Duration (s)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each joint_visibility_windows as window, index}
+                            <tr>
+                                <td class="text-center">{index + 1}</td>
+                                <td
+                                    >{formatConstraintReason(
+                                        window.constraint_reason.start_reason,
+                                        window.window.begin.observatory_id,
+                                        observatoryShortNames
+                                    )}</td
+                                >
+                                <td class="text-xs">
+                                    {new Date(window.window.begin.datetime).toISOString().slice(0, -5).replace('T', ' ')}
+                                </td>
+                                <td class="text-xs">
+                                    {new Date(window.window.end.datetime).toISOString().slice(0, -5).replace('T', ' ')}
+                                </td>
+                                <td>{formatConstraintReason(window.constraint_reason.end_reason, window.window.end.observatory_id, observatoryShortNames)}</td>
+                                <td class="text-center">{window.max_visibility_duration.toFixed(2)}</td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </div>
+        </Section>
+    {/if}
+
+    {#if visibility_window_instrument_ids.length > 0}
+        <Section title="Visibility Windows by Instrument" icon="telescope" parentContainerClasses="lg:w-full lg:px-5">
+            <div class="space-y-4">
+                {#each visibility_window_instrument_ids as instrumentId}
+                    {@const instrument = instruments.find((inst) => inst.id === instrumentId)}
+                    {@const windows = observatory_visibility_windows[instrumentId] || []}
+                    {#if instrument && windows.length > 0}
+                        <div class="collapse collapse-arrow bg-base-200">
+                            <input type="checkbox" />
+                            <div class="collapse-title text-xl font-medium">
+                                {instrument.name}
+                                <span class="badge badge-primary ml-2">{windows.length} windows</span>
+                            </div>
+                            <div class="collapse-content">
+                                <div class="overflow-x-auto">
+                                    <table class="table table-pin-rows table-zebra w-full">
+                                        <thead>
+                                            <tr class="bg-primary text-primary-content">
+                                                <th class="text-center">Window #</th>
+                                                <th>Start Reason</th>
+                                                <th>Begin</th>
+                                                <th>End</th>
+                                                <th>End Reason</th>
+                                                <th class="text-center">Max Visibility Duration (s)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {#each windows as window, index}
+                                                <tr>
+                                                    <td class="text-center">{index + 1}</td>
+                                                    <td
+                                                        >{formatConstraintReason(
+                                                            window.constraint_reason.start_reason,
+                                                            window.window.begin.observatory_id,
+                                                            observatoryShortNames
+                                                        )}</td
+                                                    >
+                                                    <td class="text-xs">
+                                                        {new Date(window.window.begin.datetime).toISOString().slice(0, -5).replace('T', ' ')}
+                                                    </td>
+                                                    <td class="text-xs">
+                                                        {new Date(window.window.end.datetime).toISOString().slice(0, -5).replace('T', ' ')}
+                                                    </td>
+                                                    <td
+                                                        >{formatConstraintReason(
+                                                            window.constraint_reason.end_reason,
+                                                            window.window.end.observatory_id,
+                                                            observatoryShortNames
+                                                        )}</td
+                                                    >
+                                                    <td class="text-center">{window.max_visibility_duration.toFixed(2)}</td>
+                                                </tr>
+                                            {/each}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {/if}
+                {/each}
+            </div>
+        </Section>
+    {/if}
+</Page>

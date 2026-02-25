@@ -5,7 +5,7 @@
     import { goto } from '$app/navigation';
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
-    import ObjectNameResolver from '$lib/components/ObjectNameResolver.svelte';
+    import CoordinateSearch from '$lib/components/CoordinateSearch.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
@@ -557,299 +557,256 @@
                         {/if}
                     </div>
                     <div class="collapse-content bg-carbon-05">
-                        <!-- Object Name Resolver Component -->
-                        <ObjectNameResolver bind:ra={coneSearchRa} bind:dec={coneSearchDec} />
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
-                            <label class="input text-lg pe-0 w-full" for="ra-input">
-                                RA:
-                                <input
-                                    id="ra-input"
-                                    class="input validator input-bordered text-lg w-full"
-                                    type="number"
-                                    inputmode="decimal"
-                                    step="any"
-                                    bind:value={coneSearchRa}
-                                    placeholder="decimal° (0-359.999)"
-                                    min="0"
-                                    max="359.99999999"
-                                />
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (0 to 359.99999999)</p>
-                            </label>
-
-                            <label class="input text-lg pe-0 w-full" for="dec-input">
-                                DEC:
-                                <input
-                                    id="dec-input"
-                                    type="number"
-                                    inputmode="decimal"
-                                    step="any"
-                                    bind:value={coneSearchDec}
-                                    placeholder="decimal° (-90 to 90)"
-                                    min="-90"
-                                    max="90"
-                                    class="input validator input-bordered text-lg w-full"
-                                />
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (-90 to 90)</p>
-                            </label>
-
-                            <label class="input text-lg pe-0 w-full" for="radius-input">
-                                Radius:
-                                <input
-                                    id="radius-input"
-                                    type="number"
-                                    inputmode="decimal"
-                                    step="any"
-                                    bind:value={coneSearchRadius}
-                                    placeholder="decimal° (> 0)"
-                                    class="input validator input-bordered text-lg w-full"
-                                    min="0"
-                                />
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be decimal greater than 0</p>
-                            </label>
-                        </div>
+                        <!-- Coordinate Search Component -->
+                        <CoordinateSearch bind:ra={coneSearchRa} bind:dec={coneSearchDec} bind:radius={coneSearchRadius} includeRadius={true} />
                     </div>
-                </div>
 
-                <!-- Energy Regime / Bandpass -->
-                <div class="collapse collapse-arrow join-item border-base-300 border">
-                    <input
-                        type="radio"
-                        name="my-accordion"
-                        value="energy-regime"
-                        on:click={() => {
-                            deselectAccordion('energy-regime');
-                        }}
-                        bind:group={selectedFilter}
-                        checked={false}
-                    />
-                    <div class="collapse-title font-semibold {bandpassRegime || bandpassMin || bandpassMax ? 'text-nasa-blue-shade' : ''}">
-                        <h3 class="text-lg mb-2">Energy Regime / Bandpass</h3>
-                        {#if selectedFilter != 'energy-regime'}
-                            <div class="opacity-60">
-                                {#if bandpassRegime}
-                                    <span class="font-thin">Bandpass: </span><span>{bandpassRegime}</span>
-                                {/if}
-                                {#if bandpassMin && bandpassMax}
-                                    <span>{bandpassMin} - {bandpassMax}</span>
-                                {:else if bandpassMax}
-                                    <span>{'< ' + bandpassMax}</span>
-                                {:else if bandpassMin}
-                                    <span>{'> ' + bandpassMin}</span>
-                                {/if}
-
-                                {#if bandpassType}
-                                    <span>{bandpassType}</span>
-                                {/if}
-                            </div>
-                        {/if}
-                    </div>
-                    <div class="collapse-content">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="label text-lg" for="bandpass-type-input">
-                                    <span class="label-text">Bandpass Regime</span>
-                                </label>
-                                <select
-                                    id="bandpass-type-input"
-                                    bind:value={bandpassRegime}
-                                    on:change={() => (bandpassType = '')}
-                                    class="select select-bordered text-lg w-full"
-                                >
-                                    <option value="">Select Regime</option>
-                                    {#each bandpassTypeOptions as option}
-                                        <option value={option}>{option}</option>
-                                    {/each}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="label text-lg" for="bandpass-type-input">
-                                    <span class="label-text">{bandpassRegime ? bandpassRegime : 'Bandpass'} Type</span>
-                                </label>
-                                <select
-                                    id="bandpass-type-input"
-                                    bind:value={bandpassType}
-                                    class="select select-bordered text-lg {bandpassRegime ? '' : 'opacity-50'} w-full"
-                                >
-                                    <option class="opacity-50" value="">{bandpassRegime ? `Select ${bandpassRegime} unit` : '← Select Bandpass Type'}</option>
+                    <!-- Energy Regime / Bandpass -->
+                    <div class="collapse collapse-arrow join-item border-base-300 border">
+                        <input
+                            type="radio"
+                            name="my-accordion"
+                            value="energy-regime"
+                            on:click={() => {
+                                deselectAccordion('energy-regime');
+                            }}
+                            bind:group={selectedFilter}
+                            checked={false}
+                        />
+                        <div class="collapse-title font-semibold {bandpassRegime || bandpassMin || bandpassMax ? 'text-nasa-blue-shade' : ''}">
+                            <h3 class="text-lg mb-2">Energy Regime / Bandpass</h3>
+                            {#if selectedFilter != 'energy-regime'}
+                                <div class="opacity-60">
                                     {#if bandpassRegime}
-                                        {#key bandpassRegime}
-                                            {#each bandpasssUnitOptions[bandpassRegime] as option}
-                                                <option value={option}>{option}</option>
-                                            {/each}
-                                        {/key}
+                                        <span class="font-thin">Bandpass: </span><span>{bandpassRegime}</span>
                                     {/if}
-                                </select>
-                            </div>
+                                    {#if bandpassMin && bandpassMax}
+                                        <span>{bandpassMin} - {bandpassMax}</span>
+                                    {:else if bandpassMax}
+                                        <span>{'< ' + bandpassMax}</span>
+                                    {:else if bandpassMin}
+                                        <span>{'> ' + bandpassMin}</span>
+                                    {/if}
 
-                            <label class="input text-lg w-full" for="badpass-min-input">
-                                Min:
-                                <input
-                                    id="badpass-min-input"
-                                    type="number"
-                                    inputmode="numeric"
-                                    bind:value={bandpassMin}
-                                    placeholder="Bandpass min"
-                                    class="input validator input-bordered text-lg w-full"
-                                    min="0"
-                                />
-                                {#if bandpassType}
-                                    <span class="label">{bandpassType}</span>
-                                {/if}
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be decimal greater than 0</p>
-                            </label>
-
-                            <label class="input text-lg w-full" for="bandpass-max-input">
-                                Max:
-                                <input
-                                    id="bandpass-max-input"
-                                    type="number"
-                                    inputmode="numeric"
-                                    bind:value={bandpassMax}
-                                    placeholder="Bandpass max"
-                                    class="input validator input-bordered text-lg w-full"
-                                    min="0"
-                                />
-                                {#if bandpassType}
-                                    <span class="label">{bandpassType}</span>
-                                {/if}
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be decimal greater than 0</p>
-                            </label>
+                                    {#if bandpassType}
+                                        <span>{bandpassType}</span>
+                                    {/if}
+                                </div>
+                            {/if}
                         </div>
-                    </div>
-                </div>
+                        <div class="collapse-content">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="label text-lg" for="bandpass-type-input">
+                                        <span class="label-text">Bandpass Regime</span>
+                                    </label>
+                                    <select
+                                        id="bandpass-type-input"
+                                        bind:value={bandpassRegime}
+                                        on:change={() => (bandpassType = '')}
+                                        class="select select-bordered text-lg w-full"
+                                    >
+                                        <option value="">Select Regime</option>
+                                        {#each bandpassTypeOptions as option}
+                                            <option value={option}>{option}</option>
+                                        {/each}
+                                    </select>
+                                </div>
 
-                <!-- Depth -->
-                <div class="collapse collapse-arrow join-item border-base-300 border">
-                    <input
-                        type="radio"
-                        name="my-accordion"
-                        value="depth"
-                        on:click={() => {
-                            deselectAccordion('depth');
-                        }}
-                        bind:group={selectedFilter}
-                        checked={false}
-                    />
-                    <div class="collapse-title font-semibold {depthUnit || depthValue ? 'text-nasa-blue-shade' : ''}">
-                        <h3 class="text-lg mb-2">Depth</h3>
-                        {#if selectedFilter != 'depth'}
-                            <div class="opacity-60">
-                                {#if depthValue}
-                                    <span>{depthValue}</span>
-                                {/if}
-                                {#if depthUnit}
-                                    <span>{depthUnit}</span>
-                                {/if}
-                            </div>
-                        {/if}
-                    </div>
-                    <div class="collapse-content">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                            <div class="form-control">
-                                <label class="label text-lg" for="depth-unit-input">
-                                    <span class="label-text">Depth Unit</span>
-                                </label>
-                                <select id="depth-unit-input" bind:value={depthUnit} class="select select-bordered text-lg w-full">
-                                    <option value="">Select type</option>
-                                    {#each depthUnitOptions as option}
-                                        <option value={option}>{option}</option>
-                                    {/each}
-                                </select>
-                            </div>
+                                <div>
+                                    <label class="label text-lg" for="bandpass-type-input">
+                                        <span class="label-text">{bandpassRegime ? bandpassRegime : 'Bandpass'} Type</span>
+                                    </label>
+                                    <select
+                                        id="bandpass-type-input"
+                                        bind:value={bandpassType}
+                                        class="select select-bordered text-lg {bandpassRegime ? '' : 'opacity-50'} w-full"
+                                    >
+                                        <option class="opacity-50" value=""
+                                            >{bandpassRegime ? `Select ${bandpassRegime} unit` : '← Select Bandpass Type'}</option
+                                        >
+                                        {#if bandpassRegime}
+                                            {#key bandpassRegime}
+                                                {#each bandpasssUnitOptions[bandpassRegime] as option}
+                                                    <option value={option}>{option}</option>
+                                                {/each}
+                                            {/key}
+                                        {/if}
+                                    </select>
+                                </div>
 
-                            <div class="self-end">
-                                <label class="input text-lg w-full">
-                                    Depth Value:
+                                <label class="input text-lg w-full" for="badpass-min-input">
+                                    Min:
                                     <input
+                                        id="badpass-min-input"
                                         type="number"
                                         inputmode="numeric"
-                                        pattern="\d*"
-                                        bind:value={depthValue}
-                                        placeholder="Depth Value"
+                                        bind:value={bandpassMin}
+                                        placeholder="Bandpass min"
                                         class="input validator input-bordered text-lg w-full"
+                                        min="0"
                                     />
-                                    {#if depthUnit}
-                                        <span class="label">{depthUnit}</span>
+                                    {#if bandpassType}
+                                        <span class="label">{bandpassType}</span>
                                     {/if}
-                                    <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
+                                    <p class="hidden validator-hint mt-18" style="position: absolute;">Must be decimal greater than 0</p>
                                 </label>
-                                <div class="flex items-center"></div>
+
+                                <label class="input text-lg w-full" for="bandpass-max-input">
+                                    Max:
+                                    <input
+                                        id="bandpass-max-input"
+                                        type="number"
+                                        inputmode="numeric"
+                                        bind:value={bandpassMax}
+                                        placeholder="Bandpass max"
+                                        class="input validator input-bordered text-lg w-full"
+                                        min="0"
+                                    />
+                                    {#if bandpassType}
+                                        <span class="label">{bandpassType}</span>
+                                    {/if}
+                                    <p class="hidden validator-hint mt-18" style="position: absolute;">Must be decimal greater than 0</p>
+                                </label>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Filter by Schedule -->
-                <div class="collapse collapse-arrow join-item border-base-300 border">
-                    <input
-                        type="radio"
-                        name="my-accordion"
-                        value="filter-schedule"
-                        on:click={() => {
-                            deselectAccordion('filter-schedule');
-                        }}
-                        bind:group={selectedFilter}
-                        checked={false}
-                    />
-                    <div class="collapse-title font-semibold {scheduleIds.length ? 'text-nasa-blue-shade' : ''}">
-                        <h3 class="text-lg mb-2">Filter By Schedule IDs</h3>
-                        {#if selectedFilter != 'filter-schedule'}
-                            <div class="opacity-60">
-                                {#if scheduleIds.length}
-                                    <span>{scheduleIds.length} </span><span class="font-thin">Schedule ID{scheduleIds.length > 1 ? 's' : ''} selected</span>
-                                {/if}
+                    <!-- Depth -->
+                    <div class="collapse collapse-arrow join-item border-base-300 border">
+                        <input
+                            type="radio"
+                            name="my-accordion"
+                            value="depth"
+                            on:click={() => {
+                                deselectAccordion('depth');
+                            }}
+                            bind:group={selectedFilter}
+                            checked={false}
+                        />
+                        <div class="collapse-title font-semibold {depthUnit || depthValue ? 'text-nasa-blue-shade' : ''}">
+                            <h3 class="text-lg mb-2">Depth</h3>
+                            {#if selectedFilter != 'depth'}
+                                <div class="opacity-60">
+                                    {#if depthValue}
+                                        <span>{depthValue}</span>
+                                    {/if}
+                                    {#if depthUnit}
+                                        <span>{depthUnit}</span>
+                                    {/if}
+                                </div>
+                            {/if}
+                        </div>
+                        <div class="collapse-content">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+                                <div class="form-control">
+                                    <label class="label text-lg" for="depth-unit-input">
+                                        <span class="label-text">Depth Unit</span>
+                                    </label>
+                                    <select id="depth-unit-input" bind:value={depthUnit} class="select select-bordered text-lg w-full">
+                                        <option value="">Select type</option>
+                                        {#each depthUnitOptions as option}
+                                            <option value={option}>{option}</option>
+                                        {/each}
+                                    </select>
+                                </div>
+
+                                <div class="self-end">
+                                    <label class="input text-lg w-full">
+                                        Depth Value:
+                                        <input
+                                            type="number"
+                                            inputmode="numeric"
+                                            pattern="\d*"
+                                            bind:value={depthValue}
+                                            placeholder="Depth Value"
+                                            class="input validator input-bordered text-lg w-full"
+                                        />
+                                        {#if depthUnit}
+                                            <span class="label">{depthUnit}</span>
+                                        {/if}
+                                        <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
+                                    </label>
+                                    <div class="flex items-center"></div>
+                                </div>
                             </div>
-                        {/if}
+                        </div>
                     </div>
-                    <div class="collapse-content bg-carbon-05">
-                        <div class="grid grid-cols-1 gap-2 mb-4">
-                            <label class="input text-lg pe-0 w-full" for="schedule-input">
-                                Schedule ID:
-                                <input
-                                    id="schedule-input"
-                                    bind:value={scheduleId}
-                                    on:keydown={(event) => handleAddScheduleEnterKey(event, scheduleId)}
-                                    class="input validator input-bordered text-lg w-full"
-                                    type="text"
-                                    placeholder="UUID"
-                                />
-                                <button id="schedule-add" on:click={() => handleAddSchedule(scheduleId)} class="btn btn-info text-lg">Add Schedule ID</button>
-                            </label>
-                            <p class="self-center pe-3 text-error {scheduleIdError ? '' : 'hidden'}">{scheduleIdError}</p>
-                            {#key scheduleIds.length}
-                                {#if scheduleIds.length}
-                                    <div class="overflow-x-auto overflow-y-auto min-h-20 max-h-38">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>{scheduleIds.length} Schedule ID{scheduleIds.length > 1 ? 's' : ''}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="mx-4">
-                                                {#each scheduleIds as id}
-                                                    <tr class="flex w-full">
-                                                        <span class="w-full self-center">{id}</span>
-                                                        <button class="btn btn-sm text-sm align-end" on:click={() => handleRemoveSchedule(id)}>Remove</button>
+
+                    <!-- Filter by Schedule -->
+                    <div class="collapse collapse-arrow join-item border-base-300 border">
+                        <input
+                            type="radio"
+                            name="my-accordion"
+                            value="filter-schedule"
+                            on:click={() => {
+                                deselectAccordion('filter-schedule');
+                            }}
+                            bind:group={selectedFilter}
+                            checked={false}
+                        />
+                        <div class="collapse-title font-semibold {scheduleIds.length ? 'text-nasa-blue-shade' : ''}">
+                            <h3 class="text-lg mb-2">Filter By Schedule IDs</h3>
+                            {#if selectedFilter != 'filter-schedule'}
+                                <div class="opacity-60">
+                                    {#if scheduleIds.length}
+                                        <span>{scheduleIds.length} </span><span class="font-thin">Schedule ID{scheduleIds.length > 1 ? 's' : ''} selected</span>
+                                    {/if}
+                                </div>
+                            {/if}
+                        </div>
+                        <div class="collapse-content bg-carbon-05">
+                            <div class="grid grid-cols-1 gap-2 mb-4">
+                                <label class="input text-lg pe-0 w-full" for="schedule-input">
+                                    Schedule ID:
+                                    <input
+                                        id="schedule-input"
+                                        bind:value={scheduleId}
+                                        on:keydown={(event) => handleAddScheduleEnterKey(event, scheduleId)}
+                                        class="input validator input-bordered text-lg w-full"
+                                        type="text"
+                                        placeholder="UUID"
+                                    />
+                                    <button id="schedule-add" on:click={() => handleAddSchedule(scheduleId)} class="btn btn-info text-lg"
+                                        >Add Schedule ID</button
+                                    >
+                                </label>
+                                <p class="self-center pe-3 text-error {scheduleIdError ? '' : 'hidden'}">{scheduleIdError}</p>
+                                {#key scheduleIds.length}
+                                    {#if scheduleIds.length}
+                                        <div class="overflow-x-auto overflow-y-auto min-h-20 max-h-38">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{scheduleIds.length} Schedule ID{scheduleIds.length > 1 ? 's' : ''}</th>
                                                     </tr>
-                                                {/each}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                {/if}
-                            {/key}
+                                                </thead>
+                                                <tbody class="mx-4">
+                                                    {#each scheduleIds as id}
+                                                        <tr class="flex w-full">
+                                                            <span class="w-full self-center">{id}</span>
+                                                            <button class="btn btn-sm text-sm align-end" on:click={() => handleRemoveSchedule(id)}
+                                                                >Remove</button
+                                                            >
+                                                        </tr>
+                                                    {/each}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {/if}
+                                {/key}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="flex justify-end mt-4">
-                <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
-                <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>
+                <div class="flex justify-end mt-4">
+                    <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
+                    <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>
+                </div>
             </div>
-        </div>
-    </Section>
+        </div></Section
+    >
     <Section title="Observations (Total: {totalCount})" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">

@@ -11,7 +11,6 @@
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
-    import type { VisibilityWindow } from '$lib/types/across/VisibilityWindow';
     import type { JointVisibilityPageData } from './+page.server';
 
     beforeNavigate(() => {

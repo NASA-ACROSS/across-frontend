@@ -107,6 +107,17 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
         const userCookie = locals?.user as UserCredentialsCookie;
         telescopes = await getTelescopes(userCookie, cookies);
 
+        // early return if no query parameters provided - prevents unnecessary API call and allows page to load with just telescopes for selection
+        if (apiParams.toString() === '') {
+            return {
+                telescopes: telescopes,
+                joint_visibility_windows: [],
+                visibility_window_instrument_ids: [],
+                observatory_visibility_windows: {},
+                error: '',
+            };
+        }
+
         // Fetch visibility windows from API
         const response = await fetch(apiUrl);
 

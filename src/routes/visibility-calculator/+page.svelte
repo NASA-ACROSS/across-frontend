@@ -30,8 +30,6 @@
     $: visibility_window_instrument_ids = data.visibility_window_instrument_ids;
     $: observatory_visibility_windows = data.observatory_visibility_windows;
 
-    $: currentSearchParams = new URLSearchParams(page.url.searchParams);
-
     // Observatory/Telescope/Instrument selector state
     $: observatories = telescopes
         .map((telescope) => telescope.observatory)
@@ -68,7 +66,7 @@
     let timeEnd = '';
 
     // Optional parameters
-    let hires = false;
+    let hi_res = false;
     let min_visibility_duration = '';
 
     // Populate inputs from URL parameters
@@ -95,7 +93,7 @@
         }
 
         // Populate optional parameters
-        if (urlParams.has('hires')) hires = urlParams.get('hires') === 'true';
+        if (urlParams.has('hi_res')) hi_res = urlParams.get('hi_res') === 'true';
         if (urlParams.has('min_visibility_duration')) min_visibility_duration = urlParams.get('min_visibility_duration') || '';
 
         // Populate instrument selection
@@ -127,12 +125,10 @@
         if (dateEnd) params.append('date_range_end', `${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
         if (ra) params.append('ra', ra);
         if (dec) params.append('dec', dec);
-        if (hires) params.append('hires', 'true');
+        if (hi_res) params.append('hi_res', 'true');
         if (min_visibility_duration) params.append('min_visibility_duration', min_visibility_duration);
 
         if (selectedInstruments.length) params.append('instrument_ids', selectedInstruments.map((inst) => inst.id).join(','));
-
-        currentSearchParams = params;
 
         await goto(`?${params.toString()}`, { noScroll: true, invalidateAll: true });
     }
@@ -147,7 +143,7 @@
         timeBegin = '';
         dateEnd = '';
         timeEnd = '';
-        hires = false;
+        hi_res = false;
         min_visibility_duration = '';
 
         await calculateVisibility();
@@ -203,7 +199,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="form-control">
                         <label class="label cursor-pointer justify-start gap-4">
-                            <input id="hires-input" type="checkbox" bind:checked={hires} class="checkbox checkbox-primary" />
+                            <input id="hi_res-input" type="checkbox" bind:checked={hi_res} class="checkbox checkbox-primary" />
                             <span class="label-text text-lg">High Resolution</span>
                         </label>
                     </div>

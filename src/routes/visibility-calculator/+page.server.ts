@@ -38,25 +38,29 @@ const isKnownError = (detail: unknown): string => {
     // Convert detail to string for pattern matching
     let detailStr: string;
 
-    // If detail is an array, take the first element and stringify it. If it's a string, use it directly. Otherwise, stringify the whole detail.
-    if (Array.isArray(detail) && detail.length > 0) {
-        // If array, take first element and stringify
-        detailStr = JSON.stringify(detail[0]);
-    } else if (typeof detail === 'string') {
-        detailStr = detail;
-    } else {
-        detailStr = JSON.stringify(detail);
-    }
-
-    // Check if any known error key is contained in the detail string
-    for (const [key, value] of Object.entries(knownErrors)) {
-        if (detailStr.includes(key)) {
-            return value;
+    const earlyReturnMessage = 'There was an error processing the request. Please contact support with your search parameters to resolve this issue.';
+    try {
+        // If detail is an array, take the first element and stringify it. If it's a string, use it directly. Otherwise, stringify the whole detail.
+        if (Array.isArray(detail) && detail.length > 0) {
+            // If array, take first element and stringify
+            detailStr = JSON.stringify(detail[0]);
+        } else if (typeof detail === 'string') {
+            detailStr = detail;
+        } else {
+            detailStr = JSON.stringify(detail);
         }
-    }
 
-    // return generic message if no known error patterns matched
-    return 'There was an error processing the request. Please contact support with your search parameters to resolve this issue.';
+        // Check if any known error key is contained in the detail string
+        for (const [key, value] of Object.entries(knownErrors)) {
+            if (detailStr.includes(key)) {
+                return value;
+            }
+        }
+    } catch (err) {
+        return earlyReturnMessage;
+    }
+    // If no known error patterns matched, return a generic error message
+    return earlyReturnMessage;
 };
 
 export type JointVisibilityPageData = {
@@ -98,20 +102,10 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
 
     apiUrl += apiParams.toString();
 
+    let telescopes: Telescope[] = [];
     try {
         const userCookie = locals?.user as UserCredentialsCookie;
-        const telescopes: Telescope[] = await getTelescopes(userCookie, cookies);
-
-        // early return if no query parameters provided - prevents unnecessary API call and allows page to load with just telescopes for selection
-        if (apiParams.toString() === '') {
-            return {
-                telescopes: telescopes,
-                joint_visibility_windows: [],
-                visibility_window_instrument_ids: [],
-                observatory_visibility_windows: {},
-                error: '',
-            };
-        }
+        telescopes = await getTelescopes(userCookie, cookies);
 
         // Fetch visibility windows from API
         const response = await fetch(apiUrl);
@@ -141,12 +135,12 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
     } catch (err) {
         console.error('Error loading visibility calculator data:', err);
         return {
-            telescopes: [] as Telescope[],
+            telescopes: telescopes,
             joint_visibility_windows: [],
             visibility_window_instrument_ids: [],
             observatory_visibility_windows: {},
             queryParams: {} as JointVisibilityQueryParams,
-            error: 'Failed to load telescope data',
+            error: 'Error loading visibility calculator data. Please contact support with your search parameters to resolve this issue.',
         };
     }
 }

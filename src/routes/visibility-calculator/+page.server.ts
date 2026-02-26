@@ -4,6 +4,7 @@ import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { resolveObject } from '$lib/utils/across/resolveObject';
 import type { RequestEvent } from './$types';
 import { CONFIG } from '../../config/config';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 
 type ErrorResponse = {
     detail: unknown;
@@ -58,7 +59,16 @@ const isKnownError = (detail: unknown): string => {
     return 'There was an error processing the request. Please contact support with your search parameters to resolve this issue.';
 };
 
-export async function load({ url, locals, cookies }: RequestEvent) {
+export type JointVisibilityPageData = {
+    queryParams?: JointVisibilityQueryParams;
+    telescopes: Telescope[];
+    joint_visibility_windows: JointVisibilityWindowResponse['visibility_windows'];
+    visibility_window_instrument_ids: JointVisibilityWindowResponse['instrument_ids'];
+    observatory_visibility_windows: JointVisibilityWindowResponse['observatory_visibility_windows'];
+    error?: string;
+};
+
+export async function load({ url, locals, cookies }: RequestEvent): Promise<JointVisibilityPageData> {
     const queryParams: JointVisibilityQueryParams = {} as JointVisibilityQueryParams;
 
     if (url.searchParams.has('date_range_begin')) queryParams.date_range_begin = url.searchParams.get('date_range_begin');
@@ -89,7 +99,8 @@ export async function load({ url, locals, cookies }: RequestEvent) {
     apiUrl += apiParams.toString();
 
     try {
-        const telescopes: Telescope[] = await getTelescopes(locals, cookies);
+        const userCookie = locals?.user as UserCredentialsCookie;
+        const telescopes: Telescope[] = await getTelescopes(userCookie, cookies);
 
         // early return if no query parameters provided - prevents unnecessary API call and allows page to load with just telescopes for selection
         if (apiParams.toString() === '') {
@@ -98,6 +109,7 @@ export async function load({ url, locals, cookies }: RequestEvent) {
                 joint_visibility_windows: [],
                 visibility_window_instrument_ids: [],
                 observatory_visibility_windows: {},
+                error: '',
             };
         }
 
@@ -130,6 +142,10 @@ export async function load({ url, locals, cookies }: RequestEvent) {
         console.error('Error loading visibility calculator data:', err);
         return {
             telescopes: [] as Telescope[],
+            joint_visibility_windows: [],
+            visibility_window_instrument_ids: [],
+            observatory_visibility_windows: {},
+            queryParams: {} as JointVisibilityQueryParams,
             error: 'Failed to load telescope data',
         };
     }

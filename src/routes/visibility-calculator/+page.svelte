@@ -4,6 +4,7 @@
     import CoordinateSearch from '$lib/components/CoordinateSearch.svelte';
     import DateRangeInputs from '$lib/components/DateRangeInputs.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
+    import { beforeNavigate, afterNavigate } from '$app/navigation';
     import { goto } from '$app/navigation';
     import { page } from '$app/state';
     import { onMount } from 'svelte';
@@ -11,14 +12,24 @@
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
     import type { VisibilityWindow } from '$lib/types/across/VisibilityWindow';
+    import type { JointVisibilityPageData } from './+page.server';
 
-    export let data;
+    beforeNavigate(() => {
+        isLoading = true;
+    });
 
-    $: error = data.error || '';
-    $: telescopes = data.telescopes || [];
-    $: joint_visibility_windows = data.joint_visibility_windows || [];
-    $: visibility_window_instrument_ids = data.visibility_window_instrument_ids || [];
-    $: observatory_visibility_windows = data.observatory_visibility_windows || {};
+    afterNavigate(() => {
+        isLoading = false;
+    });
+
+    export let data: JointVisibilityPageData;
+
+    $: error = data.error;
+    $: telescopes = data.telescopes;
+    $: joint_visibility_windows = data.joint_visibility_windows;
+    $: visibility_window_instrument_ids = data.visibility_window_instrument_ids;
+    $: observatory_visibility_windows = data.observatory_visibility_windows;
+
     $: currentSearchParams = new URLSearchParams(page.url.searchParams);
 
     // Observatory/Telescope/Instrument selector state
@@ -39,6 +50,8 @@
         },
         {} as Record<string, string>
     );
+
+    let isLoading = false;
 
     let selectedObservatories: TelescopeObservatory[] = [];
     let selectedTelescopes: Telescope[] = [];
@@ -214,8 +227,17 @@
             </div>
 
             <div class="flex justify-end mt-4">
-                <p class="self-center pe-3 text-error">{error}</p>
-                <button class="btn btn-info text-lg" on:click={async () => await calculateVisibility()}> Calculate Visibility </button>
+                {#if error}
+                    <p class="self-center pe-3 text-error">{error}</p>
+                {/if}
+                {#if isLoading}
+                    <div class="self-center spinner-border spinner-border-sm text-primary">
+                        <span class="loading loading-spinner loading-sm"></span>
+                    </div>
+                {/if}
+                <button class="btn btn-info text-lg {isLoading ? 'cursor-wait' : ''}" on:click={async () => await calculateVisibility()} disabled={isLoading}>
+                    Calculate Visibility
+                </button>
             </div>
         </div>
     </Section>

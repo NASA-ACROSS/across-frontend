@@ -7,6 +7,7 @@ import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import type { RequestEvent } from './$types.js';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
 import { resolve } from '$app/paths';
+import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute.js';
 
 // rate limit is defined as [number, unit]
 // see documentation for more info
@@ -19,6 +20,8 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export function load({ locals }: RequestEvent) {
+    localOnlyRoute();
+
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is logged in
     if (userCookie) {

@@ -6,7 +6,7 @@ import type { RequestEvent } from './$types';
 import { CONFIG } from '../../config/config';
 
 type ErrorResponse = {
-    detail: string;
+    detail: unknown;
 };
 
 type JointVisibilityQueryParams = {
@@ -17,6 +17,45 @@ type JointVisibilityQueryParams = {
     dec?: string | number | null;
     min_visibility_duration?: string | number | null;
     hi_res?: boolean | null;
+};
+
+const knownErrors: Record<string, string> = {
+    'could be used to calculate an ephemeris for observatory':
+        'Invalid Ephemeris Parameters: please contact support with your search parameters to resolve this issue.',
+    'type":"missing","loc":["query","ra"],': 'RA and DEC are required',
+    'type":"missing","loc":["query","dec"],': 'RA and DEC are required',
+    'type":"less_than_equal","loc":["query","ra"]': 'RA must be between 0° and 360°',
+    'type":"less_than_equal","loc":["query","dec"]': 'DEC must be between -90° and 90°',
+    'type":"greater_than_equal","loc":["query","ra"]': 'RA must be between 0° and 360°',
+    'type":"greater_than_equal","loc":["query","dec"]': 'DEC must be between -90° and 90°',
+    '"type":"missing","loc":["query","date_range_begin"]': 'Date Range Begin and End are required',
+    '"type":"missing","loc":["query","date_range_end"]': 'Date Range Begin and End are required',
+    '"type":"missing","loc":["query","instrument_ids"]': 'At least one instrument must be selected',
+};
+
+const isKnownError = (detail: unknown): string => {
+    // Convert detail to string for pattern matching
+    let detailStr: string;
+
+    // If detail is an array, take the first element and stringify it. If it's a string, use it directly. Otherwise, stringify the whole detail.
+    if (Array.isArray(detail) && detail.length > 0) {
+        // If array, take first element and stringify
+        detailStr = JSON.stringify(detail[0]);
+    } else if (typeof detail === 'string') {
+        detailStr = detail;
+    } else {
+        detailStr = JSON.stringify(detail);
+    }
+
+    // Check if any known error key is contained in the detail string
+    for (const [key, value] of Object.entries(knownErrors)) {
+        if (detailStr.includes(key)) {
+            return value;
+        }
+    }
+
+    // return generic message if no known error patterns matched
+    return 'There was an error processing the request. Please contact support with your search parameters to resolve this issue.';
 };
 
 export async function load({ url, locals, cookies }: RequestEvent) {
@@ -68,15 +107,14 @@ export async function load({ url, locals, cookies }: RequestEvent) {
         if (!response.ok) {
             console.log(`API responded with status: ${response.status} for request URL ${apiUrl}`);
             const text = (await response.json()) as ErrorResponse;
-            console.log(`API error detail: ${text.detail}`);
-            // const knownError = isKnownError(text.detail);
+            const detailText = isKnownError(text.detail);
             return {
                 telescopes,
                 joint_visibility_windows: [],
                 visibility_window_instrument_ids: [],
                 observatory_visibility_windows: {},
                 queryParams: {} as JointVisibilityQueryParams,
-                error: text.detail,
+                error: detailText,
             };
         }
 
@@ -91,10 +129,11 @@ export async function load({ url, locals, cookies }: RequestEvent) {
     } catch (err) {
         console.error('Error loading visibility calculator data:', err);
         return {
-            telescopes: [],
+            telescopes: [] as Telescope[],
             error: 'Failed to load telescope data',
         };
     }
 }
 
+// This line is needed for the object name resolver component.
 export const actions = { resolveObject };

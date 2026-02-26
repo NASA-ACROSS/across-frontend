@@ -14,7 +14,7 @@
 
     export let data;
 
-    $: error = data.error || null;
+    $: error = data.error || '';
     $: telescopes = data.telescopes || [];
     $: joint_visibility_windows = data.joint_visibility_windows || [];
     $: visibility_window_instrument_ids = data.visibility_window_instrument_ids || [];
@@ -57,10 +57,6 @@
     // Optional parameters
     let hires = false;
     let min_visibility_duration = '';
-
-    // Validation
-    $: isValid = selectedInstruments.length > 0 && ra !== '' && dec !== '' && dateBegin !== '' && dateEnd !== '';
-    let localError = '';
 
     // Populate inputs from URL parameters
     onMount(() => {
@@ -112,22 +108,6 @@
     });
 
     async function calculateVisibility() {
-        // Validate required fields
-        if (!isValid) {
-            localError = 'Required fields: At least one instrument, RA, DEC, Begin Date, and End Date';
-            return;
-        }
-
-        // Validate date range
-        const beginDateTime = new Date(`${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`);
-        const endDateTime = new Date(`${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
-
-        if (beginDateTime >= endDateTime) {
-            localError = 'Begin Date/Time must be before End Date/Time';
-            return;
-        }
-
-        localError = '';
         const params = new URLSearchParams();
 
         if (dateBegin) params.append('date_range_begin', `${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`);
@@ -141,7 +121,6 @@
 
         currentSearchParams = params;
 
-        console.log('Navigating with search params:', params.toString());
         await goto(`?${params.toString()}`, { noScroll: true, invalidateAll: true });
     }
 
@@ -163,10 +142,6 @@
 
     function formatConstraintReason(reason: string, observatoryId: string, observatoryShortNames: Record<string, string>): string {
         const shortName = observatoryShortNames[observatoryId] || 'Observatory';
-        if (!observatoryShortNames[observatoryId]) {
-            // THIS BREAKS BECAUSE FOR SOME REASON THE SERVER PUTS THE TELESCOPE ID HERE INSTEAD OF THE OBSERVATORY ID. LOGGING TO INVESTIGATE.
-            console.log('Observatory ID not found:', observatoryId, 'Available keys:', Object.keys(observatoryShortNames), 'Dict:', observatoryShortNames);
-        }
         return reason.replace(/Observatory/g, shortName);
     }
 </script>
@@ -239,54 +214,52 @@
             </div>
 
             <div class="flex justify-end mt-4">
-                <p class="self-center pe-3 text-error">{error || localError}</p>
+                <p class="self-center pe-3 text-error">{error}</p>
                 <button class="btn btn-info text-lg" on:click={async () => await calculateVisibility()}> Calculate Visibility </button>
             </div>
         </div>
     </Section>
+    <Section title="Joint Visibility Windows (Total: {joint_visibility_windows.length})" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
+        <div class="overflow-x-auto">
+            <table class="table table-pin-rows table-zebra w-full">
+                <thead>
+                    <tr class="bg-primary text-primary-content">
+                        <th class="text-center">Window #</th>
+                        <th>Start Reason</th>
+                        <th>Begin</th>
+                        <th>End</th>
+                        <th>End Reason</th>
+                        <th class="text-center">Max Visibility Duration (s)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#if joint_visibility_windows.length === 0}
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                No visibility windows found for the given parameters. Please modify your selection and try again.
+                            </td>
+                        </tr>
+                    {/if}
+                    {#each joint_visibility_windows as window, index}
+                        <tr>
+                            <td class="text-center">{index + 1}</td>
+                            <td>{formatConstraintReason(window.constraint_reason.start_reason, window.window.begin.observatory_id, observatoryShortNames)}</td>
+                            <td class="text-xs">
+                                {new Date(window.window.begin.datetime).toISOString().slice(0, -5).replace('T', ' ')}
+                            </td>
+                            <td class="text-xs">
+                                {new Date(window.window.end.datetime).toISOString().slice(0, -5).replace('T', ' ')}
+                            </td>
+                            <td>{formatConstraintReason(window.constraint_reason.end_reason, window.window.end.observatory_id, observatoryShortNames)}</td>
+                            <td class="text-center">{window.max_visibility_duration.toFixed(2)}</td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+        </div>
+    </Section>
 
     {#if joint_visibility_windows.length > 0}
-        <Section title="Joint Visibility Windows" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
-            <div class="overflow-x-auto">
-                <table class="table table-pin-rows table-zebra w-full">
-                    <thead>
-                        <tr class="bg-primary text-primary-content">
-                            <th class="text-center">Window #</th>
-                            <th>Start Reason</th>
-                            <th>Begin</th>
-                            <th>End</th>
-                            <th>End Reason</th>
-                            <th class="text-center">Max Visibility Duration (s)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#each joint_visibility_windows as window, index}
-                            <tr>
-                                <td class="text-center">{index + 1}</td>
-                                <td
-                                    >{formatConstraintReason(
-                                        window.constraint_reason.start_reason,
-                                        window.window.begin.observatory_id,
-                                        observatoryShortNames
-                                    )}</td
-                                >
-                                <td class="text-xs">
-                                    {new Date(window.window.begin.datetime).toISOString().slice(0, -5).replace('T', ' ')}
-                                </td>
-                                <td class="text-xs">
-                                    {new Date(window.window.end.datetime).toISOString().slice(0, -5).replace('T', ' ')}
-                                </td>
-                                <td>{formatConstraintReason(window.constraint_reason.end_reason, window.window.end.observatory_id, observatoryShortNames)}</td>
-                                <td class="text-center">{window.max_visibility_duration.toFixed(2)}</td>
-                            </tr>
-                        {/each}
-                    </tbody>
-                </table>
-            </div>
-        </Section>
-    {/if}
-
-    {#if visibility_window_instrument_ids.length > 0}
         <Section title="Visibility Windows by Instrument" icon="telescope" parentContainerClasses="lg:w-full lg:px-5">
             <div class="space-y-4">
                 {#each visibility_window_instrument_ids as instrumentId}

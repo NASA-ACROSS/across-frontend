@@ -243,8 +243,8 @@
                     <tr class="bg-primary text-primary-content">
                         <th class="text-center">Window #</th>
                         <th>Start Reason</th>
-                        <th>Begin</th>
-                        <th>End</th>
+                        <th>Begin (UT)</th>
+                        <th>End (UT)</th>
                         <th>End Reason</th>
                         <th class="text-center">Max Visibility Duration (s)</th>
                     </tr>
@@ -296,8 +296,8 @@
                                             <tr class="bg-primary text-primary-content">
                                                 <th class="text-center">Window #</th>
                                                 <th>Start Reason</th>
-                                                <th>Begin</th>
-                                                <th>End</th>
+                                                <th>Begin (UT)</th>
+                                                <th>End (UT)</th>
                                                 <th>End Reason</th>
                                                 <th class="text-center">Max Visibility Duration (s)</th>
                                             </tr>

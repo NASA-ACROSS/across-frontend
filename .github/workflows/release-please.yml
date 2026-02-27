@@ -4,8 +4,6 @@ on:
         workflows: [Main]
         types:
             - completed
-    push:
-        branches: ['main']
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}

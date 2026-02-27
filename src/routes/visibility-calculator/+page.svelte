@@ -6,8 +6,8 @@
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
     import { beforeNavigate, afterNavigate } from '$app/navigation';
     import { goto } from '$app/navigation';
-    import { page } from '$app/state';
     import { onMount } from 'svelte';
+    import { prettyUTC } from '$lib/utils/datetime/prettyUTC';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
@@ -236,7 +236,7 @@
             </div>
         </div>
     </Section>
-    <Section title="Joint Visibility Windows (Total: {joint_visibility_windows.length})" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
+    <Section title="Joint Visibility Windows (Total: {joint_visibility_windows.length})" icon="globe" parentContainerClasses="w-full lg:px-5">
         <div class="overflow-x-auto">
             <table class="table table-pin-rows table-zebra w-full">
                 <thead>
@@ -262,10 +262,10 @@
                             <td class="text-center">{index + 1}</td>
                             <td>{formatConstraintReason(window.constraint_reason.start_reason, window.window.begin.observatory_id, observatoryShortNames)}</td>
                             <td class="text-xs">
-                                {new Date(window.window.begin.datetime).toISOString().slice(0, -5).replace('T', ' ')}
+                                {prettyUTC(window.window.begin.datetime)}
                             </td>
                             <td class="text-xs">
-                                {new Date(window.window.end.datetime).toISOString().slice(0, -5).replace('T', ' ')}
+                                {prettyUTC(window.window.end.datetime)}
                             </td>
                             <td>{formatConstraintReason(window.constraint_reason.end_reason, window.window.end.observatory_id, observatoryShortNames)}</td>
                             <td class="text-center">{window.max_visibility_duration.toFixed(2)}</td>
@@ -277,7 +277,7 @@
     </Section>
 
     {#if joint_visibility_windows.length > 0}
-        <Section title="Visibility Windows by Instrument" icon="telescope" parentContainerClasses="lg:w-full lg:px-5">
+        <Section title="Visibility Windows by Instrument" icon="telescope" parentContainerClasses="w-full lg:px-5">
             <div class="space-y-4">
                 {#each visibility_window_instrument_ids as instrumentId}
                     {@const instrument = instruments.find((inst) => inst.id === instrumentId)}
@@ -314,10 +314,10 @@
                                                         )}</td
                                                     >
                                                     <td class="text-xs">
-                                                        {new Date(window.window.begin.datetime).toISOString().slice(0, -5).replace('T', ' ')}
+                                                        {prettyUTC(window.window.begin.datetime)}
                                                     </td>
                                                     <td class="text-xs">
-                                                        {new Date(window.window.end.datetime).toISOString().slice(0, -5).replace('T', ' ')}
+                                                        {prettyUTC(window.window.end.datetime)}
                                                     </td>
                                                     <td
                                                         >{formatConstraintReason(

@@ -7,7 +7,7 @@ export const prettyUTC = (time: string | undefined) => {
 
     // Check if milliseconds start with a digit > 5 to round up
     const millisecondsStr = dt.millisecond.toString();
-    if (millisecondsStr.charAt(0) > '5') {
+    if (millisecondsStr.charAt(0) > '4') {
         dt = dt.plus({ seconds: 1 }).set({ millisecond: 0 });
     }
 

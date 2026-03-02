@@ -799,14 +799,13 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="flex justify-end mt-4">
-                    <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
-                    <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>
-                </div>
             </div>
-        </div></Section
-    >
+            <div class="flex justify-end mt-4">
+                <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
+                <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>
+            </div>
+        </div>
+    </Section>
     <Section title="Observations (Total: {totalCount})" icon="globe" parentContainerClasses="lg:w-full lg:px-5">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">

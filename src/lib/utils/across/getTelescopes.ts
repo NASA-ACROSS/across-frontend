@@ -4,7 +4,12 @@ import { CONFIG } from '../../../config/config';
 import { type Cookies } from '@sveltejs/kit';
 import type { Telescope } from '$lib/types/across/Telescope';
 
-export const getTelescopes = async (userCookie: UserCredentialsCookie, cookies: Cookies) => {
+type GetTelescopesParams = {
+    id?: string;
+    name?: string;
+};
+
+export const getTelescopes = async (userCookie: UserCredentialsCookie, cookies: Cookies, params?: GetTelescopesParams) => {
     let accessToken;
     if (userCookie) {
         const userCredentials = new UserCredentials(userCookie);
@@ -23,9 +28,26 @@ export const getTelescopes = async (userCookie: UserCredentialsCookie, cookies: 
         options.headers = headers;
     }
 
+    const apiUrl = `${CONFIG.API_URL}/telescope/`;
+    let requestUrl = apiUrl;
+
+    if (params?.id) {
+        requestUrl = `${apiUrl}${params.id}`;
+    } else if (params) {
+        const apiParams = new URLSearchParams();
+        // Add all query parameters to API request
+        Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined) {
+                apiParams.append(key, String(value));
+            }
+        });
+
+        requestUrl = `${apiUrl}?${apiParams.toString()}`;
+    }
+
     let response;
     try {
-        response = await fetch(`${CONFIG.API_URL}/telescope/`, options);
+        response = await fetch(requestUrl, options);
     } catch (e) {
         console.error(`ERROR: catch getting telescopes at [${Date.now()}]`, JSON.stringify(e));
         throw new Error('Unexpected Error while fetching telescopes');
@@ -37,7 +59,12 @@ export const getTelescopes = async (userCookie: UserCredentialsCookie, cookies: 
         console.error(`ERROR: getting telescopes at [${Date.now()}] with status code [${response.status}]`);
     }
 
-    const telescopes = (await response.json()) as Telescope[];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    let telescopes: Telescope[] = await response.json();
+
+    if (!Array.isArray(telescopes)) {
+        telescopes = [telescopes];
+    }
 
     return telescopes;
 };

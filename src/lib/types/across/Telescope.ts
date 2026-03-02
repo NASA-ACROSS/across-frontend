@@ -1,3 +1,6 @@
+import type { TelescopeInstrument } from './TelescopeInstrument';
+import type { TelescopeObservatory } from './TelescopeObservatory';
+
 export type Telescope = {
     id: string;
     created_on: Date;
@@ -11,18 +14,6 @@ export type Telescope = {
 
 export type TelescopeDict = {
     [telescopeId: Telescope['id']]: Telescope;
-};
-
-type TelescopeInstrument = {
-    id: string;
-    name: string;
-    short_name: string;
-};
-
-type TelescopeObservatory = {
-    id: string;
-    name: string;
-    short_name: string;
 };
 
 type ScheduleCadence = {

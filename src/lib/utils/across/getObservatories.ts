@@ -4,7 +4,12 @@ import { CONFIG } from '../../../config/config';
 import { type Cookies } from '@sveltejs/kit';
 import type { Observatory } from '$lib/types/across/Observatory';
 
-export const getObservatories = async (userCookie: UserCredentialsCookie, cookies: Cookies) => {
+type GetObservatoriesParams = {
+    id?: string;
+    name?: string;
+};
+
+export const getObservatories = async (userCookie: UserCredentialsCookie, cookies: Cookies, params?: GetObservatoriesParams) => {
     let accessToken;
     if (userCookie) {
         const userCredentials = new UserCredentials(userCookie);
@@ -23,9 +28,26 @@ export const getObservatories = async (userCookie: UserCredentialsCookie, cookie
         options.headers = headers;
     }
 
+    const apiUrl = `${CONFIG.API_URL}/observatory/`;
+    let requestUrl = apiUrl;
+
+    if (params?.id) {
+        requestUrl = `${apiUrl}${params.id}`;
+    } else if (params) {
+        const apiParams = new URLSearchParams();
+        // Add all query parameters to API request
+        Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined) {
+                apiParams.append(key, String(value));
+            }
+        });
+
+        requestUrl = `${apiUrl}?${apiParams.toString()}`;
+    }
+
     let response;
     try {
-        response = await fetch(`${CONFIG.API_URL}/observatory/`, options);
+        response = await fetch(requestUrl, options);
     } catch (e) {
         console.error(`ERROR: catch getting observatories at [${Date.now()}]`, JSON.stringify(e));
         throw new Error('Unexpected Error while fetching observatories');

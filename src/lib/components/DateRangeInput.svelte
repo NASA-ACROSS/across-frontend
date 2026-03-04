@@ -38,16 +38,24 @@
     }
 
     const emitBegin = () => {
-        const nextValue = dateBegin
-            ? DateTime.fromISO(`${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`, { zone: 'utc' }).toFormat("yyyy-MM-dd'T'HH:mm:ss")
-            : '';
+        let nextValue = '';
+
+        if (dateBegin) {
+            const time = timeBegin || '00:00:00';
+            nextValue = DateTime.fromISO(`${dateBegin}T${time}`, { zone: 'utc' }).toFormat("yyyy-MM-dd'T'HH:mm:ss");
+        }
 
         lastEmittedBegin = nextValue;
         if (dateRangeBegin !== nextValue) dateRangeBegin = nextValue;
     };
 
     const emitEnd = () => {
-        const nextValue = dateEnd ? DateTime.fromISO(`${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`, { zone: 'utc' }).toFormat("yyyy-MM-dd'T'HH:mm:ss") : '';
+        let nextValue = '';
+
+        if (dateEnd) {
+            const time = timeEnd || '00:00:00';
+            nextValue = DateTime.fromISO(`${dateEnd}T${time}`, { zone: 'utc' }).toFormat("yyyy-MM-dd'T'HH:mm:ss");
+        }
 
         lastEmittedEnd = nextValue;
         if (dateRangeEnd !== nextValue) dateRangeEnd = nextValue;

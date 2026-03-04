@@ -5,7 +5,7 @@
     import { goto } from '$app/navigation';
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
-    import ObjectNameResolver from '$lib/components/ObjectNameResolver.svelte';
+    import CoordinateSearch from '$lib/components/CoordinateSearch.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
     import DateRangeInputs from '$lib/components/DateRangeInputs.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
@@ -539,57 +539,8 @@
                         {/if}
                     </div>
                     <div class="collapse-content bg-carbon-05">
-                        <!-- Object Name Resolver Component -->
-                        <ObjectNameResolver bind:ra={coneSearchRa} bind:dec={coneSearchDec} />
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
-                            <label class="input text-lg pe-0 w-full" for="ra-input">
-                                RA:
-                                <input
-                                    id="ra-input"
-                                    class="input validator input-bordered text-lg w-full"
-                                    type="number"
-                                    inputmode="decimal"
-                                    step="any"
-                                    bind:value={coneSearchRa}
-                                    placeholder="decimal° (0-359.999)"
-                                    min="0"
-                                    max="359.99999999"
-                                />
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (0 to 359.99999999)</p>
-                            </label>
-
-                            <label class="input text-lg pe-0 w-full" for="dec-input">
-                                DEC:
-                                <input
-                                    id="dec-input"
-                                    type="number"
-                                    inputmode="decimal"
-                                    step="any"
-                                    bind:value={coneSearchDec}
-                                    placeholder="decimal° (-90 to 90)"
-                                    min="-90"
-                                    max="90"
-                                    class="input validator input-bordered text-lg w-full"
-                                />
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (-90 to 90)</p>
-                            </label>
-
-                            <label class="input text-lg pe-0 w-full" for="radius-input">
-                                Radius:
-                                <input
-                                    id="radius-input"
-                                    type="number"
-                                    inputmode="decimal"
-                                    step="any"
-                                    bind:value={coneSearchRadius}
-                                    placeholder="decimal° (> 0)"
-                                    class="input validator input-bordered text-lg w-full"
-                                    min="0"
-                                />
-                                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be decimal greater than 0</p>
-                            </label>
-                        </div>
+                        <!-- Coordinate Search Component -->
+                        <CoordinateSearch bind:ra={coneSearchRa} bind:dec={coneSearchDec} bind:radius={coneSearchRadius} includeRadius={true} />
                     </div>
                 </div>
 
@@ -825,7 +776,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex justify-end mt-4">
                 <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
                 <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>

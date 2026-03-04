@@ -7,7 +7,7 @@
     import Section from '$lib/components/Section.svelte';
     import CoordinateSearch from '$lib/components/CoordinateSearch.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
-    import DateRangeInputs from '$lib/components/DateRangeInputs.svelte';
+    import DateRangeInput from '$lib/components/DateRangeInput.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
     import type { Telescope } from '$lib/types/across/Telescope';
@@ -49,8 +49,8 @@
     let status = data.queryParams?.status || '';
     let proposal = data.queryParams?.proposal || '';
     let objectName = data.queryParams?.object_name || '';
-    let date_range_begin = data.queryParams?.date_range_begin || '';
-    let date_range_end = data.queryParams?.date_range_end || '';
+    let dateRangeBegin = data.queryParams?.date_range_begin || '';
+    let dateRangeEnd = data.queryParams?.date_range_end || '';
     let bandpassMin = data.queryParams?.bandpass_min || '';
     let bandpassMax = data.queryParams?.bandpass_max || '';
     let bandpassRegime: string = data.queryParams?.bandpass_regime || '';
@@ -182,10 +182,10 @@
         selectedColumns = availableColumns.filter((col) => col.selected);
     }
 
-    $: dateBeginDisplay = date_range_begin ? date_range_begin.split('T')[0] : '';
-    $: timeBeginDisplay = date_range_begin ? (date_range_begin.split('T')[1] ?? '') : '';
-    $: dateEndDisplay = date_range_end ? date_range_end.split('T')[0] : '';
-    $: timeEndDisplay = date_range_end ? (date_range_end.split('T')[1] ?? '') : '';
+    $: dateBeginDisplay = dateRangeBegin ? dateRangeBegin.split('T')[0] : '';
+    $: timeBeginDisplay = dateRangeBegin ? (dateRangeBegin.split('T')[1] ?? '') : '';
+    $: dateEndDisplay = dateRangeEnd ? dateRangeEnd.split('T')[0] : '';
+    $: timeEndDisplay = dateRangeEnd ? (dateRangeEnd.split('T')[1] ?? '') : '';
 
     async function handleSearch() {
         const params = new URLSearchParams();
@@ -194,8 +194,8 @@
         if (status) params.append('status', status);
         if (proposal) params.append('proposal', proposal);
         if (objectName) params.append('object_name', objectName);
-        if (date_range_begin) params.append('date_range_begin', date_range_begin);
-        if (date_range_end) params.append('date_range_end', date_range_end);
+        if (dateRangeBegin) params.append('date_range_begin', dateRangeBegin);
+        if (dateRangeEnd) params.append('date_range_end', dateRangeEnd);
         if (bandpassMin?.toString()) params.append('bandpass_min', bandpassMin.toString());
         if (bandpassMax?.toString()) params.append('bandpass_max', bandpassMax.toString());
         if (bandpassType) params.append('bandpass_type', bandpassType);
@@ -346,8 +346,8 @@
         status = '';
         proposal = '';
         objectName = '';
-        date_range_begin = '';
-        date_range_end = '';
+        dateRangeBegin = '';
+        dateRangeEnd = '';
         bandpassMin = '';
         bandpassMax = '';
         bandpassRegime = '';
@@ -442,7 +442,7 @@
                     />
                     <div
                         class="collapse-title font-semibold
-                        {objectName || date_range_begin || date_range_end || status || type ? 'text-nasa-blue-shade' : ''}"
+                        {objectName || dateRangeBegin || dateRangeEnd || status || type ? 'text-nasa-blue-shade' : ''}"
                     >
                         <h3 class="text-lg mb-2">Observation Name / Date / Type</h3>
                         {#if selectedFilter != 'observation'}
@@ -507,7 +507,7 @@
                             </div>
                         </div>
 
-                        <DateRangeInputs bind:date_range_begin bind:date_range_end />
+                        <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
                     </div>
                 </div>
 

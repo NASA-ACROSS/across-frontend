@@ -1,8 +1,8 @@
 <script lang="ts">
     import { DateTime } from 'luxon';
 
-    export let date_range_begin: string = '';
-    export let date_range_end: string = '';
+    export let dateRangeBegin: string = '';
+    export let dateRangeEnd: string = '';
 
     let dateBegin: string = '';
     let timeBegin: string = '';
@@ -25,14 +25,14 @@
         };
     };
 
-    $: if (date_range_begin !== lastEmittedBegin) {
-        const { date, time } = splitDateTime(date_range_begin);
+    $: if (dateRangeBegin !== lastEmittedBegin) {
+        const { date, time } = splitDateTime(dateRangeBegin);
         if (date !== dateBegin) dateBegin = date;
         if (time !== timeBegin) timeBegin = time;
     }
 
-    $: if (date_range_end !== lastEmittedEnd) {
-        const { date, time } = splitDateTime(date_range_end);
+    $: if (dateRangeEnd !== lastEmittedEnd) {
+        const { date, time } = splitDateTime(dateRangeEnd);
         if (date !== dateEnd) dateEnd = date;
         if (time !== timeEnd) timeEnd = time;
     }
@@ -43,14 +43,14 @@
             : '';
 
         lastEmittedBegin = nextValue;
-        if (date_range_begin !== nextValue) date_range_begin = nextValue;
+        if (dateRangeBegin !== nextValue) dateRangeBegin = nextValue;
     };
 
     const emitEnd = () => {
         const nextValue = dateEnd ? DateTime.fromISO(`${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`, { zone: 'utc' }).toFormat("yyyy-MM-dd'T'HH:mm:ss") : '';
 
         lastEmittedEnd = nextValue;
-        if (date_range_end !== nextValue) date_range_end = nextValue;
+        if (dateRangeEnd !== nextValue) dateRangeEnd = nextValue;
     };
 </script>
 

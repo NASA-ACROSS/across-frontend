@@ -6,7 +6,7 @@
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
     import ObservatoryTelescopeSelector from '$lib/components/ObservatoryTelescopeSelector.svelte';
-    import DateRangeInputs from '$lib/components/DateRangeInputs.svelte';
+    import DateRangeInput from '$lib/components/DateRangeInput.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
@@ -39,8 +39,8 @@
     // Query parameters
     let name = data.queryParams?.name || '';
     let status = data.queryParams?.status || '';
-    let date_range_begin = data.queryParams?.date_range_begin || '';
-    let date_range_end = data.queryParams?.date_range_end || '';
+    let dateRangeBegin = data.queryParams?.date_range_begin || '';
+    let dateRangeEnd = data.queryParams?.date_range_end || '';
     let fidelity = data.queryParams?.fidelity || '';
     let externalId = data.queryParams?.external_id || '';
 
@@ -128,10 +128,10 @@
         selectedColumns = availableColumns.filter((col) => col.selected);
     }
 
-    $: dateBeginDisplay = date_range_begin ? date_range_begin.split('T')[0] : '';
-    $: timeBeginDisplay = date_range_begin ? (date_range_begin.split('T')[1] ?? '') : '';
-    $: dateEndDisplay = date_range_end ? date_range_end.split('T')[0] : '';
-    $: timeEndDisplay = date_range_end ? (date_range_end.split('T')[1] ?? '') : '';
+    $: dateBeginDisplay = dateRangeBegin ? dateRangeBegin.split('T')[0] : '';
+    $: timeBeginDisplay = dateRangeBegin ? (dateRangeBegin.split('T')[1] ?? '') : '';
+    $: dateEndDisplay = dateRangeEnd ? dateRangeEnd.split('T')[0] : '';
+    $: timeEndDisplay = dateRangeEnd ? (dateRangeEnd.split('T')[1] ?? '') : '';
 
     async function handleSearch() {
         const params = new URLSearchParams();
@@ -140,8 +140,8 @@
         if (status) params.append('status', status);
         if (fidelity) params.append('fidelity', fidelity);
         if (externalId) params.append('external_id', externalId);
-        if (date_range_begin) params.append('date_range_begin', date_range_begin);
-        if (date_range_end) params.append('date_range_end', date_range_end);
+        if (dateRangeBegin) params.append('date_range_begin', dateRangeBegin);
+        if (dateRangeEnd) params.append('date_range_end', dateRangeEnd);
 
         // Add observatory/telescope filters
         if (selectedObservatories.length) params.append('observatory_ids', selectedObservatories.map((obs) => obs.id).join(','));
@@ -208,8 +208,8 @@
         status = '';
         fidelity = '';
         externalId = '';
-        date_range_begin = '';
-        date_range_end = '';
+        dateRangeBegin = '';
+        dateRangeEnd = '';
         selectedObservatories = [];
         selectedTelescopes = [];
 
@@ -281,7 +281,7 @@
                     />
                     <div
                         class="collapse-title font-semibold
-                        {name || date_range_begin || date_range_end || status || fidelity || externalId ? 'text-nasa-blue-shade' : ''}"
+                        {name || dateRangeBegin || dateRangeEnd || status || fidelity || externalId ? 'text-nasa-blue-shade' : ''}"
                     >
                         <h3 class="text-lg mb-2">Schedule Name / Date / Status / Fidelity / External ID</h3>
                         {#if selectedFilter != 'schedule'}
@@ -362,7 +362,7 @@
                             </div>
                         </div>
 
-                        <DateRangeInputs bind:date_range_begin bind:date_range_end />
+                        <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
                     </div>
                 </div>
             </div>

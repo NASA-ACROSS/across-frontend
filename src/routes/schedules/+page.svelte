@@ -39,10 +39,8 @@
     // Query parameters
     let name = data.queryParams?.name || '';
     let status = data.queryParams?.status || '';
-    let dateBegin = data.queryParams?.date_range_begin?.split('T')[0];
-    let timeBegin = data.queryParams?.date_range_begin?.split('T')[1];
-    let dateEnd = data.queryParams?.date_range_end?.split('T')[0];
-    let timeEnd = data.queryParams?.date_range_end?.split('T')[1];
+    let date_range_begin = data.queryParams?.date_range_begin || '';
+    let date_range_end = data.queryParams?.date_range_end || '';
     let fidelity = data.queryParams?.fidelity || '';
     let externalId = data.queryParams?.external_id || '';
 
@@ -130,6 +128,11 @@
         selectedColumns = availableColumns.filter((col) => col.selected);
     }
 
+    $: dateBeginDisplay = date_range_begin ? date_range_begin.split('T')[0] : '';
+    $: timeBeginDisplay = date_range_begin ? (date_range_begin.split('T')[1] ?? '') : '';
+    $: dateEndDisplay = date_range_end ? date_range_end.split('T')[0] : '';
+    $: timeEndDisplay = date_range_end ? (date_range_end.split('T')[1] ?? '') : '';
+
     async function handleSearch() {
         const params = new URLSearchParams();
 
@@ -137,8 +140,8 @@
         if (status) params.append('status', status);
         if (fidelity) params.append('fidelity', fidelity);
         if (externalId) params.append('external_id', externalId);
-        if (dateBegin) params.append('date_range_begin', `${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`);
-        if (dateEnd) params.append('date_range_end', `${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
+        if (date_range_begin) params.append('date_range_begin', date_range_begin);
+        if (date_range_end) params.append('date_range_end', date_range_end);
 
         // Add observatory/telescope filters
         if (selectedObservatories.length) params.append('observatory_ids', selectedObservatories.map((obs) => obs.id).join(','));
@@ -205,10 +208,8 @@
         status = '';
         fidelity = '';
         externalId = '';
-        dateBegin = '';
-        timeBegin = '';
-        dateEnd = '';
-        timeEnd = '';
+        date_range_begin = '';
+        date_range_end = '';
         selectedObservatories = [];
         selectedTelescopes = [];
 
@@ -280,7 +281,7 @@
                     />
                     <div
                         class="collapse-title font-semibold
-                        {name || dateBegin || timeBegin || dateEnd || timeEnd || status || fidelity || externalId ? 'text-nasa-blue-shade' : ''}"
+                        {name || date_range_begin || date_range_end || status || fidelity || externalId ? 'text-nasa-blue-shade' : ''}"
                     >
                         <h3 class="text-lg mb-2">Schedule Name / Date / Status / Fidelity / External ID</h3>
                         {#if selectedFilter != 'schedule'}
@@ -288,11 +289,11 @@
                                 {#if name}
                                     <span class="font-thin">Name: </span><span>{name} </span>
                                 {/if}
-                                {#if dateBegin || timeBegin}
-                                    <span class="font-thin">Date Begin: </span><span>{dateBegin} {timeBegin}</span>
+                                {#if dateBeginDisplay || timeBeginDisplay}
+                                    <span class="font-thin">Date Begin: </span><span>{dateBeginDisplay} {timeBeginDisplay}</span>
                                 {/if}
-                                {#if dateEnd || timeEnd}
-                                    <span class="font-thin">Date End: </span><span>{dateEnd} {timeEnd}</span>
+                                {#if dateEndDisplay || timeEndDisplay}
+                                    <span class="font-thin">Date End: </span><span>{dateEndDisplay} {timeEndDisplay}</span>
                                 {/if}
                                 {#if status}
                                     <span class="font-thin">Status: </span><span>{status}</span>
@@ -361,7 +362,7 @@
                             </div>
                         </div>
 
-                        <DateRangeInputs bind:dateBegin bind:timeBegin bind:dateEnd bind:timeEnd />
+                        <DateRangeInputs bind:date_range_begin bind:date_range_end />
                     </div>
                 </div>
             </div>

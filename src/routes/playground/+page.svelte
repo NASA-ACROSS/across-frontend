@@ -2,6 +2,8 @@
     import MultiSelect, { type Option } from '$lib/components/MultiSelect.svelte';
     import Section from '$lib/components/Section.svelte';
     import Page from '$lib/components/Page.svelte';
+    import DateRangeInput from '$lib/components/DateRangeInput.svelte';
+    import DateRangeInputExample from './_components/DateRangeInputExample.svelte';
 
     // Multiselect properties and testing custom onToggle
     type Fruit = { name: string; color: string };
@@ -66,5 +68,9 @@
                 placeholder="Search by name or color..."
             ></MultiSelect>
         </div>
+    </Section>
+
+    <Section title="DateRangeInput Component">
+        <DateRangeInputExample />
     </Section>
 </Page>

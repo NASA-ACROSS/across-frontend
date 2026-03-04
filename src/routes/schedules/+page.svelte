@@ -6,6 +6,7 @@
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
     import ObservatoryTelescopeSelector from '$lib/components/ObservatoryTelescopeSelector.svelte';
+    import DateRangeInput from '$lib/components/DateRangeInput.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
@@ -38,10 +39,8 @@
     // Query parameters
     let name = data.queryParams?.name || '';
     let status = data.queryParams?.status || '';
-    let dateBegin = data.queryParams?.date_range_begin?.split('T')[0];
-    let timeBegin = data.queryParams?.date_range_begin?.split('T')[1];
-    let dateEnd = data.queryParams?.date_range_end?.split('T')[0];
-    let timeEnd = data.queryParams?.date_range_end?.split('T')[1];
+    let dateRangeBegin = data.queryParams?.date_range_begin || '';
+    let dateRangeEnd = data.queryParams?.date_range_end || '';
     let fidelity = data.queryParams?.fidelity || '';
     let externalId = data.queryParams?.external_id || '';
 
@@ -129,6 +128,11 @@
         selectedColumns = availableColumns.filter((col) => col.selected);
     }
 
+    $: dateBeginDisplay = dateRangeBegin ? dateRangeBegin.split('T')[0] : '';
+    $: timeBeginDisplay = dateRangeBegin ? (dateRangeBegin.split('T')[1] ?? '') : '';
+    $: dateEndDisplay = dateRangeEnd ? dateRangeEnd.split('T')[0] : '';
+    $: timeEndDisplay = dateRangeEnd ? (dateRangeEnd.split('T')[1] ?? '') : '';
+
     async function handleSearch() {
         const params = new URLSearchParams();
 
@@ -136,8 +140,8 @@
         if (status) params.append('status', status);
         if (fidelity) params.append('fidelity', fidelity);
         if (externalId) params.append('external_id', externalId);
-        if (dateBegin) params.append('date_range_begin', `${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`);
-        if (dateEnd) params.append('date_range_end', `${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
+        if (dateRangeBegin) params.append('date_range_begin', dateRangeBegin);
+        if (dateRangeEnd) params.append('date_range_end', dateRangeEnd);
 
         // Add observatory/telescope filters
         if (selectedObservatories.length) params.append('observatory_ids', selectedObservatories.map((obs) => obs.id).join(','));
@@ -204,10 +208,8 @@
         status = '';
         fidelity = '';
         externalId = '';
-        dateBegin = '';
-        timeBegin = '';
-        dateEnd = '';
-        timeEnd = '';
+        dateRangeBegin = '';
+        dateRangeEnd = '';
         selectedObservatories = [];
         selectedTelescopes = [];
 
@@ -279,7 +281,7 @@
                     />
                     <div
                         class="collapse-title font-semibold
-                        {name || dateBegin || timeBegin || dateEnd || timeEnd || status || fidelity || externalId ? 'text-nasa-blue-shade' : ''}"
+                        {name || dateRangeBegin || dateRangeEnd || status || fidelity || externalId ? 'text-nasa-blue-shade' : ''}"
                     >
                         <h3 class="text-lg mb-2">Schedule Name / Date / Status / Fidelity / External ID</h3>
                         {#if selectedFilter != 'schedule'}
@@ -287,11 +289,11 @@
                                 {#if name}
                                     <span class="font-thin">Name: </span><span>{name} </span>
                                 {/if}
-                                {#if dateBegin || timeBegin}
-                                    <span class="font-thin">Date Begin: </span><span>{dateBegin} {timeBegin}</span>
+                                {#if dateBeginDisplay || timeBeginDisplay}
+                                    <span class="font-thin">Date Begin: </span><span>{dateBeginDisplay} {timeBeginDisplay}</span>
                                 {/if}
-                                {#if dateEnd || timeEnd}
-                                    <span class="font-thin">Date End: </span><span>{dateEnd} {timeEnd}</span>
+                                {#if dateEndDisplay || timeEndDisplay}
+                                    <span class="font-thin">Date End: </span><span>{dateEndDisplay} {timeEndDisplay}</span>
                                 {/if}
                                 {#if status}
                                     <span class="font-thin">Status: </span><span>{status}</span>
@@ -360,26 +362,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                            <div>
-                                <label class="label text-lg" for="date-begin-input">
-                                    <span class="label-text">Begin Date/Time</span>
-                                </label>
-                                <div class="grid grid-cols-2 space-x-2">
-                                    <input id="date-begin-input" type="date" bind:value={dateBegin} class="input w-full text-primary" />
-                                    <input id="time-begin-input" type="time" bind:value={timeBegin} class="input w-full" />
-                                </div>
-                            </div>
-                            <div>
-                                <label class="label text-lg" for="date-end-input">
-                                    <span class="label-text">End Date/Time</span>
-                                </label>
-                                <div class="grid grid-cols-2 space-x-2">
-                                    <input id="date-end-input" type="date" bind:value={dateEnd} class="input w-full" />
-                                    <input id="time-end-input" type="time" bind:value={timeEnd} class="input w-full" />
-                                </div>
-                            </div>
-                        </div>
+                        <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
                     </div>
                 </div>
             </div>

@@ -1,17 +1,17 @@
-import { CONFIG } from '../../../config/config.js';
+import { CONFIG } from '../../../config/config';
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
-import { emailRegex } from '$lib/utils/regex/emailRegex.js';
-import type { Actions } from './$types.js';
 import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute';
 import { autoLogin } from '$lib/utils/user/autoLogin.js';
+import { emailRegex } from '$lib/utils/regex/emailRegex';
+import type { Actions } from './$types';
+import { clearAuth } from '$lib/handles/clearAuth';
 
 export function load({ locals }: RequestEvent) {
     localOnlyRoute();
 
-    const userCookie = locals?.user as UserCredentialsCookie;
+    const userCookie = locals?.user;
     // Redirect on load when user is logged in
     if (userCookie) {
         redirect(302, resolve('/user/profile'));
@@ -30,12 +30,10 @@ const limiter = new RetryAfterRateLimiter({
 
 export const actions = {
     default: async (event: RequestEvent) => {
-        event.cookies.delete('user-login', {
-            path: '/',
-        });
-        event.locals.user = undefined;
+        const { request, fetch } = event;
+        clearAuth(event);
 
-        const data = await event.request.formData();
+        const data = await request.formData();
 
         const email = data.get('email');
 
@@ -62,10 +60,6 @@ export const actions = {
 
         const options = {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${CONFIG.API_TOKEN}`,
-            },
         };
 
         let response: Response;

@@ -1,20 +1,63 @@
-import type { Handle, HandleServerError } from '@sveltejs/kit';
+import type { Handle, HandleFetch, HandleServerError, ServerInit } from '@sveltejs/kit';
 import { handleLogout } from '$lib/handles/handleLogout';
-import { handleLogin } from '$lib/handles/handleLogin';
 import { handleRedirect } from '$lib/handles/handleRedirect';
 import { getErrorMessage } from '$lib/utils/error/getErrorMessage';
 import { getErrorStack } from '$lib/utils/error/getErrorStack';
 import { getErrorCause } from '$lib/utils/error/getErrorCause';
+import { CONFIG } from '$config/config';
+import { webserverCredentialsManager } from '$lib/utils/across/auth/WebserverCredentialsManager';
+import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
+import { hydrateAuthUser } from '$lib/handles/hydrateAuthUser';
+
+export const init: ServerInit = async () => {
+    await webserverCredentialsManager.initialize();
+};
+
 /**
  * Runs on every request including link hover prefetch
  * unless explicitly disabled using <a data-sveltekit-preload-data="false"/>
  */
 export const handle: Handle = async ({ event, resolve }) => {
     event = handleLogout(event);
-    event = await handleLogin(event);
+
+    // hydrate auth user into locals on page loads
+    await hydrateAuthUser(event);
+
     let response: Response = await resolve(event);
+
     response = handleRedirect(response);
+
     return response;
+};
+
+export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promise<Response> => {
+    // Add an authorization header to internal API calls
+    if (request.url.startsWith(CONFIG.API_URL)) {
+        if (request.url.endsWith('/auth/token') || request.url.endsWith('/auth/refresh')) {
+            // pass-thru to prevent infinite loops of token refreshing
+            return fetch(request);
+        }
+
+        // hydrate auth locals from the cookies on every fetch to the API
+        await hydrateAuthUser(event);
+
+        let access_token: string;
+
+        const tokens = event.locals.tokens;
+
+        // check if the request is from the client or server and use the appropriate strategy
+        if (tokens) {
+            // client will have the token in the cookie
+            access_token = await UserCredentialsManager.GetAccessToken(event.cookies, tokens);
+        } else {
+            // this is for server-side requests that need to authenticate with the API, such as login and registering
+            access_token = await webserverCredentialsManager.getAccessToken();
+        }
+
+        request.headers.set('Authorization', `Bearer ${access_token}`);
+    }
+
+    return fetch(request);
 };
 
 export const handleError: HandleServerError = ({ error, event, message }) => {

@@ -6,7 +6,7 @@
         "dev": "vite dev",
         "build": "vite build",
         "preview": "vite preview",
-        "test": "npm run test:integration && npm run test:unit",
+        "test": "ACROSS_TEST_ACCESS_TOKEN=dummy-token npm run test:integration && npm run test:unit",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
         "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
         "format": "prettier . --check",
@@ -58,5 +58,8 @@
         "vite": "^5.1.7",
         "vitest": "^1.2.0"
     },
-    "type": "module"
+    "type": "module",
+    "dependencies": {
+        "@aws-sdk/client-ssm": "^3.999.0"
+    }
 }

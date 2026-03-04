@@ -1,7 +1,4 @@
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
-import { UserCredentials } from '$lib/types/User/UserCredentials';
 import { CONFIG } from '../../../config/config';
-import { type Cookies } from '@sveltejs/kit';
 import type { Observatory } from '$lib/types/across/Observatory';
 
 type GetObservatoriesParams = {
@@ -9,24 +6,10 @@ type GetObservatoriesParams = {
     name?: string;
 };
 
-export const getObservatories = async (userCookie: UserCredentialsCookie, cookies: Cookies, params?: GetObservatoriesParams) => {
-    let accessToken;
-    if (userCookie) {
-        const userCredentials = new UserCredentials(userCookie);
-        accessToken = await userCredentials.getAccessToken(cookies);
-    }
-
+export const getObservatories = async (fetch: typeof window.fetch) => {
     const options: RequestInit = {
         method: 'GET',
     };
-
-    let headers = {};
-    if (accessToken) {
-        headers = {
-            Authorization: `Bearer ${accessToken}`,
-        };
-        options.headers = headers;
-    }
 
     const apiUrl = `${CONFIG.API_URL}/observatory/`;
     let requestUrl = apiUrl;

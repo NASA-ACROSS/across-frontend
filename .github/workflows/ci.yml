@@ -17,3 +17,4 @@ jobs:
         uses: NASA-ACROSS/github-action-workflows/.github/workflows/workflow-ci-checks.yml@main
         with:
             runtime: node
+            across-test-access-token: 'dummy-token-for-tests'

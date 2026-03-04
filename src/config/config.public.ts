@@ -3,13 +3,7 @@
  *
  * PUBLIC_BUILD_VERSION=local npm run build
  */
-import { PUBLIC_BUILD_VERSION } from '$env/static/public';
-
-type PublicConfig = {
-    BUILD_VERSION: string;
-    DOCUMENTATION_URL: string;
-    isLocal: () => boolean;
-};
+import { PUBLIC_BUILD_VERSION, PUBLIC_RUNTIME_ENV } from '$env/static/public';
 
 /**
  * Config abstraction for static build-time public environment variables
@@ -22,8 +16,18 @@ type PublicConfig = {
  *
  * if(PUBLIC_CONFIG.isLocal()) { ... }
  */
-export const PUBLIC_CONFIG: PublicConfig = {
-    BUILD_VERSION: PUBLIC_BUILD_VERSION,
-    DOCUMENTATION_URL: 'https://science.data.nasa.gov/data-sites/across',
-    isLocal: () => PUBLIC_BUILD_VERSION === 'local',
-};
+class PublicConfiguration {
+    public BUILD_VERSION: string = PUBLIC_BUILD_VERSION;
+    public DOCUMENTATION_URL: string = 'https://science.data.nasa.gov/data-sites/across';
+
+    // default to local for safety, this will be overridden in hooks.server.ts with the
+    // value from config.ts which is private dynamic and can be set with env vars.
+    // This directly relates to the env var set from the infrastructure on the service.
+    public RUNTIME_ENV: string = PUBLIC_RUNTIME_ENV;
+
+    public get IS_LOCAL(): boolean {
+        return this.RUNTIME_ENV === 'local';
+    }
+}
+
+export const PUBLIC_CONFIG = new PublicConfiguration();

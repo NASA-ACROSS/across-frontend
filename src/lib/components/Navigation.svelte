@@ -163,6 +163,28 @@
                         {/if}
                     </ul>
                 </div>
+                <ul class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow">
+                    {#if user}
+                        <li>
+                            <a class="justify-between text-primary-content hover:bg-info" href={resolve('/user/profile')}> Profile </a>
+                        </li>
+                        <li>
+                            <a
+                                class="text-primary-content hover:bg-accent hover:text-primary"
+                                data-sveltekit-preload-data="false"
+                                data-sveltekit-reload
+                                href={resolve('/user/logout')}>Logout</a
+                            >
+                        </li>
+                    {:else}
+                        <li>
+                            <a class="justify-between text-primary-content" href={resolve('/user/register')}> Create Account </a>
+                        </li>
+                        <li>
+                            <a class="text-primary-content" href={resolve('/user/login')}>Login</a>
+                        </li>
+                    {/if}
+                </ul>
             </div>
         {/key}
     </LocalOnlyRender>

@@ -1,7 +1,3 @@
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
-import { UserCredentials } from '$lib/types/User/UserCredentials';
-import { CONFIG } from '../../../config/config';
-import { type Cookies } from '@sveltejs/kit';
 import type { Telescope } from '$lib/types/across/Telescope';
 
 type GetTelescopesParams = {
@@ -9,41 +5,10 @@ type GetTelescopesParams = {
     name?: string;
 };
 
-export const getTelescopes = async (userCookie: UserCredentialsCookie, cookies: Cookies, params?: GetTelescopesParams) => {
-    let accessToken;
-    if (userCookie) {
-        const userCredentials = new UserCredentials(userCookie);
-        accessToken = await userCredentials.getAccessToken(cookies);
-    }
-
+export const getTelescopes = async (fetch: typeof window.fetch) => {
     const options: RequestInit = {
         method: 'GET',
     };
-
-    let headers = {};
-    if (accessToken) {
-        headers = {
-            Authorization: `Bearer ${accessToken}`,
-        };
-        options.headers = headers;
-    }
-
-    const apiUrl = `${CONFIG.API_URL}/telescope/`;
-    let requestUrl = apiUrl;
-
-    if (params?.id) {
-        requestUrl = `${apiUrl}${params.id}`;
-    } else if (params) {
-        const apiParams = new URLSearchParams();
-        // Add all query parameters to API request
-        Object.entries(params).forEach(([key, value]) => {
-            if (value !== undefined) {
-                apiParams.append(key, String(value));
-            }
-        });
-
-        requestUrl = `${apiUrl}?${apiParams.toString()}`;
-    }
 
     let response;
     try {

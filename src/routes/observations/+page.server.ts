@@ -1,7 +1,6 @@
 import type { Paginate } from '$lib/types/Paginate';
 
 import type { Telescope } from '$lib/types/across/Telescope';
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { resolveObject } from '$lib/utils/across/resolveObject';
 import { CONFIG } from '../../config/config';
@@ -62,7 +61,7 @@ const isKnownError = (errorText: string): string => {
     return 'There was an error processing the request, please modify your selection and try again';
 };
 
-export async function load({ url, locals, cookies }: RequestEvent) {
+export async function load({ url, fetch }: RequestEvent) {
     // Extract query parameters
     const page = Number(url.searchParams.get('page')) || 1;
     // const sort = url.searchParams.get('sort') || '';
@@ -155,8 +154,7 @@ export async function load({ url, locals, cookies }: RequestEvent) {
         // Fetch instrument details for mapping IDs to names
         // In a real implementation, you might have a separate endpoint for this
         // For now, we'll create a simple mock mapping
-        const userCookie = locals?.user as UserCredentialsCookie;
-        const telescopes: Telescope[] = await getTelescopes(userCookie, cookies);
+        const telescopes: Telescope[] = await getTelescopes(fetch);
 
         return {
             observations,

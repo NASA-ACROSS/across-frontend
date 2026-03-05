@@ -1,9 +1,9 @@
 <script lang="ts">
     import ObjectNameResolver from './ObjectNameResolver.svelte';
 
-    export let ra: string = '';
-    export let dec: string = '';
-    export let radius: string = '';
+    export let ra: string | number = '';
+    export let dec: string | number = '';
+    export let radius: string | number = '';
     export let includeRadius: boolean = false;
 </script>
 

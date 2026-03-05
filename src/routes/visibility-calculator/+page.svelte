@@ -2,7 +2,7 @@
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
     import CoordinateSearch from '$lib/components/CoordinateSearch.svelte';
-    import DateRangeInputs from '$lib/components/DateRangeInputs.svelte';
+    import DateRangeInput from '$lib/components/DateRangeInput.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
     import { beforeNavigate, afterNavigate } from '$app/navigation';
     import { goto } from '$app/navigation';
@@ -59,10 +59,8 @@
     let dec = '';
 
     // Date range inputs
-    let dateBegin = '';
-    let timeBegin = '';
-    let dateEnd = '';
-    let timeEnd = '';
+    $: dateRangeBegin = '';
+    $: dateRangeEnd = '';
 
     // Optional parameters
     let hi_res = false;
@@ -78,18 +76,7 @@
 
         // Populate date range
         const dateRangeBegin = urlParams.get('date_range_begin');
-        if (dateRangeBegin) {
-            const [date, time] = dateRangeBegin.split('T');
-            dateBegin = date;
-            timeBegin = time || '';
-        }
-
         const dateRangeEnd = urlParams.get('date_range_end');
-        if (dateRangeEnd) {
-            const [date, time] = dateRangeEnd.split('T');
-            dateEnd = date;
-            timeEnd = time || '';
-        }
 
         // Populate optional parameters
         if (urlParams.has('hi_res')) hi_res = urlParams.get('hi_res') === 'true';
@@ -120,8 +107,8 @@
     async function calculateVisibility() {
         const params = new URLSearchParams();
 
-        if (dateBegin) params.append('date_range_begin', `${dateBegin}T${timeBegin ? timeBegin : '00:00:00'}`);
-        if (dateEnd) params.append('date_range_end', `${dateEnd}T${timeEnd ? timeEnd : '00:00:00'}`);
+        if (dateRangeBegin) params.append('date_range_begin', `${dateRangeBegin}`);
+        if (dateRangeEnd) params.append('date_range_end', `${dateRangeEnd}`);
         if (ra) params.append('ra', ra);
         if (dec) params.append('dec', dec);
         if (hi_res) params.append('hi_res', 'true');
@@ -138,10 +125,8 @@
         selectedInstruments = [];
         ra = '';
         dec = '';
-        dateBegin = '';
-        timeBegin = '';
-        dateEnd = '';
-        timeEnd = '';
+        dateRangeBegin = '';
+        dateRangeEnd = '';
         hi_res = false;
         min_visibility_duration = '';
 
@@ -190,7 +175,7 @@
 
             <div class="bg-base-100 p-4 mb-4">
                 <h3 class="text-lg font-semibold mb-4">Date Range</h3>
-                <DateRangeInputs bind:dateBegin bind:timeBegin bind:dateEnd bind:timeEnd />
+                <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
             </div>
 
             <div class="bg-base-100 p-4 mb-4">

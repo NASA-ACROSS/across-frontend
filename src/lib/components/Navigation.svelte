@@ -1,9 +1,9 @@
 <script lang="ts">
     import { asset, resolve } from '$app/paths';
     import { page } from '$app/state';
-    import { PUBLIC_CONFIG } from '$config/config.public';
 
     import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+    import LocalOnlyRender from './dev/LocalOnlyRender.svelte';
 
     export let user: UserCredentialsCookie | undefined;
     export let API_DOCS_URL: string;
@@ -55,11 +55,11 @@
         </a>
     </div>
     <div class="navbar-end">
-        {#if PUBLIC_CONFIG.BUILD_VERSION === 'local'}
+        <LocalOnlyRender>
             <div class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
                 <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={resolve('/playground')}>Playground</a>
             </div>
-        {/if}
+        </LocalOnlyRender>
         <ul class="menu menu-horizontal px-1 hidden lg:flex lg:items-center">
             <li>
                 <div class="dropdown dropdown-hover dropdown-end m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
@@ -100,46 +100,48 @@
         </ul>
     </div>
 
-    {#key currentPath}
-        <!-- profile -->
-        {#key userEmail}
-            {#if userEmail}
-                <a href={resolve('/user/profile')} class="text-sm font-bold text-primary-content m-2">{userEmail}</a>
-            {/if}
-        {/key}
-        <div class="flex-none">
-            <div class="dropdown dropdown-hover dropdown-end pr-3">
-                <a href={resolve('/user/profile')}>
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar avatar-placeholder -my-3">
-                        <div class="bg-info text-neutral-content w-10 rounded-full">
-                            <div class={user ? 'text-lg' : 'bx bx-user'}>
-                                {userInitials}
+    <LocalOnlyRender>
+        {#key currentPath}
+            <!-- profile -->
+            {#key userEmail}
+                {#if userEmail}
+                    <a href={resolve('/user/profile')} class="text-sm font-bold text-primary-content m-2">{userEmail}</a>
+                {/if}
+            {/key}
+            <div class="flex-none">
+                <div class="dropdown dropdown-hover dropdown-end pr-3">
+                    <a href={resolve('/user/profile')}>
+                        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar avatar-placeholder -my-3">
+                            <div class="bg-info text-neutral-content w-10 rounded-full">
+                                <div class={user ? 'text-lg' : 'bx bx-user'}>
+                                    {userInitials}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-                <ul class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow">
-                    {#if user}
-                        <li>
-                            <a class="justify-between text-primary-content hover:bg-info" href={resolve('/user/profile')}> Profile </a>
-                        </li>
-                        <li>
-                            <a
-                                class="text-primary-content hover:bg-accent hover:text-primary"
-                                data-sveltekit-preload-data="false"
-                                href={resolve('/user/logout')}>Logout</a
-                            >
-                        </li>
-                    {:else}
-                        <li>
-                            <a class="justify-between text-primary-content" href={resolve('/user/register')}> Create Account </a>
-                        </li>
-                        <li>
-                            <a class="text-primary-content" href={resolve('/user/login')}>Login</a>
-                        </li>
-                    {/if}
-                </ul>
+                    </a>
+                    <ul class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow">
+                        {#if user}
+                            <li>
+                                <a class="justify-between text-primary-content hover:bg-info" href={resolve('/user/profile')}> Profile </a>
+                            </li>
+                            <li>
+                                <a
+                                    class="text-primary-content hover:bg-accent hover:text-primary"
+                                    data-sveltekit-preload-data="false"
+                                    href={resolve('/user/logout')}>Logout</a
+                                >
+                            </li>
+                        {:else}
+                            <li>
+                                <a class="justify-between text-primary-content" href={resolve('/user/register')}> Create Account </a>
+                            </li>
+                            <li>
+                                <a class="text-primary-content" href={resolve('/user/login')}>Login</a>
+                            </li>
+                        {/if}
+                    </ul>
+                </div>
             </div>
-        </div>
-    {/key}
+        {/key}
+    </LocalOnlyRender>
 </div>

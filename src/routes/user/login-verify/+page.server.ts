@@ -7,8 +7,11 @@ import type { UserCredentialsCookie, AccessDataResponse } from '$lib/types/User/
 import type { User } from '$lib/types/User/User.js';
 import { UserCredentials } from '$lib/types/User/UserCredentials.js';
 import type { RequestEvent } from './$types.js';
+import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute.js';
 
 export function load({ locals }: { locals: { user: UserCredentialsCookie } }) {
+    localOnlyRoute();
+
     const user = locals.user;
     // Redirect on load when user is logged in
     if (user) {

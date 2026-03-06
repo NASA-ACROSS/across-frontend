@@ -10,8 +10,11 @@ import { validate } from '$lib/utils/regex/validate';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
 import type { User } from '$lib/types/User/User';
 import type { RequestEvent } from './$types.js';
+import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute';
 
 export async function load({ locals, cookies }: RequestEvent) {
+    localOnlyRoute();
+
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is not logged in
     if (!userCookie) {

@@ -5,8 +5,11 @@ import { resolve } from '$app/paths';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
 import { emailRegex } from '$lib/utils/regex/emailRegex.js';
 import type { Actions } from './$types.js';
+import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute';
 
 export function load({ locals }: RequestEvent) {
+    localOnlyRoute();
+
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is logged in
     if (userCookie) {

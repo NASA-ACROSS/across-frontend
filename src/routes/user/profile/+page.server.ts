@@ -3,14 +3,13 @@ import { resolve } from '$app/paths';
 import { CONFIG } from '../../../config/config';
 import { validate } from '$lib/utils/regex/validate';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
-import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute';
 import type { RequestEvent } from './$types';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import guards from '$lib/utils/guards';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 
 export async function load(event: RequestEvent) {
-    localOnlyRoute();
+    guards.localOnlyRoute();
     const localUser = guards.requireUser(event.locals);
 
     const user = await getUserInfo(localUser.id, event.fetch);

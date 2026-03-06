@@ -2,17 +2,17 @@ import { fail, redirect } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
 import { CONFIG } from '../../../config/config';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
-import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute.js';
 import type { LocalUser } from '$lib/types/User/UserCredentialsCookie';
 import type { User } from '$lib/types/User/User';
 import type { RequestEvent } from './$types';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
+import guards from '$lib/utils/guards';
 
 export function load(event: RequestEvent) {
-    localOnlyRoute();
+    guards.localOnlyRoute();
 
     const user = event.locals.user;
-    // Redirect on load when user is logged in
+    // Redirect to profile page when user is logged in
     if (user) redirect(302, resolve('/user/profile'));
 }
 

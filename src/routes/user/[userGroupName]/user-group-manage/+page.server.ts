@@ -8,11 +8,10 @@ import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 import { getGroupData } from '$lib/utils/manage/getGroupData';
 import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
 import { isAdmin } from '$lib/utils/user/isAdmin';
-import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute';
 import guards from '$lib/utils/guards';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
-    localOnlyRoute();
+    guards.localOnlyRoute();
     const userCookie = guards.requireUser(locals);
 
     const user = await getUserInfo(userCookie.id, fetch);

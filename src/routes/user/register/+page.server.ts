@@ -5,10 +5,10 @@ import { CONFIG } from '../../../config/config';
 import { fail, redirect } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
-import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute.js';
 import { autoLogin } from '$lib/utils/user/autoLogin.js';
 import type { RequestEvent } from './$types';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import guards from '$lib/utils/guards';
 
 // rate limit is defined as [number, unit]
 // see documentation for more info
@@ -21,10 +21,10 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export function load({ locals }: RequestEvent) {
-    localOnlyRoute();
+    guards.localOnlyRoute();
 
     const userCookie = locals?.user as UserCredentialsCookie;
-    // Redirect on load when user is logged in
+    // Redirect to profile page when user is logged in
     if (userCookie) {
         redirect(302, resolve('/user/profile'));
     }

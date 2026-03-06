@@ -14,7 +14,7 @@ import { PUBLIC_BUILD_VERSION, PUBLIC_RUNTIME_ENV } from '$env/static/public';
  *
  * // only do something locally in development
  *
- * if(PUBLIC_CONFIG.isLocal()) { ... }
+ * if(PUBLIC_CONFIG.IS_LOCAL) { ... }
  */
 class PublicConfiguration {
     public BUILD_VERSION: string = PUBLIC_BUILD_VERSION;
@@ -23,7 +23,7 @@ class PublicConfiguration {
     // default to local for safety, this will be overridden in hooks.server.ts with the
     // value from config.ts which is private dynamic and can be set with env vars.
     // This directly relates to the env var set from the infrastructure on the service.
-    public RUNTIME_ENV: string = PUBLIC_RUNTIME_ENV;
+    public RUNTIME_ENV: string = PUBLIC_RUNTIME_ENV || 'local';
 
     public get IS_LOCAL(): boolean {
         return this.RUNTIME_ENV === 'local';

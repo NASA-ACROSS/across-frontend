@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 // used for all tests. We will need to revisit this and come up with a more robust solution as we
 // add more tests and test targets.
 dotenv.config({
-    path: [`.env.test`, '.env'],
+    path: [`.env.test`],
 });
 
 const config: PlaywrightTestConfig = {

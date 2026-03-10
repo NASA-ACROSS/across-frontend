@@ -31,7 +31,7 @@ export class WebserverCredentialsManager {
     }
 
     public async getAccessToken(): Promise<string> {
-        if (CONFIG.ACROSS_TEST_ACCESS_TOKEN) {
+        if (CONFIG.ACROSS_TEST_ACCESS_TOKEN || CONFIG.IS_BUILD) {
             console.debug('Running in test environment, using dummy access token for WebserverCredentialsManager');
             return CONFIG.ACROSS_TEST_ACCESS_TOKEN;
         }

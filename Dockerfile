@@ -1,19 +1,17 @@
 FROM node:20.10-bookworm-slim AS build
 
-# Declare the build arguments
-ARG BUILD_ENV=local
-# set the build version to the build environment by default, can be overridden by passing a different value during build time
-ARG BUILD_VERSION=$BUILD_ENV
+# set the build version to local environment by default, can be overridden by passing a different value during build time
+ARG BUILD_VERSION=docker
+ARG RUNTIME_ENV=docker
+
+# set svelte public env vars
+ENV PUBLIC_RUNTIME_ENV=$RUNTIME_ENV
+ENV PUBLIC_BUILD_VERSION=$BUILD_VERSION
+
+RUN echo "PUBLIC_RUNTIME_ENV: $PUBLIC_RUNTIME_ENV"
+RUN echo "PUBLIC_BUILD_VERSION: $PUBLIC_BUILD_VERSION"
 
 WORKDIR /app
-
-ENV PUBLIC_BUILD_VERSION=$BUILD_VERSION
-ENV PUBLIC_RUNTIME_ENV=$BUILD_ENV
-ENV NODE_ENV=development
-
-RUN echo "BUILD_ENV: $BUILD_ENV"
-RUN echo "BUILD_VERSION: $PUBLIC_BUILD_VERSION"
-RUN echo "RUNTIME_ENV: $PUBLIC_RUNTIME_ENV"
 
 # Copy only the necessary files for dependency installation first
 COPY package*.json ./
@@ -37,8 +35,6 @@ WORKDIR /app
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/package*.json ./
 
-ENV NODE_ENV=development
-
 EXPOSE 3000
 
 
@@ -54,8 +50,6 @@ COPY --from=build /app/package*.json ./
 # Copy source code for linting/testing
 COPY . .
 
-ENV NODE_ENV=production
-
 
 FROM node:20.10-bookworm-slim AS deploy
 WORKDIR /app
@@ -63,7 +57,6 @@ WORKDIR /app
 COPY --from=build /app/build /app/build
 COPY --from=build /app/package*.json ./
 
-ENV NODE_ENV=production
 ENV PORT=3000
 
 EXPOSE 3000

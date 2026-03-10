@@ -5,6 +5,7 @@
     "scripts": {
         "dev": "vite dev",
         "build": "vite build",
+        "build:docker": "docker build -t frontend:local-test --no-cache --platform linux/amd64 --build-arg BUILD_ENV=local-test --build-arg BUILD_VERSION=12345 .",
         "preview": "vite preview",
         "test": "npm run test:integration && npm run test:unit",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -60,6 +61,7 @@
     },
     "type": "module",
     "dependencies": {
-        "@aws-sdk/client-ssm": "^3.999.0"
+        "@aws-sdk/client-ssm": "^3.999.0",
+        "dotenv": "^17.3.1"
     }
 }

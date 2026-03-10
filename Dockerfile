@@ -11,6 +11,7 @@ RUN echo "BUILD_VERSION: $BUILD_VERSION"
 WORKDIR /app
 
 ENV PUBLIC_BUILD_VERSION=$BUILD_VERSION
+ENV PUBLIC_RUNTIME_ENV=$BUILD_ENV
 ENV NODE_ENV=development
 
 # Copy only the necessary files for dependency installation first

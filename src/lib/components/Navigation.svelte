@@ -46,6 +46,9 @@
                         </li>
                     </ul>
                 </li>
+                <li class="hover:underline decoration-dashed">
+                    <a data-sveltekit-preload-data="tap" href={resolve('/docs/about')}>Docs</a>
+                </li>
             </ul>
         </div>
         <a href={resolve('/')} role="button" class="text-xl font-bold flex flex-row items-center pl-3">
@@ -88,6 +91,11 @@
                             <a data-sveltekit-preload-data="tap" href={resolve('/ingestion-status')}>Data Ingestion Status</a>
                         </li>
                     </ul>
+                </div>
+            </li>
+            <li>
+                <div class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
+                    <a class="text-lg font-bold text-primary-content" data-sveltekit-preload-data="tap" href={resolve('/docs/about')}>Docs</a>
                 </div>
             </li>
             <li>

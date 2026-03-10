@@ -5,8 +5,12 @@ import { resolve } from '$app/paths';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
 import { emailRegex } from '$lib/utils/regex/emailRegex.js';
 import type { Actions } from './$types.js';
+import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute';
+import { autoLogin } from '$lib/utils/user/autoLogin.js';
 
 export function load({ locals }: RequestEvent) {
+    localOnlyRoute();
+
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect on load when user is logged in
     if (userCookie) {
@@ -87,6 +91,8 @@ export const actions = {
             console.warn(errorResponse.detail, JSON.stringify({ email: email, ip: event.getClientAddress() }));
             return fail(401, { notFound: true });
         }
+
+        await autoLogin(response);
 
         return { success: true, email };
     },

@@ -10,8 +10,11 @@ import { getGroupData } from '$lib/utils/manage/getGroupData';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
 import { isAdmin } from '$lib/utils/user/isAdmin';
+import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute';
 
 export const load: PageServerLoad = async ({ locals, params, cookies }) => {
+    localOnlyRoute();
+
     const userCookie = locals.user;
     // Redirect on load when user is logged in
     if (!userCookie) {

@@ -5,14 +5,15 @@ ARG BUILD_ENV=local
 # set the build version to the build environment by default, can be overridden by passing a different value during build time
 ARG BUILD_VERSION=$BUILD_ENV
 
-RUN echo "BUILD_ENV: $BUILD_ENV"
-RUN echo "BUILD_VERSION: $BUILD_VERSION"
-
 WORKDIR /app
 
 ENV PUBLIC_BUILD_VERSION=$BUILD_VERSION
 ENV PUBLIC_RUNTIME_ENV=$BUILD_ENV
 ENV NODE_ENV=development
+
+RUN echo "BUILD_ENV: $BUILD_ENV"
+RUN echo "BUILD_VERSION: $PUBLIC_BUILD_VERSION"
+RUN echo "RUNTIME_ENV: $PUBLIC_RUNTIME_ENV"
 
 # Copy only the necessary files for dependency installation first
 COPY package*.json ./

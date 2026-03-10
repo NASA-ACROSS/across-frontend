@@ -19,7 +19,7 @@ export class WebserverCredentialsManager {
     private expiration?: luxon.DateTime;
 
     public async initialize(): Promise<void> {
-        if (CONFIG.ACROSS_SERVER_ID && CONFIG.ACROSS_SERVER_SECRET) {
+        if (CONFIG.IS_BUILD || (CONFIG.ACROSS_SERVER_ID && CONFIG.ACROSS_SERVER_SECRET)) {
             this.id = CONFIG.ACROSS_SERVER_ID;
             this.secret = CONFIG.ACROSS_SERVER_SECRET;
         } else {
@@ -31,8 +31,8 @@ export class WebserverCredentialsManager {
     }
 
     public async getAccessToken(): Promise<string> {
-        if (CONFIG.ACROSS_TEST_ACCESS_TOKEN || CONFIG.IS_BUILD) {
-            console.debug('Running in test environment, using dummy access token for WebserverCredentialsManager');
+        if (CONFIG.IS_BUILD || CONFIG.ACROSS_TEST_ACCESS_TOKEN) {
+            console.debug('Building or running in test environment, using dummy access token for WebserverCredentialsManager');
             return CONFIG.ACROSS_TEST_ACCESS_TOKEN;
         }
 

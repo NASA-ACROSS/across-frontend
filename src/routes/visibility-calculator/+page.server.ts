@@ -41,7 +41,7 @@ export type JointVisibilityPageData = {
     jointVisibilityWindows: Promise<JointVisibilityWindowResponse['visibility_windows']>;
     visibilityWindowInstrumentIds: Promise<JointVisibilityWindowResponse['instrument_ids']>;
     observatoryVisibilityWindows: Promise<JointVisibilityWindowResponse['observatory_visibility_windows']>;
-    error?: Promise<string>;
+    error: Promise<string>;
 };
 
 export async function load({ url, locals, cookies }: RequestEvent): Promise<JointVisibilityPageData> {
@@ -62,17 +62,6 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
 
     telescopes = await getTelescopes(userCookie, cookies);
 
-    if (!Object.values(queryParams).length) {
-        return {
-            queryParams: queryParams,
-            telescopes: telescopes,
-            jointVisibilityWindows: Promise.resolve([]),
-            visibilityWindowInstrumentIds: Promise.resolve([]),
-            observatoryVisibilityWindows: Promise.resolve({}),
-            error: Promise.resolve(''),
-        };
-    }
-
     // Build API URL with parameters
     const apiUrl = new URL(`${CONFIG.API_URL}/tools/visibility-calculator/windows/`);
     // Add all query parameters to API request
@@ -90,6 +79,17 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
     // Lazy load visibility windows as a Promise
     const fetchVisibilityWindows = async () => {
         try {
+            if (!Object.values(queryParams).length) {
+                return {
+                    queryParams: queryParams,
+                    telescopes: telescopes,
+                    jointVisibilityWindows: [],
+                    visibilityWindowInstrumentIds: [],
+                    observatoryVisibilityWindows: {},
+                    error: '',
+                };
+            }
+
             const response = await fetch(apiUrl);
 
             if (!response.ok) {
@@ -97,9 +97,9 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
                 const text = (await response.json()) as ErrorResponse;
                 const detailText = findKnownError(text.detail, knownErrors);
                 return {
-                    visibility_windows: [],
-                    instrument_ids: [],
-                    observatory_visibility_windows: {},
+                    jointVisibilityWindows: [],
+                    visibilityWindowInstrumentIds: [],
+                    observatoryVisibilityWindows: {},
                     error: detailText,
                 };
             }
@@ -107,13 +107,14 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
             const payload = (await response.json()) as JointVisibilityWindowResponse;
             return {
                 ...payload,
+                error: '',
             };
         } catch (err) {
             console.error('Error loading visibility calculator data:', err);
             return {
-                visibility_windows: [],
-                instrument_ids: [],
-                observatory_visibility_windows: {},
+                jointVisibilityWindows: [],
+                visibilityWindowInstrumentIds: [],
+                observatoryVisibilityWindows: {},
                 error: 'Error loading visibility calculator data. Please contact support with your search parameters to resolve this issue.',
             };
         }
@@ -124,9 +125,9 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
     return {
         queryParams: queryParams,
         telescopes: telescopes,
-        jointVisibilityWindows: visibilityData.then((data) => data.visibility_windows),
-        visibilityWindowInstrumentIds: visibilityData.then((data) => data.instrument_ids),
-        observatoryVisibilityWindows: visibilityData.then((data) => data.observatory_visibility_windows),
+        jointVisibilityWindows: visibilityData.then((data) => data.jointVisibilityWindows),
+        visibilityWindowInstrumentIds: visibilityData.then((data) => data.visibilityWindowInstrumentIds),
+        observatoryVisibilityWindows: visibilityData.then((data) => data.observatoryVisibilityWindows),
         error: visibilityData.then((data) => data.error),
     };
 }

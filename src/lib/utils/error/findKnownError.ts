@@ -1,13 +1,5 @@
 const DEFAULT_ERROR_MESSAGE = 'There was an error processing the request. Please contact support with your search parameters to resolve this issue.';
 
-/**
- * Attempts to match an error detail against known error patterns and returns a user-friendly message.
- * If no known pattern matches, returns a generic error message.
- *
- * @param detail - The error detail from the API response (can be string, array, or object)
- * @param knownErrors - Record of error pattern keys to user-friendly messages
- * @returns A user-friendly error message
- */
 export const findKnownError = (detail: unknown, knownErrors: Record<string, string> = {}): string => {
     let detailStr: string;
 

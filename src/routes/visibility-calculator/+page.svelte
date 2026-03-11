@@ -23,11 +23,10 @@
 
     export let data: JointVisibilityPageData;
 
-    $: error = data.error;
     $: telescopes = data.telescopes;
-    $: joint_visibility_windows = data.joint_visibility_windows;
-    $: visibility_window_instrument_ids = data.visibility_window_instrument_ids;
-    $: observatory_visibility_windows = data.observatory_visibility_windows;
+    $: jointVisibilityWindows = data.jointVisibilityWindows;
+    $: visibilityWindowInstrumentIds = data.visibilityWindowInstrumentIds;
+    $: observatoryVisibilityWindows = data.observatoryVisibilityWindows;
 
     // Observatory/Telescope/Instrument selector state
     $: observatories = telescopes
@@ -55,32 +54,23 @@
     let selectedInstruments: TelescopeInstrument[] = [];
 
     // Coordinate inputs
-    let ra = '';
-    let dec = '';
+    let ra = String(data.queryParams?.ra || '');
+    let dec = String(data.queryParams?.dec || '');
 
     // Date range inputs
     $: dateRangeBegin = '';
     $: dateRangeEnd = '';
 
     // Optional parameters
-    let hi_res = false;
-    let min_visibility_duration = '';
+    let hiRes = data.queryParams?.hi_res || false;
+    let minVisibilityDuration = String(data.queryParams?.min_visibility_duration || '');
 
     // Populate inputs from URL parameters
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
 
-        // Populate coordinates
-        if (urlParams.has('ra')) ra = urlParams.get('ra') || '';
-        if (urlParams.has('dec')) dec = urlParams.get('dec') || '';
-
-        // Populate date range
-        const dateRangeBegin = urlParams.get('date_range_begin');
-        const dateRangeEnd = urlParams.get('date_range_end');
-
-        // Populate optional parameters
-        if (urlParams.has('hi_res')) hi_res = urlParams.get('hi_res') === 'true';
-        if (urlParams.has('min_visibility_duration')) min_visibility_duration = urlParams.get('min_visibility_duration') || '';
+        dateRangeBegin = urlParams.get('date_range_begin') || '';
+        dateRangeEnd = urlParams.get('date_range_end') || '';
 
         // Populate instrument selection
         const instrumentIds = urlParams.get('instrument_ids')?.split(',') || [];
@@ -88,19 +78,19 @@
             selectedInstruments = instruments.filter((inst) => instrumentIds.includes(inst.id));
 
             // Auto-select parent telescopes and observatories
-            const telescopeIds = new Set<string>();
-            const observatoryIds = new Set<string>();
+            const selectedTelescopeIds = new Set<string>();
+            const selectedObservatoryIds = new Set<string>();
 
             selectedInstruments.forEach((inst) => {
                 const telescope = telescopes.find((tel) => tel.instruments.some((i) => i.id === inst.id));
                 if (telescope) {
-                    telescopeIds.add(telescope.id);
-                    observatoryIds.add(telescope.observatory.id);
+                    selectedTelescopeIds.add(telescope.id);
+                    selectedObservatoryIds.add(telescope.observatory.id);
                 }
             });
 
-            selectedTelescopes = telescopes.filter((tel) => telescopeIds.has(tel.id));
-            selectedObservatories = observatories.filter((obs) => observatoryIds.has(obs.id));
+            selectedTelescopes = telescopes.filter((tel) => selectedTelescopeIds.has(tel.id));
+            selectedObservatories = observatories.filter((obs) => selectedObservatoryIds.has(obs.id));
         }
     });
 
@@ -111,8 +101,8 @@
         if (dateRangeEnd) params.append('date_range_end', `${dateRangeEnd}`);
         if (ra) params.append('ra', ra);
         if (dec) params.append('dec', dec);
-        if (hi_res) params.append('hi_res', 'true');
-        if (min_visibility_duration) params.append('min_visibility_duration', min_visibility_duration);
+        if (hiRes) params.append('hi_res', 'true');
+        if (minVisibilityDuration) params.append('min_visibility_duration', minVisibilityDuration);
 
         if (selectedInstruments.length) params.append('instrument_ids', selectedInstruments.map((inst) => inst.id).join(','));
 
@@ -127,8 +117,8 @@
         dec = '';
         dateRangeBegin = '';
         dateRangeEnd = '';
-        hi_res = false;
-        min_visibility_duration = '';
+        hiRes = false;
+        minVisibilityDuration = '';
 
         await calculateVisibility();
     }
@@ -178,150 +168,175 @@
                 <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
             </div>
 
-            <div class="bg-base-100 p-4 mb-4">
-                <h3 class="text-lg font-semibold mb-4">Optional Parameters</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-control">
-                        <label class="label cursor-pointer justify-start gap-4">
-                            <input id="hi_res-input" type="checkbox" bind:checked={hi_res} class="checkbox checkbox-primary" />
-                            <span class="label-text text-lg">High Resolution</span>
-                        </label>
-                    </div>
+            <div class="collapse collapse-arrow bg-base-100 mb-4">
+                <input type="checkbox" />
+                <div class="collapse-title text-lg font-semibold">Optional Parameters</div>
+                <div class="collapse-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div class="form-control">
+                            <label class="label cursor-pointer justify-start gap-4">
+                                <input id="hi_res-input" type="checkbox" bind:checked={hiRes} class="checkbox checkbox-primary" />
+                                <span class="label-text text-lg">High Resolution</span>
+                            </label>
+                        </div>
 
-                    <div class="form-control">
-                        <label class="label text-lg" for="minvis-duration-input">
-                            <span class="label-text">Minimum Visibility Duration (seconds)</span>
-                        </label>
-                        <input
-                            id="minvis-duration-input"
-                            type="number"
-                            inputmode="numeric"
-                            bind:value={min_visibility_duration}
-                            placeholder="e.g. 300"
-                            min="1"
-                            step="1"
-                            class="input input-bordered text-lg w-full"
-                        />
+                        <div class="form-control">
+                            <label class="label text-lg" for="minvis-duration-input">
+                                <span class="label-text">Minimum Visibility Duration (seconds)</span>
+                            </label>
+                            <input
+                                id="minvis-duration-input"
+                                type="number"
+                                inputmode="numeric"
+                                bind:value={minVisibilityDuration}
+                                placeholder="e.g. 300"
+                                min="1"
+                                step="1"
+                                class="input input-bordered text-lg w-full"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="flex justify-end mt-4">
-                {#if error}
-                    <p class="self-center pe-3 text-error">{error}</p>
-                {/if}
-                {#if isLoading}
-                    <div class="self-center spinner-border spinner-border-sm text-primary">
-                        <span class="loading loading-spinner loading-sm"></span>
-                    </div>
-                {/if}
                 <button class="btn btn-info text-lg {isLoading ? 'cursor-wait' : ''}" on:click={async () => await calculateVisibility()} disabled={isLoading}>
                     Calculate Visibility
                 </button>
             </div>
         </div>
     </Section>
-    <Section title="Joint Visibility Windows (Total: {joint_visibility_windows.length})" icon="globe" parentContainerClasses="w-full lg:px-5">
-        <div class="overflow-x-auto">
-            <table class="table table-pin-rows table-zebra w-full">
-                <thead>
-                    <tr class="bg-primary text-primary-content">
-                        <th class="text-center">Window #</th>
-                        <th>Start Reason</th>
-                        <th>Begin (UT)</th>
-                        <th>End (UT)</th>
-                        <th>End Reason</th>
-                        <th class="text-center">Max Visibility Duration (s)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {#if joint_visibility_windows.length === 0}
-                        <tr>
-                            <td colspan="6" class="text-center py-4">
-                                No visibility windows found for the given parameters. Please modify your selection and try again.
-                            </td>
-                        </tr>
-                    {/if}
-                    {#each joint_visibility_windows as window, index}
-                        <tr>
-                            <td class="text-center">{index + 1}</td>
-                            <td>{formatConstraintReason(window.constraint_reason.start_reason, window.window.begin.observatory_id, observatoryShortNames)}</td>
-                            <td class="text-xs">
-                                {prettyUTC(window.window.begin.datetime)}
-                            </td>
-                            <td class="text-xs">
-                                {prettyUTC(window.window.end.datetime)}
-                            </td>
-                            <td>{formatConstraintReason(window.constraint_reason.end_reason, window.window.end.observatory_id, observatoryShortNames)}</td>
-                            <td class="text-center">{window.max_visibility_duration.toFixed(2)}</td>
-                        </tr>
-                    {/each}
-                </tbody>
-            </table>
-        </div>
-    </Section>
 
-    {#if joint_visibility_windows.length > 0}
-        <Section title="Visibility Windows by Instrument" icon="telescope" parentContainerClasses="w-full lg:px-5">
-            <div class="space-y-4">
-                {#each visibility_window_instrument_ids as instrumentId}
-                    {@const instrument = instruments.find((inst) => inst.id === instrumentId)}
-                    {@const windows = observatory_visibility_windows[instrumentId] || []}
-                    {#if instrument && windows.length > 0}
-                        <div class="collapse collapse-arrow bg-base-200">
-                            <input type="checkbox" />
-                            <div class="collapse-title text-xl font-medium">
-                                {instrument.name}
-                                <span class="badge badge-primary ml-2">{windows.length} windows</span>
-                            </div>
-                            <div class="collapse-content">
-                                <div class="overflow-x-auto">
-                                    <table class="table table-pin-rows table-zebra w-full">
-                                        <thead>
-                                            <tr class="bg-primary text-primary-content">
-                                                <th class="text-center">Window #</th>
-                                                <th>Start Reason</th>
-                                                <th>Begin (UT)</th>
-                                                <th>End (UT)</th>
-                                                <th>End Reason</th>
-                                                <th class="text-center">Max Visibility Duration (s)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {#each windows as window, index}
-                                                <tr>
-                                                    <td class="text-center">{index + 1}</td>
-                                                    <td
-                                                        >{formatConstraintReason(
-                                                            window.constraint_reason.start_reason,
-                                                            window.window.begin.observatory_id,
-                                                            observatoryShortNames
-                                                        )}</td
-                                                    >
-                                                    <td class="text-xs">
-                                                        {prettyUTC(window.window.begin.datetime)}
-                                                    </td>
-                                                    <td class="text-xs">
-                                                        {prettyUTC(window.window.end.datetime)}
-                                                    </td>
-                                                    <td
-                                                        >{formatConstraintReason(
-                                                            window.constraint_reason.end_reason,
-                                                            window.window.end.observatory_id,
-                                                            observatoryShortNames
-                                                        )}</td
-                                                    >
-                                                    <td class="text-center">{window.max_visibility_duration.toFixed(2)}</td>
-                                                </tr>
-                                            {/each}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    {/if}
-                {/each}
+    {#await Promise.all([data.error, data.jointVisibilityWindows, data.visibilityWindowInstrumentIds, data.observatoryVisibilityWindows])}
+        <Section title="Joint Visibility Windows" icon="globe" parentContainerClasses="w-full lg:px-5">
+            <div class="flex items-center justify-center py-8">
+                <span class="loading loading-spinner loading-lg"></span>
             </div>
         </Section>
-    {/if}
+    {:then [error, jointVis, instrumentIds, obsVisWindows]}
+        <Section title="Joint Visibility Windows" icon="globe" parentContainerClasses="w-full lg:px-5">
+            <div class="collapse collapse-arrow border border-base-300 rounded-box">
+                <input type="checkbox" checked />
+                <div class="collapse-title text-lg font-semibold">Results ({jointVis.length})</div>
+                <div class="collapse-content">
+                    <div class="overflow-x-auto overflow-y-scroll max-h-128">
+                        <table class="table table-pin-rows table-zebra w-full">
+                            <thead>
+                                <tr class="bg-primary text-primary-content">
+                                    <th class="text-center">Window #</th>
+                                    <th>Start Reason</th>
+                                    <th>Begin (UT)</th>
+                                    <th>End (UT)</th>
+                                    <th>End Reason</th>
+                                    <th class="text-center">Max Visibility Duration (s)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {#if jointVis.length === 0}
+                                    <tr>
+                                        {#if error == ''}
+                                            <td colspan="6" class="text-center text-lg py-4"> No joint visibility windows found for the given parameters </td>
+                                        {:else}
+                                            <td colspan="6" class="text-center text-error text-lg py-4">
+                                                {error}
+                                            </td>
+                                        {/if}
+                                    </tr>
+                                {/if}
+                                {#each jointVis as window, index}
+                                    <tr>
+                                        <td class="text-center">{index + 1}</td>
+                                        <td
+                                            >{formatConstraintReason(
+                                                window.constraint_reason.start_reason,
+                                                window.window.begin.observatory_id,
+                                                observatoryShortNames
+                                            )}</td
+                                        >
+                                        <td class="text-xs">
+                                            {prettyUTC(window.window.begin.datetime)}
+                                        </td>
+                                        <td class="text-xs">
+                                            {prettyUTC(window.window.end.datetime)}
+                                        </td>
+                                        <td
+                                            >{formatConstraintReason(
+                                                window.constraint_reason.end_reason,
+                                                window.window.end.observatory_id,
+                                                observatoryShortNames
+                                            )}</td
+                                        >
+                                        <td class="text-center">{window.max_visibility_duration.toFixed(2)}</td>
+                                    </tr>
+                                {/each}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </Section>
+        {#if jointVis.length > 0}
+            <Section title="Visibility Windows by Instrument" icon="telescope" parentContainerClasses="w-full lg:px-5">
+                <div class="space-y-4">
+                    {#each instrumentIds as instrumentId}
+                        {@const instrument = instruments.find((inst) => inst.id === instrumentId)}
+                        {@const windows = obsVisWindows[instrumentId] || []}
+                        {#if instrument && windows.length > 0}
+                            <div class="collapse collapse-arrow border border-base-300 rounded-box">
+                                <input type="checkbox" />
+                                <div class="collapse-title text-xl font-medium">
+                                    {instrument.name}
+                                    <span class="badge badge-primary ml-2">{windows.length} windows</span>
+                                </div>
+                                <div class="collapse-content">
+                                    <div class="overflow-x-auto overflow-y-scroll max-h-128">
+                                        <table class="table table-pin-rows table-zebra w-full">
+                                            <thead>
+                                                <tr class="bg-primary text-primary-content">
+                                                    <th class="text-center">Window #</th>
+                                                    <th>Start Reason</th>
+                                                    <th>Begin (UT)</th>
+                                                    <th>End (UT)</th>
+                                                    <th>End Reason</th>
+                                                    <th class="text-center">Max Visibility Duration (s)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {#each windows as window, index}
+                                                    <tr>
+                                                        <td class="text-center">{index + 1}</td>
+                                                        <td
+                                                            >{formatConstraintReason(
+                                                                window.constraint_reason.start_reason,
+                                                                window.window.begin.observatory_id,
+                                                                observatoryShortNames
+                                                            )}</td
+                                                        >
+                                                        <td class="text-xs">
+                                                            {prettyUTC(window.window.begin.datetime)}
+                                                        </td>
+                                                        <td class="text-xs">
+                                                            {prettyUTC(window.window.end.datetime)}
+                                                        </td>
+                                                        <td
+                                                            >{formatConstraintReason(
+                                                                window.constraint_reason.end_reason,
+                                                                window.window.end.observatory_id,
+                                                                observatoryShortNames
+                                                            )}</td
+                                                        >
+                                                        <td class="text-center">{window.max_visibility_duration.toFixed(2)}</td>
+                                                    </tr>
+                                                {/each}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        {/if}
+                    {/each}
+                </div>
+            </Section>
+        {/if}
+    {/await}
 </Page>

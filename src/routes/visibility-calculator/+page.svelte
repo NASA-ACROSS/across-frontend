@@ -23,10 +23,7 @@
 
     export let data: JointVisibilityPageData;
 
-    $: telescopes = data.telescopes;
-    $: jointVisibilityWindows = data.jointVisibilityWindows;
-    $: visibilityWindowInstrumentIds = data.visibilityWindowInstrumentIds;
-    $: observatoryVisibilityWindows = data.observatoryVisibilityWindows;
+    let telescopes = data.telescopes;
 
     // Observatory/Telescope/Instrument selector state
     $: observatories = telescopes
@@ -279,7 +276,7 @@
             <Section title="Visibility Windows by Instrument" icon="telescope" parentContainerClasses="w-full lg:px-5">
                 <div class="space-y-4">
                     {#each results.visibilityWindowInstrumentIds as instrumentId}
-                        {@const instrument = data.telescopes.find((inst) => inst.id === instrumentId)}
+                        {@const instrument = instruments.find((inst) => inst.id === instrumentId)}
                         {@const windows = results.observatoryVisibilityWindows[instrumentId] || []}
                         {#if instrument && windows.length > 0}
                             <div class="collapse collapse-arrow border border-base-300 rounded-box">

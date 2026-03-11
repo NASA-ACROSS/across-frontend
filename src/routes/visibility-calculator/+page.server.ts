@@ -95,8 +95,6 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
 
     // Lazy load visibility windows as a Promise
     const visibilityWindowData = fetch(apiUrl).then(async (response) => {
-        // try {
-
         if (!response.ok) {
             console.log(`API responded with status: ${response.status} for request URL ${apiUrl.toString()}`);
             const text = (await response.json()) as ErrorResponse;

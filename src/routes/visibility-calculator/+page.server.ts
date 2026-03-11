@@ -35,13 +35,17 @@ const knownErrors: Record<string, string> = {
     '"type":"missing","loc":["query","instrument_ids"]': 'At least one instrument must be selected',
 };
 
+export type VisibilityWindowsData = {
+    jointVisibilityWindows: JointVisibilityWindowResponse['visibility_windows'];
+    visibilityWindowInstrumentIds: JointVisibilityWindowResponse['instrument_ids'];
+    observatoryVisibilityWindows: JointVisibilityWindowResponse['observatory_visibility_windows'];
+    error: string;
+};
+
 export type JointVisibilityPageData = {
     queryParams: JointVisibilityQueryParams;
     telescopes: Telescope[];
-    jointVisibilityWindows: Promise<JointVisibilityWindowResponse['visibility_windows']>;
-    visibilityWindowInstrumentIds: Promise<JointVisibilityWindowResponse['instrument_ids']>;
-    observatoryVisibilityWindows: Promise<JointVisibilityWindowResponse['observatory_visibility_windows']>;
-    error: Promise<string>;
+    visibilityWindowsData: Promise<VisibilityWindowsData>;
 };
 
 export async function load({ url, locals, cookies }: RequestEvent): Promise<JointVisibilityPageData> {
@@ -62,6 +66,19 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
 
     telescopes = await getTelescopes(userCookie, cookies);
 
+    if (!Object.values(queryParams).length) {
+        return {
+            queryParams: queryParams,
+            telescopes: telescopes,
+            visibilityWindowsData: Promise.resolve({
+                jointVisibilityWindows: [],
+                visibilityWindowInstrumentIds: [],
+                observatoryVisibilityWindows: {},
+                error: '',
+            }),
+        };
+    }
+
     // Build API URL with parameters
     const apiUrl = new URL(`${CONFIG.API_URL}/tools/visibility-calculator/windows/`);
     // Add all query parameters to API request
@@ -77,58 +94,43 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
     });
 
     // Lazy load visibility windows as a Promise
-    const fetchVisibilityWindows = async () => {
-        try {
-            if (!Object.values(queryParams).length) {
-                return {
-                    queryParams: queryParams,
-                    telescopes: telescopes,
-                    jointVisibilityWindows: [],
-                    visibilityWindowInstrumentIds: [],
-                    observatoryVisibilityWindows: {},
-                    error: '',
-                };
-            }
+    const visibilityWindowData = fetch(apiUrl).then(async (response) => {
+        // try {
 
-            const response = await fetch(apiUrl);
-
-            if (!response.ok) {
-                console.log(`API responded with status: ${response.status} for request URL ${apiUrl.toString()}`);
-                const text = (await response.json()) as ErrorResponse;
-                const detailText = findKnownError(text.detail, knownErrors);
-                return {
-                    jointVisibilityWindows: [],
-                    visibilityWindowInstrumentIds: [],
-                    observatoryVisibilityWindows: {},
-                    error: detailText,
-                };
-            }
-
-            const payload = (await response.json()) as JointVisibilityWindowResponse;
-            return {
-                ...payload,
-                error: '',
-            };
-        } catch (err) {
-            console.error('Error loading visibility calculator data:', err);
+        if (!response.ok) {
+            console.log(`API responded with status: ${response.status} for request URL ${apiUrl.toString()}`);
+            const text = (await response.json()) as ErrorResponse;
+            const detailText = findKnownError(text.detail, knownErrors);
             return {
                 jointVisibilityWindows: [],
                 visibilityWindowInstrumentIds: [],
                 observatoryVisibilityWindows: {},
-                error: 'Error loading visibility calculator data. Please contact support with your search parameters to resolve this issue.',
+                error: detailText,
             };
         }
-    };
 
-    const visibilityData = fetchVisibilityWindows();
+        const data = (await response.json()) as JointVisibilityWindowResponse;
+        return {
+            jointVisibilityWindows: data.visibility_windows,
+            visibilityWindowInstrumentIds: data.instrument_ids,
+            observatoryVisibilityWindows: data.observatory_visibility_windows,
+            error: '',
+        };
+        // } catch (err) {
+        //     console.error('Error loading visibility calculator data:', err);
+        //     return {
+        //         jointVisibilityWindows: [],
+        //         visibilityWindowInstrumentIds: [],
+        //         observatoryVisibilityWindows: {},
+        //         error: 'Error loading visibility calculator data. Please contact support with your search parameters to resolve this issue.',
+        //     };
+        // }
+    });
 
     return {
         queryParams: queryParams,
         telescopes: telescopes,
-        jointVisibilityWindows: visibilityData.then((data) => data.jointVisibilityWindows),
-        visibilityWindowInstrumentIds: visibilityData.then((data) => data.visibilityWindowInstrumentIds),
-        observatoryVisibilityWindows: visibilityData.then((data) => data.observatoryVisibilityWindows),
-        error: visibilityData.then((data) => data.error),
+        visibilityWindowsData: visibilityWindowData,
     };
 }
 

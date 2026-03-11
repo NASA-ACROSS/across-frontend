@@ -207,17 +207,17 @@
         </div>
     </Section>
 
-    {#await Promise.all([data.error, data.jointVisibilityWindows, data.visibilityWindowInstrumentIds, data.observatoryVisibilityWindows])}
+    {#await data.visibilityWindowsData}
         <Section title="Joint Visibility Windows" icon="globe" parentContainerClasses="w-full lg:px-5">
             <div class="flex items-center justify-center py-8">
                 <span class="loading loading-spinner loading-lg"></span>
             </div>
         </Section>
-    {:then [error, jointVis, instrumentIds, obsVisWindows]}
+    {:then results}
         <Section title="Joint Visibility Windows" icon="globe" parentContainerClasses="w-full lg:px-5">
             <div class="collapse collapse-arrow border border-base-300 rounded-box">
                 <input type="checkbox" checked />
-                <div class="collapse-title text-lg font-semibold">Results ({jointVis.length})</div>
+                <div class="collapse-title text-lg font-semibold">Results ({results.jointVisibilityWindows.length})</div>
                 <div class="collapse-content">
                     <div class="overflow-x-auto overflow-y-scroll max-h-128">
                         <table class="table table-pin-rows table-zebra w-full">
@@ -232,18 +232,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {#if jointVis.length === 0}
+                                {#if results.jointVisibilityWindows.length === 0}
                                     <tr>
-                                        {#if error == ''}
+                                        {#if results.error == ''}
                                             <td colspan="6" class="text-center text-lg py-4"> No joint visibility windows found for the given parameters </td>
                                         {:else}
                                             <td colspan="6" class="text-center text-error text-lg py-4">
-                                                {error}
+                                                {results.error}
                                             </td>
                                         {/if}
                                     </tr>
                                 {/if}
-                                {#each jointVis as window, index}
+                                {#each results.jointVisibilityWindows as window, index}
                                     <tr>
                                         <td class="text-center">{index + 1}</td>
                                         <td
@@ -275,12 +275,12 @@
                 </div>
             </div>
         </Section>
-        {#if jointVis.length > 0}
+        {#if results.jointVisibilityWindows.length > 0}
             <Section title="Visibility Windows by Instrument" icon="telescope" parentContainerClasses="w-full lg:px-5">
                 <div class="space-y-4">
-                    {#each instrumentIds as instrumentId}
-                        {@const instrument = instruments.find((inst) => inst.id === instrumentId)}
-                        {@const windows = obsVisWindows[instrumentId] || []}
+                    {#each results.visibilityWindowInstrumentIds as instrumentId}
+                        {@const instrument = data.telescopes.find((inst) => inst.id === instrumentId)}
+                        {@const windows = results.observatoryVisibilityWindows[instrumentId] || []}
                         {#if instrument && windows.length > 0}
                             <div class="collapse collapse-arrow border border-base-300 rounded-box">
                                 <input type="checkbox" />

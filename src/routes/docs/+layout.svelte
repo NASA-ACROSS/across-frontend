@@ -33,23 +33,23 @@
 
 <Page center={true}>
     <Section containerClasses={'w-full'}>
-        <div class="grid grid-cols-4 min-h-screen gap-4 p-4">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
             <div class="col-span-1 rounded-box p-4">
-                <div class="drawer lg:drawer-open">
+                <div class="drawer drawer-open">
                     <input id="docs-drawer" type="checkbox" class="drawer-toggle" />
-                    <div class="drawer-content flex flex-col lg:hidden">
+                    <!-- <div class="drawer-content flex flex-col lg:hidden">
                         <label for="docs-drawer" class="btn btn-primary btn-sm drawer-button m-4">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                             </svg>
                             Menu
                         </label>
-                    </div>
-                    <div class="drawer-side z-10">
+                    </div> -->
+                    <div class="drawer-content z-10 w-full">
                         <label for="docs-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                        <ul class="menu menu-lg p-0 gap-1 divide-y divide-base-300/70">
+                        <ul class="menu menu-lg p-0 gap-1 divide-y divide-base-300/70 w-full">
                             {#each docsLinks as link}
-                                <li class="first:border-t last:border-b border-base-300/70">
+                                <li class="first:border-t last:border-b border-base-300/70 w-full">
                                     <a
                                         data-sveltekit-preload-data="tap"
                                         href={resolve(link.href)}
@@ -58,7 +58,7 @@
                                         {link.label}
                                     </a>
                                     {#if link.href === '/docs/data-model' && isDataModelPage}
-                                        <ul class="menu menu-sm rounded-box w-full p-2 gap-1 divide-y divide-base-300/70">
+                                        <ul class="rounded-box w-full divide-y divide-base-300/70">
                                             {#each dataModelSubsections as subsection}
                                                 <li class="first:border-t border-base-300/70">
                                                     <a href={resolve(link.href + subsection.href)} class="docs-subsection-link pl-4">

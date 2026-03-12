@@ -114,15 +114,6 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
             observatoryVisibilityWindows: data.observatory_visibility_windows,
             error: '',
         };
-        // } catch (err) {
-        //     console.error('Error loading visibility calculator data:', err);
-        //     return {
-        //         jointVisibilityWindows: [],
-        //         visibilityWindowInstrumentIds: [],
-        //         observatoryVisibilityWindows: {},
-        //         error: 'Error loading visibility calculator data. Please contact support with your search parameters to resolve this issue.',
-        //     };
-        // }
     });
 
     return {

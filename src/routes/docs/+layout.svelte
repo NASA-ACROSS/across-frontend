@@ -24,6 +24,10 @@
 
     let currentPath = normalizePath(page.url.pathname);
 
+    afterNavigate(() => {
+        currentPath = normalizePath(page.url.pathname);
+    });
+
     $: isDataModelPage = currentPath === '/docs/data-model';
 </script>
 

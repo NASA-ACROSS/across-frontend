@@ -7,7 +7,7 @@
     import Section from '$lib/components/Section.svelte';
     import CoordinateSearch from '$lib/components/CoordinateSearch.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
-    import DateRangeInput from '$lib/components/DateRangeInput.svelte';
+    import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
     import type { Telescope } from '$lib/types/across/Telescope';

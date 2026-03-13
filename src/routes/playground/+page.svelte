@@ -2,7 +2,6 @@
     import MultiSelect, { type Option } from '$lib/components/MultiSelect.svelte';
     import Section from '$lib/components/Section.svelte';
     import Page from '$lib/components/Page.svelte';
-    import DateRangeInput from '$lib/components/DateRangeInput.svelte';
     import DateRangeInputExample from './_components/DateRangeInputExample.svelte';
 
     // Multiselect properties and testing custom onToggle

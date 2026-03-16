@@ -3,7 +3,7 @@
 </h2>
 <div class="space-y-8">
     <p class="text-base leading-relaxed">
-        So you'd like to contribute to the ACROSS Tools? Below are some guidelines for contributors to follow. Contributions come in all shapes and sizes. We
+        So you'd like to contribute to the ACROSS Project? Below are some guidelines for contributors to follow. Contributions come in all shapes and sizes. We
         appreciate your help with documentation, unit tests, framework code, continuous-integration, or simply reporting bugs and improvement ideas. We can't
         promise that we'll accept every suggestion or fix every bug in a timely manner but we'll respond to you as quickly as possible.
     </p>
@@ -156,7 +156,7 @@
                 <h5 class="text-lg font-semibold">What Happens to My Pull Request?</h5>
                 <ol class="list-decimal list-inside space-y-1 ml-2 text-base leading-relaxed">
                     <li>The ACROSS team will label and evaluate the pull request in their weekly stakeholder meetings.</li>
-                    <li>If the pull request is accepted, it will be merged into across-tools.</li>
+                    <li>If the pull request is accepted, it will be merged into the ACROSS repository.</li>
                 </ol>
             </div>
         </div>

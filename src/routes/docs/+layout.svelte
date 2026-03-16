@@ -1,7 +1,6 @@
 <script lang="ts">
     import { afterNavigate } from '$app/navigation';
     import { page } from '$app/state';
-    import { resolve } from '$app/paths';
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
 
@@ -37,14 +36,6 @@
             <div class="col-span-1 rounded-box p-4">
                 <div class="drawer drawer-open">
                     <input id="docs-drawer" type="checkbox" class="drawer-toggle" />
-                    <!-- <div class="drawer-content flex flex-col lg:hidden">
-                        <label for="docs-drawer" class="btn btn-primary btn-sm drawer-button m-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                            </svg>
-                            Menu
-                        </label>
-                    </div> -->
                     <div class="drawer-content z-10 w-full">
                         <label for="docs-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
                         <ul class="menu menu-lg p-0 gap-1 divide-y divide-base-300/70 w-full">
@@ -52,7 +43,7 @@
                                 <li class="first:border-t last:border-b border-base-300/70 w-full">
                                     <a
                                         data-sveltekit-preload-data="tap"
-                                        href={resolve(link.href)}
+                                        href={link.href}
                                         class={currentPath === normalizePath(link.href) ? 'active font-semibold docs-link-active' : ''}
                                     >
                                         {link.label}
@@ -61,7 +52,7 @@
                                         <ul class="rounded-box w-full divide-y divide-base-300/70">
                                             {#each dataModelSubsections as subsection}
                                                 <li class="first:border-t border-base-300/70">
-                                                    <a href={resolve(link.href + subsection.href)} class="docs-subsection-link pl-4">
+                                                    <a href={link.href + subsection.href} class="docs-subsection-link pl-4">
                                                         {subsection.label}
                                                     </a>
                                                 </li>

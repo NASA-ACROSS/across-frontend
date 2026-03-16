@@ -66,9 +66,6 @@
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
 
-        // dateRangeBegin = urlParams.get('date_range_begin') || '';
-        // dateRangeEnd =
-
         // Populate instrument selection
         const instrumentIds = urlParams.get('instrument_ids')?.split(',') || [];
         if (instrumentIds.length > 0) {

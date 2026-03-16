@@ -2,7 +2,7 @@
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
     import CoordinateSearch from '$lib/components/CoordinateSearch.svelte';
-    import DateRangeInput from '$lib/components/DateRangeInput.svelte';
+    import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
     import { beforeNavigate, afterNavigate } from '$app/navigation';
     import { goto } from '$app/navigation';
@@ -55,8 +55,8 @@
     let dec = String(data.queryParams?.dec || '');
 
     // Date range inputs
-    $: dateRangeBegin = '';
-    $: dateRangeEnd = '';
+    let dateRangeBegin = data.queryParams?.date_range_begin || '';
+    let dateRangeEnd = data.queryParams?.date_range_end || '';
 
     // Optional parameters
     let hiRes = data.queryParams?.hi_res || false;
@@ -66,8 +66,8 @@
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
 
-        dateRangeBegin = urlParams.get('date_range_begin') || '';
-        dateRangeEnd = urlParams.get('date_range_end') || '';
+        // dateRangeBegin = urlParams.get('date_range_begin') || '';
+        // dateRangeEnd =
 
         // Populate instrument selection
         const instrumentIds = urlParams.get('instrument_ids')?.split(',') || [];

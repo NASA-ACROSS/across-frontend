@@ -6,7 +6,7 @@
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
     import ObservatoryTelescopeSelector from '$lib/components/ObservatoryTelescopeSelector.svelte';
-    import DateRangeInput from '$lib/components/DateRangeInput.svelte';
+    import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
     import Pagination from '$lib/components/Pagination.svelte';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';

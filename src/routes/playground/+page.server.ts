@@ -1,10 +1,7 @@
-import { error } from '@sveltejs/kit';
-import { PUBLIC_CONFIG } from '$config/config.public';
+import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute';
 
 export const load = () => {
-    if (PUBLIC_CONFIG.BUILD_VERSION !== 'local') {
-        error(404);
-    }
+    localOnlyRoute();
 
     return {};
 };

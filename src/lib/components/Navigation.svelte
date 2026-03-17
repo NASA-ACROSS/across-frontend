@@ -44,6 +44,9 @@
                         <li class="hover:underline decoration-dashed">
                             <a data-sveltekit-preload-data="tap" href={resolve('/ingestion-status')}>Data Ingestion Status</a>
                         </li>
+                        <li class="hover:underline decoration-dashed">
+                            <a data-sveltekit-preload-data="tap" href={resolve('/visibility-calculator')}>Visibility Calculator</a>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -86,6 +89,9 @@
                     <ul class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm">
                         <li>
                             <a data-sveltekit-preload-data="tap" href={resolve('/ingestion-status')}>Data Ingestion Status</a>
+                        </li>
+                        <li>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/visibility-calculator')}>Visibility Calculator</a>
                         </li>
                     </ul>
                 </div>

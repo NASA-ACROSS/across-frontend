@@ -15,7 +15,7 @@
         <h6 class="footer-title">Services</h6>
         <a href={resolve('/schedules')}>Schedules</a>
         <a href={resolve('/observations')}>Observations</a>
-        <a href={resolve('/observations')}>Visibility Calculator</a>
+        <a href={resolve('/visibility-calculator')}>Visibility Calculator</a>
     </nav>
     <nav>
         <h6 class="footer-title">Info</h6>

@@ -6,9 +6,9 @@
 
     const docsLinks = [
         { href: '/docs/about', label: 'About' },
-        { href: '/docs/data-model', label: 'Data Model' },
+        { href: '/docs/data-model', label: 'Data Models' },
         { href: '/docs/data-ingestion', label: 'Data Ingestion' },
-        { href: '/docs/tools', label: 'Tools' },
+        { href: '/docs/tools', label: 'Tools & Code' },
         { href: '/docs/code-of-conduct', label: 'Code of Conduct' },
         { href: '/docs/contributing', label: 'Contributing' },
     ];
@@ -17,6 +17,12 @@
         { href: '#observatories', label: 'Observatories' },
         { href: '#schedules', label: 'Schedules' },
         { href: '#units', label: 'Units' },
+    ];
+
+    const toolsSubsections = [
+        { href: '#visibility-calculator', label: 'Visibility Calculator' },
+        { href: '#query-portals', label: 'Query Portals' },
+        { href: '#python-libraries', label: 'Python Libraries' },
     ];
 
     const normalizePath = (path: string) => (path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path);
@@ -28,6 +34,7 @@
     });
 
     $: isDataModelPage = currentPath === '/docs/data-model';
+    $: isToolsPage = currentPath === '/docs/tools';
 </script>
 
 <Page center={true}>
@@ -51,6 +58,17 @@
                                     {#if link.href === '/docs/data-model' && isDataModelPage}
                                         <ul class="rounded-box w-full divide-y divide-base-300/70">
                                             {#each dataModelSubsections as subsection}
+                                                <li class="first:border-t border-base-300/70">
+                                                    <a href={link.href + subsection.href} class="docs-subsection-link pl-4">
+                                                        {subsection.label}
+                                                    </a>
+                                                </li>
+                                            {/each}
+                                        </ul>
+                                    {/if}
+                                    {#if link.href === '/docs/tools' && isToolsPage}
+                                        <ul class="rounded-box w-full divide-y divide-base-300/70">
+                                            {#each toolsSubsections as subsection}
                                                 <li class="first:border-t border-base-300/70">
                                                     <a href={link.href + subsection.href} class="docs-subsection-link pl-4">
                                                         {subsection.label}

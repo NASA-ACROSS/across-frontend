@@ -12,8 +12,8 @@
         <p class="text-base leading-relaxed">The instrument model supports the following metadata:</p>
         <ul class="list-disc list-inside space-y-1 ml-2 text-base leading-relaxed">
             <li>
-                <strong>FOV Footprint</strong> — instruments with imaging capabilities can have their field of view represented as a list of polygon vertices. Upon
-                data-ingestion, we accept a projected footprint for the instrument's observation FOV.
+                <strong>FOV Footprint</strong> — instruments with imaging capabilities can have their field of view (FOV) represented as a list of polygon vertices.
+                Upon data-ingestion, we accept a projected footprint for the instrument's observation FOV.
             </li>
             <li>
                 <strong>Visibility Constraints</strong> — a list of observing constraints (e.g. sun angle, moon angle, Earth limb exclusion) used by the visibility
@@ -25,19 +25,17 @@
             </li>
         </ul>
         <div class="bg-base-200 rounded-box p-4 text-sm leading-relaxed">
-            <p class="font-semibold mb-2">Hierarchy</p>
+            <p class="font-semibold mb-3">Hierarchy</p>
             <div class="flex items-center gap-2 flex-wrap text-base-content/80">
-                <span class="badge badge-primary badge-outline">Observatory</span>
+                <span class="badge badge-primary">Observatory</span>
                 <span>→</span>
-                <span class="badge badge-primary badge-outline">Telescope(s)</span>
+                <span class="badge badge-primary">Telescope(s)</span>
                 <span>→</span>
-                <span class="badge badge-primary badge-outline">Instrument(s)</span>
-                <span>→</span>
-                <span class="badge badge-secondary badge-outline">Footprint(s)</span>
-                <span class="text-base-content/40">|</span>
-                <span class="badge badge-secondary badge-outline">Visibility Constraints</span>
-                <span class="text-base-content/40">|</span>
-                <span class="badge badge-secondary badge-outline">Bandpass Filters</span>
+                <span class="badge badge-primary">Instrument(s)</span>
+                <span class="text-base-content/40">→</span>
+                <span class="badge badge-secondary">Footprint(s)</span>
+                <span class="badge badge-secondary">Visibility Constraints</span>
+                <span class="badge badge-secondary">Bandpass Filters</span>
             </div>
         </div>
     </section>
@@ -45,14 +43,15 @@
     <section id="schedules" class="space-y-3">
         <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">Schedules</h3>
         <p class="text-base leading-relaxed">
-            Similarly, we represent observing schedules where a schedule is an aggregation of many observations over a continuous date range. A schedule can
-            contain observations belonging to multiple instruments associated with the particular schedule's telescope.
+            Similarly, we represent observing schedules where a schedule is an aggregation of many observations from a single telescope over a continuous date
+            range. A schedule can contain observations belonging to multiple instruments associated with the particular schedule's telescope.
         </p>
         <p class="text-base leading-relaxed">Each observation can be described by:</p>
         <ul class="list-disc list-inside space-y-1 ml-2 text-base leading-relaxed">
             <li>Observation type (spectroscopy, imaging, etc.)</li>
             <li>Target coordinates</li>
             <li>A date range for the exposure time</li>
+            <li>Bandpass and filter information</li>
         </ul>
     </section>
 

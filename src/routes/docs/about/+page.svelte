@@ -11,6 +11,10 @@
             astrophysical events — maximizing the scientific return of the astrophysics community.
         </p>
         <p class="text-base leading-relaxed">
+            ACROSS is a <strong>NASA-led effort</strong>, initially focused on supporting NASA's own fleet of space observatories, with the longer-term vision
+            of potentially expanding to include observatories across the broader astrophysics community.
+        </p>
+        <p class="text-base leading-relaxed">
             Advancing this field relies not only on technological innovation and scientific insight, but equally on the collaboration, communication, and
             infrastructure necessary to support multifaceted exploration of the universe.
         </p>

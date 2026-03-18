@@ -7,10 +7,14 @@ import type { RequestEvent } from './$types';
 import { CONFIG } from '../../config/config';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import searchParams from '$lib/utils/searchParams/searchParams';
 =======
 import normalizeSearchParams from '$lib/utils/normalizeSearchParams';
 >>>>>>> a855c89 (fix: use form to load vis windows)
+=======
+import searchParams from '$lib/utils/searchParams/searchParams';
+>>>>>>> ccc40cb (fix: simplify instrument section logic)
 
 type ErrorResponse = {
     detail: unknown;
@@ -59,6 +63,7 @@ export type JointVisibilityPageData = {
 export async function load({ url, locals, cookies }: RequestEvent): Promise<JointVisibilityPageData> {
     const userCookie = locals?.user as UserCredentialsCookie;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     const queryParams = searchParams.deserialize<JointVisibilityQueryParams>(url.searchParams, {
         instrument_ids: 'array',
@@ -102,6 +107,13 @@ export const actions = {
 =======
     const instrumentIds = url.searchParams.get('instrument_ids')?.split(',') || [];
     if (instrumentIds?.length) queryParams.instrument_ids = instrumentIds;
+=======
+
+    const queryParams = searchParams.deserialize<JointVisibilityQueryParams>(url.searchParams, {
+        instrument_ids: 'array',
+        hi_res: 'boolean',
+    });
+>>>>>>> ccc40cb (fix: simplify instrument section logic)
 
     const telescopes = await getTelescopes(userCookie, cookies);
 
@@ -113,14 +125,30 @@ export const actions = {
     resolveObject,
     calculateVisibilityWindows: async (event: RequestEvent): Promise<VisibilityWindowsData> => {
         const form = await event.request.formData();
-        const params = normalizeSearchParams(form, { instrument_ids: 'array' });
+        const params = searchParams.serialize(form, { instrument_ids: 'array' });
 
         // Build API URL with parameters
         const apiUrl = new URL(`${CONFIG.API_URL}/tools/visibility-calculator/windows?${params.toString()}`);
 
+<<<<<<< HEAD
         // Lazy load visibility windows as a Promise
         const response = await fetch(apiUrl);
 >>>>>>> a855c89 (fix: use form to load vis windows)
+=======
+        let response: Response;
+        try {
+            response = await fetch(apiUrl);
+        } catch (error) {
+            console.error('ERROR fetching visibility windows:', error);
+
+            return {
+                jointVisibilityWindows: [],
+                visibilityWindowInstrumentIds: [],
+                observatoryVisibilityWindows: {},
+                error: 'An error occurred while fetching visibility windows. Please contact support if it continues.',
+            };
+        }
+>>>>>>> ccc40cb (fix: simplify instrument section logic)
 
         if (!response.ok) {
             const text = (await response.json()) as ErrorResponse;

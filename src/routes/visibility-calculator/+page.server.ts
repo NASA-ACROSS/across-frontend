@@ -6,13 +6,14 @@ import { findKnownError } from '$lib/utils/error/findKnownError';
 import type { RequestEvent } from './$types';
 import { CONFIG } from '../../config/config';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import normalizeSearchParams from '$lib/utils/normalizeSearchParams';
 
 type ErrorResponse = {
     detail: unknown;
 };
 
 type JointVisibilityQueryParams = {
-    instrument_ids?: string[] | null;
+    instrument_ids: string[];
     date_range_begin?: string | null;
     date_range_end?: string | null;
     ra?: string | number | null;
@@ -45,14 +46,13 @@ export type VisibilityWindowsData = {
 export type JointVisibilityPageData = {
     queryParams: JointVisibilityQueryParams;
     telescopes: Telescope[];
-    visibilityWindowsData: Promise<VisibilityWindowsData>;
 };
 
 export async function load({ url, locals, cookies }: RequestEvent): Promise<JointVisibilityPageData> {
     const userCookie = locals?.user as UserCredentialsCookie;
-    const queryParams: JointVisibilityQueryParams = {} as JointVisibilityQueryParams;
-
-    let telescopes: Telescope[] = [];
+    const queryParams: JointVisibilityQueryParams = {
+        instrument_ids: [],
+    };
 
     if (url.searchParams.has('date_range_begin')) queryParams.date_range_begin = url.searchParams.get('date_range_begin');
     if (url.searchParams.has('date_range_end')) queryParams.date_range_end = url.searchParams.get('date_range_end');
@@ -61,44 +61,35 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
     if (url.searchParams.has('min_visibility_duration')) queryParams.min_visibility_duration = url.searchParams.get('min_visibility_duration');
     if (url.searchParams.has('hi_res')) queryParams.hi_res = url.searchParams.get('hi_res') === 'false' ? false : true;
 
-    const instrumentIds = url.searchParams.get('instrument_ids')?.split(',');
+    const instrumentIds = url.searchParams.get('instrument_ids')?.split(',') || [];
     if (instrumentIds?.length) queryParams.instrument_ids = instrumentIds;
 
-    telescopes = await getTelescopes(userCookie, cookies);
+    const telescopes = await getTelescopes(userCookie, cookies);
 
-    if (!Object.values(queryParams).length) {
-        return {
-            queryParams: queryParams,
-            telescopes: telescopes,
-            visibilityWindowsData: Promise.resolve({
-                jointVisibilityWindows: [],
-                visibilityWindowInstrumentIds: [],
-                observatoryVisibilityWindows: {},
-                error: '',
-            }),
-        };
-    }
+    return { queryParams, telescopes };
+}
 
-    // Build API URL with parameters
-    const apiUrl = new URL(`${CONFIG.API_URL}/tools/visibility-calculator/windows/`);
-    // Add all query parameters to API request
-    Object.entries(queryParams).forEach(([key, value]) => {
-        if (value !== undefined) {
-            if (Array.isArray(value)) {
-                value.forEach((item) => apiUrl.searchParams.append(key, item));
-            } else {
-                // only add valid api params
-                apiUrl.searchParams.append(key, String(value));
-            }
-        }
-    });
+// This line is needed for the object name resolver component.
+export const actions = {
+    resolveObject,
+    calculateVisibilityWindows: async (event: RequestEvent): Promise<VisibilityWindowsData> => {
+        const form = await event.request.formData();
+        const params = normalizeSearchParams(form, { instrument_ids: 'array' });
 
-    // Lazy load visibility windows as a Promise
-    const visibilityWindowData = fetch(apiUrl).then(async (response) => {
+        // Build API URL with parameters
+        const apiUrl = new URL(`${CONFIG.API_URL}/tools/visibility-calculator/windows?${params.toString()}`);
+
+        // Lazy load visibility windows as a Promise
+        const response = await fetch(apiUrl);
+
         if (!response.ok) {
-            console.log(`API responded with status: ${response.status} for request URL ${apiUrl.toString()}`);
             const text = (await response.json()) as ErrorResponse;
             const detailText = findKnownError(text.detail, knownErrors);
+            console.error('ERROR fetching visibility windows:', {
+                status: response.status,
+                text: await response.text(),
+            });
+
             return {
                 jointVisibilityWindows: [],
                 visibilityWindowInstrumentIds: [],
@@ -108,20 +99,12 @@ export async function load({ url, locals, cookies }: RequestEvent): Promise<Join
         }
 
         const data = (await response.json()) as JointVisibilityWindowResponse;
+
         return {
             jointVisibilityWindows: data.visibility_windows,
             visibilityWindowInstrumentIds: data.instrument_ids,
             observatoryVisibilityWindows: data.observatory_visibility_windows,
             error: '',
         };
-    });
-
-    return {
-        queryParams: queryParams,
-        telescopes: telescopes,
-        visibilityWindowsData: visibilityWindowData,
-    };
-}
-
-// This line is needed for the object name resolver component.
-export const actions = { resolveObject };
+    },
+};

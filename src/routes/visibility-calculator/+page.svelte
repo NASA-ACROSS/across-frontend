@@ -101,11 +101,6 @@
     const calculateVisibility: SubmitFunction<VisibilityWindowsData> = async ({ formData }) => {
         isLoading = true;
 
-        console.log('Form data entries:');
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-
         const params = searchParams.serialize(formData);
         console.log(params.toString());
         const url = `${window.location.pathname}?${params.toString()}`;

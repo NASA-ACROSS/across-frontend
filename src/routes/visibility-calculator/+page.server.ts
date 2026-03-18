@@ -6,14 +6,14 @@ import { findKnownError } from '$lib/utils/error/findKnownError';
 import type { RequestEvent } from './$types';
 import { CONFIG } from '../../config/config';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
-import normalizeSearchParams from '$lib/utils/normalizeSearchParams';
+import searchParams from '$lib/utils/searchParams/searchParams';
 
 type ErrorResponse = {
     detail: unknown;
 };
 
 type JointVisibilityQueryParams = {
-    instrument_ids: string[];
+    instrument_ids?: string[];
     date_range_begin?: string | null;
     date_range_end?: string | null;
     ra?: string | number | null;
@@ -50,19 +50,11 @@ export type JointVisibilityPageData = {
 
 export async function load({ url, locals, cookies }: RequestEvent): Promise<JointVisibilityPageData> {
     const userCookie = locals?.user as UserCredentialsCookie;
-    const queryParams: JointVisibilityQueryParams = {
-        instrument_ids: [],
-    };
 
-    if (url.searchParams.has('date_range_begin')) queryParams.date_range_begin = url.searchParams.get('date_range_begin');
-    if (url.searchParams.has('date_range_end')) queryParams.date_range_end = url.searchParams.get('date_range_end');
-    if (url.searchParams.has('ra')) queryParams.ra = url.searchParams.get('ra');
-    if (url.searchParams.has('dec')) queryParams.dec = url.searchParams.get('dec');
-    if (url.searchParams.has('min_visibility_duration')) queryParams.min_visibility_duration = url.searchParams.get('min_visibility_duration');
-    if (url.searchParams.has('hi_res')) queryParams.hi_res = url.searchParams.get('hi_res') === 'false' ? false : true;
-
-    const instrumentIds = url.searchParams.get('instrument_ids')?.split(',') || [];
-    if (instrumentIds?.length) queryParams.instrument_ids = instrumentIds;
+    const queryParams = searchParams.deserialize<JointVisibilityQueryParams>(url.searchParams, {
+        instrument_ids: 'array',
+        hi_res: 'boolean',
+    });
 
     const telescopes = await getTelescopes(userCookie, cookies);
 
@@ -74,13 +66,24 @@ export const actions = {
     resolveObject,
     calculateVisibilityWindows: async (event: RequestEvent): Promise<VisibilityWindowsData> => {
         const form = await event.request.formData();
-        const params = normalizeSearchParams(form, { instrument_ids: 'array' });
+        const params = searchParams.serialize(form, { instrument_ids: 'array' });
 
         // Build API URL with parameters
         const apiUrl = new URL(`${CONFIG.API_URL}/tools/visibility-calculator/windows?${params.toString()}`);
 
-        // Lazy load visibility windows as a Promise
-        const response = await fetch(apiUrl);
+        let response: Response;
+        try {
+            response = await fetch(apiUrl);
+        } catch (error) {
+            console.error('ERROR fetching visibility windows:', error);
+
+            return {
+                jointVisibilityWindows: [],
+                visibilityWindowInstrumentIds: [],
+                observatoryVisibilityWindows: {},
+                error: 'An error occurred while fetching visibility windows. Please contact support if it continues.',
+            };
+        }
 
         if (!response.ok) {
             const text = (await response.json()) as ErrorResponse;

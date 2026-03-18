@@ -13,7 +13,10 @@
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
     import type { JointVisibilityPageData, VisibilityWindowsData } from './+page.server';
     import type { SubmitFunction } from '@sveltejs/kit';
-    import normalizeSearchParams from '$lib/utils/normalizeSearchParams';
+    import searchParams from '$lib/utils/searchParams/searchParams';
+    import { type VisibilityWindow } from '$lib/types/across/VisibilityWindow';
+    import { timeout } from 'd3';
+    import Collapse from '$lib/components/Collapse.svelte';
 
     beforeNavigate(() => {
         isLoading = true;
@@ -26,13 +29,25 @@
     export let data: JointVisibilityPageData;
 
     let telescopes = data?.telescopes;
+    let visibilityWindowsData: VisibilityWindowsData | undefined = undefined;
 
-    let visibilityWindowsData: VisibilityWindowsData = {
-        jointVisibilityWindows: [],
-        visibilityWindowInstrumentIds: [],
-        observatoryVisibilityWindows: {},
-        error: '',
-    };
+    let isLoading = false;
+
+    let selectedObservatories: TelescopeObservatory[] = [];
+    let selectedTelescopes: Telescope[] = [];
+    let selectedInstruments: TelescopeInstrument[] = [];
+
+    // Coordinate inputs
+    let ra = String(data.queryParams?.ra || '');
+    let dec = String(data.queryParams?.dec || '');
+
+    // Date range inputs
+    let dateRangeBegin = data.queryParams?.date_range_begin || '';
+    let dateRangeEnd = data.queryParams?.date_range_end || '';
+
+    // Optional parameters
+    let hiRes = data.queryParams?.hi_res || false;
+    let minVisibilityDuration = String(data.queryParams?.min_visibility_duration || '');
 
     // Observatory/Telescope/Instrument selector state
     $: observatories = telescopes
@@ -53,29 +68,24 @@
         {} as Record<string, string>
     );
 
-    let isLoading = false;
+    // Map the instrument windows from selected instruments to the returned data
+    // This allows us to easily display the visibility windows for each instrument in the results section.
+    $: instrumentWindows = selectedInstruments.reduce(
+        (acc, instrument) => {
+            const windows = visibilityWindowsData?.observatoryVisibilityWindows[instrument.id] || [];
 
-    let selectedObservatories: TelescopeObservatory[] = [];
-    let selectedTelescopes: Telescope[] = [];
-    let selectedInstruments: TelescopeInstrument[] = [];
+            if (windows.length > 0) acc.push({ instrument, windows });
 
-    // Coordinate inputs
-    let ra = String(data.queryParams?.ra || '');
-    let dec = String(data.queryParams?.dec || '');
-
-    // Date range inputs
-    let dateRangeBegin = data.queryParams?.date_range_begin || '';
-    let dateRangeEnd = data.queryParams?.date_range_end || '';
-
-    // Optional parameters
-    let hiRes = data.queryParams?.hi_res || false;
-    let minVisibilityDuration = String(data.queryParams?.min_visibility_duration || '');
+            return acc;
+        },
+        [] as { instrument: TelescopeInstrument; windows: VisibilityWindow[] }[]
+    );
 
     // Populate inputs from URL parameters
     onMount(() => {
         // Populate instrument selection
         const instrumentIds = data.queryParams.instrument_ids;
-        if (instrumentIds.length > 0) {
+        if (instrumentIds?.length) {
             selectedInstruments = instruments.filter((inst) => instrumentIds.includes(inst.id));
 
             // Auto-select parent telescopes and observatories
@@ -98,7 +108,7 @@
     const calculateVisibility: SubmitFunction<VisibilityWindowsData> = async ({ formData }) => {
         isLoading = true;
 
-        const params = normalizeSearchParams(formData);
+        const params = searchParams.serialize(formData);
         const url = `${window.location.pathname}?${params.toString()}`;
 
         // Set the browser's URL with the new params without reloading the page
@@ -107,7 +117,6 @@
         return async ({ result }) => {
             if (result.type === 'success') {
                 if (result.data) {
-                    console.log('Received visibility windows data:', result.data);
                     visibilityWindowsData = result.data;
                 }
             } else {
@@ -123,7 +132,7 @@
         };
     };
 
-    async function resetFilters() {
+    const resetFilters = () => {
         selectedObservatories = [];
         selectedTelescopes = [];
         selectedInstruments = [];
@@ -133,12 +142,12 @@
         dateRangeEnd = '';
         hiRes = false;
         minVisibilityDuration = '';
-    }
+    };
 
-    function formatConstraintReason(reason: string, observatoryId: string, observatoryShortNames: Record<string, string>): string {
+    const formatConstraintReason = (reason: string, observatoryId: string, observatoryShortNames: Record<string, string>): string => {
         const shortName = observatoryShortNames[observatoryId] || 'Observatory';
         return reason.replace(/Observatory/g, shortName);
-    }
+    };
 </script>
 
 <Page title="Joint Visibility Calculator" icon="calendar">
@@ -229,43 +238,51 @@
         </div>
     </Section>
 
-    {#if isLoading}
-        <Section title="Joint Visibility Windows" icon="globe">
-            <div class="flex items-center justify-center py-8">
-                <span class="loading loading-spinner loading-lg"></span>
-            </div>
-        </Section>
-    {:else if visibilityWindowsData.jointVisibilityWindows.length > 0}
-        <Section title="Joint Visibility Windows" icon="globe">
-            <div class="collapse collapse-arrow border border-base-300">
-                <input type="checkbox" checked />
+    <Section title="Joint Visibility Windows" icon="globe">
+        <div class="collapse collapse-arrow border border-base-300">
+            <input type="checkbox" checked />
+            {#if visibilityWindowsData}
                 <div class="collapse-title text-lg font-semibold">Results ({visibilityWindowsData.jointVisibilityWindows.length})</div>
-                <div class="collapse-content">
-                    <div class="overflow-x-auto overflow-y-scroll max-h-128">
-                        <table class="table table-pin-rows table-zebra w-full">
-                            <thead>
-                                <tr class="bg-primary text-primary-content">
-                                    <th class="text-center">Window #</th>
-                                    <th>Start Reason</th>
-                                    <th>Begin (UT)</th>
-                                    <th>End (UT)</th>
-                                    <th>End Reason</th>
-                                    <th class="text-center">Max Visibility Duration (s)</th>
+            {/if}
+            <div class="collapse-content">
+                <div class="overflow-x-auto overflow-y-scroll max-h-128">
+                    <table class="table table-pin-rows table-zebra w-full">
+                        <thead>
+                            <tr class="bg-primary text-primary-content">
+                                <th class="text-center">Window #</th>
+                                <th>Start Reason</th>
+                                <th>Begin (UT)</th>
+                                <th>End (UT)</th>
+                                <th>End Reason</th>
+                                <th class="text-center">Max Visibility Duration (s)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#if isLoading}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <span class="loading loading-spinner loading-lg"></span>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {#if visibilityWindowsData.jointVisibilityWindows.length === 0}
-                                    <tr>
-                                        {#if visibilityWindowsData.error == ''}
-                                            <td colspan="6" class="text-center text-lg py-4"> No joint visibility windows found for the given parameters </td>
-                                        {:else}
-                                            <td colspan="6" class="text-center text-error text-lg py-4">
-                                                {visibilityWindowsData.error}
-                                            </td>
-                                        {/if}
-                                    </tr>
-                                {/if}
+                            {:else if !visibilityWindowsData}
+                                <!-- Initial state -->
+                                <tr>
+                                    <td colspan="6" class="text-center text-lg py-4">Submit the form to calculate visibility windows</td>
+                                </tr>
+                            {:else if visibilityWindowsData.jointVisibilityWindows.length === 0}
+                                <!-- Submitted, but no data with possible error -->
+                                <tr>
+                                    {#if visibilityWindowsData.error == ''}
+                                        <td colspan="6" class="text-center text-lg py-4"> No joint visibility windows found for the given parameters </td>
+                                    {:else}
+                                        <td colspan="6" class="text-center text-error text-lg py-4">
+                                            {visibilityWindowsData.error}
+                                        </td>
+                                    {/if}
+                                </tr>
+                            {:else}
                                 {#each visibilityWindowsData.jointVisibilityWindows as window, index}
+                                    <!-- display data -->
                                     <tr>
                                         <td class="text-center">{index + 1}</td>
                                         <td
@@ -291,19 +308,23 @@
                                         <td class="text-center">{window.max_visibility_duration.toFixed(2)}</td>
                                     </tr>
                                 {/each}
-                            </tbody>
-                        </table>
-                    </div>
+                            {/if}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </Section>
-        {#if visibilityWindowsData.jointVisibilityWindows.length > 0}
-            <Section title="Visibility Windows by Instrument" icon="telescope">
-                <div class="space-y-4">
-                    {#each visibilityWindowsData.visibilityWindowInstrumentIds as instrumentId}
-                        {@const instrument = instruments.find((inst) => inst.id === instrumentId)}
-                        {@const windows = visibilityWindowsData.observatoryVisibilityWindows[instrumentId] || []}
-                        {#if instrument && windows.length > 0}
+        </div>
+    </Section>
+    {#if instrumentWindows.length > 0}
+        <Section title="Visibility Windows by Instrument" icon="telescope">
+            <div class="space-y-4">
+                {#if isLoading}
+                    <div class="text-center py-4">
+                        <span class="loading loading-spinner loading-lg"></span>
+                    </div>
+                {:else}
+                    {#each instrumentWindows as { instrument, windows }}
+                        {#if windows.length > 0}
                             <div class="collapse collapse-arrow border border-base-300">
                                 <input type="checkbox" />
                                 <div class="collapse-title text-xl font-medium">
@@ -357,8 +378,8 @@
                             </div>
                         {/if}
                     {/each}
-                </div>
-            </Section>
-        {/if}
+                {/if}
+            </div>
+        </Section>
     {/if}
 </Page>

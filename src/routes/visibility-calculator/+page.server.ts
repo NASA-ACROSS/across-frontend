@@ -6,14 +6,22 @@ import { findKnownError } from '$lib/utils/error/findKnownError';
 import type { RequestEvent } from './$types';
 import { CONFIG } from '../../config/config';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+<<<<<<< HEAD
 import searchParams from '$lib/utils/searchParams/searchParams';
+=======
+import normalizeSearchParams from '$lib/utils/normalizeSearchParams';
+>>>>>>> a855c89 (fix: use form to load vis windows)
 
 type ErrorResponse = {
     detail: unknown;
 };
 
 type JointVisibilityQueryParams = {
+<<<<<<< HEAD
     instrument_ids?: string[];
+=======
+    instrument_ids: string[];
+>>>>>>> a855c89 (fix: use form to load vis windows)
     date_range_begin?: string | null;
     date_range_end?: string | null;
     ra?: string | number | null;
@@ -50,14 +58,21 @@ export type JointVisibilityPageData = {
 
 export async function load({ url, locals, cookies }: RequestEvent): Promise<JointVisibilityPageData> {
     const userCookie = locals?.user as UserCredentialsCookie;
+<<<<<<< HEAD
 
     const queryParams = searchParams.deserialize<JointVisibilityQueryParams>(url.searchParams, {
         instrument_ids: 'array',
         hi_res: 'boolean',
     });
+=======
+    const queryParams: JointVisibilityQueryParams = {
+        instrument_ids: [],
+    };
+>>>>>>> a855c89 (fix: use form to load vis windows)
 
     const telescopes = await getTelescopes(userCookie, cookies);
 
+<<<<<<< HEAD
     return { queryParams, telescopes };
 }
 
@@ -84,6 +99,28 @@ export const actions = {
                 error: 'An error occurred while fetching visibility windows. Please contact support if it continues.',
             };
         }
+=======
+    const instrumentIds = url.searchParams.get('instrument_ids')?.split(',') || [];
+    if (instrumentIds?.length) queryParams.instrument_ids = instrumentIds;
+
+    const telescopes = await getTelescopes(userCookie, cookies);
+
+    return { queryParams, telescopes };
+}
+
+// This line is needed for the object name resolver component.
+export const actions = {
+    resolveObject,
+    calculateVisibilityWindows: async (event: RequestEvent): Promise<VisibilityWindowsData> => {
+        const form = await event.request.formData();
+        const params = normalizeSearchParams(form, { instrument_ids: 'array' });
+
+        // Build API URL with parameters
+        const apiUrl = new URL(`${CONFIG.API_URL}/tools/visibility-calculator/windows?${params.toString()}`);
+
+        // Lazy load visibility windows as a Promise
+        const response = await fetch(apiUrl);
+>>>>>>> a855c89 (fix: use form to load vis windows)
 
         if (!response.ok) {
             const text = (await response.json()) as ErrorResponse;

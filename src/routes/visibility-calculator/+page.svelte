@@ -138,10 +138,10 @@
         minVisibilityDuration = '';
     };
 
-    const formatConstraintReason = (reason: string, observatoryId: string, observatoryShortNames: Record<string, string>): string => {
+    function formatConstraintReason(reason: string, observatoryId: string, observatoryShortNames: Record<string, string>): string {
         const shortName = observatoryShortNames[observatoryId] || 'Observatory';
         return reason.replace(/Observatory/g, shortName);
-    };
+    }
 </script>
 
 <Page title="Joint Visibility Calculator" icon="calendar">

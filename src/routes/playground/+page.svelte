@@ -3,6 +3,7 @@
     import Section from '$lib/components/Section.svelte';
     import Page from '$lib/components/Page.svelte';
     import DateRangeInputExample from './_components/DateRangeInputExample.svelte';
+    import Collapse from '$lib/components/Collapse.svelte';
 
     // Multiselect properties and testing custom onToggle
     type Fruit = { name: string; color: string };
@@ -71,5 +72,15 @@
 
     <Section title="DateRangeInput Component">
         <DateRangeInputExample />
+    </Section>
+
+    <Section title="Collapse Component">
+        <Collapse open={false} arrow={true} backgroundColor="bg-carbon-10">
+            <!-- Collapse title css class modification demo  -->
+            <!-- "text-info" changes the title to blue       -->
+            <!-- Alternately, use <Collapse title={myTitle}> -->
+            <div slot="title" class="text-info">Collapse Title! Click me!</div>
+            Lorem ipsum dolor sit amet....
+        </Collapse>
     </Section>
 </Page>

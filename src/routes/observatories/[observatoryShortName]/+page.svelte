@@ -19,10 +19,8 @@
 
 <Page center={true}>
     <Alert>
-        ACROSS supports a layered approach to metadata: Observatories have Telescopes which have Instruments. <a
-            href={PUBLIC_CONFIG.DOCUMENTATION_URL}
-            class="link font-normal">See documentation for more details.</a
-        >
+        ACROSS supports a layered approach to metadata. Observatories have Telescopes which have Instruments.
+        <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">See documentation for more details.</a>
     </Alert>
 
     <Section icon={'satellite-dish'} title={`[${observatory.short_name}] ${observatory.name}`} parentContainerClasses="mb-10">
@@ -38,97 +36,101 @@
                 >{observatory.reference_url}</a
             ></pre>
 
-        <Collapse title="Observatory Ephemeris Types" contentClasses="flex flex-row gap-8">
-            {#each observatory.ephemeris_types as ephemerisType}
-                <pre>{JSON.stringify(ephemerisType, null, 2)}</pre>
-            {/each}
+        <Collapse title="Observatory Ephemeris Types">
+            <div class="flex flex-row gap-8">
+                {#each observatory.ephemeris_types as ephemerisType}
+                    <pre>{JSON.stringify(ephemerisType, null, 2)}</pre>
+                {/each}
+            </div>
         </Collapse>
 
-        <Collapse title="Telescopes ({telescopes.length})" titleClasses="text-2xl bg-carbon-10" contentClasses="bg-carbon-10">
-            {#each telescopes as telescope}
-                <Collapse>
-                    <div slot="title">
-                        <h1 class="text-2xl">{`[${telescope.short_name}] ${telescope.name}`}</h1>
-                        <pre class="text-lg font-normal text-carbon-50">{telescope.id}</pre>
-                    </div>
-                    <Collapse title="Instruments ({telescope.instruments.length})" titleClasses="text-2xl bg-carbon-10" contentClasses="bg-carbon-10">
-                        {#each telescope.instruments as instrument}
-                            <Collapse>
-                                <div slot="title">
-                                    <h1 class="text-2xl">{`[${instrument.short_name}] ${instrument.name}`}</h1>
-                                    <pre class="text-lg font-normal text-carbon-50">{instrument.id}</pre>
-                                </div>
-                                <Collapse
-                                    open={false}
-                                    title="Filters ({instrument.filters.length})"
-                                    titleClasses="text-2xl bg-carbon-10"
-                                    contentClasses="bg-carbon-10"
-                                >
-                                    <div class="overflow-y-scroll max-h-100 border border-carbon-20 bg-carbon-10">
-                                        {#each instrument.filters as filter}
-                                            <!-- Filter Title -->
-                                            <div class="text-lg bg-carbon-20 p-4">
-                                                {#if filter.reference_url}
-                                                    <ArrowButton href={filter.reference_url}>{filter.name}</ArrowButton>
-                                                {:else}
-                                                    <div class="text-lg">{filter.name}</div>
-                                                {/if}
-                                            </div>
-                                            <!-- Filter Contents -->
-                                            <div class="p-4 bg-secondary">
-                                                {#each Object.entries(filter) as filterProperty}
-                                                    {#if !EXCLUDED_FILTER_PROPERTIES.includes(filterProperty[0])}
-                                                        <pre
-                                                            class={filterProperty[1] == null
-                                                                ? 'text-carbon-30'
-                                                                : ''}>{filterProperty[0]}: {filterProperty[1]}</pre>
+        <Collapse backgroundColor="bg-carbon-10">
+            <div slot="title" class="text-2xl">
+                Telescopes ({telescopes.length})
+            </div>
+            <div class="bg-carbon-10">
+                {#each telescopes as telescope}
+                    <Collapse>
+                        <div slot="title">
+                            <h1 class="text-2xl">{`[${telescope.short_name}] ${telescope.name}`}</h1>
+                            <pre class="text-lg font-normal text-carbon-50">{telescope.id}</pre>
+                        </div>
+                        <Collapse backgroundColor="bg-carbon-10">
+                            <div slot="title" class="text-2xl">
+                                Instruments ({telescope.instruments.length})
+                            </div>
+                            {#each telescope.instruments as instrument}
+                                <Collapse>
+                                    <div slot="title">
+                                        <h1 class="text-2xl">{`[${instrument.short_name}] ${instrument.name}`}</h1>
+                                        <pre class="text-lg font-normal text-carbon-50">{instrument.id}</pre>
+                                    </div>
+                                    <Collapse open={false} backgroundColor="bg-carbon-10">
+                                        <div slot="title" class="text-2xl">
+                                            Filters ({instrument.filters.length})
+                                        </div>
+                                        <div class="overflow-y-scroll max-h-100 border border-carbon-20 bg-carbon-10">
+                                            {#each instrument.filters as filter}
+                                                <!-- Filter Title -->
+                                                <div class="text-lg bg-carbon-20 p-4">
+                                                    {#if filter.reference_url}
+                                                        <ArrowButton href={filter.reference_url}>{filter.name}</ArrowButton>
+                                                    {:else}
+                                                        <div class="text-lg">{filter.name}</div>
                                                     {/if}
-                                                {/each}
-                                            </div>
-                                            {#if instrument.filters[instrument.filters.length - 1] !== filter}
-                                                <div class="divider"></div>
-                                            {/if}
-                                        {/each}
-                                    </div>
-                                </Collapse>
-
-                                <Collapse
-                                    title="Footprints ({instrument.footprints.length})"
-                                    open={false}
-                                    titleClasses="text-2xl bg-carbon-10"
-                                    contentClasses="bg-carbon-10"
-                                >
-                                    <div class="overflow-y-scroll max-h-100 border border-carbon-20">
-                                        {#each instrument.footprints as footprint}
-                                            <div class="p-4 bg-secondary">
-                                                <pre>{JSON.stringify(footprint, null, 2)}</pre>
-                                            </div>
-                                            {#if instrument.footprints[instrument.footprints.length - 1] !== footprint}
-                                                <div class="divider"></div>
-                                            {/if}
-                                        {/each}
-                                    </div>
-                                </Collapse>
-
-                                {#if instrument?.constraints}
-                                    <Collapse
-                                        title="Constraints ({instrument?.constraints})"
-                                        open={false}
-                                        titleClasses="text-2xl bg-carbon-10"
-                                        contentClasses="bg-carbon-10"
-                                    >
-                                        {#each instrument?.constraints as constraint}
-                                            <div class="p-4 bg-secondary">
-                                                <pre>{JSON.stringify(constraint, null, 2)}</pre>
-                                            </div>
-                                        {/each}
+                                                </div>
+                                                <!-- Filter Contents -->
+                                                <div class="p-4 bg-secondary">
+                                                    {#each Object.entries(filter) as filterProperty}
+                                                        {#if !EXCLUDED_FILTER_PROPERTIES.includes(filterProperty[0])}
+                                                            <pre
+                                                                class={filterProperty[1] == null
+                                                                    ? 'text-carbon-30'
+                                                                    : ''}>{filterProperty[0]}: {filterProperty[1]}</pre>
+                                                        {/if}
+                                                    {/each}
+                                                </div>
+                                                {#if instrument.filters[instrument.filters.length - 1] !== filter}
+                                                    <div class="divider"></div>
+                                                {/if}
+                                            {/each}
+                                        </div>
                                     </Collapse>
-                                {/if}
-                            </Collapse>
-                        {/each}
+
+                                    <Collapse open={false} backgroundColor="bg-carbon-10">
+                                        <div slot="title" class="text-2xl">
+                                            Footprints ({instrument.footprints.length})
+                                        </div>
+                                        <div class="overflow-y-scroll max-h-100 border border-carbon-20">
+                                            {#each instrument.footprints as footprint}
+                                                <div class="p-4 bg-secondary">
+                                                    <pre>{JSON.stringify(footprint, null, 2)}</pre>
+                                                </div>
+                                                {#if instrument.footprints[instrument.footprints.length - 1] !== footprint}
+                                                    <div class="divider"></div>
+                                                {/if}
+                                            {/each}
+                                        </div>
+                                    </Collapse>
+
+                                    {#if instrument?.constraints}
+                                        <Collapse open={false} backgroundColor="bg-carbon-10">
+                                            <div slot="title" class="text-2xl">
+                                                Constraints ({instrument?.constraints})
+                                            </div>
+                                            {#each instrument?.constraints as constraint}
+                                                <div class="p-4 bg-secondary">
+                                                    <pre>{JSON.stringify(constraint, null, 2)}</pre>
+                                                </div>
+                                            {/each}
+                                        </Collapse>
+                                    {/if}
+                                </Collapse>
+                            {/each}
+                        </Collapse>
                     </Collapse>
-                </Collapse>
-            {/each}
+                {/each}
+            </div>
         </Collapse>
     </Section>
 </Page>

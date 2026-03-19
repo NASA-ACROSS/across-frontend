@@ -5,6 +5,7 @@
     import type { GroupRole } from '$lib/types/User/GroupRole';
     import type { SubmitFunction } from '@sveltejs/kit';
     import type { UserGroup } from '$lib/types/User/UserGroup';
+    import Spinner from '$lib/components/Spinner.svelte';
 
     export let user: GroupUser | undefined;
     export let group: UserGroup;
@@ -72,7 +73,7 @@
                                     selectedRole = role;
                                 }}
                                 >{#if isAssigningRole && selectedRole == role}
-                                    <span class="loading loading-spinner" role="status" aria-hidden="true"></span>
+                                    <Spinner />
                                 {:else}
                                     +
                                 {/if}</button

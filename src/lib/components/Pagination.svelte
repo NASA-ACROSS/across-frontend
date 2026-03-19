@@ -1,5 +1,6 @@
 <script lang="ts">
     import { beforeNavigate, afterNavigate } from '$app/navigation';
+    import Spinner from './Spinner.svelte';
 
     export let currentPage: number = 1;
     export let totalPages: number = 1;
@@ -56,9 +57,7 @@
 
 <div class="flex items-center gap-2">
     {#if isLoading}
-        <div class="spinner-border spinner-border-sm text-primary" role="status">
-            <span class="loading loading-spinner loading-xs"></span>
-        </div>
+        <Spinner></Spinner>
     {/if}
 
     <a

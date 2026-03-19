@@ -4,6 +4,8 @@
     import Page from '$lib/components/Page.svelte';
     import DateRangeInputExample from './_components/DateRangeInputExample.svelte';
     import Collapse from '$lib/components/Collapse.svelte';
+    import ArrowButton from '$lib/components/ArrowButton.svelte';
+    import { resolve } from '$app/paths';
 
     // Multiselect properties and testing custom onToggle
     type Fruit = { name: string; color: string };
@@ -49,6 +51,10 @@
 
 <Page title="Component Playground">
     <p class="text-lg text-gray-700">This page is only visible in local development mode.</p>
+
+    <Section title="Arrow Button Link Component">
+        <ArrowButton href={resolve('/playground/page')}>Playground Page Demo</ArrowButton>
+    </Section>
 
     <Section title="MultiSelect Component">
         <label class="flex space-x-2 items-center px-1.5 py-2 cursor-pointer">

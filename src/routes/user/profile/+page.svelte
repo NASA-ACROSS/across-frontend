@@ -96,14 +96,13 @@
     });
 </script>
 
-<Page center={true}>
-    <Section title="Profile" icon="user">
-        <div slot="buttons" class="">
-            <a data-sveltekit-preload-data="false" href={resolve('/user/logout')} class="btn btn-accent text-xl">
-                <i class="bx bx-log-out opacity-70 me-2"></i>Logout
-            </a>
-        </div>
-
+<Page title="Profile" icon="user">
+    <div slot="buttons" class="">
+        <a data-sveltekit-preload-data="false" href={resolve('/user/logout')} class="btn btn-accent text-xl">
+            <i class="bx bx-log-out opacity-70 me-2"></i>Logout
+        </a>
+    </div>
+    <Section>
         <Fieldset title="User Information">
             <form method="post" action="?/updateUserInformation" use:enhance={enhancedForm}>
                 <label for="firstname">Name</label>

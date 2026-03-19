@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     import { browser } from '$app/environment';
     import { page } from '$app/state';
-    import { goto } from '$app/navigation';
+    import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
     import ObservatoryTelescopeSelector from '$lib/components/ObservatoryTelescopeSelector.svelte';
@@ -228,166 +228,178 @@
 
         await handleSearch();
     }
+
+    let isLoading = false;
+
+    beforeNavigate(() => {
+        isLoading = true;
+    });
+
+    afterNavigate(() => {
+        isLoading = false;
+    });
 </script>
 
-<Page center={true}>
-    <Section title="Browse Schedules" icon="calendar">
-        <p class="text-sm text-gray-500 mb-4 italic">
-            Note: These results show the most up-to-date versions of schedules. To view all schedule history, visit the <a
-                href="/schedules/history"
-                class="link link-primary">/schedules/history</a
-            > page (work in progress).
-        </p>
-        <div class="bg-base-200 p-4 mb-6 w-full">
-            <div class="flex justify-between">
-                <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">Query Filters</div>
-                <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}>
-                    <div class="bx bx-refresh"></div>
-                    Reset Filters
-                </button>
-            </div>
-
-            <div class="join join-vertical bg-base-100 w-full">
-                <!-- Observatory/Telescope Filter -->
-                <div class="collapse collapse-arrow join-item border-base-300 border">
-                    <input
-                        type="radio"
-                        name="my-accordion"
-                        value="observatory-telescope"
-                        on:click={() => {
-                            deselectAccordion('observatory-telescope');
-                        }}
-                        bind:group={selectedFilter}
-                        checked={false}
-                    />
-                    <div class="collapse-title font-semibold {selectedObservatories.length || selectedTelescopes.length ? 'text-nasa-blue-shade' : ''}">
-                        <h3 class="text-lg mb-2">Observatory / Telescope</h3>
-                        {#if selectedFilter != 'observatory-telescope'}
-                            <div class="opacity-60">
-                                {#if selectedObservatories.length}
-                                    <span class="font-thin">Observatories: </span><span>{selectedObservatories.length} </span>
-                                {/if}
-                                {#if selectedTelescopes.length}
-                                    <span class="font-thin">Telescopes: </span><span>{selectedTelescopes.length} </span>
-                                {/if}
-                            </div>
-                        {/if}
-                    </div>
-                    <div class="collapse-content">
-                        <div class="py-4 h-200 md:min-h-80 md:max-h-100">
-                            <ObservatoryTelescopeSelector {observatories} {telescopes} bind:selectedObservatories bind:selectedTelescopes />
-                        </div>
-                    </div>
+<Page title="Browse Schedules" icon="calendar">
+    <Section>
+        <div class="lg:w-5/6 xl:w-3/4 self-center">
+            <p class="text-sm text-gray-500 mb-4 italic">
+                Note: These results show the most up-to-date versions of schedules. To view all schedule history, visit the <a
+                    href="/schedules/history"
+                    class="link link-primary">/schedules/history</a
+                > page (work in progress).
+            </p>
+            <div class="bg-base-200 p-4 mb-6 w-full">
+                <div class="flex justify-between">
+                    <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">Query Filters</div>
+                    <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}>
+                        <div class="bx bx-refresh"></div>
+                        Reset Filters
+                    </button>
                 </div>
 
-                <!-- Schedule section -->
-                <div class="collapse collapse-arrow join-item border-base-300 border">
-                    <input
-                        type="radio"
-                        name="my-accordion"
-                        value="schedule"
-                        on:click={() => {
-                            deselectAccordion('schedule');
-                        }}
-                        bind:group={selectedFilter}
-                        checked={false}
-                    />
-                    <div
-                        class="collapse-title font-semibold
-                        {name || dateRangeBegin || dateRangeEnd || status || fidelity || externalId ? 'text-nasa-blue-shade' : ''}"
-                    >
-                        <h3 class="text-lg mb-2">Schedule Name / Date / Status / Fidelity / External ID</h3>
-                        {#if selectedFilter != 'schedule'}
-                            <div class="opacity-60">
-                                {#if name}
-                                    <span class="font-thin">Name: </span><span>{name} </span>
-                                {/if}
-                                {#if dateBeginDisplay || timeBeginDisplay}
-                                    <span class="font-thin">Date Begin: </span><span>{dateBeginDisplay} {timeBeginDisplay}</span>
-                                {/if}
-                                {#if dateEndDisplay || timeEndDisplay}
-                                    <span class="font-thin">Date End: </span><span>{dateEndDisplay} {timeEndDisplay}</span>
-                                {/if}
-                                {#if status}
-                                    <span class="font-thin">Status: </span><span>{status}</span>
-                                {/if}
-                                {#if fidelity}
-                                    <span class="font-thin">Fidelity: </span><span>{fidelity}</span>
-                                {/if}
-                                {#if externalId}
-                                    <span class="font-thin">External ID: </span><span>{externalId}</span>
-                                {/if}
+                <div class="join join-vertical bg-base-100 w-full">
+                    <!-- Observatory/Telescope Filter -->
+                    <div class="collapse collapse-arrow join-item border-base-300 border">
+                        <input
+                            type="radio"
+                            name="my-accordion"
+                            value="observatory-telescope"
+                            on:click={() => {
+                                deselectAccordion('observatory-telescope');
+                            }}
+                            bind:group={selectedFilter}
+                            checked={false}
+                        />
+                        <div class="collapse-title font-semibold {selectedObservatories.length || selectedTelescopes.length ? 'text-nasa-blue-shade' : ''}">
+                            <h3 class="text-lg mb-2">Observatory / Telescope</h3>
+                            {#if selectedFilter != 'observatory-telescope'}
+                                <div class="opacity-60">
+                                    {#if selectedObservatories.length}
+                                        <span class="font-thin">Observatories: </span><span>{selectedObservatories.length} </span>
+                                    {/if}
+                                    {#if selectedTelescopes.length}
+                                        <span class="font-thin">Telescopes: </span><span>{selectedTelescopes.length} </span>
+                                    {/if}
+                                </div>
+                            {/if}
+                        </div>
+                        <div class="collapse-content">
+                            <div class="py-4 h-200 md:min-h-80 md:max-h-100">
+                                <ObservatoryTelescopeSelector {observatories} {telescopes} bind:selectedObservatories bind:selectedTelescopes />
                             </div>
-                        {/if}
+                        </div>
                     </div>
-                    <div class="collapse-content">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4">
-                            <div class="form-control">
-                                <label class="label text-lg" for="name-input">
-                                    <span class="label-text">Schedule Name</span>
-                                </label>
-                                <div class="flex items-center">
+
+                    <!-- Schedule section -->
+                    <div class="collapse collapse-arrow join-item border-base-300 border">
+                        <input
+                            type="radio"
+                            name="my-accordion"
+                            value="schedule"
+                            on:click={() => {
+                                deselectAccordion('schedule');
+                            }}
+                            bind:group={selectedFilter}
+                            checked={false}
+                        />
+                        <div
+                            class="collapse-title font-semibold
+                            {name || dateRangeBegin || dateRangeEnd || status || fidelity || externalId ? 'text-nasa-blue-shade' : ''}"
+                        >
+                            <h3 class="text-lg mb-2">Schedule Name / Date / Status / Fidelity / External ID</h3>
+                            {#if selectedFilter != 'schedule'}
+                                <div class="opacity-60">
+                                    {#if name}
+                                        <span class="font-thin">Name: </span><span>{name} </span>
+                                    {/if}
+                                    {#if dateBeginDisplay || timeBeginDisplay}
+                                        <span class="font-thin">Date Begin: </span><span>{dateBeginDisplay} {timeBeginDisplay}</span>
+                                    {/if}
+                                    {#if dateEndDisplay || timeEndDisplay}
+                                        <span class="font-thin">Date End: </span><span>{dateEndDisplay} {timeEndDisplay}</span>
+                                    {/if}
+                                    {#if status}
+                                        <span class="font-thin">Status: </span><span>{status}</span>
+                                    {/if}
+                                    {#if fidelity}
+                                        <span class="font-thin">Fidelity: </span><span>{fidelity}</span>
+                                    {/if}
+                                    {#if externalId}
+                                        <span class="font-thin">External ID: </span><span>{externalId}</span>
+                                    {/if}
+                                </div>
+                            {/if}
+                        </div>
+                        <div class="collapse-content">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4">
+                                <div class="form-control">
+                                    <label class="label text-lg" for="name-input">
+                                        <span class="label-text">Schedule Name</span>
+                                    </label>
+                                    <div class="flex items-center">
+                                        <input
+                                            id="name-input"
+                                            type="text"
+                                            bind:value={name}
+                                            placeholder="e.g. My Schedule"
+                                            class="input input-bordered text-lg w-full"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label text-lg" for="schedule-status-input">
+                                        <span class="label-text">Status</span>
+                                    </label>
+                                    <select id="schedule-status-input" bind:value={status} class="select select-bordered text-lg w-full">
+                                        <option value="">Select status</option>
+                                        {#each statusOptions as option}
+                                            <option value={option}>{option}</option>
+                                        {/each}
+                                    </select>
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label text-lg" for="fidelity-input">
+                                        <span class="label-text">Fidelity</span>
+                                    </label>
+                                    <select id="fidelity-input" bind:value={fidelity} class="select select-bordered text-lg w-full">
+                                        <option value="">Select fidelity</option>
+                                        {#each fidelityOptions as option}
+                                            <option value={option}>{option}</option>
+                                        {/each}
+                                    </select>
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label text-lg" for="external-id-input">
+                                        <span class="label-text">External ID</span>
+                                    </label>
                                     <input
-                                        id="name-input"
+                                        id="external-id-input"
                                         type="text"
-                                        bind:value={name}
-                                        placeholder="e.g. My Schedule"
+                                        bind:value={externalId}
+                                        placeholder="e.g. EXT123"
                                         class="input input-bordered text-lg w-full"
                                     />
                                 </div>
                             </div>
 
-                            <div class="form-control">
-                                <label class="label text-lg" for="schedule-status-input">
-                                    <span class="label-text">Status</span>
-                                </label>
-                                <select id="schedule-status-input" bind:value={status} class="select select-bordered text-lg w-full">
-                                    <option value="">Select status</option>
-                                    {#each statusOptions as option}
-                                        <option value={option}>{option}</option>
-                                    {/each}
-                                </select>
-                            </div>
-
-                            <div class="form-control">
-                                <label class="label text-lg" for="fidelity-input">
-                                    <span class="label-text">Fidelity</span>
-                                </label>
-                                <select id="fidelity-input" bind:value={fidelity} class="select select-bordered text-lg w-full">
-                                    <option value="">Select fidelity</option>
-                                    {#each fidelityOptions as option}
-                                        <option value={option}>{option}</option>
-                                    {/each}
-                                </select>
-                            </div>
-
-                            <div class="form-control">
-                                <label class="label text-lg" for="external-id-input">
-                                    <span class="label-text">External ID</span>
-                                </label>
-                                <input
-                                    id="external-id-input"
-                                    type="text"
-                                    bind:value={externalId}
-                                    placeholder="e.g. EXT123"
-                                    class="input input-bordered text-lg w-full"
-                                />
-                            </div>
+                            <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
                         </div>
-
-                        <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
                     </div>
                 </div>
-            </div>
 
-            <div class="flex justify-end mt-4">
-                <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
-                <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>
+                <div class="flex justify-end mt-4">
+                    <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
+                    <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>
+                </div>
             </div>
         </div>
     </Section>
 
-    <Section title="Schedules (Total: {totalCount})" icon="calendar" parentContainerClasses="lg:w-full lg:px-5">
+    <Section title="Schedules (Total: {totalCount})" icon="calendar">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">
             <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />

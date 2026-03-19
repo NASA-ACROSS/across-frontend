@@ -12,13 +12,13 @@
     export let form;
 </script>
 
-<Page center={true}>
-    <Alert>
+<Page title="Create Account" icon="user">
+    <Alert slot="alert">
         Registration is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal"
             >See documentation for more details.</a
         >
     </Alert>
-    <Section title="Create Account" icon="user">
+    <Section>
         <Fieldset title="User Information">
             <form method="post">
                 <label for="firstname">Name</label>
@@ -113,8 +113,8 @@
                 </div>
             </form>
         </Fieldset>
+        <NasaSecurityBanner></NasaSecurityBanner>
     </Section>
-    <NasaSecurityBanner></NasaSecurityBanner>
 </Page>
 
 <style>

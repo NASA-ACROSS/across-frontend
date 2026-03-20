@@ -56,7 +56,9 @@ export const getTelescopes = async (userCookie: UserCredentialsCookie, cookies: 
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404, 401];
     if (errorCodes.includes(response.status)) {
-        console.error(`ERROR: getting telescopes at [${Date.now()}] with status code [${response.status}]`);
+        const errorText = `ERROR: getting telescopes at [${Date.now()}] with status code [${response.status}]`;
+        console.error(errorText);
+        throw new Error(errorText);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

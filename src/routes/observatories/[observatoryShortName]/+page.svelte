@@ -97,26 +97,28 @@
                                         </div>
                                     </Collapse>
 
-                                    <Collapse open={false} backgroundColor="bg-carbon-10">
-                                        <div slot="title" class="text-2xl">
-                                            Footprints ({instrument.footprints.length})
-                                        </div>
-                                        <div class="overflow-y-scroll max-h-100 border border-carbon-20">
-                                            {#each instrument.footprints as footprint}
-                                                <div class="p-4 bg-secondary">
-                                                    <pre>{JSON.stringify(footprint, null, 2)}</pre>
-                                                </div>
-                                                {#if instrument.footprints[instrument.footprints.length - 1] !== footprint}
-                                                    <div class="divider"></div>
-                                                {/if}
-                                            {/each}
-                                        </div>
-                                    </Collapse>
-
-                                    {#if instrument?.constraints}
+                                    {#if instrument?.footprints.length}
                                         <Collapse open={false} backgroundColor="bg-carbon-10">
                                             <div slot="title" class="text-2xl">
-                                                Constraints ({instrument?.constraints})
+                                                Footprints ({instrument.footprints.length})
+                                            </div>
+                                            <div class="overflow-y-scroll max-h-100 border border-carbon-20">
+                                                {#each instrument.footprints as footprint}
+                                                    <div class="p-4 bg-secondary">
+                                                        <pre>{JSON.stringify(footprint, null, 2)}</pre>
+                                                    </div>
+                                                    {#if instrument.footprints[instrument.footprints.length - 1] !== footprint}
+                                                        <div class="divider"></div>
+                                                    {/if}
+                                                {/each}
+                                            </div>
+                                        </Collapse>
+                                    {/if}
+
+                                    {#if instrument?.constraints.length}
+                                        <Collapse open={false} backgroundColor="bg-carbon-10">
+                                            <div slot="title" class="text-2xl">
+                                                Constraints ({instrument?.constraints.length})
                                             </div>
                                             {#each instrument?.constraints as constraint}
                                                 <div class="p-4 bg-secondary">

@@ -4,25 +4,32 @@
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
 
-    const docsLinks = [
+    type SidebarLink = { href: string; label: string };
+    type SidebarItem = SidebarLink & { subsections?: SidebarLink[] };
+
+    const docsLinks: SidebarItem[] = [
         { href: '/docs/about', label: 'About' },
-        { href: '/docs/data-model', label: 'Data Models' },
+        {
+            href: '/docs/data-models',
+            label: 'Data Models',
+            subsections: [
+                { href: '#observatories', label: 'Observatories' },
+                { href: '#schedules', label: 'Schedules' },
+                { href: '#units', label: 'Units' },
+            ],
+        },
         { href: '/docs/data-ingestion', label: 'Data Ingestion' },
-        { href: '/docs/tools', label: 'Tools & Code' },
+        {
+            href: '/docs/tools',
+            label: 'Tools & Code',
+            subsections: [
+                { href: '#visibility-calculator', label: 'Visibility Calculator' },
+                { href: '#query-portals', label: 'Query Portals' },
+                { href: '#python-libraries', label: 'Python Libraries' },
+            ],
+        },
         { href: '/docs/code-of-conduct', label: 'Code of Conduct' },
         { href: '/docs/contributing', label: 'Contributing' },
-    ];
-
-    const dataModelSubsections = [
-        { href: '#observatories', label: 'Observatories' },
-        { href: '#schedules', label: 'Schedules' },
-        { href: '#units', label: 'Units' },
-    ];
-
-    const toolsSubsections = [
-        { href: '#visibility-calculator', label: 'Visibility Calculator' },
-        { href: '#query-portals', label: 'Query Portals' },
-        { href: '#python-libraries', label: 'Python Libraries' },
     ];
 
     const normalizePath = (path: string) => (path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path);
@@ -32,9 +39,6 @@
     afterNavigate(() => {
         currentPath = normalizePath(page.url.pathname);
     });
-
-    $: isDataModelPage = currentPath === '/docs/data-model';
-    $: isToolsPage = currentPath === '/docs/tools';
 </script>
 
 <Page center={true}>
@@ -51,26 +55,15 @@
                                     <a
                                         data-sveltekit-preload-data="tap"
                                         href={link.href}
-                                        class={currentPath === normalizePath(link.href) ? 'active font-semibold docs-link-active' : ''}
+                                        class={currentPath === normalizePath(link.href) ? 'active font-semibold border-l-4 border-nasa-blue' : ''}
                                     >
                                         {link.label}
                                     </a>
-                                    {#if link.href === '/docs/data-model' && isDataModelPage}
+                                    {#if link.subsections && currentPath === normalizePath(link.href)}
                                         <ul class="rounded-box w-full divide-y divide-base-300/70">
-                                            {#each dataModelSubsections as subsection}
+                                            {#each link.subsections as subsection}
                                                 <li class="first:border-t border-base-300/70">
-                                                    <a href={link.href + subsection.href} class="docs-subsection-link pl-4">
-                                                        {subsection.label}
-                                                    </a>
-                                                </li>
-                                            {/each}
-                                        </ul>
-                                    {/if}
-                                    {#if link.href === '/docs/tools' && isToolsPage}
-                                        <ul class="rounded-box w-full divide-y divide-base-300/70">
-                                            {#each toolsSubsections as subsection}
-                                                <li class="first:border-t border-base-300/70">
-                                                    <a href={link.href + subsection.href} class="docs-subsection-link pl-4">
+                                                    <a href={link.href + subsection.href} class="text-[.95rem] pl-4">
                                                         {subsection.label}
                                                     </a>
                                                 </li>
@@ -90,14 +83,3 @@
         </div>
     </Section>
 </Page>
-
-<style>
-    .docs-link-active {
-        border-left: 4px solid var(--color-nasa-blue);
-        color: var(--color-nasa-blue);
-    }
-
-    .docs-subsection-link {
-        font-size: 0.95rem;
-    }
-</style>

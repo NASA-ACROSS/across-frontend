@@ -3,8 +3,8 @@
 </h2>
 <div class="space-y-10">
     <p class="text-base leading-relaxed">
-        Along with supporting the data we are ingesting, we provide users with a set of observing tools to aid in their TDAMM observing endeavors — available
-        both as interactive web-based portals and as open-source Python packages.
+        In addition to ingested mission scheduling data, a set of observing tools is available to aid in TDAMM observing endeavors — accessible both as
+        interactive web-based portals and as open-source Python packages.
     </p>
 
     <!-- ── Online Portals ─────────────────────────────────────────── -->
@@ -109,14 +109,14 @@
     <!-- ── Python Libraries ──────────────────────────────────────── -->
     <div id="python-libraries" class="space-y-6">
         <div class="flex items-center gap-3">
-            <i class="bx bx-code-alt text-2xl text-primary"></i>
+            <i class="bx bx-cube text-2xl text-primary"></i>
             <h3 class="text-2xl font-bold text-primary">Python Libraries</h3>
         </div>
         <div class="border-l-4 border-primary pl-6 space-y-8">
             <!-- across-tools -->
             <section id="across-tools" class="space-y-3">
                 <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2 flex items-center justify-between">
-                    <a href="https://github.com/NASA-ACROSS/across-tools" class="hover:underline" target="_blank" rel="noopener noreferrer">across-tools</a>
+                    <a href="https://pypi.org/project/across-tools" class="hover:underline" target="_blank" rel="noopener noreferrer">across-tools</a>
                     <div class="flex items-center gap-2">
                         <a
                             href="https://across-tools.readthedocs.io/en/latest/"
@@ -154,7 +154,7 @@
             <!-- across-client -->
             <section id="across-client" class="space-y-3">
                 <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2 flex items-center justify-between">
-                    <a href="https://github.com/NASA-ACROSS/across-client" class="hover:underline" target="_blank" rel="noopener noreferrer">across-client</a>
+                    <a href="https://pypi.org/project/across-client" class="hover:underline" target="_blank" rel="noopener noreferrer">across-client</a>
                     <div class="flex items-center gap-2">
                         <a
                             href="https://across-client.readthedocs.io/en/latest/"

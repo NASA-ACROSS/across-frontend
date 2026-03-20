@@ -3,9 +3,9 @@
 </h2>
 <div class="space-y-8">
     <p class="text-base leading-relaxed">
-        So you'd like to contribute to the ACROSS Project? Below are some guidelines for contributors to follow. Contributions come in all shapes and sizes. We
-        appreciate your help with documentation, unit tests, framework code, continuous-integration, or simply reporting bugs and improvement ideas. We can't
-        promise that we'll accept every suggestion or fix every bug in a timely manner but we'll respond to you as quickly as possible.
+        So you'd like to contribute to the ACROSS Project? Below are some guidelines for contributors to follow. Contributions come in all shapes and sizes.
+        Help is appreciated with documentation, unit tests, framework code, continuous-integration, or simply reporting bugs and improvement ideas. The ACROSS
+        team cannot promise to accept every suggestion or bugfix, but will look into each contribution with careful consideration.
     </p>
 
     <!-- Code of Conduct -->
@@ -38,7 +38,7 @@
 
             <div id="reporting-a-bug" class="space-y-2">
                 <h5 class="text-lg font-semibold">Reporting a Bug</h5>
-                <p class="text-base leading-relaxed">If you find a bug in our code don't hesitate to report it:</p>
+                <p class="text-base leading-relaxed">If a bug is found, don't hesitate to report it:</p>
                 <ol class="list-decimal list-inside space-y-1 ml-2 text-base leading-relaxed">
                     <li>Open an issue using the bug report template in the repective git-hub repository</li>
                     <li>Describe the issue.</li>
@@ -67,7 +67,7 @@
         <div id="new-feature-requests" class="space-y-4">
             <h4 class="text-xl font-semibold">New Feature Requests</h4>
             <p class="text-base leading-relaxed">
-                ACROSS has a multitude of users from different fields and backgrounds. We appreciate your ideas for enhancements!
+                ACROSS has a multitude of users from different fields and backgrounds. Feature enhancement ideas from the community are always welcome!
             </p>
 
             <div id="requesting-a-new-feature" class="space-y-2">
@@ -78,7 +78,7 @@
                     <li>Describe the solution you would like.</li>
                     <li>Describe alternatives you've considered.</li>
                     <li>Provide any additional context if applicable.</li>
-                    <li>Provide your full name or GitHub username and your company organization if applicable.</li>
+                    <li>Provide your company organization if applicable.</li>
                 </ol>
             </div>
 
@@ -106,9 +106,14 @@
                     <li>Fork the respective git-hub repository.</li>
                     <li>Find the related issue number or create an associated issue that explains the intent of your new code.</li>
                     <li>
-                        Create a new branch in your fork to work on your fix. We recommend naming your branch <code class="bg-base-200 px-1 rounded text-sm"
-                            >[fix/feat]:ISSUE_NUMBER-&lt;FIX_SUMMARY&gt;</code
+                        Create a new branch in your fork to work on your fix. Branch names follow the following format: <code
+                            class="bg-base-200 px-1 rounded text-sm">ISSUE_NUMBER-&lt;ISSUE_TITLE&gt;</code
                         >.
+                        <p>
+                            For example, an issue #123 titled "add my new feature to do cool thing" will be <code class="bg-base-200 px-1 rounded text-sm"
+                                >123-add-my-new-feature-to-do-cool-thing</code
+                            >.
+                        </p>
                     </li>
                     <li>
                         Add commits to your branch. For information on commit messages, review <a
@@ -123,9 +128,25 @@
 
             <div id="creating-pr" class="space-y-2">
                 <h5 class="text-lg font-semibold">Creating a Pull Request</h5>
+                <div class="alert alert-warning text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                        />
+                    </svg>
+                    <span>
+                        <strong>Significant new features require design review before development begins.</strong> If your PR introduces a substantial new feature,
+                        the ACROSS team strongly recommends opening a discussion or issue to go through a design review and receive approval from the team before
+                        writing any code. Pull requests for unapproved features may not be actively monitored or reviewed, and there is no guarantee of acceptance.
+                    </span>
+                </div>
                 <p class="text-base leading-relaxed">
-                    We recommend creating your pull-request as a "draft" and to commit early and often so the community can give you feedback at the beginning
-                    of the process as opposed to asking you to change hours of hard work at the end.
+                    When you are ready to create a PR follow the Pull Request template instructions, below is a brief summary of the information needed in a PR.
+                    It is recommended to create a pull-request as a "draft" and to commit early and often so the community can give you feedback at the
+                    beginning stages of your contribution.
                 </p>
                 <ol class="list-decimal list-inside space-y-1 ml-2 text-base leading-relaxed">
                     <li>

@@ -4,10 +4,10 @@
 <div class="space-y-8">
     <!-- Our Pledge -->
     <section class="space-y-2">
-        <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">Our Pledge</h3>
+        <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">Community Pledge</h3>
         <p class="text-base leading-relaxed">
-            In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to make participation in our project and
-            our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity
+            In the interest of fostering an open and welcoming environment, contributors and maintainers pledge to make participation in the ACROSS project and
+            the community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity
             and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and
             orientation.
         </p>
@@ -15,7 +15,7 @@
 
     <!-- Our Standards -->
     <section class="space-y-3">
-        <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">Our Standards</h3>
+        <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">Community Standards</h3>
         <p class="text-base leading-relaxed">Examples of behavior that contributes to creating a positive environment include:</p>
         <ul class="list-disc list-inside space-y-1 ml-2 text-base leading-relaxed">
             <li>Using welcoming and inclusive language</li>
@@ -36,7 +36,7 @@
 
     <!-- Our Responsibilities -->
     <section class="space-y-3">
-        <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">Our Responsibilities</h3>
+        <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">Maintainer Responsibilities</h3>
         <p class="text-base leading-relaxed">
             Project maintainers are responsible for clarifying the standards of acceptable behavior and are expected to take appropriate and fair corrective
             action in response to any instances of unacceptable behavior.
@@ -63,7 +63,7 @@
     <section class="space-y-3">
         <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">Enforcement</h3>
         <p class="text-base leading-relaxed">
-            Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by NASA ACROSS. All complaints will be reviewed and investigated
+            Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to NASA ACROSS. All complaints will be reviewed and investigated
             and will result in a response that is deemed necessary and appropriate to the circumstances. The project team is obligated to maintain
             confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.
         </p>

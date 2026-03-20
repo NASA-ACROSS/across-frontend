@@ -1,3 +1,7 @@
+<script lang="ts">
+    export let data;
+</script>
+
 <h2 class="text-3xl flex flex-col md:flex-row justify-between text-primary md:items-center items-start pb-3">
     <div>Data Models</div>
 </h2>
@@ -5,14 +9,14 @@
     <section id="observatories" class="space-y-3">
         <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">Observatories</h3>
         <p class="text-base leading-relaxed">
-            The way we represent our supported observatories is nominally through a series of one-to-many relationships: an observatory has many telescopes, and
-            a telescope can have many instruments. This generalized approach allows us to support a wide variety of observatory configurations, and is flexible
-            enough to accommodate future additions and changes to our supported missions.
+            Supported observatories are represented through a series of one-to-many relationships: an observatory has many telescopes, and a telescope can have
+            many instruments. This generalized approach allows us to support a wide variety of observatory configurations, and has the flexibility to
+            accommodate future additions and/or changes to supported missions.
         </p>
         <p class="text-base leading-relaxed">The instrument model supports the following metadata:</p>
         <ul class="list-disc list-inside space-y-1 ml-2 text-base leading-relaxed">
             <li>
-                <strong>FOV Footprint</strong> — instruments with imaging capabilities can have their field of view (FOV) represented as a list of polygon vertices.
+                <strong>Field of View (FOV) Footprint</strong> — instruments with imaging capabilities can have their FOV represented as a list of polygon vertices.
                 Upon data-ingestion, we accept a projected footprint for the instrument's observation FOV.
             </li>
             <li>
@@ -33,7 +37,7 @@
                 <span>→</span>
                 <span class="badge badge-primary">Instrument(s)</span>
                 <span class="text-base-content/40">→</span>
-                <span class="badge badge-secondary">Footprint(s)</span>
+                <span class="badge badge-secondary">Footprint</span>
                 <span class="badge badge-secondary">Visibility Constraints</span>
                 <span class="badge badge-secondary">Bandpass Filters</span>
             </div>
@@ -43,8 +47,8 @@
     <section id="schedules" class="space-y-3">
         <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">Schedules</h3>
         <p class="text-base leading-relaxed">
-            Similarly, we represent observing schedules where a schedule is an aggregation of many observations from a single telescope over a continuous date
-            range. A schedule can contain observations belonging to multiple instruments associated with the particular schedule's telescope.
+            Similarly, observing schedules are represented as an aggregation of many observations over a continuous date range. A schedule can contain
+            observations belonging to multiple instruments associated with the particular schedule's telescope.
         </p>
         <p class="text-base leading-relaxed">Each observation can be described by:</p>
         <ul class="list-disc list-inside space-y-1 ml-2 text-base leading-relaxed">
@@ -52,6 +56,13 @@
             <li>Target coordinates</li>
             <li>A date range for the exposure time</li>
             <li>Bandpass and filter information</li>
+            <li>
+                <i>
+                    <a href="{data.apiDocsUrl}#/Observation/get_observation" target="_blank" class="text-blue-600 hover:underline"
+                        >Full observation model response</a
+                    >
+                </i>
+            </li>
         </ul>
     </section>
 

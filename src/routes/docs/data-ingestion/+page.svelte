@@ -5,7 +5,7 @@
     <!-- How We Obtain Data -->
     <section class="space-y-3">
         <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2 flex items-center justify-between">
-            <span>How We Obtain Data</span>
+            <span>How Data Is Obtained</span>
             <a href="https://github.com/NASA-ACROSS/across-data-ingestion" class="btn btn-sm btn-outline btn-primary" target="_blank" rel="noopener noreferrer">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <path
@@ -16,18 +16,17 @@
             </a>
         </h3>
         <p class="text-base leading-relaxed">
-            Our data is currently obtained by aggregating all available open-source mission observing schedules and translating them into our data-model format.
-            We have a data-ingestion service that runs a cron-job task for each telescope, grabbing the latest planned (or completed) schedule <strong
-                >at that time</strong
-            >. Each cron task is scheduled to align with when new schedule information is typically made available by that mission, ensuring our data stays as
-            current as possible.
+            The data is obtained by aggregating all available open-source mission observing schedules and translating them into the appropriate ACROSS data
+            models. The ACROSS system has a data-ingestion service that runs a cron-job task for each telescope, grabbing the latest planned (or completed)
+            schedule <strong>at that time</strong>. Each cron task is scheduled to align with when new schedule information is typically made available by that
+            mission, ensuring ingested data stays as current as possible.
         </p>
         <p class="text-base leading-relaxed">
-            A major caveat to how we do this is that if a given schedule is updated in-between cron tasks, there is a chance that our data repository might not
-            capture that update. When a schedule is ingested, we generate a <code class="bg-base-200 px-1 rounded text-sm">checksum</code> based on common
-            schedule metadata (date-range, status, type, telescope id, etc.). When a schedule is submitted, we check against the checksum so that the same
-            schedule isn't duplicated. Note that this means older versions of a schedule are <strong>retained</strong> — we do not delete previously ingested schedules
-            when a newer version is added, preserving a historical record of how schedules have changed over time.
+            A major caveat to how this is done is that if a given schedule is updated in-between cron tasks, there is a chance that the data repository might
+            not capture that update. When a schedule is ingested, a <code class="bg-base-200 px-1 rounded text-sm">checksum</code> is generated based on common
+            schedule metadata (date-range, status, type, telescope id, etc.). When a schedule is submitted, the checksum ensures that the same schedule isn't
+            duplicated. Note that this means older versions of a schedule are <strong>retained</strong> — previously ingested schedules are not deleted when a newer
+            version is added, preserving a historical record of how schedules have changed over time.
         </p>
         <div class="alert alert-warning text-sm">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,14 +38,14 @@
                 />
             </svg>
             <span>
-                We recognize that this method is not ideal given the potential for incompleteness, but our hope is that observing teams will recognize our
-                effort as a proof-of-concept and begin submitting their schedules directly to us, mitigating this risk.
+                This method is not ideal given the potential for incompleteness. The ACROSS team is looking for help from the respective observatories to submit
+                any schedules directly to the system in order to prevent this incompleteness of data.
             </span>
         </div>
         <div class="bg-base-200 rounded-box p-4 text-sm leading-relaxed flex items-center justify-between gap-4">
             <div>
                 <p class="font-semibold mb-1">Ingestion Status</p>
-                <p class="text-base-content/70">View the most up-to-date statuses for all active ingestion tasks across our supported missions.</p>
+                <p class="text-base-content/70">View the most up-to-date statuses for all active ingestion tasks across all supported missions.</p>
             </div>
             <a href="/ingestion-status" class="btn btn-sm btn-primary whitespace-nowrap">
                 <i class="bx bx-sync"></i>
@@ -57,12 +56,12 @@
     <section class="space-y-3">
         <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">Submitting Observatory Scheduling Data</h3>
         <p class="text-base leading-relaxed">
-            If you have access to your observatory's scheduling information and want to submit it to the ACROSS API, please reach out to our support team. You
-            will need to:
+            If you have access to your observatory's scheduling information and want to submit it to the ACROSS API, please reach out to the ACROSS support
+            team. You will need to:
         </p>
         <ol class="list-decimal list-inside space-y-1 ml-2 text-base leading-relaxed">
             <li>Register a client with credentials for your observatory's telescope.</li>
-            <li>POST schedule data to our API schedule endpoint.</li>
+            <li>POST schedule data to the API schedule endpoint.</li>
         </ol>
         <div class="bg-base-200 rounded-box p-4 text-sm leading-relaxed">
             <p class="font-semibold mb-1">Ready to get started?</p>

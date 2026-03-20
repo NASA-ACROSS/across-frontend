@@ -36,7 +36,7 @@
                 >{observatory.reference_url}</a
             ></pre>
 
-        <Collapse title="Observatory Ephemeris Types">
+        <Collapse title="Observatory Ephemeris Types" border={true}>
             <div class="flex flex-row gap-8">
                 {#each observatory.ephemeris_types as ephemerisType}
                     <pre>{JSON.stringify(ephemerisType, null, 2)}</pre>
@@ -69,7 +69,7 @@
                                         <div slot="title" class="text-2xl">
                                             Filters ({instrument.filters.length})
                                         </div>
-                                        <div class="overflow-y-scroll max-h-100 border border-carbon-20 bg-carbon-10">
+                                        <div class="overflow-y-scroll max-h-100 bg-carbon-10">
                                             {#each instrument.filters as filter}
                                                 <!-- Filter Title -->
                                                 <div class="text-lg bg-carbon-20 p-4">
@@ -83,10 +83,11 @@
                                                 <div class="p-4 bg-secondary">
                                                     {#each Object.entries(filter) as filterProperty}
                                                         {#if !EXCLUDED_FILTER_PROPERTIES.includes(filterProperty[0])}
+                                                            {@const isWavelength = filterProperty[0].includes('wavelength') && filterProperty[1] != null}
                                                             <pre
                                                                 class={filterProperty[1] == null
                                                                     ? 'text-carbon-30'
-                                                                    : ''}>{filterProperty[0]}: {filterProperty[1]}</pre>
+                                                                    : ''}>{filterProperty[0]}: {filterProperty[1]} {isWavelength ? 'Å' : ''}</pre>
                                                         {/if}
                                                     {/each}
                                                 </div>
@@ -99,18 +100,11 @@
 
                                     {#if instrument?.footprints.length}
                                         <Collapse open={false} backgroundColor="bg-carbon-10">
-                                            <div slot="title" class="text-2xl">
-                                                Footprints ({instrument.footprints.length})
-                                            </div>
-                                            <div class="overflow-y-scroll max-h-100 border border-carbon-20">
-                                                {#each instrument.footprints as footprint}
-                                                    <div class="p-4 bg-secondary">
-                                                        <pre>{JSON.stringify(footprint, null, 2)}</pre>
-                                                    </div>
-                                                    {#if instrument.footprints[instrument.footprints.length - 1] !== footprint}
-                                                        <div class="divider"></div>
-                                                    {/if}
-                                                {/each}
+                                            <div slot="title" class="text-2xl">Footprint</div>
+                                            <div class="overflow-y-scroll max-h-100">
+                                                <div class="p-4 bg-secondary">
+                                                    <pre>{JSON.stringify(instrument.footprints, null, 2)}</pre>
+                                                </div>
                                             </div>
                                         </Collapse>
                                     {/if}

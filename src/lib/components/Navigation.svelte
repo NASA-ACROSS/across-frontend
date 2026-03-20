@@ -50,7 +50,7 @@
                     </ul>
                 </li>
                 <li class="hover:underline decoration-dashed">
-                    <a data-sveltekit-preload-data="tap" href={resolve('/docs/about')}>About</a>
+                    <a data-sveltekit-preload-data="tap" href={resolve('/about')}>About</a>
                 </li>
             </ul>
         </div>
@@ -101,7 +101,7 @@
             </li>
             <li>
                 <div class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
-                    <a class="text-lg font-bold text-primary-content" data-sveltekit-preload-data="tap" href={resolve('/docs/about')}>About</a>
+                    <a class="text-lg font-bold text-primary-content" data-sveltekit-preload-data="tap" href={resolve('/about')}>About</a>
                 </div>
             </li>
             <li>

@@ -7,10 +7,10 @@
     type SidebarLink = { href: string; label: string };
     type SidebarItem = SidebarLink & { subsections?: SidebarLink[] };
 
-    const docsLinks: SidebarItem[] = [
-        { href: '/docs/about', label: 'About' },
+    const aboutLinks: SidebarItem[] = [
+        { href: '/about', label: 'About' },
         {
-            href: '/docs/data-models',
+            href: '/about/data-models',
             label: 'Data Models',
             subsections: [
                 { href: '#observatories', label: 'Observatories' },
@@ -18,9 +18,9 @@
                 { href: '#units', label: 'Units' },
             ],
         },
-        { href: '/docs/data-ingestion', label: 'Data Ingestion' },
+        { href: '/about/data-ingestion', label: 'Data Ingestion' },
         {
-            href: '/docs/tools',
+            href: '/about/tools',
             label: 'Tools & Code',
             subsections: [
                 { href: '#visibility-calculator', label: 'Visibility Calculator' },
@@ -28,8 +28,8 @@
                 { href: '#python-libraries', label: 'Python Libraries' },
             ],
         },
-        { href: '/docs/code-of-conduct', label: 'Code of Conduct' },
-        { href: '/docs/contributing', label: 'Contributing' },
+        { href: '/about/code-of-conduct', label: 'Code of Conduct' },
+        { href: '/about/contributing', label: 'Contributing' },
     ];
 
     const normalizePath = (path: string) => (path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path);
@@ -46,11 +46,11 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
             <div class="col-span-1 rounded-box p-4 sticky top-4 self-start">
                 <div class="drawer drawer-open">
-                    <input id="docs-drawer" type="checkbox" class="drawer-toggle" />
+                    <input id="about-drawer" type="checkbox" class="drawer-toggle" />
                     <div class="drawer-content z-10 w-full">
-                        <label for="docs-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+                        <label for="about-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
                         <ul class="menu menu-lg p-0 gap-1 divide-y divide-base-300/70 w-full">
-                            {#each docsLinks as link}
+                            {#each aboutLinks as link}
                                 <li class="first:border-t last:border-b border-base-300/70 w-full">
                                     <a
                                         data-sveltekit-preload-data="tap"

@@ -44,7 +44,7 @@
 <Page center={true}>
     <Section containerClasses={'w-full'}>
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
-            <div class="col-span-1 rounded-box p-4">
+            <div class="col-span-1 rounded-box p-4 sticky top-4 self-start">
                 <div class="drawer drawer-open">
                     <input id="docs-drawer" type="checkbox" class="drawer-toggle" />
                     <div class="drawer-content z-10 w-full">

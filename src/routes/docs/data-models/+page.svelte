@@ -57,13 +57,16 @@
             <li>A date range for the exposure time</li>
             <li>Bandpass and filter information</li>
             <li>
-                <i>
-                    <a href="{data.apiDocsUrl}#/Observation/get_observation" target="_blank" class="text-blue-600 hover:underline"
-                        >Full observation model response</a
-                    >
+                <i
+                    >...<a href="{data.apiDocsUrl}#/Observation/get_observation" target="_blank" class="text-blue-600 hover:underline"
+                        >full observation model response</a
+                    >...
                 </i>
             </li>
         </ul>
+        <p class="text-base leading-relaxed">
+            There are current plans on providing a translation between this observation model and the IVOA ObsLocTAP standard in the near future.
+        </p>
     </section>
 
     <section id="units" class="space-y-3">

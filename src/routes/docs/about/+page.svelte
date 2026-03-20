@@ -20,25 +20,6 @@
         </p>
     </section>
 
-    <!-- Open Data Policy -->
-    <section class="space-y-3">
-        <div class="flex items-center gap-3 border-b border-base-300 pb-2">
-            <i class="bx bx-lock-open-alt text-2xl text-primary"></i>
-            <h3 class="text-2xl font-semibold text-primary">Open Data Policy</h3>
-        </div>
-        <p class="text-base leading-relaxed">
-            ACROSS is committed to making astrophysics scheduling and observation data as openly accessible as possible. <strong
-                >No account or login is required to read data from the ACROSS API.</strong
-            >
-            All <code class="bg-base-200 px-1 rounded text-sm">GET</code> endpoints are publicly accessible without authentication, allowing anyone to query schedules,
-            observations, observatory configurations, and visibility information freely.
-        </p>
-        <p class="text-base leading-relaxed">
-            Authentication is only required for write operations — such as submitting or updating schedule data on behalf of an observatory. These actions
-            require credentials issued to registered observatory partners.
-        </p>
-    </section>
-
     <!-- System Overview -->
     <section class="space-y-3">
         <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2">System Overview</h3>
@@ -76,5 +57,24 @@
                 </p>
             </div>
         </div>
+    </section>
+
+    <!-- Open Data Policy -->
+    <section class="space-y-3">
+        <div class="flex items-center gap-3 border-b border-base-300 pb-2">
+            <i class="bx bx-lock-open-alt text-2xl text-primary"></i>
+            <h3 class="text-2xl font-semibold text-primary">Open Data Policy</h3>
+        </div>
+        <p class="text-base leading-relaxed">
+            ACROSS is committed to making astrophysics scheduling and observation data as openly accessible as possible. <strong
+                >No account or login is required to read data from the ACROSS API.</strong
+            >
+            All <code class="bg-base-200 px-1 rounded text-sm">GET</code> endpoints are publicly accessible without authentication, allowing anyone to query schedules,
+            observations, observatory configurations, and visibility information freely.
+        </p>
+        <p class="text-base leading-relaxed">
+            Authentication is only required for write operations — such as submitting or updating schedule data on behalf of an observatory. These actions
+            require credentials issued to registered observatory partners.
+        </p>
     </section>
 </div>

@@ -3,8 +3,8 @@
 </h2>
 <div class="space-y-10">
     <p class="text-base leading-relaxed">
-        In addition to ingested mission scheduling data, a set of observing tools is available to aid in TDAMM observing endeavors — accessible both as
-        interactive web-based portals and as open-source Python packages.
+        In addition to ingested observatory scheduling data, a set of ACROSS observing tools is available to aid in TDAMM observing endeavors — accessible both
+        as interactive web-based portals and as open-source Python packages.
     </p>
 
     <!-- ── Online Portals ─────────────────────────────────────────── -->

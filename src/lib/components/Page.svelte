@@ -21,7 +21,7 @@
     const sidebarClasses = 'w-full flex flex-col flex-grow lg:max-w-1/6';
 </script>
 
-<div class="pt-6 pb-8 md:px-5 lg:px-15 xl:px-30 w-auto bg-base-100 flex flex-col flex-grow">
+<div class="pt-6 pb-8 px-2 md:px-5 lg:px-15 xl:px-30 w-auto bg-base-100 flex flex-col flex-grow">
     <!-- Page -->
     {#if $$slots.alert}
         <div class="pb-2">
@@ -52,7 +52,7 @@
                     <slot name="menu" />
                 </div>
             {/if}
-            <div class="w-full flex flex-col flex-grow lg:max-w-5/6">
+            <div class="w-full flex flex-col flex-grow">
                 <slot />
             </div>
             {#if showInfo}

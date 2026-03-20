@@ -57,7 +57,7 @@
 
 <div class="flex items-center gap-2">
     {#if isLoading}
-        <Spinner></Spinner>
+        <Spinner />
     {/if}
 
     <a

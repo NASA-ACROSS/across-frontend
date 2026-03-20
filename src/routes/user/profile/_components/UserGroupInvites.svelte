@@ -7,11 +7,7 @@
 </script>
 
 {#if invitations && invitations?.length}
-    <Section
-        title="My Group
-            Invitations"
-        icon="envelope"
-    >
+    <Section title="My Group Invitations" icon="envelope">
         {#each invitations as invitation}
             <div id="invite-{invitation.id}" class="input-group-lg flex flex-col-reverse gap-3 lg:flex-row bg-base-200 p-3 mb-3">
                 <div class="flex">

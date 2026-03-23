@@ -29,7 +29,7 @@
         </a>
     </div>
 
-    <Section icon={'satellite-dish'} title={`[${observatory.short_name}] ${observatory.name}`} parentContainerClasses="mb-10">
+    <Section icon={'satellite-dish'} title={`[${observatory.short_name}] ${observatory.name}`}>
         <pre class="text-lg text-carbon-50">{observatory.id}</pre>
         <pre class="text-lg">observatory type: {observatory.type}</pre>
         <pre class="text-lg">url: <a class="hover:underline decoration-dashed underline-offset-4" href={observatory.reference_url}

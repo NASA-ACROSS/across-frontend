@@ -987,11 +987,4 @@
     #data-table {
         scrollbar-gutter: stable;
     }
-
-    #date-begin-input::-webkit-calendar-picker-indicator,
-    #date-end-input::-webkit-calendar-picker-indicator,
-    #time-begin-input::-webkit-calendar-picker-indicator,
-    #time-end-input::-webkit-calendar-picker-indicator {
-        filter: invert();
-    }
 </style>

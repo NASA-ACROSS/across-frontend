@@ -36,6 +36,9 @@
                         <li class="hover:underline decoration-dashed">
                             <a data-sveltekit-preload-data="tap" href={resolve('/observations')}>Observations</a>
                         </li>
+                        <li class="hover:underline decoration-dashed">
+                            <a data-sveltekit-preload-data="tap" href={resolve('/observatories')}>Observatories</a>
+                        </li>
                     </ul>
                 </li>
                 <li>
@@ -79,6 +82,9 @@
                         </li>
                         <li>
                             <a data-sveltekit-preload-data="tap" href={resolve('/observations')}>Observations</a>
+                        </li>
+                        <li>
+                            <a data-sveltekit-preload-data="tap" href={resolve('/observatories')}>Observatories</a>
                         </li>
                     </ul>
                 </div>

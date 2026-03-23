@@ -32,7 +32,7 @@
 
     <div slot="menu" class="text-xl">
         Menu slot
-        <div class="text-base">
+        <div class="text-sm">
             Use this slot to display a menu on the left side of the screen to enable user navigation. This slot has the ability to extend the page down as much
             as it needs to fit all the slotted content.
         </div>
@@ -40,7 +40,7 @@
 
     <div slot="info" class="text-xl">
         Info Slot
-        <div class="text-base">Use this slot to display some info text on the right side of the screen, provide any supporting graphics or links.</div>
+        <div class="text-sm">Use this slot to display some info text on the right side of the screen, provide any supporting graphics or links.</div>
     </div>
 
     <Alert slot="alert">Some Alert Text</Alert>

@@ -17,19 +17,19 @@
     observatory.ephemeris_types = observatory.ephemeris_types.sort((a, b) => a.priority - b.priority);
 </script>
 
-<Page center={true}>
-    <Alert>
+<Page title="Observatory Metadata" icon="database">
+    <Alert slot="alert">
         ACROSS supports a layered approach to metadata. Observatories have Telescopes which have Instruments.
         <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">See documentation for more details.</a>
     </Alert>
 
-    <Section icon={'satellite-dish'} title={`[${observatory.short_name}] ${observatory.name}`} parentContainerClasses="mb-10">
-        <div slot="buttons" class="">
-            <a data-sveltekit-preload-data="false" href={resolve('/observatories/')} class="btn btn-info text-xl">
-                <i class="bx bx-arrow-out-left-square-half opacity-70 me-2"></i>Back to Index
-            </a>
-        </div>
+    <div slot="buttons" class="">
+        <a data-sveltekit-preload-data="false" href={resolve('/observatories/')} class="btn btn-info text-xl">
+            <i class="bx bx-arrow-out-left-square-half opacity-70 me-2"></i>Back to Index
+        </a>
+    </div>
 
+    <Section icon={'satellite-dish'} title={`[${observatory.short_name}] ${observatory.name}`} parentContainerClasses="mb-10">
         <pre class="text-lg text-carbon-50">{observatory.id}</pre>
         <pre class="text-lg">observatory type: {observatory.type}</pre>
         <pre class="text-lg">url: <a class="hover:underline decoration-dashed underline-offset-4" href={observatory.reference_url}

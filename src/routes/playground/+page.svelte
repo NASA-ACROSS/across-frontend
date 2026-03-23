@@ -49,7 +49,7 @@
     };
 </script>
 
-<Page title="Component Playground">
+<Page title="Component Playground" icon="component">
     <p class="text-lg text-gray-700">This page is only visible in local development mode.</p>
 
     <Section title="Arrow Button Link Component">

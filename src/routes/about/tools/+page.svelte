@@ -1,123 +1,121 @@
-<h2 class="text-3xl flex flex-col md:flex-row justify-between text-primary md:items-center items-start pb-3">
-    <div>Tools & Code</div>
-</h2>
-<div class="space-y-10">
-    <p class="text-base leading-relaxed">
-        In addition to ingested observatory scheduling data, a set of ACROSS observing tools is available to aid in TDAMM observing endeavors — accessible both
-        as interactive web-based portals and as open-source Python packages.
-    </p>
+<script>
+    import Section from '$lib/components/Section.svelte';
+</script>
 
-    <!-- ── Online Portals ─────────────────────────────────────────── -->
-    <div class="space-y-6">
-        <div class="flex items-center gap-3">
-            <i class="bx bx-desktop text-2xl text-primary"></i>
-            <h3 class="text-2xl font-bold text-primary">Web Tools</h3>
-        </div>
-        <div class="border-l-4 border-primary pl-6 space-y-8">
-            <!-- Visibility Calculator -->
-            <section id="visibility-calculator" class="space-y-3">
-                <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2 flex items-center justify-between">
-                    <span>Visibility Calculator</span>
-                    <a href="/visibility-calculator" class="btn btn-sm btn-outline btn-primary">
+<Section title="Tools & Code">
+    <div class="border-t border-base-300 pt-3">
+        <p class="leading-relaxed">
+            In addition to ingested observatory scheduling data, a set of ACROSS observing tools is available to aid in TDAMM observing endeavors — accessible
+            both as interactive web-based portals and as open-source Python packages.
+        </p>
+
+        <div class="space-y-6">
+            <div class="flex items-center gap-3 pt-4">
+                <i class="bx bx-desktop text-2xl text-primary"></i>
+                <h3 class="text-3xl font-bold text-primary">Web Tools</h3>
+            </div>
+            <div class="border-l-4 border-primary pl-6 space-y-8">
+                <Section title="Visibility Calculator" id="visibility-calculator">
+                    <a slot="buttons" href="/visibility-calculator" class="btn btn-sm btn-outline btn-primary">
                         <i class="bx bx-globe"></i>
-                        Open Tool
+                        Open Visibility Calculator
                     </a>
-                </h3>
-                <p class="text-base leading-relaxed">
-                    The Joint Visibility Calculator allows users to determine when a celestial target is simultaneously observable by one or more selected
-                    telescope–instrument combinations. Given a target position (RA/Dec in J2000) and a date range, the tool computes:
-                </p>
-                <ul class="list-disc list-inside space-y-1 ml-2 text-base leading-relaxed">
-                    <li>
-                        <strong>Joint Visibility Windows</strong> — time intervals during which <em>all</em> selected instruments can observe the target concurrently
-                    </li>
-                    <li><strong>Per-Instrument Visibility Windows</strong> — individual observability windows broken down by instrument</li>
-                </ul>
-                <p class="text-base leading-relaxed">Query parameters include:</p>
-                <ul class="list-disc list-inside space-y-1 ml-2 text-base leading-relaxed">
-                    <li><strong>Target Coordinates</strong> — RA and Dec (J2000 decimal degrees); an object name resolver is provided for convenience</li>
-                    <li><strong>Instrument Selection</strong> — one or more observatory / telescope / instrument combinations</li>
-                    <li><strong>Date Range</strong> — the time window over which to calculate visibility</li>
-                </ul>
-                <div class="bg-base-200 rounded-box p-4 space-y-2 text-sm leading-relaxed">
-                    <p class="font-semibold">Visibility Constraints</p>
-                    <p class="text-base-content/70">
-                        Each instrument carries its own set of observing constraints that are applied during the calculation. Typical constraints include:
-                    </p>
-                    <ul class="list-disc list-inside space-y-1 ml-2 text-base-content/70">
-                        <li><strong>Earth Limb Exclusion</strong> — minimum elevation angle above the Earth's limb for space-based observatories</li>
-                        <li><strong>Sun Avoidance</strong> — minimum angular separation between the target and the Sun</li>
-                        <li><strong>Moon Avoidance</strong> — minimum angular separation between the target and the Moon</li>
-                        <li><strong>SAA Avoidance</strong> — exclusion of passes through the South Atlantic Anomaly for affected missions</li>
-                        <li>
-                            <strong>Altitude / Azimuth Limits</strong> — minimum elevation above the horizon and azimuth range restrictions for ground-based observatories
-                        </li>
-                    </ul>
-                </div>
-            </section>
-            <section id="query-portals" class="space-y-4">
-                <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2 flex items-center justify-between">
-                    <span>Query Portals</span>
-                </h3>
-                <p class="text-base leading-relaxed">ACROSS provides interactive web-based portals for querying and exploring data directly in the browser.</p>
 
-                <!-- Schedules -->
-                <div class="space-y-2">
-                    <h4 class="text-xl font-semibold flex items-center justify-between">
-                        <span>Schedules</span>
-                        <a href="/schedules" class="btn btn-sm btn-outline btn-primary">
-                            <i class="bx bx-calendar"></i>
-                            Browse Schedules
-                        </a>
-                    </h4>
-                    <p class="text-base leading-relaxed">
-                        Query observing schedules across all supported missions. Results can be filtered by the following parameters:
-                    </p>
-                    <ul class="list-disc list-inside space-y-1 ml-2 text-base leading-relaxed">
-                        <li><strong>Observatory / Telescope / Instrument</strong> — filter results to one or more specific instruments</li>
-                        <li><strong>Date Range</strong> — narrow results to schedules that overlap a given time window</li>
-                        <li><strong>Schedule Type</strong> — filter by planned, executed, or other schedule states</li>
-                    </ul>
-                    <p class="text-base leading-relaxed">
-                        Each schedule in the results links through to its constituent observations, allowing you to drill down from a high-level schedule view
-                        into the individual pointings and exposure details that make it up.
-                    </p>
-                </div>
+                    <div class="border-t border-base-300 pt-3">
+                        <p class="leading-relaxed pb-2">
+                            The Joint Visibility Calculator allows users to determine when a celestial target is simultaneously observable by one or more
+                            selected telescope–instrument combinations.
+                        </p>
+                        <p class="py-2 leading-relaxed">Given a target position (RA/Dec in J2000) and a date range, the tool computes:</p>
+                        <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
+                            <li>
+                                <strong>Joint Visibility Windows</strong> — time intervals during which <em>all</em> selected instruments can observe the target
+                                concurrently
+                            </li>
+                            <li><strong>Per-Instrument Visibility Windows</strong> — individual observability windows broken down by instrument</li>
+                        </ul>
+                        <p class="py-2 leading-relaxed">Query parameters include:</p>
+                        <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
+                            <li>
+                                <strong>Target Coordinates</strong> — RA and Dec (J2000 decimal degrees); an object name resolver is provided for convenience
+                            </li>
+                            <li><strong>Instrument Selection</strong> — one or more observatory / telescope / instrument combinations</li>
+                            <li><strong>Date Range</strong> — the time window over which to calculate visibility</li>
+                        </ul>
+                        <div class="bg-base-200 mt-4 p-4 space-y-2 text-sm leading-relaxed">
+                            <p class="font-semibold text-lg">Visibility Constraints</p>
+                            <p class="content/70">
+                                Each instrument carries its own set of observing constraints that are applied during the calculation. Typical constraints
+                                include:
+                            </p>
+                            <ul class="list-disc list-inside space-y-1 ml-2 content/70">
+                                <li><strong>Earth Limb Exclusion</strong> — minimum elevation angle above the Earth's limb for space-based observatories</li>
+                                <li><strong>Sun Avoidance</strong> — minimum angular separation between the target and the Sun</li>
+                                <li><strong>Moon Avoidance</strong> — minimum angular separation between the target and the Moon</li>
+                                <li><strong>SAA Avoidance</strong> — exclusion of passes through the South Atlantic Anomaly for affected missions</li>
+                                <li>
+                                    <strong>Altitude / Azimuth Limits</strong> — minimum elevation above the horizon and azimuth range restrictions for ground-based
+                                    observatories
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </Section>
 
-                <!-- Observations -->
-                <div class="space-y-2">
-                    <h4 class="text-xl font-semibold flex items-center justify-between">
-                        <span>Observations</span>
-                        <a href="/observations" class="btn btn-sm btn-outline btn-primary">
-                            <i class="bx bx-calendar"></i>
-                            Browse Observations
-                        </a>
-                    </h4>
-                    <p class="text-base leading-relaxed">
-                        Query individual observations ingested from supported mission schedules. Available filter parameters include:
-                    </p>
-                    <ul class="list-disc list-inside space-y-1 ml-2 text-base leading-relaxed">
-                        <li><strong>Observatory / Telescope / Instrument</strong> — scope results to a specific instrument</li>
-                        <li><strong>Date Range</strong> — filter by the start or end time of the observation exposure</li>
-                        <li><strong>Observation Type</strong> — filter by mode such as imaging or spectroscopy</li>
-                        <li><strong>Coordinates &amp; Search Radius</strong> — find observations targeting a specific sky position</li>
-                    </ul>
-                </div>
-            </section>
+                <Section title="Query Portals" id="query-portals">
+                    <div class="border-t border-base-300 pt-3">
+                        <p class="leading-relaxed">ACROSS provides interactive web-based portals for querying and exploring data directly in the browser.</p>
+
+                        <Section title="Schedules">
+                            <a slot="buttons" href="/schedules" class="btn btn-sm btn-outline btn-primary">
+                                <i class="bx bx-calendar"></i>
+                                Browse Schedules
+                            </a>
+                            <div class="space-y-2">
+                                <p class="leading-relaxed">
+                                    Query observing schedules across all supported missions. Results can be filtered by the following parameters:
+                                </p>
+                                <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
+                                    <li><strong>Observatory / Telescope / Instrument</strong> — filter results to one or more specific instruments</li>
+                                    <li><strong>Date Range</strong> — narrow results to schedules that overlap a given time window</li>
+                                    <li><strong>Schedule Type</strong> — filter by planned, executed, or other schedule states</li>
+                                </ul>
+                                <p class="leading-relaxed">
+                                    Each schedule in the results links through to its constituent observations, allowing you to drill down from a high-level
+                                    schedule view into the individual pointings and exposure details that make it up.
+                                </p>
+                            </div>
+                        </Section>
+
+                        <Section title="Observations">
+                            <a slot="buttons" href="/observations" class="btn btn-sm btn-outline btn-primary">
+                                <i class="bx bx-calendar"></i>
+                                Browse Observations
+                            </a>
+
+                            <p class="leading-relaxed">
+                                Query individual observations ingested from supported mission schedules. Available filter parameters include:
+                            </p>
+                            <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
+                                <li><strong>Observatory / Telescope / Instrument</strong> — scope results to a specific instrument</li>
+                                <li><strong>Date Range</strong> — filter by the start or end time of the observation exposure</li>
+                                <li><strong>Observation Type</strong> — filter by mode such as imaging or spectroscopy</li>
+                                <li><strong>Coordinates &amp; Search Radius</strong> — find observations targeting a specific sky position</li>
+                            </ul>
+                        </Section>
+                    </div>
+                </Section>
+            </div>
         </div>
-    </div>
-    <!-- ── Python Libraries ──────────────────────────────────────── -->
-    <div id="python-libraries" class="space-y-6">
-        <div class="flex items-center gap-3">
-            <i class="bx bx-cube text-2xl text-primary"></i>
-            <h3 class="text-2xl font-bold text-primary">Python Libraries</h3>
-        </div>
-        <div class="border-l-4 border-primary pl-6 space-y-8">
-            <!-- across-tools -->
-            <section id="across-tools" class="space-y-3">
-                <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2 flex items-center justify-between">
-                    <a href="https://pypi.org/project/across-tools" class="hover:underline" target="_blank" rel="noopener noreferrer">across-tools</a>
-                    <div class="flex items-center gap-2">
+
+        <div id="python-libraries" class="space-y-6">
+            <div class="flex items-center gap-3">
+                <i class="bx bx-cube text-2xl text-primary"></i>
+                <h3 class="text-3xl font-bold text-primary">Python Libraries</h3>
+            </div>
+            <div class="border-l-4 border-primary pl-6 space-y-8">
+                <Section title="across-tools">
+                    <div slot="buttons" class="flex items-center gap-2">
                         <a
                             href="https://across-tools.readthedocs.io/en/latest/"
                             class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
@@ -126,6 +124,15 @@
                         >
                             <i class="bx bx-book-open"></i>
                             Read the Docs
+                        </a>
+                        <a
+                            href="https://pypi.org/project/across-tools/"
+                            class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="bx bx-cube"></i>
+                            View on PyPI
                         </a>
                         <a
                             href="https://github.com/NASA-ACROSS/across-tools"
@@ -141,21 +148,18 @@
                             View on GitHub
                         </a>
                     </div>
-                </h3>
-                <p class="text-base leading-relaxed">A lightweight astronomy observing Python package that provides functionality for:</p>
-                <ul class="list-disc list-inside space-y-1 ml-2 text-base leading-relaxed">
-                    <li>Ephemeris Based Visibility Calculation</li>
-                    <li>Spherical Polygon Analysis — for instrument footprints</li>
-                    <li>Bandpass Converter</li>
-                    <li class="italic text-base-content/60">...more coming TBA...</li>
-                </ul>
-            </section>
+                    <div class="border-t border-base-300 pt-3">
+                        <p class="leading-relaxed">A lightweight astronomy observing Python package that provides functionality for:</p>
+                        <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
+                            <li>Ephemeris Based Visibility Calculation</li>
+                            <li>Spherical Polygon Analysis — for instrument footprints</li>
+                            <li>Bandpass Converter</li>
+                        </ul>
+                    </div>
+                </Section>
 
-            <!-- across-client -->
-            <section id="across-client" class="space-y-3">
-                <h3 class="text-2xl font-semibold text-primary border-b border-base-300 pb-2 flex items-center justify-between">
-                    <a href="https://pypi.org/project/across-client" class="hover:underline" target="_blank" rel="noopener noreferrer">across-client</a>
-                    <div class="flex items-center gap-2">
+                <Section title="across-client">
+                    <div slot="buttons" class="flex items-center gap-2">
                         <a
                             href="https://across-client.readthedocs.io/en/latest/"
                             class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
@@ -164,6 +168,15 @@
                         >
                             <i class="bx bx-book-open"></i>
                             Read the Docs
+                        </a>
+                        <a
+                            href="https://pypi.org/project/across-client/"
+                            class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="bx bx-cube"></i>
+                            View on PyPI
                         </a>
                         <a
                             href="https://github.com/NASA-ACROSS/across-client"
@@ -179,12 +192,14 @@
                             View on GitHub
                         </a>
                     </div>
-                </h3>
-                <p class="text-base leading-relaxed">
-                    An API client package that wraps all astronomy observing related API endpoints, while providing resource methods for the aforementioned
-                    across-tools package on the API results.
-                </p>
-            </section>
+                    <div class="border-t border-base-300 pt-3">
+                        <p class="leading-relaxed">
+                            An API client package that wraps all astronomy observing related API endpoints, while providing resource methods for the
+                            aforementioned across-tools package on the API results.
+                        </p>
+                    </div>
+                </Section>
+            </div>
         </div>
     </div>
-</div>
+</Section>

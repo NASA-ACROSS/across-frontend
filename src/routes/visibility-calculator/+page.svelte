@@ -215,7 +215,7 @@
         </Section>
     {:then results}
         <Section title="Joint Visibility Windows" icon="globe">
-            <div class="collapse collapse-arrow border border-base-300 rounded-box">
+            <div class="collapse collapse-arrow border border-base-300">
                 <input type="checkbox" checked />
                 <div class="collapse-title text-lg font-semibold">Results ({results.jointVisibilityWindows.length})</div>
                 <div class="collapse-content">
@@ -282,7 +282,7 @@
                         {@const instrument = instruments.find((inst) => inst.id === instrumentId)}
                         {@const windows = results.observatoryVisibilityWindows[instrumentId] || []}
                         {#if instrument && windows.length > 0}
-                            <div class="collapse collapse-arrow border border-base-300 rounded-box">
+                            <div class="collapse collapse-arrow border border-base-300">
                                 <input type="checkbox" />
                                 <div class="collapse-title text-xl font-medium">
                                     {instrument.name}

@@ -2,10 +2,13 @@
     export let title = '';
     export let icon: string | undefined = undefined;
     export let type: 'row' | 'col' = 'col';
+
+    // allow id for linking
+    export let id = '';
 </script>
 
 <!-- Section -->
-<div class="w-full my-4 flex flex-col text-primary grow">
+<div {id} class="w-full my-4 flex flex-col text-primary grow">
     <!-- Heading -->
     {#if icon || title || $$slots.buttons}
         <h2 class="text-3xl flex flex-col md:flex-row justify-between text-primary pb-3">

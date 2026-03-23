@@ -9,8 +9,8 @@
     let observatories = data.observatories;
 </script>
 
-<Page center={true}>
-    <Section title="Observatories" icon="satellite-dish">
+<Page showInfo={true} showMenu={true} title="Observatories" icon="satellite-dish">
+    <Section>
         <div class="flex flex-col ps-4 pe-4">
             {#each observatories as observatory}
                 <ArrowButton href={resolve('/observatories/[observatoryShortName]', { observatoryShortName: observatory.short_name })}>

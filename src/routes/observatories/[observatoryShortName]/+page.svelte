@@ -109,10 +109,10 @@
                                         </Collapse>
                                     {/if}
 
-                                    {#if instrument?.constraints.length}
+                                    {#if instrument?.constraints?.length}
                                         <Collapse open={false} backgroundColor="bg-carbon-10">
                                             <div slot="title" class="text-2xl">
-                                                Constraints ({instrument?.constraints.length})
+                                                Constraints ({instrument?.constraints?.length})
                                             </div>
                                             {#each instrument?.constraints as constraint}
                                                 <div class="p-4 bg-secondary">

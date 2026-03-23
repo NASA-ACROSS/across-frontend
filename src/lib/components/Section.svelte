@@ -2,6 +2,7 @@
     export let title = '';
     export let icon: string | undefined = undefined;
     export let type: 'row' | 'col' = 'col';
+    export let wrap: boolean = false;
 
     // allow id for linking
     export let id = '';
@@ -25,7 +26,7 @@
         </h2>
     {/if}
 
-    <div class="flex flex-{type} gap-2">
+    <div class="flex flex-{type} {wrap ? 'flex-wrap' : ''} gap-2">
         <slot />
     </div>
 </div>

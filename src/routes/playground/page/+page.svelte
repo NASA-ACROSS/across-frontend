@@ -58,6 +58,12 @@
         {/each}
     </Section>
 
+    <Section icon="globe" type="row" wrap={true} title="Row Section With Wrap">
+        {#each Array(10) as _, i}
+            <div>Section Content {i + 1}</div>
+        {/each}
+    </Section>
+
     <Section>
         {#each Array(5) as _, i}
             <div>Untitled Column Section Content {i + 1}</div>

@@ -2,13 +2,11 @@ import { getObservatories } from '$lib/utils/across/getObservatories';
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import type { PageServerLoad } from './$types';
 import type { Observatory } from '$lib/types/across/Observatory';
-import type { Telescope } from '$lib/types/across/Telescope';
 import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
     const observatories: Observatory[] = await getObservatories(fetch, {
-        slug: { type: 'name', value: params?.observatoryShortName },
-        params: { include_filters: true },
+        name: params?.observatoryShortName,
     });
 
     if (!observatories.length) {
@@ -18,15 +16,12 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         });
     }
 
+    // pull the first observatory since there is only one per name. (as of writing this)
     const observatory: Observatory = observatories[0];
 
-    const telescopes: Telescope[] = [];
     const telescopeIds = observatory.telescopes.map((telescope) => telescope.id);
-    for (const id of telescopeIds) {
-        const [telescope] = await getTelescopes(fetch, { id });
 
-        telescopes.push(telescope);
-    }
+    const telescopes = await getTelescopes(fetch, { ids: telescopeIds, include_filters: true });
 
     return {
         slug: params.observatoryShortName,

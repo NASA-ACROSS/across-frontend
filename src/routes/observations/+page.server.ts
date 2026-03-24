@@ -83,7 +83,9 @@ export async function load({ url, fetch }: RequestEvent) {
 
     const queryParams = searchParams.deserialize<ObservationQueryParams>(url.searchParams, paramTypes);
 
-    // pagination defaults needs to be done in a hook or something.
+    // TODO: pagination defaults needs to be done in a hook or something, since many routes/pages could use it.
+    // Or we don't set defaults, and treat it as optional, until a user selects or moves to a different page
+    // then it gets set along with the default pageLimit.
     if (queryParams.page) {
         queryParams.page_limit = queryParams.page_limit || DEFAULTS.pageLimit;
     }

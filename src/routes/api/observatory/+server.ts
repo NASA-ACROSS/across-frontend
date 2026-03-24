@@ -1,10 +1,18 @@
 import { CONFIG } from '$config/config';
 import { type Observatory } from '$lib/types/across/Observatory';
+import searchParams from '$lib/utils/searchParams/searchParams';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async ({ fetch, params, url }) => {
-    const apiUrl = `${CONFIG.API_URL}/observatory?name=${params.observatoryShortName}&${url.searchParams}`;
-    console.log(`Fetching observatory with URL: ${apiUrl}`); // Debug log to check the request URL
+export const GET: RequestHandler = async ({ fetch, url }) => {
+    let apiUrl = `${CONFIG.API_URL}/observatory`;
+
+    const qp = searchParams.serialize({
+        ...Object.fromEntries(url.searchParams.entries()),
+    });
+
+    if (qp.entries().toArray().length) apiUrl = apiUrl.concat(`?${qp}`);
+
+    console.debug(`Fetching Observatory from ACROSS API: ${apiUrl}`); // Debug log to check the request URL
     const res = await fetch(`${apiUrl}`, {
         method: 'GET',
     });

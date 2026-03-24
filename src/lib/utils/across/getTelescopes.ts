@@ -2,13 +2,18 @@ import type { Telescope } from '$lib/types/across/Telescope';
 import searchParams from '../searchParams/searchParams';
 
 type GetTelescopesParams = {
-    id?: string;
-    name?: string;
+    ids?: string[];
+    include_filters?: boolean;
 };
 
-export const getTelescopes = async (fetch: typeof window.fetch, params: GetTelescopesParams = {}) => {
-    const qp = searchParams.serialize(params);
-    const response = await fetch(`/api/telescope?${qp}`, {
+export const getTelescopes = async (fetch: typeof window.fetch, params?: GetTelescopesParams) => {
+    const qp = searchParams.serialize(params, { ids: 'array' });
+
+    const url = `/api/telescope${qp.toString() ? `?${qp}` : ''}`;
+
+    console.debug('calling to API Route [GET /api/telescope] with URL:', url);
+
+    const response = await fetch(url, {
         method: 'GET',
     });
 

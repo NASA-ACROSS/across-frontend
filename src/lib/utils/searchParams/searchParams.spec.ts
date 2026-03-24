@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import searchParams from './searchParams';
+import searchParams, { type ParamTypes } from './searchParams';
 
 describe('searchParams', () => {
     describe('serialize', () => {
@@ -24,14 +24,15 @@ describe('searchParams', () => {
         });
 
         it.each([
-            [{ foo: '123' }, 'foo=123'],
-            [{ bar: 456 }, 'bar=456'],
-            [{ baz: true }, 'baz=true'],
-            [{ fizz: [1, 2, 3] }, 'fizz=1&fizz=2&fizz=3'],
-        ])('should serialize an object with %s as %s: "%s"', (input, expected) => {
-            const params = searchParams.serialize(input);
+            ['spongebob', ['spongebob'], { foo: 'string' }],
+            [456, ['456'], { foo: 'number' }],
+            [true, ['true'], { foo: 'boolean' }],
+            [[1, 2, 3], ['1', '2', '3'], { foo: 'array' }],
+            [['red', 'blue', 'green'], ['red', 'blue', 'green'], { foo: 'array' }],
+        ])('should serialize an object with %s as %s: "%s"', (value, expected, types) => {
+            const params = searchParams.serialize({ foo: value }, types as ParamTypes<unknown>);
 
-            expect(params.toString()).toBe(expected);
+            expect(params.getAll('foo')).toStrictEqual(expected);
         });
 
         it('should omit empty string values', () => {

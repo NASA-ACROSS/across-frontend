@@ -1,32 +1,21 @@
 import type { Observatory } from '$lib/types/across/Observatory';
 import searchParams from '../searchParams/searchParams';
 
-type GetObservatoriesParams = {
-    include_filters?: boolean;
+type GetObservatoryParams = {
+    name?: string;
 };
 
-type Options = {
-    slug?: { type: 'id' | 'name'; value: string };
-    params?: GetObservatoriesParams;
-};
-
-export const getObservatories = async (fetch: typeof window.fetch, options?: Options) => {
+export const getObservatories = async (fetch: typeof window.fetch, params?: GetObservatoryParams) => {
     const apiUrl = '/api/observatory';
 
     let requestUrl = apiUrl;
 
-    if (options?.slug?.value) {
-        requestUrl = `${requestUrl}/${options.slug.value}`;
-    }
-
-    if (options?.params) {
-        const qp = searchParams.serialize(options.params);
-        requestUrl = `${requestUrl}?${qp}`;
-    }
+    const qp = searchParams.serialize(params);
+    if (qp.entries().toArray().length) requestUrl = `${requestUrl}?${qp}`;
 
     let response;
     try {
-        console.log('calling to API Route [GET /api/observatory] with URL:', requestUrl); // Debug log to check the request URL
+        console.debug('calling to API Route [GET /api/observatory] with URL:', requestUrl); // Debug log to check the request URL
         response = await fetch(requestUrl, { method: 'GET' });
     } catch (e) {
         console.error(`ERROR: catch getting observatories at [${Date.now()}]`, JSON.stringify(e));

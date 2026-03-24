@@ -29,6 +29,8 @@
             "type": "node-terminal",
             "env": {
                 "PUBLIC_RUNTIME_ENV": "dev",
+                "ACROSS_SERVER_ID": "",
+                "ACROSS_SERVER_SECRET": "",
                 "APP_ENV": "across-plat-ue2-dev",
                 "AWS_PROFILE": "Project-Admin"
             }

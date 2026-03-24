@@ -2,10 +2,13 @@ import { CONFIG } from '$config/config';
 import { type Telescope } from '$lib/types/across/Telescope';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async ({ fetch }) => {
-    const res = await fetch(`${CONFIG.API_URL}/telescope`, {
-        method: 'GET',
-    });
+export const GET: RequestHandler = async ({ fetch, url }) => {
+    let apiUrl = `${CONFIG.API_URL}/telescope`;
+    const qp = new URLSearchParams(url.searchParams);
+    if (qp.entries().toArray().length) apiUrl = apiUrl.concat(`?${qp}`);
+
+    console.log(`Fetching telescopes with URL: ${apiUrl}`); // Debug log to check the request URL
+    const res = await fetch(apiUrl, { method: 'GET' });
 
     // catch known errors from api and hide error from user
     const errorCodes = [500, 401, 403];

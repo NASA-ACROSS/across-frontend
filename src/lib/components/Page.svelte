@@ -21,8 +21,9 @@
     const sidebarClasses = 'w-full flex flex-col flex-grow lg:max-w-1/6';
 </script>
 
+<!-- Page -->
 <div class="pt-6 pb-8 px-2 md:px-5 lg:px-15 xl:px-30 w-auto bg-base-100 flex flex-col flex-grow">
-    <!-- Page -->
+    <!-- Page Alert -->
     {#if $$slots.alert}
         <div class="pb-2">
             <slot name="alert"></slot>
@@ -45,23 +46,19 @@
     {/if}
 
     <!-- Page Content -->
-    {#if showMenu || showInfo}
-        <div class="flex flex-col flex-grow wrap-anywhere lg:flex-row md:gap-1 lg:gap-3 xl:gap-6 lg:w-full">
-            {#if showMenu}
-                <div class={sidebarClasses}>
-                    <slot name="menu" />
-                </div>
-            {/if}
-            <div class="w-full flex flex-col flex-grow">
-                <slot />
+    <div class="flex flex-col flex-grow wrap-anywhere lg:flex-row md:gap-1 lg:gap-3 xl:gap-6 lg:w-full">
+        {#if showMenu}
+            <div class={sidebarClasses}>
+                <slot name="menu" />
             </div>
-            {#if showInfo}
-                <div class={sidebarClasses}>
-                    <slot name="info" />
-                </div>
-            {/if}
+        {/if}
+        <div class="w-full flex flex-col flex-grow">
+            <slot />
         </div>
-    {:else}
-        <slot />
-    {/if}
+        {#if showInfo}
+            <div class={sidebarClasses}>
+                <slot name="info" />
+            </div>
+        {/if}
+    </div>
 </div>

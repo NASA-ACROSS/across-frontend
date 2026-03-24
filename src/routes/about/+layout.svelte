@@ -41,7 +41,7 @@
 </script>
 
 <Page showMenu={true}>
-    <div slot="menu" class="drawer drawer-open lg:mt-16">
+    <div slot="menu" class="sticky top-4 self-start drawer drawer-open lg:mt-16">
         <input id="about-drawer" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content z-10 w-full">
             <label for="about-drawer" aria-label="close sidebar" class="drawer-overlay"></label>

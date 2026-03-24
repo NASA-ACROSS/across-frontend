@@ -19,7 +19,7 @@
         View on GitHub
     </a>
 
-    <div class="border-t border-base-300 pt-3 space-y-2">
+    <div class="border-t border-base-300 pt-3 space-y-3">
         <p class="leading-relaxed">
             Data is obtained by aggregating all available open-source mission observing schedules and translating them into the appropriate ACROSS data models.
             The ACROSS system has a data-ingestion service that runs a cron-job task for each telescope, grabbing the latest planned (or completed) schedule <strong
@@ -59,7 +59,7 @@
 </Section>
 
 <Section title="Submitting Observatory Scheduling Data">
-    <div class="border-t border-base-300 pt-3 space-y-2">
+    <div class="border-t border-base-300 pt-3 space-y-3">
         <p class="leading-relaxed">
             If you have access to your observatory's scheduling information and want to submit it to the ACROSS API, please reach out to the ACROSS support
             team. You will need to:

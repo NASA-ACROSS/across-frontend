@@ -3,7 +3,7 @@
 </script>
 
 <Section title="What is ACROSS?">
-    <div class="border-t border-base-300 pt-3">
+    <div class="border-t border-base-300 pt-3 space-y-3">
         <p class="leading-relaxed">
             The <strong>Astrophysics Cross-Observatory Science Support (ACROSS)</strong> initiative aims to advance time-domain and multimessenger (TDAMM) science
             by facilitating the coordination of observational resources and scientific expertise. Its goal is to enable rapid, unified, and effective responses to
@@ -21,7 +21,7 @@
 </Section>
 
 <Section title="System Overview">
-    <div class="border-t border-base-300 pt-3">
+    <div class="border-t border-base-300 pt-3 space-y-3">
         <p class="leading-relaxed">
             The ACROSS system aggregates and normalizes supported mission schedule and observation data to provide a single queryable source for science
             situational awareness across NASA's ground and space observatories. By providing a unified interface to access and analyze this data, ACROSS
@@ -56,7 +56,7 @@
 </Section>
 
 <Section title="Open Data Policy" icon="lock-open-alt">
-    <div class="border-t border-base-300 pt-3">
+    <div class="border-t border-base-300 pt-3 space-y-3">
         <p class="leading-relaxed">
             ACROSS is committed to making astrophysics scheduling and observation data as openly accessible as possible. <strong
                 >No account or login is required to read data from the ACROSS API.</strong

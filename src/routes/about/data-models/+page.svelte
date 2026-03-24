@@ -5,7 +5,7 @@
 </script>
 
 <Section title="Observatories" id="observatories">
-    <div class="border-t border-base-300 pt-3">
+    <div class="border-t border-base-300 pt-3 space-y-3">
         <p class="leading-relaxed">
             Supported observatories are represented through a series of one-to-many relationships: an observatory has many telescopes, and a telescope can have
             many instruments. This generalized approach allows us to support a wide variety of observatory configurations, and has the flexibility to
@@ -44,7 +44,7 @@
 </Section>
 
 <Section title="Schedules" id="schedules">
-    <div class="border-t border-base-300 pt-3">
+    <div class="border-t border-base-300 pt-3 space-y-3">
         <p class="leading-relaxed">
             Similarly, observing schedules are represented as an aggregation of many observations over a continuous date range. A schedule can contain
             observations belonging to multiple instruments associated with the particular schedule's telescope.
@@ -68,7 +68,7 @@
 </Section>
 
 <Section title="Units & Conventions" id="units">
-    <div class="border-t border-base-300 pt-3">
+    <div class="border-t border-base-300 pt-3 space-y-3">
         <p class="leading-relaxed">Below are the assumptions for how we store physical representations of our data.</p>
         <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
             <li>All dates are stored in ISO format (<code class="bg-base-200 px-1 text-sm">YYYY-MM-DDTHH:MM:SSZ</code>) in UTC timezone.</li>

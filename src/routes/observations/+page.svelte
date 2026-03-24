@@ -65,11 +65,7 @@
     // Column customization
     $: availableColumns = [
         { id: 'object_name', label: 'Object Name', selected: true },
-        {
-            id: 'telescope_instrument',
-            label: 'Observatory/Telescope/Instrument',
-            selected: true,
-        },
+        { id: 'telescope_instrument', label: 'Observatory/Telescope/Instrument', selected: true },
         { id: 'date_begin', label: 'Date Begin', selected: true },
         { id: 'date_end', label: 'Date End', selected: true },
         { id: 'ra', label: 'RA°', selected: true },
@@ -79,11 +75,7 @@
         { id: 'bandpass_name', label: 'Bandpass Name', selected: true },
         { id: 'observation_type', label: 'Observation Type', selected: false },
         { id: 'status', label: 'Status', selected: true },
-        {
-            id: 'proposal_reference',
-            label: 'Proposal Reference',
-            selected: false,
-        },
+        { id: 'proposal_reference', label: 'Proposal Reference', selected: false },
         { id: 'description', label: 'Description', selected: false },
         { id: 'schedule_id', label: 'Schedule ID', selected: false },
     ];
@@ -104,7 +96,7 @@
 
     // Bandpass type options
     const bandpassTypeOptions = ['ENERGY', 'FREQUENCY', 'WAVELENGTH'];
-    const bandpasssUnitOptions: {
+    const bandpassUnitOptions: {
         [key: string]: string[];
     } = {
         ENERGY: ['eV', 'keV', 'MeV', 'GeV', 'TeV'],
@@ -245,8 +237,6 @@
         //     params.append('order', sortDirection);
         // }
 
-        // Add page parameter
-        params.append('page', '1'); // Reset to first page on new search
         currentSearchParams = params;
         await goto(`?${params.toString()}`, { noScroll: true, invalidateAll: true });
     }
@@ -630,7 +620,7 @@
                                         >
                                         {#if bandpassRegime}
                                             {#key bandpassRegime}
-                                                {#each bandpasssUnitOptions[bandpassRegime] as option}
+                                                {#each bandpassUnitOptions[bandpassRegime] as option}
                                                     <option value={option}>{option}</option>
                                                 {/each}
                                             {/key}

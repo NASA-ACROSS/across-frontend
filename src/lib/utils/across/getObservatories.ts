@@ -1,36 +1,33 @@
-import { CONFIG } from '../../../config/config';
 import type { Observatory } from '$lib/types/across/Observatory';
+import searchParams from '../searchParams/searchParams';
 
 type GetObservatoriesParams = {
-    id?: string;
-    name?: string;
+    include_filters?: boolean;
 };
 
-export const getObservatories = async (fetch: typeof window.fetch) => {
-    const options: RequestInit = {
-        method: 'GET',
-    };
+type Options = {
+    slug?: { type: 'id' | 'name'; value: string };
+    params?: GetObservatoriesParams;
+};
 
-    const apiUrl = `${CONFIG.API_URL}/observatory/`;
+export const getObservatories = async (fetch: typeof window.fetch, options?: Options) => {
+    const apiUrl = '/api/observatory';
+
     let requestUrl = apiUrl;
 
-    if (params?.id) {
-        requestUrl = `${apiUrl}${params.id}`;
-    } else if (params) {
-        const apiParams = new URLSearchParams();
-        // Add all query parameters to API request
-        Object.entries(params).forEach(([key, value]) => {
-            if (value !== undefined) {
-                apiParams.append(key, String(value));
-            }
-        });
+    if (options?.slug?.value) {
+        requestUrl = `${requestUrl}/${options.slug.value}`;
+    }
 
-        requestUrl = `${apiUrl}?${apiParams.toString()}`;
+    if (options?.params) {
+        const qp = searchParams.serialize(options.params);
+        requestUrl = `${requestUrl}?${qp}`;
     }
 
     let response;
     try {
-        response = await fetch(requestUrl, options);
+        console.log('calling to API Route [GET /api/observatory] with URL:', requestUrl); // Debug log to check the request URL
+        response = await fetch(requestUrl, { method: 'GET' });
     } catch (e) {
         console.error(`ERROR: catch getting observatories at [${Date.now()}]`, JSON.stringify(e));
         throw new Error('Unexpected Error while fetching observatories');
@@ -42,7 +39,11 @@ export const getObservatories = async (fetch: typeof window.fetch) => {
         console.error(`ERROR: getting observatories at [${Date.now()}] with status code [${response.status}]`);
     }
 
-    const observatories = (await response.json()) as Observatory[];
+    let observatories = (await response.json()) as Observatory[] | Observatory;
+
+    if (!Array.isArray(observatories)) {
+        observatories = [observatories];
+    }
 
     return observatories;
 };

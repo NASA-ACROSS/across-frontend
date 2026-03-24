@@ -1,6 +1,6 @@
-type ParamSource = URLSearchParams | FormData;
+type ParamSource = URLSearchParams | FormData | Record<string, unknown>;
 type ParamType = 'array' | 'string' | 'number' | 'boolean';
-type DeserializedParams<T> = {
+export type ParamTypes<T> = {
     [K in keyof Partial<T>]?: 'array' | 'string' | 'number' | 'boolean';
 };
 
@@ -24,14 +24,18 @@ type DeserializedParams<T> = {
  * const normalized = normalizeSearchParams(params, { tags: 'array' });
  * // Results in: tags=javascript&tags=typescript&tags=nodejs
  */
-const serialize = (source: ParamSource, keys?: Record<string, 'array'>): URLSearchParams => {
+const serialize = <T>(source: ParamSource, keys?: ParamTypes<T>): URLSearchParams => {
     const params = new URLSearchParams();
 
-    for (const [key, value] of source.entries()) {
+    const sourceArr = source instanceof URLSearchParams || source instanceof FormData ? source.entries() : Object.entries(source);
+
+    for (const [key, value] of sourceArr) {
         if (value === undefined || value === null || value === '') continue;
 
-        if (typeof value === 'string') {
-            if (keys?.[key] === 'array') {
+        if (Array.isArray(value)) {
+            for (const item of value) params.append(key, String(item));
+        } else if (typeof value === 'string') {
+            if (keys?.[key as keyof T] === 'array') {
                 const items = String(value)
                     .split(',')
                     .map((s) => s.trim())
@@ -41,6 +45,8 @@ const serialize = (source: ParamSource, keys?: Record<string, 'array'>): URLSear
             } else {
                 params.append(key, String(value));
             }
+        } else if (typeof value === 'number' || typeof value === 'boolean') {
+            params.append(key, String(value));
         }
     }
 
@@ -75,7 +81,7 @@ const deserializeHandlers = {
  * const result = deserialize(params, { count: 'number', active: 'boolean', tags: 'array' });
  * // result: { count: 5, active: true, tags: ['js', 'ts'], ids: ['1', '2'] }
  */
-const deserialize = <T>(urlParams: URLSearchParams, paramTypes: DeserializedParams<T> = {}): T => {
+const deserialize = <T>(urlParams: URLSearchParams, paramTypes: ParamTypes<T> = {}): T => {
     return Array.from(urlParams.entries()).reduce((acc, [key, value]) => {
         const name = key as keyof T;
         const expectedType = (paramTypes[name] ?? 'string') as ParamType;

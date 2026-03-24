@@ -2,10 +2,10 @@ import type { Telescope } from '$lib/types/across/Telescope';
 import type { JointVisibilityWindowResponse } from '$lib/types/across/VisibilityWindow';
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { resolveObject } from '$lib/utils/across/resolveObject';
-import { findKnownError } from '$lib/utils/error/findKnownError';
 import type { RequestEvent } from './$types';
 import { CONFIG } from '../../config/config';
 import searchParams from '$lib/utils/searchParams/searchParams';
+import parseErrorResponse from '$lib/utils/error/parseErrorResponse';
 
 type ErrorResponse = {
     detail: unknown;
@@ -19,20 +19,6 @@ type JointVisibilityQueryParams = {
     dec?: string | number | null;
     min_visibility_duration?: string | number | null;
     hi_res?: boolean | null;
-};
-
-const knownErrors: Record<string, string> = {
-    'could be used to calculate an ephemeris for observatory':
-        'Invalid Ephemeris Parameters: please contact support with your search parameters to resolve this issue.',
-    'type":"missing","loc":["query","ra"],': 'RA and DEC are required',
-    'type":"missing","loc":["query","dec"],': 'RA and DEC are required',
-    'type":"less_than_equal","loc":["query","ra"]': 'RA must be between 0° and 360°',
-    'type":"less_than_equal","loc":["query","dec"]': 'DEC must be between -90° and 90°',
-    'type":"greater_than_equal","loc":["query","ra"]': 'RA must be between 0° and 360°',
-    'type":"greater_than_equal","loc":["query","dec"]': 'DEC must be between -90° and 90°',
-    '"type":"missing","loc":["query","date_range_begin"]': 'Date Range Begin and End are required',
-    '"type":"missing","loc":["query","date_range_end"]': 'Date Range Begin and End are required',
-    '"type":"missing","loc":["query","instrument_ids"]': 'At least one instrument must be selected',
 };
 
 export type VisibilityWindowsData = {
@@ -83,12 +69,8 @@ export const actions = {
         }
 
         if (!response.ok) {
-            const text = (await response.json()) as ErrorResponse;
-            const detailText = findKnownError(text.detail, knownErrors);
-            console.error('ERROR fetching visibility windows:', {
-                status: response.status,
-                text: await response.text(),
-            });
+            const result = (await response.json()) as ErrorResponse;
+            const detailText = parseErrorResponse(result);
 
             return {
                 jointVisibilityWindows: [],

@@ -1,11 +1,12 @@
-import type { Paginate } from '$lib/types/Paginate';
+import type { Paginate, PaginateParams } from '$lib/types/Paginate';
 
 import type { Telescope } from '$lib/types/across/Telescope';
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { resolveObject } from '$lib/utils/across/resolveObject';
-import { CONFIG } from '../../config/config';
 import type { RequestEvent } from './$types';
 import type { Observation } from '$lib/types/across/Observation';
+import searchParams, { type ParamTypes } from '$lib/utils/searchParams/searchParams';
+import parseErrorResponse from '$lib/utils/error/parseErrorResponse';
 
 const DEFAULTS = {
     pageLimit: 20,
@@ -13,6 +14,8 @@ const DEFAULTS = {
 };
 
 type ObservationQueryParams = {
+    /** table columns */
+    columns?: string[] | null;
     external_id?: string | null;
     schedule_ids?: string[] | null;
     observatory_ids?: string[] | null;
@@ -33,89 +36,36 @@ type ObservationQueryParams = {
     type?: string | null;
     depth_value?: string | number | null;
     depth_unit?: string | null;
-};
-
-type ErrorResponse = {
-    detail: string;
-};
-
-const knownErrors = [
-    'Cone search parameters are not complete. Please provide all cone search parameters.',
-    'Depth parameters are not complete. Please provide all depth parameters.',
-    'Bandpass parameters are not complete. Please provide all bandpass parameters.',
-    'Max wavelength cannot be less than min wavelength.',
-    'Frequency values must be positive.',
-    'Energy values must be positive.',
-    'Wavelength values must be positive.',
-];
+} & PaginateParams;
 
 // This is not an api param, but is used to select the energy regime in the frontend, so it should be preserved and shared for WYSIWYG
-const excluded_params = ['bandpass_regime'];
+// const excluded_params = ['bandpass_regime'];
 
-const isKnownError = (errorText: string): string => {
-    for (const knownError of knownErrors) {
-        if (errorText.includes(knownError)) {
-            return knownError;
-        }
-    }
-    return 'There was an error processing the request, please modify your selection and try again';
+/** Confirms Paginate response structure */
+const isPaginateResponse = (result: unknown): result is Paginate<Observation> => {
+    return (
+        typeof result === 'object' &&
+        result !== null &&
+        'items' in result &&
+        Array.isArray(result.items) &&
+        'total_number' in result &&
+        typeof result.total_number === 'number'
+    );
+};
+
+const nullObservations = {
+    observations: [],
+    currentPage: 1,
+    totalPages: 1,
+    queryParams: {} as ObservationQueryParams,
+    urlColumns: [],
+    totalCount: 0,
+    error: 'Failed to load observations. Please try again later.',
 };
 
 export async function load({ url, fetch }: RequestEvent) {
-    // Extract query parameters
-    const page = Number(url.searchParams.get('page')) || 1;
     // const sort = url.searchParams.get('sort') || '';
     // const order = url.searchParams.get('order') || 'asc';
-
-    // Extract column preferences from URL if present
-    const urlColumns = url.searchParams.get('columns')?.split(',') || [];
-
-    // Build query params object for the API call
-    const queryParams: ObservationQueryParams = {} as ObservationQueryParams;
-
-    // Single value params
-    if (url.searchParams.has('external_id')) queryParams.external_id = url.searchParams.get('external_id');
-    if (url.searchParams.has('status')) queryParams.status = url.searchParams.get('status');
-    if (url.searchParams.has('proposal')) queryParams.proposal = url.searchParams.get('proposal');
-    if (url.searchParams.has('object_name')) queryParams.object_name = url.searchParams.get('object_name');
-    if (url.searchParams.has('date_range_begin')) queryParams.date_range_begin = url.searchParams.get('date_range_begin');
-    if (url.searchParams.has('date_range_end')) queryParams.date_range_end = url.searchParams.get('date_range_end');
-    if (url.searchParams.has('bandpass_min')) queryParams.bandpass_min = url.searchParams.get('bandpass_min');
-    if (url.searchParams.has('bandpass_max')) queryParams.bandpass_max = url.searchParams.get('bandpass_max');
-    if (url.searchParams.has('bandpass_regime')) queryParams.bandpass_regime = url.searchParams.get('bandpass_regime');
-    if (url.searchParams.has('bandpass_type')) queryParams.bandpass_type = url.searchParams.get('bandpass_type');
-    if (url.searchParams.has('cone_search_ra')) queryParams.cone_search_ra = url.searchParams.get('cone_search_ra');
-    if (url.searchParams.has('cone_search_dec')) queryParams.cone_search_dec = url.searchParams.get('cone_search_dec');
-    if (url.searchParams.has('cone_search_radius')) queryParams.cone_search_radius = url.searchParams.get('cone_search_radius');
-    if (url.searchParams.has('type')) queryParams.type = url.searchParams.get('type');
-    if (url.searchParams.has('depth_value')) queryParams.depth_value = url.searchParams.get('depth_value');
-    if (url.searchParams.has('depth_unit')) queryParams.depth_unit = url.searchParams.get('depth_unit');
-
-    // Array params
-    queryParams.schedule_ids = url.searchParams.get('schedule_ids')?.split(',') || [];
-    queryParams.observatory_ids = url.searchParams.get('observatory_ids')?.split(',') || [];
-    queryParams.telescope_ids = url.searchParams.get('telescope_ids')?.split(',') || [];
-    queryParams.instrument_ids = url.searchParams.get('instrument_ids')?.split(',') || [];
-
-    // Build API URL with parameters
-    let apiUrl = `${CONFIG.API_URL}/observation/?`;
-    const apiParams = new URLSearchParams();
-
-    // Add all query parameters to API request
-    Object.entries(queryParams).forEach(([key, value]) => {
-        if (value !== undefined) {
-            if (Array.isArray(value)) {
-                value.forEach((item) => apiParams.append(key, item));
-            } else {
-                // only add valid api params
-                if (!excluded_params.includes(key)) apiParams.append(key, String(value));
-            }
-        }
-    });
-
-    // Add pagination params
-    apiParams.append('page_limit', DEFAULTS.pageLimit.toString()); // Number of results per page
-    apiParams.append('page', String(page));
 
     // Add sorting params if provided
     // if (sort) {
@@ -123,32 +73,50 @@ export async function load({ url, fetch }: RequestEvent) {
     //     apiParams.append('order', order);
     // }
 
-    apiUrl += apiParams.toString();
+    const paramTypes: ParamTypes<ObservationQueryParams> = {
+        schedule_ids: 'array',
+        observatory_ids: 'array',
+        telescope_ids: 'array',
+        instrument_ids: 'array',
+        columns: 'array',
+    };
+
+    const queryParams = searchParams.deserialize<ObservationQueryParams>(url.searchParams, paramTypes);
+
+    // pagination defaults needs to be done in a hook or something.
+    if (queryParams.page) {
+        queryParams.page_limit = queryParams.page_limit || DEFAULTS.pageLimit;
+    }
+
+    const qp = searchParams.serialize<ObservationQueryParams>(queryParams, paramTypes);
 
     try {
         // Fetch observations
-        const response = await fetch(apiUrl);
+        const response = await fetch(`/api/observation?${qp}`, { method: 'GET' });
+
+        const result: unknown = await response.json();
 
         if (!response.ok) {
-            console.log(`API responded with status: ${response.status} for request URL ${apiUrl}`);
-            const text = (await response.json()) as ErrorResponse;
-            const knownError = isKnownError(text.detail);
+            const errorMessage = parseErrorResponse(result);
+
             return {
-                observations: [],
-                currentPage: 1,
-                totalPages: 1,
-                queryParams: {} as ObservationQueryParams,
-                urlColumns: [],
-                error: knownError,
+                ...nullObservations,
+                currentPage: queryParams.page || 1,
+                queryParams,
+                urlColumns: queryParams.columns || [],
+                error: errorMessage,
             };
         }
 
-        const observationsResponse = (await response.json()) as Paginate<Observation>;
-        const observations = observationsResponse.items;
+        if (!isPaginateResponse(result)) {
+            throw new Error('Invalid API response format for observations');
+        }
+
+        const observations = result.items;
 
         // In a real implementation, the total count might be returned in headers or response metadata
         // For now, we'll estimate based on the returned results
-        const totalCount = observationsResponse.total_number;
+        const totalCount = result.total_number;
         const totalPages = Math.ceil(totalCount / DEFAULTS.pageLimit);
 
         // Fetch instrument details for mapping IDs to names
@@ -158,24 +126,21 @@ export async function load({ url, fetch }: RequestEvent) {
 
         return {
             observations,
-            currentPage: page,
+            currentPage: queryParams.page || 1,
             totalPages,
             queryParams,
-            urlColumns,
+            urlColumns: queryParams.columns || [],
             telescopes,
             totalCount,
         };
     } catch (error) {
-        console.error('Error fetching observations:', error);
+        console.error('Unknown Error fetching observations:', error);
 
         return {
-            observations: [],
-            currentPage: 1,
-            totalPages: 1,
-            queryParams: {} as ObservationQueryParams,
-            urlColumns: [],
-            totalCount: 0,
-            error: 'Failed to load observations. Please try again later.',
+            ...nullObservations,
+            currentPage: queryParams.page || 1,
+            queryParams,
+            urlColumns: queryParams.columns || [],
         };
     }
 }

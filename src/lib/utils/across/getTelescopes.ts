@@ -1,22 +1,16 @@
 import type { Telescope } from '$lib/types/across/Telescope';
+import searchParams from '../searchParams/searchParams';
 
 type GetTelescopesParams = {
     id?: string;
     name?: string;
 };
 
-export const getTelescopes = async (fetch: typeof window.fetch) => {
-    const options: RequestInit = {
+export const getTelescopes = async (fetch: typeof window.fetch, params: GetTelescopesParams = {}) => {
+    const qp = searchParams.serialize(params);
+    const response = await fetch(`/api/telescope?${qp}`, {
         method: 'GET',
-    };
-
-    let response;
-    try {
-        response = await fetch(requestUrl, options);
-    } catch (e) {
-        console.error(`ERROR: catch getting telescopes at [${Date.now()}]`, JSON.stringify(e));
-        throw new Error('Unexpected Error while fetching telescopes');
-    }
+    });
 
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404, 401];

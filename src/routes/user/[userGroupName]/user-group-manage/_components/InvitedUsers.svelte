@@ -28,7 +28,7 @@
     };
 </script>
 
-<Section title="Recently Invited Users" icon="time">
+<Section title="Recently Invited Users" icon="inbox">
     <div>
         {#if !invitedUsers?.length}
             <p>No pending invites</p>

@@ -5,6 +5,7 @@
     import type { GroupRole } from '$lib/types/User/GroupRole';
     import type { SubmitFunction } from '@sveltejs/kit';
     import type { UserGroup } from '$lib/types/User/UserGroup';
+    import Spinner from '$lib/components/Spinner.svelte';
 
     export let selectedUser: GroupUser | undefined;
     export let group: UserGroup;
@@ -51,7 +52,7 @@
 
 <div class="flex flex-col w-1/3">
     <h2 class="text-2xl font-bold pb-2">
-        <i class="bx bx-user-pin opacity-70 me-2"></i>Selected User
+        <i class="bx bx-user opacity-70 me-2"></i>Selected User
     </h2>
     <div class="card bg-base-200 border-secondary">
         {#if !selectedUser}
@@ -82,7 +83,7 @@
                                             selectedRole = userRole;
                                         }}
                                         >{#if isRemovingRole && selectedRole == userRole}
-                                            <span class="loading loading-spinner" role="status" aria-hidden="true"></span>
+                                            <Spinner />
                                         {:else}
                                             <i class="bx bx-trash opacity-70"></i>
                                             Remove Role

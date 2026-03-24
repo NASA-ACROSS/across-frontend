@@ -4,7 +4,7 @@
     import Page from '$lib/components/Page.svelte';
 </script>
 
-<Page center={true}>
+<Page>
     <Section>
         <article class="prose">
             <div class="flex gap-5">

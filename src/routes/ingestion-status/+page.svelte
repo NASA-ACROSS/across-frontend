@@ -60,11 +60,11 @@
     };
 </script>
 
-<Page center={true}>
-    <Section title="Observatory Data Ingestion Status" containerClasses={'w-full'} icon="globe">
-        <div slot="buttons" class="text-xl">
-            UTC: {utcNowFormatted}
-        </div>
+<Page title="Observatory Data Ingestion Status" icon="globe">
+    <div slot="buttons" class="text-2xl opacity-60 self-center">
+        UTC: {utcNowFormatted}
+    </div>
+    <Section>
         <div class="flex flex-row gap-2 items-center mb-2">
             <div class={'badge badge-active h-10 w-30 p-4 text-nowrap text-xl ' + statusColors['active']}>active</div>
             <p>Newest schedule ends after last ingestion cycle</p>

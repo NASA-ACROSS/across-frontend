@@ -30,14 +30,14 @@
     };
 </script>
 
-<Page center={true}>
-    <Alert>
+<Page title="Login" icon="user">
+    <Alert slot="alert">
         Login is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">
             See documentation for more details.</a
         >
     </Alert>
-    <Section title="Login">
-        <form class="pt-2" method="post" use:enhance={enhancedLogin} novalidate>
+    <Section>
+        <form method="post" use:enhance={enhancedLogin} novalidate>
             <EmailInput
                 value={form?.email || ''}
                 disabled={isLoggingIn || form?.success || isButtonDisabled}

@@ -64,19 +64,21 @@
         </a>
     </div>
     <div class="navbar-end">
-        <LocalOnlyRender>
-            <div class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
-                <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={resolve('/playground')}>Playground</a>
-            </div>
-        </LocalOnlyRender>
         <ul class="menu menu-horizontal px-1 hidden lg:flex lg:items-center">
+            <LocalOnlyRender>
+                <li>
+                    <div class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
+                        <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={resolve('/playground')}>Playground</a>
+                    </div>
+                </li>
+            </LocalOnlyRender>
             <li>
                 <div class="dropdown dropdown-hover dropdown-end m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
                     <div tabindex="0" class="text-lg font-bold text-primary-content" role="button">
                         Data
                         <div class="bx bx-chevron-down"></div>
                     </div>
-                    <ul class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm">
+                    <ul class="dropdown-content menu bg-primary text-primary-content z-1 w-52 p-2 shadow-sm">
                         <li>
                             <a data-sveltekit-preload-data="tap" href={resolve('/schedules')}>Schedules</a>
                         </li>
@@ -95,7 +97,7 @@
                         Tools
                         <div class="bx bx-chevron-down"></div>
                     </div>
-                    <ul class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm">
+                    <ul class="dropdown-content menu bg-primary text-primary-content z-1 w-52 p-2 shadow-sm">
                         <li>
                             <a data-sveltekit-preload-data="tap" href={resolve('/ingestion-status')}>Data Ingestion Status</a>
                         </li>
@@ -139,7 +141,7 @@
                             </div>
                         </div>
                     </a>
-                    <ul class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow">
+                    <ul class="menu dropdown-content bg-primary z-1 mt-3 w-52 p-2 shadow">
                         {#if user}
                             <li>
                                 <a class="justify-between text-primary-content hover:bg-info" href={resolve('/user/profile')}> Profile </a>

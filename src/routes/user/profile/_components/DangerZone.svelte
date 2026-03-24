@@ -1,5 +1,6 @@
 <script lang="ts">
     import Section from '$lib/components/Section.svelte';
+    import Spinner from '$lib/components/Spinner.svelte';
 
     const COUNTDOWN_LENGTH = 3;
 
@@ -46,7 +47,7 @@
                                 title="Delete my User Account"
                             >
                                 {#if !isDeleteButtonEnabled}
-                                    <span class="loading loading-spinner" role="status" aria-hidden="true"></span>
+                                    <Spinner />
                                 {:else}
                                     Delete my User Account
                                 {/if}

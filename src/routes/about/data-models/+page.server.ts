@@ -3,6 +3,6 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = () => {
     return {
-        apiDocsUrl: CONFIG.API_DOCS_URL,
+        API_DOCS_URL: CONFIG.API_DOCS_URL,
     };
 };

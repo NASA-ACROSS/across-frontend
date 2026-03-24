@@ -123,93 +123,99 @@
     }
 </script>
 
-<Page center={true}>
-    <Section title="Joint Visibility Calculator" icon="calendar">
-        <p class="text-sm mb-4 italic text-gray-600">
-            Calculate the visibility of celestial objects from selected instruments. Enter target coordinates and a date range to determine when and for how
-            long the object will be observable.
-        </p>
-        <div class="bg-base-200 p-4 mb-6 w-full">
-            <div class="flex justify-between">
-                <div class="text-carbon-90 text-2xl pb-4 opacity-80">Input Parameters</div>
-                <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}>
-                    <div class="bx bx-refresh"></div>
-                    Reset
-                </button>
-            </div>
-
-            <div class="bg-base-100 p-4 mb-4">
-                <h3 class="text-lg font-semibold mb-4">Observatory / Telescope / Instrument</h3>
-                <div class="py-4 h-200 md:min-h-80 md:max-h-100">
-                    <ObservatoryTelescopeInstrumentSelector
-                        {observatories}
-                        {telescopes}
-                        {instruments}
-                        bind:selectedObservatories
-                        bind:selectedTelescopes
-                        bind:selectedInstruments
-                    />
+<Page title="Joint Visibility Calculator" icon="calendar">
+    <Section>
+        <div class="lg:w-5/6 xl:w-3/4 self-center">
+            <p class="text-sm mb-4 italic text-gray-600">
+                Calculate the visibility of celestial objects from selected instruments. Enter target coordinates and a date range to determine when and for how
+                long the object will be observable.
+            </p>
+            <div class="bg-base-200 p-4 mb-6 w-full">
+                <div class="flex justify-between">
+                    <div class="text-carbon-90 text-2xl pb-4 opacity-80">Input Parameters</div>
+                    <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}>
+                        <div class="bx bx-refresh"></div>
+                        Reset
+                    </button>
                 </div>
-            </div>
 
-            <div class="bg-base-100 p-4 mb-4">
-                <h3 class="text-lg font-semibold mb-4">Object Name Resolver / Coordinates (J2000)</h3>
-                <CoordinateSearch bind:ra bind:dec />
-            </div>
+                <div class="bg-base-100 p-4 mb-4">
+                    <h3 class="text-lg font-semibold mb-4">Observatory / Telescope / Instrument</h3>
+                    <div class="py-4 h-200 md:min-h-80 md:max-h-100">
+                        <ObservatoryTelescopeInstrumentSelector
+                            {observatories}
+                            {telescopes}
+                            {instruments}
+                            bind:selectedObservatories
+                            bind:selectedTelescopes
+                            bind:selectedInstruments
+                        />
+                    </div>
+                </div>
 
-            <div class="bg-base-100 p-4 mb-4">
-                <h3 class="text-lg font-semibold mb-4">Date Range</h3>
-                <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
-            </div>
+                <div class="bg-base-100 p-4 mb-4">
+                    <h3 class="text-lg font-semibold mb-4">Object Name Resolver / Coordinates (J2000)</h3>
+                    <CoordinateSearch bind:ra bind:dec />
+                </div>
 
-            <div class="collapse collapse-arrow bg-base-100 mb-4">
-                <input type="checkbox" />
-                <div class="collapse-title text-lg font-semibold">Optional Parameters</div>
-                <div class="collapse-content">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                        <div class="form-control">
-                            <label class="label cursor-pointer justify-start gap-4">
-                                <input id="hi_res-input" type="checkbox" bind:checked={hiRes} class="checkbox checkbox-primary" />
-                                <span class="label-text text-lg">High Resolution</span>
-                            </label>
-                        </div>
+                <div class="bg-base-100 p-4 mb-4">
+                    <h3 class="text-lg font-semibold mb-4">Date Range</h3>
+                    <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
+                </div>
 
-                        <div class="form-control">
-                            <label class="label text-lg" for="minvis-duration-input">
-                                <span class="label-text">Minimum Visibility Duration (seconds)</span>
-                            </label>
-                            <input
-                                id="minvis-duration-input"
-                                type="number"
-                                inputmode="numeric"
-                                bind:value={minVisibilityDuration}
-                                placeholder="e.g. 300"
-                                min="1"
-                                step="1"
-                                class="input input-bordered text-lg w-full"
-                            />
+                <div class="collapse collapse-arrow bg-base-100 mb-4">
+                    <input type="checkbox" />
+                    <div class="collapse-title text-lg font-semibold">Optional Parameters</div>
+                    <div class="collapse-content">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            <div class="form-control">
+                                <label class="label cursor-pointer justify-start gap-4">
+                                    <input id="hi_res-input" type="checkbox" bind:checked={hiRes} class="checkbox checkbox-primary" />
+                                    <span class="label-text text-lg">High Resolution</span>
+                                </label>
+                            </div>
+
+                            <div class="form-control">
+                                <label class="label text-lg" for="minvis-duration-input">
+                                    <span class="label-text">Minimum Visibility Duration (seconds)</span>
+                                </label>
+                                <input
+                                    id="minvis-duration-input"
+                                    type="number"
+                                    inputmode="numeric"
+                                    bind:value={minVisibilityDuration}
+                                    placeholder="e.g. 300"
+                                    min="1"
+                                    step="1"
+                                    class="input input-bordered text-lg w-full"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="flex justify-end mt-4">
-                <button class="btn btn-info text-lg {isLoading ? 'cursor-wait' : ''}" on:click={async () => await calculateVisibility()} disabled={isLoading}>
-                    Calculate Visibility
-                </button>
+                <div class="flex justify-end mt-4">
+                    <button
+                        class="btn btn-info text-lg {isLoading ? 'cursor-wait' : ''}"
+                        on:click={async () => await calculateVisibility()}
+                        disabled={isLoading}
+                    >
+                        Calculate Visibility
+                    </button>
+                </div>
             </div>
         </div>
     </Section>
 
     {#await data.visibilityWindowsData}
-        <Section title="Joint Visibility Windows" icon="globe" parentContainerClasses="w-full lg:px-5">
+        <Section title="Joint Visibility Windows" icon="globe">
             <div class="flex items-center justify-center py-8">
                 <span class="loading loading-spinner loading-lg"></span>
             </div>
         </Section>
     {:then results}
-        <Section title="Joint Visibility Windows" icon="globe" parentContainerClasses="w-full lg:px-5">
-            <div class="collapse collapse-arrow border border-base-300 rounded-box">
+        <Section title="Joint Visibility Windows" icon="globe">
+            <div class="collapse collapse-arrow border border-base-300">
                 <input type="checkbox" checked />
                 <div class="collapse-title text-lg font-semibold">Results ({results.jointVisibilityWindows.length})</div>
                 <div class="collapse-content">
@@ -270,13 +276,13 @@
             </div>
         </Section>
         {#if results.jointVisibilityWindows.length > 0}
-            <Section title="Visibility Windows by Instrument" icon="telescope" parentContainerClasses="w-full lg:px-5">
+            <Section title="Visibility Windows by Instrument" icon="telescope">
                 <div class="space-y-4">
                     {#each results.visibilityWindowInstrumentIds as instrumentId}
                         {@const instrument = instruments.find((inst) => inst.id === instrumentId)}
                         {@const windows = results.observatoryVisibilityWindows[instrumentId] || []}
                         {#if instrument && windows.length > 0}
-                            <div class="collapse collapse-arrow border border-base-300 rounded-box">
+                            <div class="collapse collapse-arrow border border-base-300">
                                 <input type="checkbox" />
                                 <div class="collapse-title text-xl font-medium">
                                     {instrument.name}

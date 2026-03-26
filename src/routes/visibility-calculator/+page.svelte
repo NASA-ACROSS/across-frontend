@@ -5,7 +5,7 @@
     import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
     import { enhance } from '$app/forms';
-    import { beforeNavigate, afterNavigate, goto } from '$app/navigation';
+    import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
     import { prettyUTC } from '$lib/utils/datetime/prettyUTC';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
@@ -15,16 +15,6 @@
     import type { SubmitFunction } from '@sveltejs/kit';
     import searchParams from '$lib/utils/searchParams/searchParams';
     import { type VisibilityWindow } from '$lib/types/across/VisibilityWindow';
-    import { timeout } from 'd3';
-    import Collapse from '$lib/components/Collapse.svelte';
-
-    beforeNavigate(() => {
-        isLoading = true;
-    });
-
-    afterNavigate(() => {
-        isLoading = false;
-    });
 
     export let data: JointVisibilityPageData;
 
@@ -48,6 +38,9 @@
     // Optional parameters
     let hiRes = data.queryParams?.hi_res || false;
     let minVisibilityDuration = String(data.queryParams?.min_visibility_duration || '');
+
+    $: qps = [ra, dec, dateRangeBegin, dateRangeEnd, selectedInstruments, hiRes, minVisibilityDuration];
+    $: isQueryEmpty = qps.every((value) => !Boolean(value) || (Array.isArray(value) && value.length === 0));
 
     // Observatory/Telescope/Instrument selector state
     $: observatories = telescopes
@@ -108,7 +101,13 @@
     const calculateVisibility: SubmitFunction<VisibilityWindowsData> = async ({ formData }) => {
         isLoading = true;
 
+        console.log('Form data entries:');
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
         const params = searchParams.serialize(formData);
+        console.log(params.toString());
         const url = `${window.location.pathname}?${params.toString()}`;
 
         // Set the browser's URL with the new params without reloading the page
@@ -264,10 +263,15 @@
                                         <span class="loading loading-spinner loading-lg"></span>
                                     </td>
                                 </tr>
+                            {:else if isQueryEmpty}
+                                <!-- No query submitted yet -->
+                                <tr>
+                                    <td colspan="6" class="text-center text-lg py-4">Fill in parameters to calculate visibility windows</td>
+                                </tr>
                             {:else if !visibilityWindowsData}
                                 <!-- Initial state -->
                                 <tr>
-                                    <td colspan="6" class="text-center text-lg py-4">Submit the form to calculate visibility windows</td>
+                                    <td colspan="6" class="text-center text-lg py-4">Submit parameters to calculate visibility windows</td>
                                 </tr>
                             {:else if visibilityWindowsData.jointVisibilityWindows.length === 0}
                                 <!-- Submitted, but no data with possible error -->

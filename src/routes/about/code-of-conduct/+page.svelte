@@ -7,16 +7,14 @@
         <Section title="Community Pledge">
             <p class="leading-relaxed">
                 In the interest of fostering an open and welcoming environment, contributors and maintainers pledge to make participation in the ACROSS project
-                and the community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender
-                identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual
-                identity and orientation.
+                and the community a harassment-free experience for everyone, treating all with equal dignity and respect.
             </p>
         </Section>
 
         <Section title="Community Standards">
             <p class="leading-relaxed">Examples of behavior that contributes to creating a positive environment include:</p>
             <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
-                <li>Using welcoming and inclusive language</li>
+                <li>Using welcoming and professional language</li>
                 <li>Being respectful of differing viewpoints and experiences</li>
                 <li>Gracefully accepting constructive criticism</li>
                 <li>Focusing on what is best for the community</li>
@@ -67,7 +65,7 @@
 
         <Section title="Attribution">
             <p class="leading-relaxed">
-                This Code of Conduct is adapted from the Contributor Covenant, version 1.4, available at
+                This Code of Conduct is a revisioned version from the Contributor Covenant, available at
                 <a
                     href="https://www.contributor-covenant.org/version/1/4/code-of-conduct.html"
                     class="text-blue-600 hover:underline"

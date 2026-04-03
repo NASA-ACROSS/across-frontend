@@ -21,7 +21,11 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 
     const telescopeIds = observatory.telescopes.map((telescope) => telescope.id);
 
-    const telescopes = await getTelescopes(fetch, { ids: telescopeIds, include_filters: true });
+    const telescopes = await getTelescopes(fetch, {
+        ids: telescopeIds,
+        include_filters: true,
+        include_footprints: true,
+    });
 
     return {
         slug: params.observatoryShortName,

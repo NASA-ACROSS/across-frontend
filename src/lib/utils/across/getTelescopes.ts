@@ -4,6 +4,7 @@ import searchParams from '../searchParams/searchParams';
 type GetTelescopesParams = {
     ids?: string[];
     include_filters?: boolean;
+    include_footprints?: boolean;
 };
 
 export const getTelescopes = async (fetch: typeof window.fetch, params?: GetTelescopesParams) => {
@@ -25,8 +26,7 @@ export const getTelescopes = async (fetch: typeof window.fetch, params?: GetTele
         throw new Error(errorText);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    let telescopes: Telescope[] = await response.json();
+    let telescopes = (await response.json()) as Telescope[];
 
     if (!Array.isArray(telescopes)) {
         telescopes = [telescopes];

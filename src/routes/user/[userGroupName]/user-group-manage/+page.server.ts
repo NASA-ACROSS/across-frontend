@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
         redirect(302, resolve('/user/profile'));
     }
 
-    const invitedUsers = await getInvitedUsers(userCookie, userGroup.id);
+    const invitedUsers = await getInvitedUsers(userGroup.id, fetch);
     const groupData = await getGroupData(userGroup.id, fetch);
 
     return {
@@ -156,8 +156,7 @@ export const actions = {
 
         return { successRemoveUser: true };
     },
-    assignRole: async (event: RequestEvent) => {
-        const request = event.request;
+    assignRole: async ({ request, fetch }: RequestEvent) => {
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
@@ -173,12 +172,20 @@ export const actions = {
             },
         };
 
+        let res;
+
         try {
-            await fetch(`${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
+            res = await fetch(`${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: assigning user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
             return fail(500, { error: errorLog, fail: true });
+        }
+
+        if (res.status >= 300) {
+            console.error('SERVER ERROR: assigning user role.', { groupId, userId, roleId, status: res.status, time: Date.now() });
+
+            return fail(res.status, { fail: true });
         }
 
         return { successAssignRole: true };

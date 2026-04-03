@@ -30,27 +30,35 @@ export class WebserverCredentialsManager {
         await this.getAccessToken();
     }
 
-    public async getAccessToken(): Promise<string> {
+    public async getAccessToken(): Promise<string | undefined> {
         if (CONFIG.IS_BUILD || CONFIG.ACROSS_TEST_ACCESS_TOKEN) {
             console.debug('Building or running in test environment, using dummy access token for WebserverCredentialsManager');
             return CONFIG.ACROSS_TEST_ACCESS_TOKEN;
         }
 
         if (!this.token?.access_token || JwtRefresher.IsExpired(this.token.access_token)) {
-            // Only the webserver credentials manager should be calling the
-            // token endpoint with its own credentials, so we can use basic
-            // auth with the client id and secret to get the access token.
-            // service accounts do not need refresh tokens.
-            const res = await fetch(`${CONFIG.API_URL}/auth/token`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    Authorization: `Basic ${btoa(`${this.id}:${this.secret}`)}`,
-                },
-                body: new URLSearchParams({ grant_type: 'client_credentials' }),
-            });
+            try {
+                // Only the webserver credentials manager should be calling the
+                // token endpoint with its own credentials, so we can use basic
+                // auth with the client id and secret to get the access token.
+                // service accounts do not need refresh tokens.
+                const res = await fetch(`${CONFIG.API_URL}/auth/token`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        Authorization: `Basic ${btoa(`${this.id}:${this.secret}`)}`,
+                    },
+                    body: new URLSearchParams({ grant_type: 'client_credentials' }),
+                });
 
-            this.token = (await res.json()) as AccessTokenResponse;
+                this.token = (await res.json()) as AccessTokenResponse;
+            } catch (err: unknown) {
+                if (err instanceof Error) {
+                    console.error('Error fetching webserver access token.', { err: err.stack });
+                }
+
+                return;
+            }
         }
 
         // on requests after the initial token fetch, check

@@ -13,6 +13,7 @@
 
     let observatory = data.observatory;
     let telescopes = data.telescopes;
+
     // sort the ephemeris_types for display in order of priority
     observatory.ephemeris_types = observatory.ephemeris_types.sort((a, b) => a.priority - b.priority);
 </script>

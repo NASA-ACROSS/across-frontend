@@ -41,7 +41,7 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
         // hydrate auth locals from the cookies on every fetch to the API
         await hydrateAuthUser(event);
 
-        let access_token: string;
+        let access_token: string | undefined;
 
         const tokens = event.locals.tokens;
 
@@ -54,9 +54,12 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
             access_token = await webserverCredentialsManager.getAccessToken();
         }
 
-        request.headers.set('Authorization', `Bearer ${access_token}`);
+        if (access_token) {
+            request.headers.set('Authorization', `Bearer ${access_token}`);
+        }
     }
 
+    // when no access_token, run the request without it anyways to avoid full page 500 (usually this means the core server is down)
     return fetch(request);
 };
 

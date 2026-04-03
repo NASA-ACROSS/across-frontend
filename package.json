@@ -63,5 +63,8 @@
     "dependencies": {
         "@aws-sdk/client-ssm": "^3.999.0",
         "dotenv": "^17.3.1"
+    },
+    "engines": {
+        "node": ">=22.0.0"
     }
 }

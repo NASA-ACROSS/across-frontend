@@ -1,4 +1,4 @@
-FROM node:20.10-bookworm-slim AS build
+FROM node:24-bookworm-slim AS build
 
 # set the build version to local environment by default, can be overridden by passing a different value during build time
 ARG BUILD_VERSION=docker
@@ -28,7 +28,7 @@ COPY . .
 RUN npm run build
 
 
-FROM node:20.10-bookworm-slim AS local
+FROM node:24-bookworm-slim AS local
 
 WORKDIR /app
 
@@ -39,7 +39,7 @@ EXPOSE 3000
 
 
 # For GHA like test, lint, types
-FROM node:20.10-bookworm-slim AS action
+FROM node:24-bookworm-slim AS action
 WORKDIR /app
 
 COPY --from=build /app/node_modules /app/node_modules
@@ -51,7 +51,7 @@ COPY --from=build /app/package*.json ./
 COPY . .
 
 
-FROM node:20.10-bookworm-slim AS deploy
+FROM node:24-bookworm-slim AS deploy
 WORKDIR /app
 
 COPY --from=build /app/build /app/build

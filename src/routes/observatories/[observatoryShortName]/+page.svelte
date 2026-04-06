@@ -13,6 +13,7 @@
 
     let observatory = data.observatory;
     let telescopes = data.telescopes;
+
     // sort the ephemeris_types for display in order of priority
     observatory.ephemeris_types = observatory.ephemeris_types.sort((a, b) => a.priority - b.priority);
 </script>
@@ -74,7 +75,7 @@
                                                 <!-- Filter Title -->
                                                 <div class="text-lg bg-carbon-20 p-4">
                                                     {#if filter.reference_url}
-                                                        <ArrowButton href={filter.reference_url}>{filter.name}</ArrowButton>
+                                                        <ArrowButton href={filter.reference_url} openInNewTab={true}>{filter.name}</ArrowButton>
                                                     {:else}
                                                         <div class="text-lg">{filter.name}</div>
                                                     {/if}

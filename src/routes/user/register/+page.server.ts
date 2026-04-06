@@ -1,14 +1,14 @@
-import { emailRegex } from '$lib/utils/regex/emailRegex.js';
-import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex.js';
-import { validate } from '$lib/utils/regex/validate.js';
-import { CONFIG } from '../../../config/config.js';
+import { emailRegex } from '$lib/utils/regex/emailRegex';
+import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
+import { validate } from '$lib/utils/regex/validate';
+import { CONFIG } from '../../../config/config';
 import { fail, redirect } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
-import type { RequestEvent } from './$types.js';
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
-import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute.js';
 import { autoLogin } from '$lib/utils/user/autoLogin.js';
+import type { RequestEvent } from './$types';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import guards from '$lib/utils/guards';
 
 // rate limit is defined as [number, unit]
 // see documentation for more info
@@ -21,10 +21,10 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export function load({ locals }: RequestEvent) {
-    localOnlyRoute();
+    guards.localOnlyRoute();
 
     const userCookie = locals?.user as UserCredentialsCookie;
-    // Redirect on load when user is logged in
+    // Redirect to profile page when user is logged in
     if (userCookie) {
         redirect(302, resolve('/user/profile'));
     }
@@ -32,7 +32,7 @@ export function load({ locals }: RequestEvent) {
 
 export const actions = {
     default: async (event: RequestEvent) => {
-        const { request } = event;
+        const { request, fetch } = event;
         const data = await request.formData();
 
         // validate and sanitize input
@@ -71,10 +71,7 @@ export const actions = {
 
         const options = {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${CONFIG.API_TOKEN}`,
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user_post_data),
         };
 
@@ -83,13 +80,13 @@ export const actions = {
             response = await fetch(`${CONFIG.API_URL}/user`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: registering [${email}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
+            console.error(errorLog, error);
             return fail(500, { error: errorLog, fail: true });
         }
 
-        if (response.status == 403) {
-            console.error(`ERROR: API not accessible or no API TOKEN not valid`);
-            return fail(500, { fail: true });
+        if (response.status == 401) {
+            console.error(`ERROR: Unauthenticated while registering email`, { email, status: response.status });
+            return fail(401, { fail: true });
         }
 
         if (response.status == 409) {

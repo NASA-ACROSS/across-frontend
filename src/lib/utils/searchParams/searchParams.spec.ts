@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import searchParams from './searchParams';
+import searchParams, { type ParamTypes } from './searchParams';
 
 describe('searchParams', () => {
     describe('serialize', () => {
-        it('should normalize FormData into URLSearchParams', () => {
+        it('should serialize FormData into URLSearchParams', () => {
             const formData = new FormData();
             formData.append('foo', '123.45');
 
@@ -12,14 +12,27 @@ describe('searchParams', () => {
             expect(params).toBeInstanceOf(URLSearchParams);
         });
 
-        it('should normalize URLSearchParams input', () => {
-            const input = new URLSearchParams({
-                foo_bar: 'some value',
-            });
+        it.each([
+            ['foo', 'some_value'],
+            ['bar', '1,2,3'],
+        ])('should serialize URLSearchParams inputs %s=%s', (key, value) => {
+            const inputParams = new URLSearchParams({ [key]: value });
 
-            const params = searchParams.serialize(input);
+            const params = searchParams.serialize(inputParams);
 
-            expect(params.get('foo_bar')).toBe('some value');
+            expect(params.get(key)).toBe(value);
+        });
+
+        it.each([
+            ['spongebob', ['spongebob'], { foo: 'string' }],
+            [456, ['456'], { foo: 'number' }],
+            [true, ['true'], { foo: 'boolean' }],
+            [[1, 2, 3], ['1', '2', '3'], { foo: 'array' }],
+            [['red', 'blue', 'green'], ['red', 'blue', 'green'], { foo: 'array' }],
+        ])('should serialize an object with %s as %s: "%s"', (value, expected, types) => {
+            const params = searchParams.serialize({ foo: value }, types as ParamTypes<unknown>);
+
+            expect(params.getAll('foo')).toStrictEqual(expected);
         });
 
         it('should omit empty string values', () => {

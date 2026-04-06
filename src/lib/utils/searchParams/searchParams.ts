@@ -1,6 +1,7 @@
-type ParamSource = URLSearchParams | FormData;
+type ParamSource = URLSearchParams | FormData | Record<string, unknown>;
 type ParamType = 'array' | 'string' | 'number' | 'boolean';
-type DeserializedParams<T> = {
+
+export type ParamTypes<T> = {
     [K in keyof Partial<T>]?: 'array' | 'string' | 'number' | 'boolean';
 };
 
@@ -24,23 +25,37 @@ type DeserializedParams<T> = {
  * const normalized = normalizeSearchParams(params, { tags: 'array' });
  * // Results in: tags=javascript&tags=typescript&tags=nodejs
  */
-const serialize = (source: ParamSource, keys?: Record<string, 'array'>): URLSearchParams => {
+const serialize = <T>(source?: ParamSource, keys?: ParamTypes<T>): URLSearchParams => {
     const params = new URLSearchParams();
 
-    for (const [key, value] of source.entries()) {
+    if (!source) return params;
+
+    const sourceArr = source instanceof URLSearchParams || source instanceof FormData ? source.entries() : Object.entries(source);
+
+    for (const [key, value] of sourceArr) {
         if (value === undefined || value === null || value === '') continue;
 
-        if (typeof value === 'string') {
-            if (keys?.[key] === 'array') {
-                const items = String(value)
+        const type = keys?.[key as keyof T];
+
+        // TODO: May want to try to infer that this is an array based on the value type, even if it is not specified in keys.
+        // For example, if the value is already an array, or if it is a string that contains commas, we could treat
+        // it as an array. This would make the function more flexible and easier to use, since the caller would not
+        // always have to specify the type of each parameter. It is easy to forget that it is needed for array parameters.
+        if (type === 'array') {
+            let items: string[] = [];
+
+            if (Array.isArray(value)) {
+                items = value.filter((v) => v !== undefined && v !== null && v !== '').map((v) => String(v));
+            } else if (typeof value === 'string') {
+                items = value
                     .split(',')
                     .map((s) => s.trim())
                     .filter(Boolean);
-
-                for (const item of items) params.append(key, item);
-            } else {
-                params.append(key, String(value));
             }
+
+            for (const item of items) params.append(key, item);
+        } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+            params.append(key, String(value));
         }
     }
 
@@ -75,7 +90,7 @@ const deserializeHandlers = {
  * const result = deserialize(params, { count: 'number', active: 'boolean', tags: 'array' });
  * // result: { count: 5, active: true, tags: ['js', 'ts'], ids: ['1', '2'] }
  */
-const deserialize = <T>(urlParams: URLSearchParams, paramTypes: DeserializedParams<T> = {}): T => {
+const deserialize = <T>(urlParams: URLSearchParams, paramTypes: ParamTypes<T> = {}): T => {
     return Array.from(urlParams.entries()).reduce((acc, [key, value]) => {
         const name = key as keyof T;
         const expectedType = (paramTypes[name] ?? 'string') as ParamType;

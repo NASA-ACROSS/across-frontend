@@ -130,39 +130,60 @@
                     <a href={resolve('/user/profile')} class="text-sm font-bold text-primary-content m-2">{userEmail}</a>
                 {/if}
             {/key}
-            <div class="flex-none">
-                <div class="dropdown dropdown-hover dropdown-end pr-3">
-                    <a href={resolve('/user/profile')}>
-                        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar avatar-placeholder -my-3">
-                            <div class="bg-info text-neutral-content w-10 rounded-full">
-                                <div class={user ? 'text-lg' : 'bx bx-user'}>
-                                    {userInitials}
-                                </div>
+            <div class="dropdown dropdown-hover dropdown-end pr-3">
+                <a href={resolve('/user/profile')}>
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar avatar-placeholder -my-3">
+                        <div class="bg-info text-neutral-content w-10 rounded-full">
+                            <div class={user ? 'text-lg' : 'bx bx-user'}>
+                                {userInitials}
                             </div>
                         </div>
-                    </a>
-                    <ul class="menu dropdown-content bg-primary z-1 mt-3 w-52 p-2 shadow">
-                        {#if user}
-                            <li>
-                                <a class="justify-between text-primary-content hover:bg-info" href={resolve('/user/profile')}> Profile </a>
-                            </li>
-                            <li>
-                                <a
-                                    class="text-primary-content hover:bg-accent hover:text-primary"
-                                    data-sveltekit-preload-data="false"
-                                    href={resolve('/user/logout')}>Logout</a
-                                >
-                            </li>
-                        {:else}
-                            <li>
-                                <a class="justify-between text-primary-content" href={resolve('/user/register')}> Create Account </a>
-                            </li>
-                            <li>
-                                <a class="text-primary-content" href={resolve('/user/login')}>Login</a>
-                            </li>
-                        {/if}
-                    </ul>
-                </div>
+                    </div>
+                </a>
+
+                <ul class="menu dropdown-content bg-primary z-1 mt-3 w-52 p-2 shadow">
+                    {#if user}
+                        <li>
+                            <a class="justify-between text-primary-content hover:bg-info" href={resolve('/user/profile')}> Profile </a>
+                        </li>
+                        <li>
+                            <a
+                                class="text-primary-content hover:bg-accent hover:text-primary"
+                                data-sveltekit-preload-data="false"
+                                href={resolve('/user/logout')}>Logout</a
+                            >
+                        </li>
+                    {:else}
+                        <li>
+                            <a class="justify-between text-primary-content" href={resolve('/user/register')}> Create Account </a>
+                        </li>
+                        <li>
+                            <a class="text-primary-content" href={resolve('/user/login')}>Login</a>
+                        </li>
+                    {/if}
+                </ul>
+                <ul class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow">
+                    {#if user}
+                        <li>
+                            <a class="justify-between text-primary-content hover:bg-info" href={resolve('/user/profile')}> Profile </a>
+                        </li>
+                        <li>
+                            <a
+                                class="text-primary-content hover:bg-accent hover:text-primary"
+                                data-sveltekit-preload-data="false"
+                                data-sveltekit-reload
+                                href={resolve('/user/logout')}>Logout</a
+                            >
+                        </li>
+                    {:else}
+                        <li>
+                            <a class="justify-between text-primary-content" href={resolve('/user/register')}> Create Account </a>
+                        </li>
+                        <li>
+                            <a class="text-primary-content" href={resolve('/user/login')}>Login</a>
+                        </li>
+                    {/if}
+                </ul>
             </div>
         {/key}
     </LocalOnlyRender>

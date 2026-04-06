@@ -1,5 +1,3 @@
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
-import { UserCredentials } from '$lib/types/User/UserCredentials';
 import { CONFIG } from '../../../config/config';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import type { NameResolver } from '$lib/types/across/NameResolver';
@@ -11,7 +9,7 @@ import type { NameResolver } from '$lib/types/across/NameResolver';
  * @param locals - SvelteKit locals (for user session data).
  * @param cookies - SvelteKit cookies helper.
  */
-export const resolveObject = async ({ request, locals, cookies }: RequestEvent) => {
+export const resolveObject = async ({ request }: RequestEvent) => {
     const objectName = (await request.formData()).get('objectName') as string;
 
     if (!objectName?.trim()) {
@@ -19,19 +17,9 @@ export const resolveObject = async ({ request, locals, cookies }: RequestEvent) 
     }
 
     try {
-        const userCookie = locals?.user as UserCredentialsCookie;
-
-        // Get access token if user is authenticated
-        let accessToken;
-        if (userCookie) {
-            const userCredentials = new UserCredentials(userCookie);
-            accessToken = await userCredentials.getAccessToken(cookies);
-        }
-
         // Build request options
         const options: RequestInit = {
             method: 'GET',
-            headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
         };
 
         // Build URL with query parameters

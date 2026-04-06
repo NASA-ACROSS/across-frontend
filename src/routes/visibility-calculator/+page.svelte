@@ -101,11 +101,6 @@
     const calculateVisibility: SubmitFunction<VisibilityWindowsData> = async ({ formData }) => {
         isLoading = true;
 
-        console.log('Form data entries:');
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-
         const params = searchParams.serialize(formData);
         console.log(params.toString());
         const url = `${window.location.pathname}?${params.toString()}`;
@@ -143,10 +138,10 @@
         minVisibilityDuration = '';
     };
 
-    const formatConstraintReason = (reason: string, observatoryId: string, observatoryShortNames: Record<string, string>): string => {
+    function formatConstraintReason(reason: string, observatoryId: string, observatoryShortNames: Record<string, string>): string {
         const shortName = observatoryShortNames[observatoryId] || 'Observatory';
         return reason.replace(/Observatory/g, shortName);
-    };
+    }
 </script>
 
 <Page title="Joint Visibility Calculator" icon="calendar">

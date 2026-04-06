@@ -4,11 +4,12 @@
     "private": true,
     "scripts": {
         "dev": "vite dev",
-        "build": "vite build",
+        "build": "BUILD_ENV=deploy vite build",
+        "build:docker": "docker build -t across-frontend:latest --no-cache --platform linux/amd64 .",
         "preview": "vite preview",
         "test": "npm run test:integration && npm run test:unit",
-        "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+        "check": "PUBLIC_BUILD_VERSION=check PUBLIC_RUNTIME_ENV=check svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+        "check:watch": "PUBLIC_BUILD_VERSION=check PUBLIC_RUNTIME_ENV=check svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
         "format": "prettier . --check",
         "format:fix": "prettier . --write",
         "lint": "eslint",
@@ -31,6 +32,7 @@
         "@types/eslint__js": "^8.42.3",
         "@types/lodash": "^4.17.4",
         "@types/luxon": "^3.4.2",
+        "@types/node": "^25.5.2",
         "@typescript-eslint/eslint-plugin": "^8.55.0",
         "@typescript-eslint/parser": "^8.55.0",
         "cron-parser": "^5.3.1",
@@ -58,5 +60,12 @@
         "vite": "^5.1.7",
         "vitest": "^1.2.0"
     },
-    "type": "module"
+    "type": "module",
+    "dependencies": {
+        "@aws-sdk/client-ssm": "^3.999.0",
+        "dotenv": "^17.3.1"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    }
 }

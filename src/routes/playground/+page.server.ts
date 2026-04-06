@@ -1,7 +1,7 @@
-import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute';
+import guards from '$lib/utils/guards';
 
 export const load = () => {
-    localOnlyRoute();
+    guards.localOnlyRoute();
 
     return {};
 };

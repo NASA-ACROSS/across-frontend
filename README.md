@@ -20,17 +20,18 @@ npm run dev -- --open
 ## Configuration Environment Variables
 
 The ACROSS frontend relies on environment variables to run. The following are
-essential for operation:
+essential for operation, you can find an example in `.env.example`.
 
-| Variable               | Use                                                                               |
-| ---------------------- | --------------------------------------------------------------------------------- |
-| `API_URL`              | Base hostname and port for the API                                                |
-| `ACROSS_API_TOKEN`     | API key used by admin user for login and registration routes.                     |
-| `PUBLIC_BUILD_VERSION` | Sets version in header meta tag "build-version". **REQUIRED** for `npm run build` |
+| Variable                   | Use                                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------------- |
+| `API_URL`                  | Base hostname and port for the API                                                  |
+| `RUNTIME_ENV`              | Runtime mode (`local`, `test`, etc.) used by server-side auth initialization        |
+| `ACROSS_SERVER_SECRET`     | client_secret used webserver credentials manager (defaults to current local secret) |
+| `ACROSS_SERVER_ID`         | client_id used by webserver credentials manager (defaults to current local ID)      |
+| `ACROSS_TEST_ACCESS_TOKEN` | dummy test access token                                                             |
+| `PUBLIC_BUILD_VERSION`     | Sets version in header meta tag "build-version". **REQUIRED** for `npm run build`   |
 
-**IMPORTANT:** The `ACROSS_ADMIN_TOKEN` env var in `across-api` should match
-`ACROSS_API_TOKEN`. Run the API locally after running a migration to add the
-user to local database.
+**IMPORTANT:** For local development the `ACROSS_SERVER_SECRET` will be the default service account secret `'local-service-account-key'`. For any other environments, the key will be stored in the SSM param store.
 
 ## Building
 

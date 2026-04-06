@@ -3,13 +3,7 @@
  *
  * PUBLIC_BUILD_VERSION=local npm run build
  */
-import { PUBLIC_BUILD_VERSION } from '$env/static/public';
-
-type PublicConfig = {
-    BUILD_VERSION: string;
-    DOCUMENTATION_URL: string;
-    isLocal: () => boolean;
-};
+import { PUBLIC_BUILD_VERSION, PUBLIC_RUNTIME_ENV } from '$env/static/public';
 
 /**
  * Config abstraction for static build-time public environment variables
@@ -20,10 +14,15 @@ type PublicConfig = {
  *
  * // only do something locally in development
  *
- * if(PUBLIC_CONFIG.isLocal()) { ... }
+ * if(PUBLIC_CONFIG.IS_LOCAL) { ... }
  */
-export const PUBLIC_CONFIG: PublicConfig = {
-    BUILD_VERSION: PUBLIC_BUILD_VERSION,
-    DOCUMENTATION_URL: 'https://science.data.nasa.gov/data-sites/across',
-    isLocal: () => PUBLIC_BUILD_VERSION === 'local',
-};
+class PublicConfiguration {
+    public BUILD_VERSION: string = PUBLIC_BUILD_VERSION || '';
+    public DOCUMENTATION_URL: string = 'https://science.data.nasa.gov/data-sites/across';
+
+    public RUNTIME_ENV: string = PUBLIC_RUNTIME_ENV || '';
+
+    public IS_LOCAL: boolean = this.RUNTIME_ENV === 'local';
+}
+
+export const PUBLIC_CONFIG = new PublicConfiguration();

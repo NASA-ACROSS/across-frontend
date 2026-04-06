@@ -3,25 +3,18 @@ import type { PageServerLoad, RequestEvent } from './$types';
 import { CONFIG } from '../../../../config/config.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
-import type { User } from '$lib/types/User/User';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 import { getGroupData } from '$lib/utils/manage/getGroupData';
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
 import { isAdmin } from '$lib/utils/user/isAdmin';
-import { localOnlyRoute } from '$lib/utils/dev/localOnlyRoute';
+import guards from '$lib/utils/guards';
 
-export const load: PageServerLoad = async ({ locals, params, cookies }) => {
-    localOnlyRoute();
+export const load: PageServerLoad = async ({ locals, params, fetch }) => {
+    guards.localOnlyRoute();
+    const userCookie = guards.requireUser(locals);
 
-    const userCookie = locals.user;
-    // Redirect on load when user is logged in
-    if (!userCookie) {
-        redirect(302, resolve('/user/login'));
-    }
-
-    const user: User = await getUserInfo(userCookie, cookies);
+    const user = await getUserInfo(userCookie.id, fetch);
 
     // find current group from route by short_name
     const userGroup = user.groups.find((group) => group.short_name === params.userGroupName);
@@ -31,8 +24,8 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
         redirect(302, resolve('/user/profile'));
     }
 
-    const invitedUsers = await getInvitedUsers(userCookie, userGroup.id);
-    const groupData = await getGroupData(userCookie, userGroup.id);
+    const invitedUsers = await getInvitedUsers(userGroup.id, fetch);
+    const groupData = await getGroupData(userGroup.id, fetch);
 
     return {
         slug: params.userGroupName,
@@ -42,13 +35,7 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 };
 
 export const actions = {
-    inviteUser: async (event: RequestEvent) => {
-        const request = event.request;
-        const userCookie = event.locals.user as UserCredentialsCookie;
-        // Redirect on load when user is not logged in
-        if (!userCookie) {
-            redirect(302, resolve('/user/login'));
-        }
+    inviteUser: async ({ request, fetch }: RequestEvent) => {
         const data = await request.formData();
 
         const email = data.get('email') as string;
@@ -64,7 +51,6 @@ export const actions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${userCookie?.access_token}`,
             },
             body: JSON.stringify(groupInviteBody),
         };
@@ -99,9 +85,7 @@ export const actions = {
 
         return { successInvite: true };
     },
-    deleteInvite: async (event: RequestEvent) => {
-        const request = event.request;
-        const userCookie = event.locals.user;
+    deleteInvite: async ({ request, fetch }: RequestEvent) => {
         const data = await request.formData();
 
         const userInviteId = data.get('userInviteId') as string;
@@ -113,7 +97,6 @@ export const actions = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.access_token}`,
             },
         };
 
@@ -142,9 +125,7 @@ export const actions = {
 
         return { successDelete: true };
     },
-    removeUser: async (event: RequestEvent) => {
-        const request = event.request;
-        const userCookie = event.locals.user;
+    removeUser: async ({ request, fetch }: RequestEvent) => {
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
@@ -156,7 +137,6 @@ export const actions = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.access_token}`,
             },
         };
 
@@ -176,9 +156,7 @@ export const actions = {
 
         return { successRemoveUser: true };
     },
-    assignRole: async (event: RequestEvent) => {
-        const request = event.request;
-        const userCookie = event.locals.user;
+    assignRole: async ({ request, fetch }: RequestEvent) => {
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
@@ -191,23 +169,28 @@ export const actions = {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.access_token}`,
             },
         };
 
+        let res;
+
         try {
-            await fetch(`${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
+            res = await fetch(`${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: assigning user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
             return fail(500, { error: errorLog, fail: true });
         }
 
+        if (res.status >= 300) {
+            console.error('SERVER ERROR: assigning user role.', { groupId, userId, roleId, status: res.status, time: Date.now() });
+
+            return fail(res.status, { fail: true });
+        }
+
         return { successAssignRole: true };
     },
-    removeRole: async (event: RequestEvent) => {
-        const request = event.request;
-        const userCookie = event.locals.user;
+    removeRole: async ({ request, fetch }: RequestEvent) => {
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
@@ -220,7 +203,6 @@ export const actions = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${userCookie?.access_token}`,
             },
         };
 

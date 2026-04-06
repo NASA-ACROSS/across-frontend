@@ -34,7 +34,7 @@ export class UserCredentialsManager {
         };
 
         // trade verification token for access token
-        const response = await fetch(`${CONFIG.API_URL}/auth/verify?token=${token}`, options);
+        const response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/auth/verify?token=${token}`, options);
 
         // short circuit for error status
         if (response.status != 200) {

@@ -57,7 +57,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/group/${groupId}/invite`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/invite`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: inviting user to group [${email}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -102,7 +102,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/group/${userGroupId}/invite/${userInviteId}`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${userGroupId}/invite/${userInviteId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -142,7 +142,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/group/${groupId}/user/${userId}`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -175,7 +175,7 @@ export const actions = {
         let res;
 
         try {
-            res = await fetch(`${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
+            res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: assigning user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -207,7 +207,7 @@ export const actions = {
         };
 
         try {
-            await fetch(`${CONFIG.API_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
+            await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: removing user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));

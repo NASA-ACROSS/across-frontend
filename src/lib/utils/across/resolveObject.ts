@@ -23,7 +23,7 @@ export const resolveObject = async ({ request }: RequestEvent) => {
         };
 
         // Build URL with query parameters
-        const url = new URL(`${CONFIG.API_URL}/tools/resolve-object/`);
+        const url = new URL(`${CONFIG.ACROSS_SERVER_URL}/tools/resolve-object/`);
         url.searchParams.set('object_name', objectName);
 
         // Fetch resolved object data

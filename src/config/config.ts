@@ -1,15 +1,18 @@
 import { env } from '$env/dynamic/private';
+import { PUBLIC_CONFIG } from './config.public';
 
 /**
  * Config abstraction for dynamic environment variables
  *
  * Usage:
  * import { CONFIG } from '$config/config';
- * const apiUrl = CONFIG.API_URL; // "http://127.0.0.1:8000"
+ * const apiUrl = CONFIG.ACROSS_SERVER_URL; // "http://127.0.0.1:8000"
  */
-class Configuration {
-    public API_URL: string = env.API_URL || 'https://server.prod.across.smce.nasa.gov/api/v1';
-    public API_DOCS_URL: string = `${this.API_URL}/docs`;
+export class PrivateConfiguration {
+    // public ACROSS_SERVER_HOST: string = env.ACROSS_SERVER_HOST || 'http://localhost';
+    public ACROSS_SERVER_ROOT_PATH: string = env.ACROSS_SERVER_ROOT_PATH || '/api';
+    public ACROSS_SERVER_VERSION: string = env.ACROSS_SERVER_VERSION || '/v1';
+    public ACROSS_SERVER_PORT: string = env.ACROSS_SERVER_PORT || '8000';
 
     public APP_ENV: string = env.APP_ENV || 'across-plat-lcl-local';
 
@@ -28,6 +31,24 @@ class Configuration {
     // build will always be `deploy` when running the `npm run build` command.
     // BUILD_ENV is also hardcoded in CICD pipelines to `deploy` when building and running CI checks.
     public IS_BUILD: boolean = env.BUILD_ENV === 'deploy';
+
+    constructor(private publicConfig: typeof PUBLIC_CONFIG) {}
+
+    public get ACROSS_SERVER_URL(): string {
+        const path = `${this.ACROSS_SERVER_ROOT_PATH}${this.ACROSS_SERVER_VERSION}`;
+
+        return `${this.ACROSS_SERVER_HOST}${path}`;
+    }
+
+    public get ACROSS_SERVER_HOST(): string {
+        if (this.publicConfig.IS_LOCAL) return `http://localhost:${this.ACROSS_SERVER_PORT}`;
+
+        return `https://server.${this.publicConfig.RUNTIME_ENV}.across.smce.nasa.gov`;
+    }
+
+    public get ACROSS_SERVER_DOCS_URL(): string {
+        return `${this.ACROSS_SERVER_HOST}${this.ACROSS_SERVER_ROOT_PATH}${this.ACROSS_SERVER_VERSION}/docs`;
+    }
 }
 
-export const CONFIG = new Configuration();
+export const CONFIG = new PrivateConfiguration(PUBLIC_CONFIG);

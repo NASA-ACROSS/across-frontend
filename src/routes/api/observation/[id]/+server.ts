@@ -6,7 +6,7 @@ import { json, redirect, type RequestHandler } from '@sveltejs/kit';
 export const GET: RequestHandler = async ({ fetch, params }) => {
     if (!params.id) return json({ message: 'Missing observatory id' }, { status: 400 });
 
-    const res = await fetch(`${CONFIG.API_URL}/observatory/${params.id}`, {
+    const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/observatory/${params.id}`, {
         method: 'GET',
     });
 

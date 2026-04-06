@@ -9,7 +9,7 @@ export const GET: RequestHandler = async (event) => {
 
     if (!params.id) return json({ message: 'Missing user id' }, { status: 400 });
 
-    const res = await fetch(`${CONFIG.API_URL}/user/${params.id}`, {
+    const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${params.id}`, {
         method: 'GET',
     });
 

@@ -3,7 +3,7 @@ import { type Observation } from '$lib/types/across/Observation';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ url, fetch }) => {
-    const apiUrl = `${CONFIG.API_URL}/observation?${url.searchParams}`;
+    const apiUrl = `${CONFIG.ACROSS_SERVER_URL}/observation?${url.searchParams}`;
 
     const res = await fetch(apiUrl, { method: 'GET' });
 

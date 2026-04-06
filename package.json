@@ -5,7 +5,8 @@
     "scripts": {
         "dev": "vite dev",
         "build": "BUILD_ENV=deploy vite build",
-        "build:docker": "docker build -t across-frontend:latest --no-cache --platform linux/amd64 .",
+        "build:docker": "docker build --target local -t across-frontend:latest --no-cache --platform linux/amd64 .",
+        "compose": "docker compose down && docker compose build && docker compose up -d",
         "preview": "vite preview",
         "test": "npm run test:integration && npm run test:unit",
         "check": "PUBLIC_BUILD_VERSION=check PUBLIC_RUNTIME_ENV=check svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

@@ -70,7 +70,7 @@ export async function load({ url, fetch }: RequestEvent) {
     queryParams.telescope_ids = url.searchParams.get('telescope_ids')?.split(',') || [];
 
     // Build API URL with parameters
-    let apiUrl = `${CONFIG.API_URL}/schedule/?`;
+    let apiUrl = `${CONFIG.ACROSS_SERVER_URL}/schedule/?`;
     const apiParams = new URLSearchParams();
 
     // Add all query parameters to API request

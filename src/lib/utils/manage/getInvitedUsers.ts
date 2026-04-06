@@ -8,7 +8,7 @@ export const getInvitedUsers = async (userGroupId: number, fetch: typeof globalT
 
     let response;
     try {
-        response = await fetch(`${CONFIG.API_URL}/group/${userGroupId}/invite`, options);
+        response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${userGroupId}/invite`, options);
     } catch (e: unknown) {
         console.error(`ERROR: catch getting invited users.`, JSON.stringify(e));
         throw new Error('Unexpected Error while fetching invited users');

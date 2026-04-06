@@ -3,7 +3,7 @@ import { type Telescope } from '$lib/types/across/Telescope';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ fetch, url }) => {
-    let apiUrl = `${CONFIG.API_URL}/telescope`;
+    let apiUrl = `${CONFIG.ACROSS_SERVER_URL}/telescope`;
     const qp = new URLSearchParams(url.searchParams);
     if (qp.entries().toArray().length) apiUrl = apiUrl.concat(`?${qp}`);
 

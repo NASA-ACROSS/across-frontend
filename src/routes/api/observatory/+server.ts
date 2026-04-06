@@ -4,7 +4,7 @@ import searchParams from '$lib/utils/searchParams/searchParams';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ fetch, url }) => {
-    let apiUrl = `${CONFIG.API_URL}/observatory`;
+    let apiUrl = `${CONFIG.ACROSS_SERVER_URL}/observatory`;
 
     const qp = searchParams.serialize({
         ...Object.fromEntries(url.searchParams.entries()),

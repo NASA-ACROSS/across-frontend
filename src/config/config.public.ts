@@ -3,7 +3,8 @@
  *
  * PUBLIC_BUILD_VERSION=local npm run build
  */
-import { PUBLIC_BUILD_VERSION, PUBLIC_RUNTIME_ENV } from '$env/static/public';
+import { PUBLIC_BUILD_VERSION } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 
 /**
  * Config abstraction for static build-time public environment variables
@@ -20,7 +21,7 @@ class PublicConfiguration {
     public BUILD_VERSION: string = PUBLIC_BUILD_VERSION || '';
     public DOCUMENTATION_URL: string = 'https://science.data.nasa.gov/data-sites/across';
 
-    public RUNTIME_ENV: string = PUBLIC_RUNTIME_ENV || '';
+    public RUNTIME_ENV: string = env.PUBLIC_RUNTIME_ENV || 'local';
 
     public IS_LOCAL: boolean = this.RUNTIME_ENV === 'local';
 

@@ -42,7 +42,7 @@ export class WebserverCredentialsManager {
                 // token endpoint with its own credentials, so we can use basic
                 // auth with the client id and secret to get the access token.
                 // service accounts do not need refresh tokens.
-                const res = await fetch(`${CONFIG.API_URL}/auth/token`, {
+                const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/auth/token`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -89,7 +89,7 @@ export class WebserverCredentialsManager {
         if (!this.expiration) {
             const options = { method: 'GET', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token?.access_token}` } };
 
-            const res = await fetch(`${CONFIG.API_URL}/service-account/${this.id}`, options);
+            const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/service-account/${this.id}`, options);
 
             if (!res.ok) {
                 throw new Error(`Error checking credential expiration with status code ${res.status}`);
@@ -106,7 +106,7 @@ export class WebserverCredentialsManager {
 
     private async rotateKey(): Promise<void> {
         // call server to rotate credentials, returns new secret and expiration
-        const res = await fetch(`${CONFIG.API_URL}/service-account/${this.id}/rotate_key`, {
+        const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/service-account/${this.id}/rotate_key`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

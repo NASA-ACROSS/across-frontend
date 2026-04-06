@@ -52,7 +52,7 @@ export const actions = {
         const params = searchParams.serialize(form, { instrument_ids: 'array' });
 
         // Build API URL with parameters
-        const apiUrl = new URL(`${CONFIG.API_URL}/tools/visibility-calculator/windows?${params.toString()}`);
+        const apiUrl = new URL(`${CONFIG.ACROSS_SERVER_URL}/tools/visibility-calculator/windows?${params.toString()}`);
 
         let response: Response;
         try {

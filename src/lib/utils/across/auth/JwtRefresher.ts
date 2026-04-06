@@ -72,7 +72,7 @@ export class JwtRefresher {
             },
         };
 
-        const response = await fetch(`${CONFIG.API_URL}/auth/refresh`, options);
+        const response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/auth/refresh`, options);
 
         const { access_token } = (await response.json()) as { access_token: string };
         const refreshToken = this.ExtractRefreshToken(response.headers);

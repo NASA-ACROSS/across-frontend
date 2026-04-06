@@ -4,26 +4,43 @@
     import CoordinateSearch from '$lib/components/CoordinateSearch.svelte';
     import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
     import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
-    import { beforeNavigate, afterNavigate } from '$app/navigation';
+    import { enhance } from '$app/forms';
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
     import { prettyUTC } from '$lib/utils/datetime/prettyUTC';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
-    import type { JointVisibilityPageData } from './+page.server';
-
-    beforeNavigate(() => {
-        isLoading = true;
-    });
-
-    afterNavigate(() => {
-        isLoading = false;
-    });
+    import type { JointVisibilityPageData, VisibilityWindowsData } from './+page.server';
+    import type { SubmitFunction } from '@sveltejs/kit';
+    import searchParams from '$lib/utils/searchParams/searchParams';
+    import { type VisibilityWindow } from '$lib/types/across/VisibilityWindow';
 
     export let data: JointVisibilityPageData;
 
-    let telescopes = data.telescopes;
+    let telescopes = data?.telescopes;
+    let visibilityWindowsData: VisibilityWindowsData | undefined = undefined;
+
+    let isLoading = false;
+
+    let selectedObservatories: TelescopeObservatory[] = [];
+    let selectedTelescopes: Telescope[] = [];
+    let selectedInstruments: TelescopeInstrument[] = [];
+
+    // Coordinate inputs
+    let ra = String(data.queryParams?.ra || '');
+    let dec = String(data.queryParams?.dec || '');
+
+    // Date range inputs
+    let dateRangeBegin = data.queryParams?.date_range_begin || '';
+    let dateRangeEnd = data.queryParams?.date_range_end || '';
+
+    // Optional parameters
+    let hiRes = data.queryParams?.hi_res || false;
+    let minVisibilityDuration = String(data.queryParams?.min_visibility_duration || '');
+
+    $: qps = [ra, dec, dateRangeBegin, dateRangeEnd, selectedInstruments, hiRes, minVisibilityDuration];
+    $: isQueryEmpty = qps.every((value) => !Boolean(value) || (Array.isArray(value) && value.length === 0));
 
     // Observatory/Telescope/Instrument selector state
     $: observatories = telescopes
@@ -44,31 +61,24 @@
         {} as Record<string, string>
     );
 
-    let isLoading = false;
+    // Map the instrument windows from selected instruments to the returned data
+    // This allows us to easily display the visibility windows for each instrument in the results section.
+    $: instrumentWindows = selectedInstruments.reduce(
+        (acc, instrument) => {
+            const windows = visibilityWindowsData?.observatoryVisibilityWindows[instrument.id] || [];
 
-    let selectedObservatories: TelescopeObservatory[] = [];
-    let selectedTelescopes: Telescope[] = [];
-    let selectedInstruments: TelescopeInstrument[] = [];
+            if (windows.length > 0) acc.push({ instrument, windows });
 
-    // Coordinate inputs
-    let ra = String(data.queryParams?.ra || '');
-    let dec = String(data.queryParams?.dec || '');
-
-    // Date range inputs
-    let dateRangeBegin = data.queryParams?.date_range_begin || '';
-    let dateRangeEnd = data.queryParams?.date_range_end || '';
-
-    // Optional parameters
-    let hiRes = data.queryParams?.hi_res || false;
-    let minVisibilityDuration = String(data.queryParams?.min_visibility_duration || '');
+            return acc;
+        },
+        [] as { instrument: TelescopeInstrument; windows: VisibilityWindow[] }[]
+    );
 
     // Populate inputs from URL parameters
     onMount(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-
         // Populate instrument selection
-        const instrumentIds = urlParams.get('instrument_ids')?.split(',') || [];
-        if (instrumentIds.length > 0) {
+        const instrumentIds = data.queryParams.instrument_ids;
+        if (instrumentIds?.length) {
             selectedInstruments = instruments.filter((inst) => instrumentIds.includes(inst.id));
 
             // Auto-select parent telescopes and observatories
@@ -88,22 +98,40 @@
         }
     });
 
-    async function calculateVisibility() {
-        const params = new URLSearchParams();
+    const calculateVisibility: SubmitFunction<VisibilityWindowsData> = async ({ formData }) => {
+        isLoading = true;
 
-        if (dateRangeBegin) params.append('date_range_begin', `${dateRangeBegin}`);
-        if (dateRangeEnd) params.append('date_range_end', `${dateRangeEnd}`);
-        if (ra) params.append('ra', ra);
-        if (dec) params.append('dec', dec);
-        if (hiRes) params.append('hi_res', 'true');
-        if (minVisibilityDuration) params.append('min_visibility_duration', minVisibilityDuration);
+        console.log('Form data entries:');
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
 
-        if (selectedInstruments.length) params.append('instrument_ids', selectedInstruments.map((inst) => inst.id).join(','));
+        const params = searchParams.serialize(formData);
+        console.log(params.toString());
+        const url = `${window.location.pathname}?${params.toString()}`;
 
-        await goto(`?${params.toString()}`, { noScroll: true, invalidateAll: true });
-    }
+        // Set the browser's URL with the new params without reloading the page
+        goto(url, { noScroll: true, invalidateAll: false, replaceState: true });
 
-    async function resetFilters() {
+        return async ({ result }) => {
+            if (result.type === 'success') {
+                if (result.data) {
+                    visibilityWindowsData = result.data;
+                }
+            } else {
+                visibilityWindowsData = {
+                    jointVisibilityWindows: [],
+                    visibilityWindowInstrumentIds: [],
+                    observatoryVisibilityWindows: {},
+                    error: 'An error occurred while calculating visibility windows. Please contact support if it continues.',
+                };
+            }
+
+            isLoading = false;
+        };
+    };
+
+    const resetFilters = () => {
         selectedObservatories = [];
         selectedTelescopes = [];
         selectedInstruments = [];
@@ -113,137 +141,152 @@
         dateRangeEnd = '';
         hiRes = false;
         minVisibilityDuration = '';
+    };
 
-        await calculateVisibility();
-    }
-
-    function formatConstraintReason(reason: string, observatoryId: string, observatoryShortNames: Record<string, string>): string {
+    const formatConstraintReason = (reason: string, observatoryId: string, observatoryShortNames: Record<string, string>): string => {
         const shortName = observatoryShortNames[observatoryId] || 'Observatory';
         return reason.replace(/Observatory/g, shortName);
-    }
+    };
 </script>
 
 <Page title="Joint Visibility Calculator" icon="calendar">
     <Section>
         <div class="lg:w-5/6 xl:w-3/4 self-center">
-            <p class="text-sm mb-4 italic text-gray-600">
-                Calculate the visibility of celestial objects from selected instruments. Enter target coordinates and a date range to determine when and for how
-                long the object will be observable.
-            </p>
-            <div class="bg-base-200 p-4 mb-6 w-full">
-                <div class="flex justify-between">
-                    <div class="text-carbon-90 text-2xl pb-4 opacity-80">Input Parameters</div>
-                    <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}>
-                        <div class="bx bx-refresh"></div>
-                        Reset
-                    </button>
-                </div>
-
-                <div class="bg-base-100 p-4 mb-4">
-                    <h3 class="text-lg font-semibold mb-4">Observatory / Telescope / Instrument</h3>
-                    <div class="py-4 h-200 md:min-h-80 md:max-h-100">
-                        <ObservatoryTelescopeInstrumentSelector
-                            {observatories}
-                            {telescopes}
-                            {instruments}
-                            bind:selectedObservatories
-                            bind:selectedTelescopes
-                            bind:selectedInstruments
-                        />
+            <form method="POST" use:enhance={calculateVisibility} action="?/calculateVisibilityWindows">
+                <p class="text-sm mb-4 italic text-gray-600">
+                    Calculate the visibility of celestial objects from selected instruments. Enter target coordinates and a date range to determine when and for
+                    how long the object will be observable.
+                </p>
+                <div class="bg-base-200 p-4 mb-6 w-full">
+                    <div class="flex justify-between">
+                        <div class="text-carbon-90 text-2xl pb-4 opacity-80">Input Parameters</div>
+                        <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}>
+                            <div class="bx bx-refresh"></div>
+                            Reset
+                        </button>
                     </div>
-                </div>
 
-                <div class="bg-base-100 p-4 mb-4">
-                    <h3 class="text-lg font-semibold mb-4">Object Name Resolver / Coordinates (J2000)</h3>
-                    <CoordinateSearch bind:ra bind:dec />
-                </div>
+                    <div class="bg-base-100 p-4 mb-4">
+                        <h3 class="text-lg font-semibold mb-4">Observatory / Telescope / Instrument</h3>
+                        <div class="py-4 h-200 md:min-h-80 md:max-h-100">
+                            <ObservatoryTelescopeInstrumentSelector
+                                {observatories}
+                                {telescopes}
+                                {instruments}
+                                bind:selectedObservatories
+                                bind:selectedTelescopes
+                                bind:selectedInstruments
+                            />
+                        </div>
+                    </div>
 
-                <div class="bg-base-100 p-4 mb-4">
-                    <h3 class="text-lg font-semibold mb-4">Date Range</h3>
-                    <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
-                </div>
+                    <div class="bg-base-100 p-4 mb-4">
+                        <h3 class="text-lg font-semibold mb-4">Object Name Resolver / Coordinates (J2000)</h3>
+                        <CoordinateSearch bind:ra bind:dec />
+                    </div>
 
-                <div class="collapse collapse-arrow bg-base-100 mb-4">
-                    <input type="checkbox" />
-                    <div class="collapse-title text-lg font-semibold">Optional Parameters</div>
-                    <div class="collapse-content">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                            <div class="form-control">
-                                <label class="label cursor-pointer justify-start gap-4">
-                                    <input id="hi_res-input" type="checkbox" bind:checked={hiRes} class="checkbox checkbox-primary" />
-                                    <span class="label-text text-lg">High Resolution</span>
-                                </label>
-                            </div>
+                    <div class="bg-base-100 p-4 mb-4">
+                        <h3 class="text-lg font-semibold mb-4">Date Range</h3>
+                        <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
+                    </div>
 
-                            <div class="form-control">
-                                <label class="label text-lg" for="minvis-duration-input">
-                                    <span class="label-text">Minimum Visibility Duration (seconds)</span>
-                                </label>
-                                <input
-                                    id="minvis-duration-input"
-                                    type="number"
-                                    inputmode="numeric"
-                                    bind:value={minVisibilityDuration}
-                                    placeholder="e.g. 300"
-                                    min="1"
-                                    step="1"
-                                    class="input input-bordered text-lg w-full"
-                                />
+                    <div class="collapse collapse-arrow bg-base-100 mb-4">
+                        <input type="checkbox" />
+                        <div class="collapse-title text-lg font-semibold">Optional Parameters</div>
+                        <div class="collapse-content">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                <div class="form-control">
+                                    <label class="label cursor-pointer justify-start gap-4">
+                                        <input id="hi_res-input" type="checkbox" bind:checked={hiRes} class="checkbox checkbox-primary" />
+                                        <span class="label-text text-lg">High Resolution</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label text-lg" for="minvis-duration-input">
+                                        <span class="label-text">Minimum Visibility Duration (seconds)</span>
+                                    </label>
+                                    <input
+                                        id="minvis-duration-input"
+                                        type="number"
+                                        inputmode="numeric"
+                                        bind:value={minVisibilityDuration}
+                                        placeholder="e.g. 300"
+                                        min="1"
+                                        step="1"
+                                        class="input input-bordered text-lg w-full"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="flex justify-end mt-4">
+                        <button class="btn btn-info text-lg {isLoading ? 'cursor-wait' : ''}" type="submit" disabled={isLoading}> Calculate Visibility </button>
+                    </div>
                 </div>
 
-                <div class="flex justify-end mt-4">
-                    <button
-                        class="btn btn-info text-lg {isLoading ? 'cursor-wait' : ''}"
-                        on:click={async () => await calculateVisibility()}
-                        disabled={isLoading}
-                    >
-                        Calculate Visibility
-                    </button>
-                </div>
-            </div>
+                <input type="hidden" name="ra" value={ra} />
+                <input type="hidden" name="dec" value={dec} />
+                <input type="hidden" name="date_range_begin" value={dateRangeBegin} />
+                <input type="hidden" name="date_range_end" value={dateRangeEnd} />
+                <input type="hidden" name="hi_res" value={hiRes} />
+                <input type="hidden" name="min_visibility_duration" value={minVisibilityDuration} />
+                <input type="hidden" name="instrument_ids" value={selectedInstruments.map((inst) => inst.id).join(',')} />
+            </form>
         </div>
     </Section>
 
-    {#await data.visibilityWindowsData}
-        <Section title="Joint Visibility Windows" icon="globe">
-            <div class="flex items-center justify-center py-8">
-                <span class="loading loading-spinner loading-lg"></span>
-            </div>
-        </Section>
-    {:then results}
-        <Section title="Joint Visibility Windows" icon="globe">
-            <div class="collapse collapse-arrow border border-base-300">
-                <input type="checkbox" checked />
-                <div class="collapse-title text-lg font-semibold">Results ({results.jointVisibilityWindows.length})</div>
-                <div class="collapse-content">
-                    <div class="overflow-x-auto overflow-y-scroll max-h-128">
-                        <table class="table table-pin-rows table-zebra w-full">
-                            <thead>
-                                <tr class="bg-primary text-primary-content">
-                                    <th class="text-center">Window #</th>
-                                    <th>Start Reason</th>
-                                    <th>Begin (UT)</th>
-                                    <th>End (UT)</th>
-                                    <th>End Reason</th>
-                                    <th class="text-center">Max Visibility Duration (s)</th>
+    <Section title="Joint Visibility Windows" icon="globe">
+        <div class="collapse collapse-arrow border border-base-300">
+            <input type="checkbox" checked />
+            {#if visibilityWindowsData}
+                <div class="collapse-title text-lg font-semibold">Results ({visibilityWindowsData.jointVisibilityWindows.length})</div>
+            {/if}
+            <div class="collapse-content">
+                <div class="overflow-x-auto overflow-y-scroll max-h-128">
+                    <table class="table table-pin-rows table-zebra w-full">
+                        <thead>
+                            <tr class="bg-primary text-primary-content">
+                                <th class="text-center">Window #</th>
+                                <th>Start Reason</th>
+                                <th>Begin (UT)</th>
+                                <th>End (UT)</th>
+                                <th>End Reason</th>
+                                <th class="text-center">Max Visibility Duration (s)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#if isLoading}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <span class="loading loading-spinner loading-lg"></span>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {#if results.jointVisibilityWindows.length === 0}
-                                    <tr>
-                                        {#if results.error == ''}
-                                            <td colspan="6" class="text-center text-lg py-4"> No joint visibility windows found for the given parameters </td>
-                                        {:else}
-                                            <td colspan="6" class="text-center text-error text-lg py-4">
-                                                {results.error}
-                                            </td>
-                                        {/if}
-                                    </tr>
-                                {/if}
-                                {#each results.jointVisibilityWindows as window, index}
+                            {:else if isQueryEmpty}
+                                <!-- No query submitted yet -->
+                                <tr>
+                                    <td colspan="6" class="text-center text-lg py-4">Fill in parameters to calculate visibility windows</td>
+                                </tr>
+                            {:else if !visibilityWindowsData}
+                                <!-- Initial state -->
+                                <tr>
+                                    <td colspan="6" class="text-center text-lg py-4">Submit parameters to calculate visibility windows</td>
+                                </tr>
+                            {:else if visibilityWindowsData.jointVisibilityWindows.length === 0}
+                                <!-- Submitted, but no data with possible error -->
+                                <tr>
+                                    {#if visibilityWindowsData.error == ''}
+                                        <td colspan="6" class="text-center text-lg py-4"> No joint visibility windows found for the given parameters </td>
+                                    {:else}
+                                        <td colspan="6" class="text-center text-error text-lg py-4">
+                                            {visibilityWindowsData.error}
+                                        </td>
+                                    {/if}
+                                </tr>
+                            {:else}
+                                {#each visibilityWindowsData.jointVisibilityWindows as window, index}
+                                    <!-- display data -->
                                     <tr>
                                         <td class="text-center">{index + 1}</td>
                                         <td
@@ -269,19 +312,23 @@
                                         <td class="text-center">{window.max_visibility_duration.toFixed(2)}</td>
                                     </tr>
                                 {/each}
-                            </tbody>
-                        </table>
-                    </div>
+                            {/if}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </Section>
-        {#if results.jointVisibilityWindows.length > 0}
-            <Section title="Visibility Windows by Instrument" icon="telescope">
-                <div class="space-y-4">
-                    {#each results.visibilityWindowInstrumentIds as instrumentId}
-                        {@const instrument = instruments.find((inst) => inst.id === instrumentId)}
-                        {@const windows = results.observatoryVisibilityWindows[instrumentId] || []}
-                        {#if instrument && windows.length > 0}
+        </div>
+    </Section>
+    {#if instrumentWindows.length > 0}
+        <Section title="Visibility Windows by Instrument" icon="telescope">
+            <div class="space-y-4">
+                {#if isLoading}
+                    <div class="text-center py-4">
+                        <span class="loading loading-spinner loading-lg"></span>
+                    </div>
+                {:else}
+                    {#each instrumentWindows as { instrument, windows }}
+                        {#if windows.length > 0}
                             <div class="collapse collapse-arrow border border-base-300">
                                 <input type="checkbox" />
                                 <div class="collapse-title text-xl font-medium">
@@ -335,8 +382,8 @@
                             </div>
                         {/if}
                     {/each}
-                </div>
-            </Section>
-        {/if}
-    {/await}
+                {/if}
+            </div>
+        </Section>
+    {/if}
 </Page>

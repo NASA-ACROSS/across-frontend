@@ -65,7 +65,7 @@
 
         <Section title="Attribution">
             <p class="leading-relaxed">
-                This Code of Conduct is a revisioned version from the Contributor Covenant, available at
+                This Code of Conduct is a revised version from the Contributor Covenant, available at
                 <a
                     href="https://www.contributor-covenant.org/version/1/4/code-of-conduct.html"
                     class="text-blue-600 hover:underline"

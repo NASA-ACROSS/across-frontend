@@ -21,7 +21,7 @@ class PublicConfiguration {
     public BUILD_VERSION: string = PUBLIC_BUILD_VERSION || '';
     public DOCUMENTATION_URL: string = 'https://science.data.nasa.gov/data-sites/across';
 
-    public RUNTIME_ENV: string = env.PUBLIC_RUNTIME_ENV || 'local';
+    public RUNTIME_ENV: string = env.PUBLIC_RUNTIME_ENV || '';
 
     public IS_LOCAL: boolean = this.RUNTIME_ENV === 'local';
 

@@ -9,7 +9,11 @@ import { PUBLIC_CONFIG } from './config.public';
  * const apiUrl = CONFIG.ACROSS_SERVER_URL; // "http://127.0.0.1:8000"
  */
 export class PrivateConfiguration {
-    // public ACROSS_SERVER_HOST: string = env.ACROSS_SERVER_HOST || 'http://localhost';
+    /**
+     * Webserver <-> ACROSS Server host. This is not used for user-facing browser domains.
+     * For browser facing domains use `ACROSS_SERVER_DOMAIN`
+     */
+    public ACROSS_SERVER_HOST: string = env.ACROSS_SERVER_HOST || 'http://localhost';
     public ACROSS_SERVER_ROOT_PATH: string = env.ACROSS_SERVER_ROOT_PATH || '/api';
     public ACROSS_SERVER_VERSION: string = env.ACROSS_SERVER_VERSION || '/v1';
     public ACROSS_SERVER_PORT: string = env.ACROSS_SERVER_PORT || '8000';
@@ -28,8 +32,9 @@ export class PrivateConfiguration {
     public AWS_REGION: string = env.AWS_REGION || 'us-east-2';
     public AWS_PROFILE?: string = env.AWS_PROFILE;
 
-    // build will always be `deploy` when running the `npm run build` command.
-    // BUILD_ENV is also hardcoded in CICD pipelines to `deploy` when building and running CI checks.
+    /**  build will always be `deploy` when running the `npm run build` command.
+     * `BUILD_ENV` is also hardcoded in CICD pipelines to `deploy` when building and running CI checks.
+     */
     public IS_BUILD: boolean = env.BUILD_ENV === 'deploy';
 
     constructor(private publicConfig: typeof PUBLIC_CONFIG) {}
@@ -37,17 +42,18 @@ export class PrivateConfiguration {
     public get ACROSS_SERVER_URL(): string {
         const path = `${this.ACROSS_SERVER_ROOT_PATH}${this.ACROSS_SERVER_VERSION}`;
 
-        return `${this.ACROSS_SERVER_HOST}${path}`;
+        return `${this.ACROSS_SERVER_DOMAIN}${path}`;
     }
 
-    public get ACROSS_SERVER_HOST(): string {
+    /** ACROSS server domain that is accessible from the browser */
+    public get ACROSS_SERVER_DOMAIN(): string {
         if (this.publicConfig.IS_LOCAL) return `http://localhost:${this.ACROSS_SERVER_PORT}`;
 
         return `https://server.${this.publicConfig.RUNTIME_ENV}.across.smce.nasa.gov`;
     }
 
     public get ACROSS_SERVER_DOCS_URL(): string {
-        return `${this.ACROSS_SERVER_HOST}${this.ACROSS_SERVER_ROOT_PATH}${this.ACROSS_SERVER_VERSION}/docs`;
+        return `${this.ACROSS_SERVER_DOMAIN}${this.ACROSS_SERVER_ROOT_PATH}${this.ACROSS_SERVER_VERSION}/docs`;
     }
 }
 

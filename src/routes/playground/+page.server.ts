@@ -5,3 +5,10 @@ export const load = () => {
 
     return {};
 };
+
+export const actions = {
+    dialogConfirm: () => {
+        console.log('Dialog Confirm!');
+        return { dialogSuccess: true };
+    },
+};

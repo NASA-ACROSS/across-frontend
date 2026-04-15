@@ -6,6 +6,10 @@
     import Collapse from '$lib/components/Collapse.svelte';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import { resolve } from '$app/paths';
+    import Dialog from '$lib/components/Dialog.svelte';
+
+    /** @type {import('./$types').ActionData} */
+    export let form;
 
     // Multiselect properties and testing custom onToggle
     type Fruit = { name: string; color: string };
@@ -88,5 +92,11 @@
             <div slot="title" class="text-info">Collapse Title! Click me!</div>
             Lorem ipsum dolor sit amet....
         </Collapse>
+    </Section>
+
+    <Section title="Dialog Component">
+        <Dialog {form} action="?/dialogConfirm" buttonText="Open Demo Dialog" title="Super Dialog" confirmationText="YES!" confirmationDelay={1}>
+            <p>Some sample text inside the dialog</p>
+        </Dialog>
     </Section>
 </Page>

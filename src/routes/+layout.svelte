@@ -6,9 +6,44 @@
     // components
     import Navigation from '$lib/components/Navigation.svelte';
     import Footer from '$lib/components/Footer.svelte';
+    import { resolve } from '$app/paths';
 
     import type { PageData } from './$types';
+    import type { Header } from '$lib/types/navigation';
+
     export let data: PageData;
+
+    const navItems: Header[] = [
+        {
+            label: 'Playground',
+            href: resolve('/playground'),
+            localOnly: true,
+        },
+        {
+            label: 'Data',
+            links: [
+                { label: 'Schedules', href: resolve('/schedules') },
+                { label: 'Observations', href: resolve('/observations') },
+                { label: 'Observatories', href: resolve('/observatories') },
+            ],
+        },
+        {
+            label: 'Tools',
+            links: [
+                { label: 'Data Ingestion Status', href: resolve('/ingestion-status') },
+                { label: 'Visibility Calculator', href: resolve('/visibility-calculator') },
+            ],
+        },
+        {
+            label: 'About',
+            href: resolve('/about'),
+        },
+        {
+            label: 'API',
+            href: data.apiDocsUrl,
+            newTab: false,
+        },
+    ];
 </script>
 
 <svelte:head>
@@ -26,7 +61,7 @@
 </svelte:head>
 
 <main class="min-h-screen m-0 flex flex-col content-between bg-primary">
-    <Navigation user={data.user} API_DOCS_URL={data.API_DOCS_URL}></Navigation>
+    <Navigation {navItems} user={data.user}></Navigation>
 
     <slot />
 

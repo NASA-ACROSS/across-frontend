@@ -20,6 +20,7 @@
         "prepare": "husky"
     },
     "devDependencies": {
+        "@aws-sdk/client-ssm": "^3.999.0",
         "@playwright/test": "^1.57.0",
         "@sveltejs/adapter-auto": "^3.0.0",
         "@sveltejs/adapter-node": "^5.0.1",
@@ -39,6 +40,7 @@
         "cronstrue": "^3.3.0",
         "d3": "^7.9.0",
         "daisyui": "^5.0.43",
+        "dotenv": "^17.3.1",
         "eslint": "^8.56.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-svelte": "^3.15.0",
@@ -61,10 +63,6 @@
         "vitest": "^1.2.0"
     },
     "type": "module",
-    "dependencies": {
-        "@aws-sdk/client-ssm": "^3.999.0",
-        "dotenv": "^17.3.1"
-    },
     "engines": {
         "node": ">=22.0.0"
     }

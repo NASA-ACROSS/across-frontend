@@ -1,19 +1,21 @@
 import type { CookieSerializeOptions } from 'cookie';
 import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
-import type { AccessDataResponse, SessionCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { TokensCookie as TokensCookie } from '$lib/types/User/UserCredentialsCookie';
 import type { Cookies } from '@sveltejs/kit';
 import { webserverCredentialsManager } from '$lib/utils/across/auth/WebserverCredentialsManager';
 import { JwtRefresher } from '$lib/utils/across/auth/JwtRefresher';
 import { CONFIG } from '$config/config';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
+import { PUBLIC_CONFIG } from '$config/config.public';
 
 export class UserCredentialsManager {
-    public static async GetAccessToken(cookies: Cookies, tokens?: SessionCookie) {
+    public static async GetAccessToken(cookies: Cookies, tokens?: TokensCookie) {
         const { access_token, refresh_token, refreshed } = await JwtRefresher.GetTokens(tokens);
 
         if (refreshed) {
             // if the tokens were refreshed, update the cookie with the new tokens
-            await this.SetCookie(cookies, 'user-session', { access_token, refresh_token });
+            console.debug('Access token was refreshed, updating cookie with new tokens.');
+            await this.SetCookie(cookies, PUBLIC_CONFIG.USER_TOKENS_COOKIE_NAME, { access_token, refresh_token });
         }
 
         return access_token;
@@ -45,22 +47,11 @@ export class UserCredentialsManager {
             throw new Error(`Login verification failed with status code ${response.status}`);
         }
 
-        const { access_token } = (await response?.json()) as AccessDataResponse;
+        const { access_token } = (await response?.json()) as { access_token: string };
 
-        const headers = response.headers;
+        const refreshToken = JwtRefresher.ExtractRefreshToken(response.headers);
 
-        // Get the refresh token from the response headers
-        const cookiesStr = headers.get('set-cookie');
-        let refresh_token = cookiesStr
-            ?.split(';')
-            .find((element) => element.includes('refresh_token'))
-            ?.split('=')[1];
-
-        if (refresh_token == null) {
-            refresh_token = '';
-        }
-
-        if (!access_token || !refresh_token) {
+        if (!access_token) {
             throw new Error('Login verification failed to retrieve tokens');
         }
 
@@ -71,16 +62,15 @@ export class UserCredentialsManager {
         }
 
         // Set verified tokens in cookie for future authenticated requests
-        const sessionCookie: SessionCookie = {
-            id: decodedToken.sub,
+        const sessionCookie: TokensCookie = {
             access_token,
-            refresh_token,
+            refresh_token: refreshToken,
         };
 
-        // we are only setting the user-session cookie here since
-        // the user-login cookie is set in the login-verify page
+        // we are only setting the tokens cookie here since
+        // the user info cookie is set in the login-verify page
         // after fetching user information from the API
-        await this.SetCookie(cookies, 'user-session', sessionCookie, rememberMe);
+        await this.SetCookie(cookies, PUBLIC_CONFIG.USER_TOKENS_COOKIE_NAME, sessionCookie, rememberMe);
 
         return decodedToken.sub;
     }

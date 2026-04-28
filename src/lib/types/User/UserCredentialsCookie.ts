@@ -19,12 +19,7 @@ export type LocalUser = {
     message: string;
 };
 
-export type SessionCookie = {
-    id: string;
+export type TokensCookie = {
     access_token: string;
     refresh_token: string;
 };
-
-export interface AccessDataResponse {
-    access_token: string;
-}

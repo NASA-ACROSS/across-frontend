@@ -41,9 +41,8 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
         // hydrate auth locals from the cookies on every fetch to the API
         await hydrateAuthUser(event);
 
-        let access_token: string | undefined;
-
         const tokens = event.locals.tokens;
+        let access_token: string | undefined;
 
         // check if the request is from the client or server and use the appropriate strategy
         if (tokens) {

@@ -2,12 +2,12 @@ import { CONFIG } from '$config/config';
 import { jwtDecode } from 'jwt-decode';
 import * as luxon from 'luxon';
 
-export interface TokenResponse {
+export interface Tokens {
     access_token: string;
     refresh_token: string;
 }
 
-export type Tokens = TokenResponse & {
+export type RefreshedTokens = Tokens & {
     refreshed: boolean;
 };
 
@@ -16,7 +16,7 @@ export class JwtRefresher {
     /**
      * Request new access token from the refresh endpoint
      */
-    public static async GetTokens(currentTokens?: Partial<TokenResponse>): Promise<Tokens> {
+    public static async GetTokens(currentTokens?: Partial<Tokens>): Promise<RefreshedTokens> {
         // if tokens exists, check if access is expired
         if (currentTokens?.access_token && !this.IsExpired(currentTokens.access_token)) {
             console.debug('Access token is valid. No need to refresh');
@@ -50,7 +50,20 @@ export class JwtRefresher {
         return isExpired;
     }
 
-    private static async RefreshAccessToken(refresh_token: string): Promise<Tokens> {
+    public static ExtractRefreshToken(headers: Headers): string {
+        // Get the refresh token from the response headers
+        const cookiesStr = headers.get('set-cookie');
+        const refreshToken = cookiesStr
+            ?.split(';')
+            .find((element) => element.includes('refresh_token'))
+            ?.split('=')[1];
+
+        if (!refreshToken) throw new Error('Refresh token not found in response headers');
+
+        return refreshToken;
+    }
+
+    private static async RefreshAccessToken(refresh_token: string): Promise<RefreshedTokens> {
         const options = {
             method: 'POST',
             headers: {
@@ -61,8 +74,12 @@ export class JwtRefresher {
 
         const response = await fetch(`${CONFIG.API_URL}/auth/refresh`, options);
 
+        const { access_token } = (await response.json()) as { access_token: string };
+        const refreshToken = this.ExtractRefreshToken(response.headers);
+
         return {
-            ...((await response.json()) as TokenResponse),
+            access_token,
+            refresh_token: refreshToken,
             refreshed: true,
         };
     }

@@ -102,7 +102,6 @@
         isLoading = true;
 
         const params = searchParams.serialize(formData);
-        console.log(params.toString());
         const url = `${window.location.pathname}?${params.toString()}`;
 
         // Set the browser's URL with the new params without reloading the page
@@ -149,8 +148,8 @@
         <div class="lg:w-5/6 xl:w-3/4 self-center">
             <form method="POST" use:enhance={calculateVisibility} action="?/calculateVisibilityWindows">
                 <p class="text-sm mb-4 italic text-gray-600">
-                    Calculate the visibility of celestial objects from selected instruments. Enter target coordinates and a date range to determine when and for
-                    how long the object will be observable.
+                    Calculate the visibility of celestial objects from selected instruments. Enter target coordinates and a date range to
+                    determine when and for how long the object will be observable.
                 </p>
                 <div class="bg-base-200 p-4 mb-6 w-full">
                     <div class="flex justify-between">
@@ -217,7 +216,9 @@
                     </div>
 
                     <div class="flex justify-end mt-4">
-                        <button class="btn btn-info text-lg {isLoading ? 'cursor-wait' : ''}" type="submit" disabled={isLoading}> Calculate Visibility </button>
+                        <button class="btn btn-info text-lg {isLoading ? 'cursor-wait' : ''}" type="submit" disabled={isLoading}>
+                            Calculate Visibility
+                        </button>
                     </div>
                 </div>
 
@@ -272,7 +273,9 @@
                                 <!-- Submitted, but no data with possible error -->
                                 <tr>
                                     {#if visibilityWindowsData.error == ''}
-                                        <td colspan="6" class="text-center text-lg py-4"> No joint visibility windows found for the given parameters </td>
+                                        <td colspan="6" class="text-center text-lg py-4">
+                                            No joint visibility windows found for the given parameters
+                                        </td>
                                     {:else}
                                         <td colspan="6" class="text-center text-error text-lg py-4">
                                             {visibilityWindowsData.error}

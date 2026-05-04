@@ -14,7 +14,9 @@ describe('parseErrorResponse', () => {
                 { loc: ['query', 'date_range_begin'], msg: 'Invalid date', type: 'invalid' },
             ],
         };
-        expect(parseErrorResponse(errorResponse)).toBe('instrument_ids: At least one instrument must be selected; date_range_begin: Invalid date');
+        expect(parseErrorResponse(errorResponse)).toBe(
+            'instrument_ids: At least one instrument must be selected; date_range_begin: Invalid date'
+        );
     });
 
     it('should return a default error message if the structure is unexpected', () => {

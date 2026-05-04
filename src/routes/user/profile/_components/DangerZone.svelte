@@ -28,7 +28,11 @@
                 <div class="bg-base-100 p-6 w-full max-w-xl shadow-2xl border-3 border-accent">
                     <div class="text-lg font-bold mb-4 flex flex-row justify-between">
                         <h3 class="flex">Confirm User Delete</h3>
-                        <button class="justify-end btn btn-sm btn-primary max-h-8" title="Close" on:click={() => (isDeleteModalOpen = false)}>X</button>
+                        <button
+                            class="justify-end btn btn-sm btn-primary max-h-8"
+                            title="Close"
+                            on:click={() => (isDeleteModalOpen = false)}>X</button
+                        >
                     </div>
                     <p class="bold text-accent">I understand that I am about to delete my user account.</p>
                     <p class="bold text-accent">This action will expire my service accounts.</p>
@@ -54,7 +58,14 @@
                             </button>
                         </div>
                         <div>
-                            <button class="btn btn-sm btn-primary" type="button" title="Cancel" on:click={() => (isDeleteModalOpen = false)}> Cancel </button>
+                            <button
+                                class="btn btn-sm btn-primary"
+                                type="button"
+                                title="Cancel"
+                                on:click={() => (isDeleteModalOpen = false)}
+                            >
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </div>

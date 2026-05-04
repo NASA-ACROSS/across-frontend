@@ -51,7 +51,10 @@ export const actions = {
 
         // reject if any inputs are null after sanitization, this should never happen
         if (firstname === null || lastname === null || username === null || email === null) {
-            console.error(`ERROR: could not validate user input to register user, something is null.`, JSON.stringify(user_post_data, null, 2));
+            console.error(
+                `ERROR: could not validate user input to register user, something is null.`,
+                JSON.stringify(user_post_data, null, 2)
+            );
             return fail(500, { failValidation: true });
         }
 

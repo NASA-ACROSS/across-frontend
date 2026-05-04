@@ -57,7 +57,9 @@
                 {/if}
 
                 {#if form?.fail}
-                    <FormInputFeedback type="error">Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback>
+                    <FormInputFeedback type="error"
+                        >Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback
+                    >
                 {/if}
 
                 {#if form?.notFound}
@@ -65,7 +67,11 @@
                 {/if}
             </EmailInput>
         </form>
-        <ArrowButton href={resolve('/user/register')} containerClasses="mt-6 text-right justify-self-end mb-10" textClasses="text-sm text-right">
+        <ArrowButton
+            href={resolve('/user/register')}
+            containerClasses="mt-6 text-right justify-self-end mb-10"
+            textClasses="text-sm text-right"
+        >
             Don't have an account? Register here
         </ArrowButton>
         <NasaSecurityBanner></NasaSecurityBanner>

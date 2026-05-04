@@ -63,7 +63,9 @@
     <a
         data-sveltekit-noscroll
         data-sveltekit-preload-data="off"
-        class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading ? 'pointer-events-none cursor-wait' : ''}"
+        class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading
+            ? 'pointer-events-none cursor-wait'
+            : ''}"
         href={firstPageHref}
         aria-disabled={currentPage == 1 || isLoading}
     >
@@ -72,7 +74,9 @@
     <a
         data-sveltekit-noscroll
         data-sveltekit-preload-data="off"
-        class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading ? 'pointer-events-none cursor-wait' : ''}"
+        class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading
+            ? 'pointer-events-none cursor-wait'
+            : ''}"
         href={prevPageHref}
         aria-disabled={currentPage == 1 || isLoading}
     >
@@ -100,7 +104,9 @@
     <a
         data-sveltekit-noscroll
         data-sveltekit-preload-data="off"
-        class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading ? 'pointer-events-none cursor-wait' : ''}"
+        class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading
+            ? 'pointer-events-none cursor-wait'
+            : ''}"
         href={nextPageHref}
         aria-disabled={currentPage == totalPages || isLoading}
     >
@@ -110,7 +116,9 @@
     <a
         data-sveltekit-noscroll
         data-sveltekit-preload-data="off"
-        class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading ? 'pointer-events-none cursor-wait' : ''}"
+        class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading
+            ? 'pointer-events-none cursor-wait'
+            : ''}"
         href={lastPageHref}
         aria-disabled={currentPage == totalPages || isLoading}
     >

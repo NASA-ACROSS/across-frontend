@@ -14,7 +14,8 @@
                 <form method="post">
                     <div class="form-check">
                         <label class="label text-primary mt-auto" for="remember-me-checkbox"
-                            ><input class="checkbox" type="checkbox" name="rememberMe" id="remember-me-checkbox" />Remember me on this computer</label
+                            ><input class="checkbox" type="checkbox" name="rememberMe" id="remember-me-checkbox" />Remember me on this
+                            computer</label
                         >
                     </div>
                     <ArrowButton>Login</ArrowButton>

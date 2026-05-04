@@ -39,7 +39,10 @@ export const actions = {
 
         // reject if any inputs are null after sanitization, this should never happen
         if (first_name === null || last_name === null || username === null) {
-            console.error(`ERROR: could not validate user input to update user info, something is null.`, JSON.stringify(userPutBody, null, 2));
+            console.error(
+                `ERROR: could not validate user input to update user info, something is null.`,
+                JSON.stringify(userPutBody, null, 2)
+            );
             return fail(500, { failValidation: true });
         }
 

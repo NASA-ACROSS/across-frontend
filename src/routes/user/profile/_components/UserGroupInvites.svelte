@@ -13,7 +13,9 @@
                 <div class="flex">
                     <form class="flex-grow me-3" method="post" action="?/acceptInvite">
                         <input id="userInviteId-{invitation.id}" hidden={true} name="userInviteId" bind:value={invitation.id} />
-                        <button class="btn btn-info text-xl me-3 w-full" type="submit"><i class="bx bx-check-square fs-lg"></i>Accept</button>
+                        <button class="btn btn-info text-xl me-3 w-full" type="submit"
+                            ><i class="bx bx-check-square fs-lg"></i>Accept</button
+                        >
                     </form>
                     <form class="flex-grow" method="post" action="?/rejectInvite">
                         <input id="userInviteId-{invitation.id}" hidden={true} name="userInviteId" bind:value={invitation.id} />

@@ -75,7 +75,9 @@
                                                 <!-- Filter Title -->
                                                 <div class="text-lg bg-carbon-20 p-4">
                                                     {#if filter.reference_url}
-                                                        <ArrowButton href={filter.reference_url} openInNewTab={true}>{filter.name}</ArrowButton>
+                                                        <ArrowButton href={filter.reference_url} openInNewTab={true}
+                                                            >{filter.name}</ArrowButton
+                                                        >
                                                     {:else}
                                                         <div class="text-lg">{filter.name}</div>
                                                     {/if}
@@ -84,11 +86,14 @@
                                                 <div class="p-4 bg-secondary">
                                                     {#each Object.entries(filter) as filterProperty}
                                                         {#if !EXCLUDED_FILTER_PROPERTIES.includes(filterProperty[0])}
-                                                            {@const isWavelength = filterProperty[0].includes('wavelength') && filterProperty[1] != null}
+                                                            {@const isWavelength =
+                                                                filterProperty[0].includes('wavelength') && filterProperty[1] != null}
                                                             <pre
                                                                 class={filterProperty[1] == null
                                                                     ? 'text-carbon-30'
-                                                                    : ''}>{filterProperty[0]}: {filterProperty[1]} {isWavelength ? 'Å' : ''}</pre>
+                                                                    : ''}>{filterProperty[0]}: {filterProperty[1]} {isWavelength
+                                                                    ? 'Å'
+                                                                    : ''}</pre>
                                                         {/if}
                                                     {/each}
                                                 </div>

@@ -18,7 +18,17 @@
     $: error = data.error;
     let scheduleIdError: string = '';
 
-    const DEFAULT_COLUMNS = ['object_name', 'telescope_instrument', 'date_begin', 'date_end', 'ra', 'dec', 'exposure_time', 'bandpass_name', 'status'];
+    const DEFAULT_COLUMNS = [
+        'object_name',
+        'telescope_instrument',
+        'date_begin',
+        'date_end',
+        'ra',
+        'dec',
+        'exposure_time',
+        'bandpass_name',
+        'status',
+    ];
     const COOKIE_NAME = 'observation_columns';
     const PAGINATION_BUTTONS = 4;
 
@@ -383,7 +393,9 @@
         <div class="lg:w-5/6 xl:w-3/4 self-center">
             <div class="bg-base-200 p-4 mb-6 w-full">
                 <div class="flex justify-between">
-                    <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">Query Filters</div>
+                    <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">
+                        Query Filters
+                    </div>
                     <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}
                         ><div class="bx bx-refresh"></div>
                         Reset Filters</button
@@ -404,7 +416,9 @@
                             checked={false}
                         />
                         <div
-                            class="collapse-title font-semibold {selectedObservatories.length || selectedTelescopes.length || selectedInstruments.length
+                            class="collapse-title font-semibold {selectedObservatories.length ||
+                            selectedTelescopes.length ||
+                            selectedInstruments.length
                                 ? 'text-nasa-blue-shade'
                                 : ''}"
                         >
@@ -532,7 +546,11 @@
                             bind:group={selectedFilter}
                             checked={false}
                         />
-                        <div class="collapse-title font-semibold {coneSearchRa || coneSearchDec || coneSearchRadius ? 'text-nasa-blue-shade' : ''}">
+                        <div
+                            class="collapse-title font-semibold {coneSearchRa || coneSearchDec || coneSearchRadius
+                                ? 'text-nasa-blue-shade'
+                                : ''}"
+                        >
                             <h3 class="text-lg mb-2">Coordinate Cone Search (J2000)</h3>
                             {#if selectedFilter != 'coordinate-search'}
                                 <div class="opacity-60">
@@ -550,7 +568,12 @@
                         </div>
                         <div class="collapse-content bg-carbon-05">
                             <!-- Coordinate Search Component -->
-                            <CoordinateSearch bind:ra={coneSearchRa} bind:dec={coneSearchDec} bind:radius={coneSearchRadius} includeRadius={true} />
+                            <CoordinateSearch
+                                bind:ra={coneSearchRa}
+                                bind:dec={coneSearchDec}
+                                bind:radius={coneSearchRadius}
+                                includeRadius={true}
+                            />
                         </div>
                     </div>
 
@@ -566,7 +589,11 @@
                             bind:group={selectedFilter}
                             checked={false}
                         />
-                        <div class="collapse-title font-semibold {bandpassRegime || bandpassMin || bandpassMax ? 'text-nasa-blue-shade' : ''}">
+                        <div
+                            class="collapse-title font-semibold {bandpassRegime || bandpassMin || bandpassMax
+                                ? 'text-nasa-blue-shade'
+                                : ''}"
+                        >
                             <h3 class="text-lg mb-2">Energy Regime / Bandpass</h3>
                             {#if selectedFilter != 'energy-regime'}
                                 <div class="opacity-60">
@@ -743,7 +770,9 @@
                             {#if selectedFilter != 'filter-schedule'}
                                 <div class="opacity-60">
                                     {#if scheduleIds.length}
-                                        <span>{scheduleIds.length} </span><span class="font-thin">Schedule ID{scheduleIds.length > 1 ? 's' : ''} selected</span>
+                                        <span>{scheduleIds.length} </span><span class="font-thin"
+                                            >Schedule ID{scheduleIds.length > 1 ? 's' : ''} selected</span
+                                        >
                                     {/if}
                                 </div>
                             {/if}
@@ -778,8 +807,9 @@
                                                     {#each scheduleIds as id}
                                                         <tr class="flex w-full">
                                                             <span class="w-full self-center">{id}</span>
-                                                            <button class="btn btn-sm text-sm align-end" on:click={() => handleRemoveSchedule(id)}
-                                                                >Remove</button
+                                                            <button
+                                                                class="btn btn-sm text-sm align-end"
+                                                                on:click={() => handleRemoveSchedule(id)}>Remove</button
                                                             >
                                                         </tr>
                                                     {/each}

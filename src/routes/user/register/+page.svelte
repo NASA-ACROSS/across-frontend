@@ -104,10 +104,14 @@
                         </FormInputFeedback>
                     {/if}
                     {#if form?.failValidation}
-                        <FormInputFeedback type="error">Form validation failed. Please try again. If this error persists, contact support.</FormInputFeedback>
+                        <FormInputFeedback type="error"
+                            >Form validation failed. Please try again. If this error persists, contact support.</FormInputFeedback
+                        >
                     {/if}
                     {#if form?.fail}
-                        <FormInputFeedback type="error">Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback>
+                        <FormInputFeedback type="error"
+                            >Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback
+                        >
                     {/if}
                     <button class="btn btn-lg btn-info" type="submit" disabled={form?.success}>Register</button>
                 </div>

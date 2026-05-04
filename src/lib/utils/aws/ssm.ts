@@ -45,7 +45,11 @@ class SSM {
         return param as ParameterWithValue;
     }
 
-    public async putParameter(name: string, value: string, { type, overwrite }: PutOptions = { type: 'String', overwrite: false }): Promise<void> {
+    public async putParameter(
+        name: string,
+        value: string,
+        { type, overwrite }: PutOptions = { type: 'String', overwrite: false }
+    ): Promise<void> {
         const putCommand = new PutParameterCommand({
             Name: name,
             Value: value,

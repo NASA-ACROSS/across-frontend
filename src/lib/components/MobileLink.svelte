@@ -6,7 +6,7 @@
 
 <li>
     <a
-        class="hover:underline decoration-dashed"
+        class="hover:underline decoration-dashed underline-offset-4"
         data-sveltekit-preload-data="tap"
         target={link.newTab === true ? '_blank' : ''}
         rel={link.rel ? link.rel : ''}

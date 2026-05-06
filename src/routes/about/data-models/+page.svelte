@@ -1,7 +1,8 @@
 <script lang="ts">
     import Section from '$lib/components/Section.svelte';
+    import type { PageData } from '../$types';
 
-    export let data;
+    export let data: PageData;
 </script>
 
 <Section title="Observatories" id="observatories">
@@ -56,7 +57,7 @@
             <li>A date range for the exposure time</li>
             <li>Bandpass and filter information</li>
             <li>
-                <a href="{data?.API_DOCS_URL}#/Observation/get_observation" target="_blank" class="text-blue-600 italic hover:underline">
+                <a href="{data?.apiDocsUrl}#/Observation/get_observation" target="_blank" class="text-blue-600 italic hover:underline">
                     See full observation model response on API docs
                 </a>
             </li>

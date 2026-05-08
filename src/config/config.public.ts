@@ -23,6 +23,9 @@ class PublicConfiguration {
     public RUNTIME_ENV: string = PUBLIC_RUNTIME_ENV || '';
 
     public IS_LOCAL: boolean = this.RUNTIME_ENV === 'local';
+
+    public USER_TOKENS_COOKIE_NAME: string = 'user-tokens';
+    public USER_INFO_COOKIE_NAME: string = 'user-info';
 }
 
 export const PUBLIC_CONFIG = new PublicConfiguration();

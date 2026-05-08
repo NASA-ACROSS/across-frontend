@@ -20,7 +20,7 @@ npm run dev -- --open
 ## Configuration Environment Variables
 
 The ACROSS frontend relies on environment variables to run. The following are
-essential for operation, you can find an example in `.env.example`.
+essential for operation, you can find an example in `.env.example`. Copy the file and rename it to `.env`.
 
 | Variable                   | Use                                                                                 |
 | -------------------------- | ----------------------------------------------------------------------------------- |

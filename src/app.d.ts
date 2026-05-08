@@ -1,6 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { SessionCookie, UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { TokensCookie, UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 
 // for information about these interfaces
 declare global {
@@ -11,7 +11,7 @@ declare global {
         }
         interface Locals {
             user?: UserCredentialsCookie;
-            tokens?: SessionCookie;
+            tokens?: TokensCookie;
         }
         // interface PageData {}
         // interface PageState {}

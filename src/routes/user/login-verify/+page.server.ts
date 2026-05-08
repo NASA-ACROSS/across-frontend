@@ -7,6 +7,7 @@ import type { User } from '$lib/types/User/User';
 import type { RequestEvent } from './$types';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 import guards from '$lib/utils/guards';
+import { PUBLIC_CONFIG } from '$config/config.public';
 
 export function load(event: RequestEvent) {
     guards.localOnlyRoute();
@@ -74,7 +75,7 @@ export const actions = {
             message: '',
         };
 
-        await UserCredentialsManager.SetCookie(cookies, 'user-login', localUser, rememberMe);
+        await UserCredentialsManager.SetCookie(cookies, PUBLIC_CONFIG.USER_INFO_COOKIE_NAME, localUser, rememberMe);
 
         redirect(302, resolve('/user/profile'));
     },

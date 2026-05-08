@@ -7,6 +7,7 @@ import type { RequestEvent } from './$types';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import guards from '$lib/utils/guards';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
+import { PUBLIC_CONFIG } from '$config/config.public';
 
 export async function load(event: RequestEvent) {
     guards.localOnlyRoute();
@@ -74,7 +75,7 @@ export const actions = {
 
         const cookieUserData = { ...user, ...userPutBody };
         // Not sure if this is needed since user data is reset on page load?
-        await UserCredentialsManager.SetCookie(cookies, 'user-login', cookieUserData);
+        await UserCredentialsManager.SetCookie(cookies, PUBLIC_CONFIG.USER_INFO_COOKIE_NAME, cookieUserData);
 
         return {
             successUpdateUserInformation: true,

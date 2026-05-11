@@ -14,7 +14,7 @@ export class PrivateConfiguration {
      * For browser facing domains use `ACROSS_SERVER_DOMAIN`
      */
     public ACROSS_SERVER_HOST: string = env.ACROSS_SERVER_HOST || 'http://localhost';
-    public ACROSS_SERVER_ROOT_PATH: string = env.ACROSS_SERVER_ROOT_PATH || '/api';
+    public ACROSS_SERVER_ROOT_PATH: string = env.ACROSS_SERVER_ROOT_PATH || '';
     public ACROSS_SERVER_VERSION: string = env.ACROSS_SERVER_VERSION || '/v1';
     public ACROSS_SERVER_PORT: string = env.ACROSS_SERVER_PORT || '8000';
 
@@ -48,8 +48,9 @@ export class PrivateConfiguration {
     /** ACROSS server domain that is accessible from the browser */
     public get ACROSS_SERVER_DOMAIN(): string {
         if (this.publicConfig.IS_LOCAL) return `http://localhost:${this.ACROSS_SERVER_PORT}`;
+        else if (this.publicConfig.IS_PROD) return `https://api.across.sciencecloud.nasa.gov`;
 
-        return `https://server.${this.publicConfig.RUNTIME_ENV}.across.smce.nasa.gov`;
+        return `https://api.${this.publicConfig.RUNTIME_ENV}.across.sciencecloud.nasa.gov`;
     }
 
     public get ACROSS_SERVER_DOCS_URL(): string {

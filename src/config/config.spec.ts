@@ -9,20 +9,14 @@ describe('PrivateConfiguration', () => {
             expect(config.ACROSS_SERVER_DOMAIN).toContain('localhost');
         });
 
-        it('should return the deployed url when the env is not local', () => {
-            const config = new PrivateConfiguration({ RUNTIME_ENV: 'dev' } as typeof PUBLIC_CONFIG);
-            expect(config.ACROSS_SERVER_DOMAIN).toContain('server.dev.across.smce.nasa.gov');
-        });
-    });
-    describe('ACROSS_SERVER_DOCS_URL', () => {
-        it('should return the localhost url for the docs when the env is local', () => {
-            const config = new PrivateConfiguration({ IS_LOCAL: true } as typeof PUBLIC_CONFIG);
-            expect(config.ACROSS_SERVER_DOCS_URL).toContain('localhost');
+        it('should return the production url when the env is prod', () => {
+            const config = new PrivateConfiguration({ IS_PROD: true } as typeof PUBLIC_CONFIG);
+            expect(config.ACROSS_SERVER_DOMAIN).toContain('api.across.sciencecloud.nasa.gov');
         });
 
-        it('should return the deployed url when the env is not local', () => {
-            const config = new PrivateConfiguration({ RUNTIME_ENV: 'dev' } as typeof PUBLIC_CONFIG);
-            expect(config.ACROSS_SERVER_DOCS_URL).toContain('server.dev.across.smce.nasa.gov');
+        it.each(['feat1', 'dev', 'staging'])('should return the deployed url when the env is not local or prod', (env) => {
+            const config = new PrivateConfiguration({ RUNTIME_ENV: env } as typeof PUBLIC_CONFIG);
+            expect(config.ACROSS_SERVER_DOMAIN).toContain(`api.${env}.across.sciencecloud.nasa.gov`);
         });
     });
 });

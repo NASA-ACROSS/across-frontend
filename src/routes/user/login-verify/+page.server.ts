@@ -62,7 +62,7 @@ export const actions = {
             return fail(500, { error: 'Failed to decode user information from token' });
         }
 
-        const res = await fetch(`${CONFIG.API_URL}/user/${userId}`, { method: 'GET' });
+        const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}`, { method: 'GET' });
 
         const user = (await res.json()) as User;
 

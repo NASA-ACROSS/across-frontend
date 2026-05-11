@@ -64,7 +64,7 @@ export const actions = {
 
         let response: Response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/auth/login?email=${encodeURIComponent(email)}`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/auth/login?email=${encodeURIComponent(email)}`, options);
         } catch (error) {
             console.error(`ERROR: logging in user [${email}] at [${Date.now()}]`, JSON.stringify(error));
 

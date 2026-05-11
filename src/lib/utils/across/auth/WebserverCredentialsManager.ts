@@ -19,30 +19,25 @@ export class WebserverCredentialsManager {
     private expiration?: luxon.DateTime;
 
     public async initialize(): Promise<void> {
-        if (CONFIG.IS_BUILD || (CONFIG.ACROSS_SERVER_ID && CONFIG.ACROSS_SERVER_SECRET)) {
-            this.id = CONFIG.ACROSS_SERVER_ID;
-            this.secret = CONFIG.ACROSS_SERVER_SECRET;
-        } else {
-            await this.setParameter('id', this.buildSsmPath(CONFIG.ACROSS_SERVER_ID_PATH));
-            await this.setParameter('secret', this.buildSsmPath(CONFIG.ACROSS_SERVER_SECRET_PATH));
-        }
-
+        await this.setCredentials();
         await this.getAccessToken();
     }
 
-    public async getAccessToken(): Promise<string | undefined> {
+    public async getAccessToken(options: { retry?: boolean } = {}): Promise<string | undefined> {
         if (CONFIG.IS_BUILD || CONFIG.ACROSS_TEST_ACCESS_TOKEN) {
             console.debug('Building or running in test environment, using dummy access token for WebserverCredentialsManager');
             return CONFIG.ACROSS_TEST_ACCESS_TOKEN;
         }
 
-        if (!this.token?.access_token || JwtRefresher.IsExpired(this.token.access_token)) {
-            try {
+        const { retry = false } = options;
+
+        try {
+            if (!this.token?.access_token || JwtRefresher.IsExpired(this.token.access_token)) {
                 // Only the webserver credentials manager should be calling the
                 // token endpoint with its own credentials, so we can use basic
                 // auth with the client id and secret to get the access token.
                 // service accounts do not need refresh tokens.
-                const res = await fetch(`${CONFIG.API_URL}/auth/token`, {
+                const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/auth/token`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -51,22 +46,42 @@ export class WebserverCredentialsManager {
                     body: new URLSearchParams({ grant_type: 'client_credentials' }),
                 });
 
-                this.token = (await res.json()) as AccessTokenResponse;
-            } catch (err: unknown) {
-                if (err instanceof Error) {
-                    console.error('Error fetching webserver access token.', { err: err.stack });
+                if (res.status >= 400) {
+                    const body = (await res.json()) as { details: string };
+                    const errLog = { status: res.status, details: body.details };
+
+                    if (res.status === 401) {
+                        if (!retry) {
+                            console.debug('Credentials may have been changed, pulling latest and retrying.');
+                            await this.setCredentials();
+                            await this.getAccessToken({ retry: true });
+                        } else {
+                            console.error(`[ERROR]: Unauthorized credentials`, errLog);
+                        }
+                    } else {
+                        console.error(`[ERROR]: Unknown error while attempting to fetch the token.`, errLog);
+                    }
+
+                    // return undefined to allow the "GET" requests and pages not dependent on the core-server to pass through.
+                    return;
                 }
 
-                return;
+                this.token = (await res.json()) as AccessTokenResponse;
+            }
+
+            // on requests after the initial token fetch, check
+            // if the secret is close to expiring and rotate if needed
+            // before returning the token
+            await this.checkAndRotate();
+
+            return this.token.access_token;
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                console.error('[ERROR]: Unknown error while fetching, server may likely be down. Contact support.', { err });
+            } else {
+                console.error('[ERROR]: Unknown error.', { err });
             }
         }
-
-        // on requests after the initial token fetch, check
-        // if the secret is close to expiring and rotate if needed
-        // before returning the token
-        await this.checkAndRotate();
-
-        return this.token.access_token;
     }
 
     private async checkAndRotate(): Promise<void> {
@@ -89,7 +104,7 @@ export class WebserverCredentialsManager {
         if (!this.expiration) {
             const options = { method: 'GET', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token?.access_token}` } };
 
-            const res = await fetch(`${CONFIG.API_URL}/service-account/${this.id}`, options);
+            const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/service-account/${this.id}`, options);
 
             if (!res.ok) {
                 throw new Error(`Error checking credential expiration with status code ${res.status}`);
@@ -106,7 +121,7 @@ export class WebserverCredentialsManager {
 
     private async rotateKey(): Promise<void> {
         // call server to rotate credentials, returns new secret and expiration
-        const res = await fetch(`${CONFIG.API_URL}/service-account/${this.id}/rotate_key`, {
+        const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/service-account/${this.id}/rotate_key`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -133,11 +148,19 @@ export class WebserverCredentialsManager {
         });
     }
 
-    private async setParameter(param: 'id' | 'secret', name: string): Promise<string> {
+    private async setCredentials(): Promise<void> {
+        if (CONFIG.IS_BUILD || (CONFIG.ACROSS_SERVER_ID && CONFIG.ACROSS_SERVER_SECRET)) {
+            this.id = CONFIG.ACROSS_SERVER_ID;
+            this.secret = CONFIG.ACROSS_SERVER_SECRET;
+        } else {
+            await this.getCred('id', this.buildSsmPath(CONFIG.ACROSS_SERVER_ID_PATH));
+            await this.getCred('secret', this.buildSsmPath(CONFIG.ACROSS_SERVER_SECRET_PATH));
+        }
+    }
+
+    private async getCred(param: 'id' | 'secret', name: string): Promise<void> {
         const { Value } = await ssm.getParameter(name);
         this[param] = Value;
-
-        return Value;
     }
 
     private buildSsmPath(path: string): string {

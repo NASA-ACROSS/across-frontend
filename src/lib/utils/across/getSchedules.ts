@@ -7,7 +7,7 @@ export const getSchedules = async (telescopeIds: string[], fetch: typeof window.
         method: 'GET',
     };
 
-    const url = new URL(`${CONFIG.API_URL}/schedule/`);
+    const url = new URL(`${CONFIG.ACROSS_SERVER_URL}/schedule/`);
     const params = {
         telescopeIds: telescopeIds.toString(),
     };

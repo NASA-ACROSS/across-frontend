@@ -77,7 +77,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/user`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: registering [${email}] at [${Date.now()}]`;
             console.error(errorLog, error);

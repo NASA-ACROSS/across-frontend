@@ -2,13 +2,11 @@ FROM node:24-bookworm-slim AS build
 
 # set the build version to local environment by default, can be overridden by passing a different value during build time
 ARG BUILD_VERSION=docker
-ARG RUNTIME_ENV=docker
 
 # set svelte public env vars
-ENV PUBLIC_RUNTIME_ENV=$RUNTIME_ENV
 ENV PUBLIC_BUILD_VERSION=$BUILD_VERSION
+ENV PUBLIC_RUNTIME_ENV=local
 
-RUN echo "PUBLIC_RUNTIME_ENV: $PUBLIC_RUNTIME_ENV"
 RUN echo "PUBLIC_BUILD_VERSION: $PUBLIC_BUILD_VERSION"
 
 WORKDIR /app

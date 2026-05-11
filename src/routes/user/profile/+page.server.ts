@@ -53,7 +53,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/user/${user.id}`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: updating user information [${username}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -103,7 +103,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/user/${user.id}/invite/${userInviteId}`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/invite/${userInviteId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -136,7 +136,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/user/${user.id}/invite/${userInviteId}`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/invite/${userInviteId}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -169,7 +169,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/user/${userId}/group/${groupId}/`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}/group/${groupId}/`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: leaving group id [${groupId}] for user id [${userId}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -198,7 +198,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/user/${user.id}`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: deleting user id [${user.id}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));

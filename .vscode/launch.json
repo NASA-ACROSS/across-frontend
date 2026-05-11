@@ -19,7 +19,9 @@
             "env": {
                 "PUBLIC_RUNTIME_ENV": "feat1",
                 "APP_ENV": "across-plat-ue2-feat1",
-                "AWS_PROFILE": "Project-Admin"
+                "AWS_PROFILE": "Project-Admin",
+                "ACROSS_SERVER_ID": "",
+                "ACROSS_SERVER_SECRET": ""
             }
         },
         {

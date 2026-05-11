@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.1.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.0.0...across-frontend-v1.1.0) (2026-05-11)
+
+
+### Features
+
+* **auth:** frontend service account and auth refactor using hooks ([#267](https://github.com/NASA-ACROSS/across-frontend/issues/267)) ([a6a6bb8](https://github.com/NASA-ACROSS/across-frontend/commit/a6a6bb875684cd72e7e77c97865b69e72b129067))
+* **health:** add api endpoint to webserver for container health check ([#313](https://github.com/NASA-ACROSS/across-frontend/issues/313)) ([f051ca0](https://github.com/NASA-ACROSS/across-frontend/commit/f051ca0dfb8fc91e4c2d77077ee58bacdec01baf))
+
+
+### Bug Fixes
+
+* **auth:** refresh token extracted from cookie on refresh ([#305](https://github.com/NASA-ACROSS/across-frontend/issues/305)) ([17c8c9f](https://github.com/NASA-ACROSS/across-frontend/commit/17c8c9f5f650d4e425037e86abeac182286e5095))
+* **deps:** move dependecies to dev deps ([#304](https://github.com/NASA-ACROSS/across-frontend/issues/304)) ([f824ae6](https://github.com/NASA-ACROSS/across-frontend/commit/f824ae69beb27bed705cc875d9da24297076e31b))
+* **docs:** change revisioned to revised ([#299](https://github.com/NASA-ACROSS/across-frontend/issues/299)) ([b1dcde9](https://github.com/NASA-ACROSS/across-frontend/commit/b1dcde943e31145129e2fe1f8c38c29d00ff0f27))
+* make ACROSS_SERVER config names consistent to fix doc url string ([#296](https://github.com/NASA-ACROSS/across-frontend/issues/296)) ([bf5a59d](https://github.com/NASA-ACROSS/across-frontend/commit/bf5a59da99d65320a57bf5a9550ec1a04033f962))
+* removing inclusive language... ([#294](https://github.com/NASA-ACROSS/across-frontend/issues/294)) ([1e1d72e](https://github.com/NASA-ACROSS/across-frontend/commit/1e1d72eb73a5fb3c16ab9531986106899215def3))
+* update workflows to use main ([#311](https://github.com/NASA-ACROSS/across-frontend/issues/311)) ([dd2f3a0](https://github.com/NASA-ACROSS/across-frontend/commit/dd2f3a00771e70c051f4bb051318b54a5bf9cafa))
+* use form to load visibility windows ([#282](https://github.com/NASA-ACROSS/across-frontend/issues/282)) ([4be88e8](https://github.com/NASA-ACROSS/across-frontend/commit/4be88e8744d400ceeacd4c8fd98f87dbeb666cf0))
+
 ## [1.0.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v0.0.1...across-frontend-v1.0.0) (2026-03-24)
 
 

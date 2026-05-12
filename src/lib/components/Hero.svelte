@@ -2,7 +2,7 @@
     import { resolve } from '$app/paths';
     import ArrowButton from './ArrowButton.svelte';
 
-    export let API_DOCS_URL: string;
+    export let apiDocsUrl: string;
 </script>
 
 <!-- Hero -->
@@ -18,7 +18,7 @@
             <div class="flex flex-col md:flex-row md:gap-4">
                 <ArrowButton href={resolve('/ingestion-status')}>Data Ingestion Status</ArrowButton>
                 <ArrowButton href={resolve('/observations')}>Browse Observations</ArrowButton>
-                <ArrowButton href={API_DOCS_URL}>Explore API</ArrowButton>
+                <ArrowButton href={apiDocsUrl}>Explore API</ArrowButton>
             </div>
         </div>
     </div>

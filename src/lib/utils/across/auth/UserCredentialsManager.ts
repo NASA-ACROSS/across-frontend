@@ -25,7 +25,7 @@ export class UserCredentialsManager {
      * Exchange verification token for access token and refresh token
      * sets the cookie with the retrieved tokens.
      */
-    public static async Verify(token: string, cookies: Cookies, rememberMe: boolean): Promise<string> {
+    public static async Verify(token: string, cookies: Cookies, rememberMe: boolean = false): Promise<string> {
         const options = {
             method: 'GET',
             headers: {

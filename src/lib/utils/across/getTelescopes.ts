@@ -2,13 +2,13 @@ import type { Telescope } from '$lib/types/across/Telescope';
 import searchParams from '../searchParams/searchParams';
 
 type GetTelescopesParams = {
-    ids?: string[];
+    observatory_id?: string;
     include_filters?: boolean;
     include_footprints?: boolean;
 };
 
 export const getTelescopes = async (fetch: typeof window.fetch, params?: GetTelescopesParams) => {
-    const qp = searchParams.serialize(params, { ids: 'array' });
+    const qp = searchParams.serialize(params);
 
     const url = `/api/telescope${qp.toString() ? `?${qp}` : ''}`;
 

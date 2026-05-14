@@ -19,10 +19,8 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     // pull the first observatory since there is only one per name. (as of writing this)
     const observatory: Observatory = observatories[0];
 
-    const telescopeIds = observatory.telescopes.map((telescope) => telescope.id);
-
     const telescopes = await getTelescopes(fetch, {
-        ids: telescopeIds,
+        observatory_id: observatory.id,
         include_filters: true,
         include_footprints: true,
     });

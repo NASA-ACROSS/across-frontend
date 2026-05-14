@@ -1,4 +1,5 @@
-const DEFAULT_ERROR_MESSAGE = 'There was an error processing the request. Please contact support with your search parameters to resolve this issue.';
+const DEFAULT_ERROR_MESSAGE =
+    'There was an error processing the request. Please contact support with your search parameters to resolve this issue.';
 
 export const findKnownError = (detail: unknown, knownErrors: Record<string, string> = {}): string => {
     let detailStr: string;

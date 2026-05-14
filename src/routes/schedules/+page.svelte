@@ -251,7 +251,9 @@
             </p>
             <div class="bg-base-200 p-4 mb-6 w-full">
                 <div class="flex justify-between">
-                    <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">Query Filters</div>
+                    <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">
+                        Query Filters
+                    </div>
                     <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}>
                         <div class="bx bx-refresh"></div>
                         Reset Filters
@@ -271,7 +273,11 @@
                             bind:group={selectedFilter}
                             checked={false}
                         />
-                        <div class="collapse-title font-semibold {selectedObservatories.length || selectedTelescopes.length ? 'text-nasa-blue-shade' : ''}">
+                        <div
+                            class="collapse-title font-semibold {selectedObservatories.length || selectedTelescopes.length
+                                ? 'text-nasa-blue-shade'
+                                : ''}"
+                        >
                             <h3 class="text-lg mb-2">Observatory / Telescope</h3>
                             {#if selectedFilter != 'observatory-telescope'}
                                 <div class="opacity-60">
@@ -286,7 +292,12 @@
                         </div>
                         <div class="collapse-content">
                             <div class="py-4 h-200 md:min-h-80 md:max-h-100">
-                                <ObservatoryTelescopeSelector {observatories} {telescopes} bind:selectedObservatories bind:selectedTelescopes />
+                                <ObservatoryTelescopeSelector
+                                    {observatories}
+                                    {telescopes}
+                                    bind:selectedObservatories
+                                    bind:selectedTelescopes
+                                />
                             </div>
                         </div>
                     </div>

@@ -110,23 +110,31 @@
                                                             <ScheduleStatusBadge status={cadence.schedule_status}></ScheduleStatusBadge>
                                                         </div>
                                                         <div class="text-xs opacity-70">
-                                                            <pre>Schedule Cadence:    {cadence.cron || 'none'} ({cronstrue.toString(cadence.cron)})</pre>
+                                                            <pre>Schedule Cadence:    {cadence.cron || 'none'} ({cronstrue.toString(
+                                                                    cadence.cron
+                                                                )})</pre>
                                                         </div>
                                                         <div class="text-xs opacity-70">
-                                                            <pre class="font-bold">Next Ingestion at:   {prettyUTC(nextCronInterval(cadence.cron)) ||
-                                                                    'none'} {timeDifferenceNow(nextCronInterval(cadence.cron))}</pre>
+                                                            <pre class="font-bold">Next Ingestion at:   {prettyUTC(
+                                                                    nextCronInterval(cadence.cron)
+                                                                ) || 'none'} {timeDifferenceNow(nextCronInterval(cadence.cron))}</pre>
                                                         </div>
                                                         <div class="text-xs opacity-70">
-                                                            <pre>Last Ingestion at:   {prettyUTC(previousCronInterval(cadence.cron)) || 'none'}</pre>
+                                                            <pre>Last Ingestion at:   {prettyUTC(previousCronInterval(cadence.cron)) ||
+                                                                    'none'}</pre>
                                                         </div>
                                                         <div class="text-xs opacity-70">
-                                                            <pre>Newest Schedule end: {prettyUTC(telescopesDict[telescope.id].latest_data_date)}</pre>
+                                                            <pre>Newest Schedule end: {prettyUTC(
+                                                                    telescopesDict[telescope.id].latest_data_date
+                                                                )}</pre>
                                                         </div>
                                                     </div>
                                                     <div>
                                                         <div
                                                             class={'badge badge-active h-full w-30 p-4 text-nowrap text-xl ' +
-                                                                statusColors[getStatus(cadence.cron, telescopesDict[telescope.id].latest_data_date)]}
+                                                                statusColors[
+                                                                    getStatus(cadence.cron, telescopesDict[telescope.id].latest_data_date)
+                                                                ]}
                                                         >
                                                             {getStatus(cadence.cron, telescopesDict[telescope.id].latest_data_date)}
                                                         </div>
@@ -135,10 +143,14 @@
                                             {:else}
                                                 <div class="flex flex-row justify-between">
                                                     <div class="bg-base-100 p-2 mt-0 w-full">
-                                                        <pre class="font-sm">No schedule ingestion cadence configured, or source is disabled.</pre>
+                                                        <pre
+                                                            class="font-sm">No schedule ingestion cadence configured, or source is disabled.</pre>
                                                     </div>
                                                     <div>
-                                                        <div class={'badge badge-active h-full w-30 p-4 text-nowrap text-xl mb-2 ' + statusColors['offline']}>
+                                                        <div
+                                                            class={'badge badge-active h-full w-30 p-4 text-nowrap text-xl mb-2 ' +
+                                                                statusColors['offline']}
+                                                        >
                                                             offline
                                                         </div>
                                                     </div>

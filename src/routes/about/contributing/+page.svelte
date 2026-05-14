@@ -5,9 +5,10 @@
 <Section title="Contributing">
     <div class="border-t border-base-300 pt-3">
         <p class="leading-relaxed">
-            So you'd like to contribute to the ACROSS Project? Below are some guidelines for contributors to follow. Contributions come in all shapes and sizes.
-            Help is appreciated with documentation, unit tests, framework code, continuous-integration, or simply reporting bugs and improvement ideas. The
-            ACROSS team cannot promise to accept every suggestion or bugfix, but will look into each contribution with careful consideration.
+            So you'd like to contribute to the ACROSS Project? Below are some guidelines for contributors to follow. Contributions come in
+            all shapes and sizes. Help is appreciated with documentation, unit tests, framework code, continuous-integration, or simply
+            reporting bugs and improvement ideas. The ACROSS team cannot promise to accept every suggestion or bugfix, but will look into
+            each contribution with careful consideration.
         </p>
     </div>
 </Section>
@@ -15,8 +16,9 @@
 <Section title="Code of Conduct">
     <div class="border-t border-base-300 pt-3">
         <p class="leading-relaxed">
-            This project and everyone participating in it is governed by the <a href="/docs/code-of-conduct" class="text-blue-600 hover:underline"
-                >ACROSS Code of Conduct</a
+            This project and everyone participating in it is governed by the <a
+                href="/docs/code-of-conduct"
+                class="text-blue-600 hover:underline">ACROSS Code of Conduct</a
             >. By participating, you are expected to uphold this code. Please report unacceptable behavior to the product team.
         </p>
     </div>
@@ -32,8 +34,8 @@
                 <h5 class="text-lg font-semibold">Before Reporting a Bug</h5>
                 <ol class="list-decimal list-inside space-y-1 ml-2 leading-relaxed">
                     <li>
-                        Perform a cursory search to see if the bug has already been reported. If a bug has been reported and the issue is still open, add a
-                        comment to the existing issue instead of opening a new one.
+                        Perform a cursory search to see if the bug has already been reported. If a bug has been reported and the issue is
+                        still open, add a comment to the existing issue instead of opening a new one.
                     </li>
                 </ol>
             </div>
@@ -58,8 +60,8 @@
                 <ol class="list-decimal list-inside space-y-1 ml-2 leading-relaxed">
                     <li>The ACROSS team will label the issue.</li>
                     <li>
-                        A team member will try to reproduce the issue with your provided steps. If the team is able to reproduce the issue, the issue will be
-                        left to be implemented by someone.
+                        A team member will try to reproduce the issue with your provided steps. If the team is able to reproduce the issue,
+                        the issue will be left to be implemented by someone.
                     </li>
                 </ol>
             </div>
@@ -69,7 +71,8 @@
         <div id="new-feature-requests" class="mt-4 space-y-4">
             <h4 class="text-2xl font-semibold">New Feature Requests</h4>
             <p class="leading-relaxed">
-                ACROSS has a multitude of users from different fields and backgrounds. Feature enhancement ideas from the community are always welcome!
+                ACROSS has a multitude of users from different fields and backgrounds. Feature enhancement ideas from the community are
+                always welcome!
             </p>
 
             <div id="requesting-a-new-feature" class="space-y-2">
@@ -89,8 +92,9 @@
                 <ol class="list-decimal list-inside space-y-1 ml-2 leading-relaxed">
                     <li>The project team will label the issue.</li>
                     <li>
-                        The project team will evaluate the feature request, possibly asking you more questions to understand its purpose and any relevant
-                        requirements. If the issue is closed, the team will convey their reasoning and suggest an alternative path forward.
+                        The project team will evaluate the feature request, possibly asking you more questions to understand its purpose and
+                        any relevant requirements. If the issue is closed, the team will convey their reasoning and suggest an alternative
+                        path forward.
                     </li>
                     <li>If the feature request is accepted, it will be marked for implementation.</li>
                 </ol>
@@ -108,12 +112,12 @@
                     <li>Fork the respective git-hub repository.</li>
                     <li>Find the related issue number or create an associated issue that explains the intent of your new code.</li>
                     <li>
-                        Create a new branch in your fork to work on your fix. Branch names follow the following format: <code class="bg-base-200 px-1 text-sm"
-                            >ISSUE_NUMBER-&lt;ISSUE_TITLE&gt;</code
+                        Create a new branch in your fork to work on your fix. Branch names follow the following format: <code
+                            class="bg-base-200 px-1 text-sm">ISSUE_NUMBER-&lt;ISSUE_TITLE&gt;</code
                         >.
                         <p>
-                            For example, an issue #123 titled "add my new feature to do cool thing" will be <code class="bg-base-200 px-1 text-sm"
-                                >123-add-my-new-feature-to-do-cool-thing</code
+                            For example, an issue #123 titled "add my new feature to do cool thing" will be <code
+                                class="bg-base-200 px-1 text-sm">123-add-my-new-feature-to-do-cool-thing</code
                             >.
                         </p>
                     </li>
@@ -140,15 +144,16 @@
                         />
                     </svg>
                     <span>
-                        <strong>Significant new features require design review before development begins.</strong> If your PR introduces a substantial new feature,
-                        the ACROSS team strongly recommends opening a discussion or issue to go through a design review and receive approval from the team before
-                        writing any code. Pull requests for unapproved features may not be actively monitored or reviewed, and there is no guarantee of acceptance.
+                        <strong>Significant new features require design review before development begins.</strong> If your PR introduces a substantial
+                        new feature, the ACROSS team strongly recommends opening a discussion or issue to go through a design review and receive
+                        approval from the team before writing any code. Pull requests for unapproved features may not be actively monitored or
+                        reviewed, and there is no guarantee of acceptance.
                     </span>
                 </div>
                 <p class="leading-relaxed">
-                    When you are ready to create a PR follow the Pull Request template instructions, below is a brief summary of the information needed in a PR.
-                    It is recommended to create a pull-request as a "draft" and to commit early and often so the community can give you feedback at the
-                    beginning stages of your contribution.
+                    When you are ready to create a PR follow the Pull Request template instructions, below is a brief summary of the
+                    information needed in a PR. It is recommended to create a pull-request as a "draft" and to commit early and often so the
+                    community can give you feedback at the beginning stages of your contribution.
                 </p>
                 <ol class="list-decimal list-inside space-y-1 ml-2 leading-relaxed">
                     <li>
@@ -160,17 +165,18 @@
                         >.
                     </li>
                     <li>
-                        Describe the contribution. First document which issue number was fixed using the template "Fix #XYZ". Then describe the contribution.
+                        Describe the contribution. First document which issue number was fixed using the template "Fix #XYZ". Then describe
+                        the contribution.
                     </li>
                     <li>
-                        Provide what testing was used to confirm the pull request resolves the linked issue. If writing new code, also provide the associated
-                        coverage unit tests.
+                        Provide what testing was used to confirm the pull request resolves the linked issue. If writing new code, also
+                        provide the associated coverage unit tests.
                     </li>
                     <li>Provide the expected behavior changes of the pull request.</li>
                     <li>Provide any additional context if applicable.</li>
                     <li>
-                        Verify that the PR passes all workflow checks. If you expect some of these checks to fail, please note it in the Pull Request text or
-                        comments.
+                        Verify that the PR passes all workflow checks. If you expect some of these checks to fail, please note it in the
+                        Pull Request text or comments.
                     </li>
                 </ol>
             </div>

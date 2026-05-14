@@ -21,6 +21,8 @@ export const isAdmin = (user: User, group: UserGroup): boolean => {
     }, [] as GroupRole[]);
 
     // user has at least one adminRole
-    const foundUserAdminRole = user?.group_roles?.find((user_group_role) => adminRoles.find((adminRole) => adminRole.id === user_group_role.id));
+    const foundUserAdminRole = user?.group_roles?.find((user_group_role) =>
+        adminRoles.find((adminRole) => adminRole.id === user_group_role.id)
+    );
     return foundUserAdminRole ? true : false;
 };

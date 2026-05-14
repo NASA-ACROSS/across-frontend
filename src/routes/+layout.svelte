@@ -58,6 +58,8 @@
 
     <!-- BoxIcons -->
     <link href="https://cdn.boxicons.com/3.0.8/fonts/basic/boxicons.min.css" rel="stylesheet" />
+    <!-- Filled Icons -->
+    <link href="https://cdn.boxicons.com/3.0.8/fonts/filled/boxicons-filled.min.css" rel="stylesheet" />
 </svelte:head>
 
 <main class="min-h-screen m-0 flex flex-col content-between bg-primary">

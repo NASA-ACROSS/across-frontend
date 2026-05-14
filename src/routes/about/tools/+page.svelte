@@ -5,8 +5,8 @@
 <Section title="Tools & Code">
     <div class="border-t border-base-300 pt-3">
         <p class="leading-relaxed">
-            In addition to ingested observatory scheduling data, a set of ACROSS observing tools is available to aid in TDAMM observing endeavors — accessible
-            both as interactive web-based portals and as open-source Python packages.
+            In addition to ingested observatory scheduling data, a set of ACROSS observing tools is available to aid in TDAMM observing
+            endeavors — accessible both as interactive web-based portals and as open-source Python packages.
         </p>
 
         <div class="space-y-6">
@@ -23,21 +23,24 @@
 
                     <div class="border-t border-base-300 pt-3">
                         <p class="leading-relaxed pb-2">
-                            The Joint Visibility Calculator allows users to determine when a celestial target is simultaneously observable by one or more
-                            selected telescope–instrument combinations.
+                            The Joint Visibility Calculator allows users to determine when a celestial target is simultaneously observable
+                            by one or more selected telescope–instrument combinations.
                         </p>
                         <p class="py-2 leading-relaxed">Given a target position (RA/Dec in J2000) and a date range, the tool computes:</p>
                         <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
                             <li>
-                                <strong>Joint Visibility Windows</strong> — time intervals during which <em>all</em> selected instruments can observe the target
-                                concurrently
+                                <strong>Joint Visibility Windows</strong> — time intervals during which <em>all</em> selected instruments can
+                                observe the target concurrently
                             </li>
-                            <li><strong>Per-Instrument Visibility Windows</strong> — individual observability windows broken down by instrument</li>
+                            <li>
+                                <strong>Per-Instrument Visibility Windows</strong> — individual observability windows broken down by instrument
+                            </li>
                         </ul>
                         <p class="py-2 leading-relaxed">Query parameters include:</p>
                         <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
                             <li>
-                                <strong>Target Coordinates</strong> — RA and Dec (J2000 decimal degrees); an object name resolver is provided for convenience
+                                <strong>Target Coordinates</strong> — RA and Dec (J2000 decimal degrees); an object name resolver is provided
+                                for convenience
                             </li>
                             <li><strong>Instrument Selection</strong> — one or more observatory / telescope / instrument combinations</li>
                             <li><strong>Date Range</strong> — the time window over which to calculate visibility</li>
@@ -45,17 +48,21 @@
                         <div class="bg-base-200 mt-4 p-4 space-y-2 text-sm leading-relaxed">
                             <p class="font-semibold text-lg">Visibility Constraints</p>
                             <p class="content/70">
-                                Each instrument carries its own set of observing constraints that are applied during the calculation. Typical constraints
-                                include:
+                                Each instrument carries its own set of observing constraints that are applied during the calculation.
+                                Typical constraints include:
                             </p>
                             <ul class="list-disc list-inside space-y-1 ml-2 content/70">
-                                <li><strong>Earth Limb Exclusion</strong> — minimum elevation angle above the Earth's limb for space-based observatories</li>
+                                <li>
+                                    <strong>Earth Limb Exclusion</strong> — minimum elevation angle above the Earth's limb for space-based observatories
+                                </li>
                                 <li><strong>Sun Avoidance</strong> — minimum angular separation between the target and the Sun</li>
                                 <li><strong>Moon Avoidance</strong> — minimum angular separation between the target and the Moon</li>
-                                <li><strong>SAA Avoidance</strong> — exclusion of passes through the South Atlantic Anomaly for affected missions</li>
                                 <li>
-                                    <strong>Altitude / Azimuth Limits</strong> — minimum elevation above the horizon and azimuth range restrictions for ground-based
-                                    observatories
+                                    <strong>SAA Avoidance</strong> — exclusion of passes through the South Atlantic Anomaly for affected missions
+                                </li>
+                                <li>
+                                    <strong>Altitude / Azimuth Limits</strong> — minimum elevation above the horizon and azimuth range restrictions
+                                    for ground-based observatories
                                 </li>
                             </ul>
                         </div>
@@ -64,7 +71,9 @@
 
                 <Section title="Query Portals" id="query-portals">
                     <div class="border-t border-base-300 pt-3">
-                        <p class="leading-relaxed">ACROSS provides interactive web-based portals for querying and exploring data directly in the browser.</p>
+                        <p class="leading-relaxed">
+                            ACROSS provides interactive web-based portals for querying and exploring data directly in the browser.
+                        </p>
 
                         <Section title="Schedules">
                             <a slot="buttons" href="/schedules" class="btn btn-sm btn-outline btn-primary">
@@ -73,16 +82,19 @@
                             </a>
                             <div class="space-y-2">
                                 <p class="leading-relaxed">
-                                    Query observing schedules across all supported missions. Results can be filtered by the following parameters:
+                                    Query observing schedules across all supported missions. Results can be filtered by the following
+                                    parameters:
                                 </p>
                                 <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
-                                    <li><strong>Observatory / Telescope / Instrument</strong> — filter results to one or more specific instruments</li>
+                                    <li>
+                                        <strong>Observatory / Telescope / Instrument</strong> — filter results to one or more specific instruments
+                                    </li>
                                     <li><strong>Date Range</strong> — narrow results to schedules that overlap a given time window</li>
                                     <li><strong>Schedule Type</strong> — filter by planned, executed, or other schedule states</li>
                                 </ul>
                                 <p class="leading-relaxed">
-                                    Each schedule in the results links through to its constituent observations, allowing you to drill down from a high-level
-                                    schedule view into the individual pointings and exposure details that make it up.
+                                    Each schedule in the results links through to its constituent observations, allowing you to drill down
+                                    from a high-level schedule view into the individual pointings and exposure details that make it up.
                                 </p>
                             </div>
                         </Section>
@@ -94,13 +106,16 @@
                             </a>
 
                             <p class="leading-relaxed">
-                                Query individual observations ingested from supported mission schedules. Available filter parameters include:
+                                Query individual observations ingested from supported mission schedules. Available filter parameters
+                                include:
                             </p>
                             <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
                                 <li><strong>Observatory / Telescope / Instrument</strong> — scope results to a specific instrument</li>
                                 <li><strong>Date Range</strong> — filter by the start or end time of the observation exposure</li>
                                 <li><strong>Observation Type</strong> — filter by mode such as imaging or spectroscopy</li>
-                                <li><strong>Coordinates &amp; Search Radius</strong> — find observations targeting a specific sky position</li>
+                                <li>
+                                    <strong>Coordinates &amp; Search Radius</strong> — find observations targeting a specific sky position
+                                </li>
                             </ul>
                         </Section>
                     </div>
@@ -194,8 +209,8 @@
                     </div>
                     <div class="border-t border-base-300 pt-3">
                         <p class="leading-relaxed">
-                            An API client package that wraps all astronomy observing related API endpoints, while providing resource methods for the
-                            aforementioned across-tools package on the API results.
+                            An API client package that wraps all astronomy observing related API endpoints, while providing resource methods
+                            for the aforementioned across-tools package on the API results.
                         </p>
                     </div>
                 </Section>

@@ -93,7 +93,12 @@
         <label class="input w-full flex mb-2">
             <input type="text" class="grow" {placeholder} bind:value={search} {title} />
             {#if search.length > 0}
-                <button type="button" class="btn btn-ghost btn-xs bx bx-x opacity-70 text-xl" on:click={() => (search = '')} title="Clear Search" />
+                <button
+                    type="button"
+                    class="btn btn-ghost btn-xs bx bx-x opacity-70 text-xl"
+                    on:click={() => (search = '')}
+                    title="Clear Search"
+                />
             {:else}
                 <i class="p-2 bx bx-search text-lg opacity-70"></i>
             {/if}

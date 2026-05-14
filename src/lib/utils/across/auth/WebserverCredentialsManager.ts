@@ -102,7 +102,10 @@ export class WebserverCredentialsManager {
 
     private async getExpiration(): Promise<luxon.DateTime> {
         if (!this.expiration) {
-            const options = { method: 'GET', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token?.access_token}` } };
+            const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token?.access_token}` },
+            };
 
             const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/service-account/${this.id}`, options);
 

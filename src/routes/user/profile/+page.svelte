@@ -172,10 +172,14 @@
                         <FormInputFeedback>Successfully updated user information!</FormInputFeedback>
                     {/if}
                     {#if form?.failUpdateUserInformation}
-                        <FormInputFeedback type="error">Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback>
+                        <FormInputFeedback type="error"
+                            >Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback
+                        >
                     {/if}
                     {#if form?.failValidation}
-                        <FormInputFeedback type="error">Form validation failed. Please try again. If this error persists, contact support.</FormInputFeedback>
+                        <FormInputFeedback type="error"
+                            >Form validation failed. Please try again. If this error persists, contact support.</FormInputFeedback
+                        >
                     {/if}
                     <button type="submit" class="btn text-lg btn-info ml-5" disabled={isUserDataUnchanged}> Update </button>
                 </div>

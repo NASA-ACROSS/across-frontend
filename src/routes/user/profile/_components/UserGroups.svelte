@@ -26,7 +26,10 @@
                     </div>
                     <div class="flex justify-between w-full">
                         {#if isAdmin(user, userGroup)}
-                            <a class="btn btn-info text-lg" href={resolve('/user/[userGroupName]/user-group-manage', { userGroupName: userGroup.short_name })}>
+                            <a
+                                class="btn btn-info text-lg"
+                                href={resolve('/user/[userGroupName]/user-group-manage', { userGroupName: userGroup.short_name })}
+                            >
                                 <i class="bx bx-edit me-2"></i> Manage
                             </a>
                         {/if}

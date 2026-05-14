@@ -150,7 +150,9 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(`ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}] with status code [500]`);
+            console.error(
+                `ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}] with status code [500]`
+            );
             return fail(500, { fail: true });
         }
 

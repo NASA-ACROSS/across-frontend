@@ -14,7 +14,7 @@ export class UserCredentialsManager {
 
         if (refreshed) {
             // if the tokens were refreshed, update the cookie with the new tokens
-            console.debug('Access token was refreshed, updating cookie with new tokens.');
+            console.debug('Access token was refreshed; updating cookie with new tokens');
             await this.SetCookie(cookies, PUBLIC_CONFIG.USER_TOKENS_COOKIE_NAME, { access_token, refresh_token });
         }
 

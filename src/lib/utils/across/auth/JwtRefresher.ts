@@ -26,7 +26,7 @@ export class JwtRefresher {
                 refreshed: false,
             };
         } else if (currentTokens?.refresh_token) {
-            console.debug('refreshing access token');
+            console.debug('Access token missing or expired; refreshing...');
             const refreshedTokens = await this.RefreshAccessToken(currentTokens.refresh_token);
             return refreshedTokens;
         }

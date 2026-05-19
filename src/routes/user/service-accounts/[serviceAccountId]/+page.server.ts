@@ -7,7 +7,7 @@ import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
 import { getServiceAccounts } from '$lib/utils/user/getServiceAccounts';
 import guards from '$lib/utils/guards';
-import { reduceGroupRolesByGroup } from '$lib/utils/user/reduceGroupRolesByGroup';
+import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();
@@ -17,7 +17,9 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     const serviceAccounts: ServiceAccountDetail[] = await getServiceAccounts(user, fetch);
     const serviceAccount = serviceAccounts.find((serviceAccount) => serviceAccount.id === params.serviceAccountId);
 
-    const userGroupRoles = reduceGroupRolesByGroup(user.group_roles);
+    const userGroupRoles = getGroupsFromRoles(user.group_roles);
+
+    console.log('userGroupRoles', JSON.stringify(userGroupRoles, null, 2));
 
     // 404 if we don't have the service account by id
     if (!serviceAccount) {
@@ -53,7 +55,10 @@ export const actions = {
         };
 
         try {
-            await fetch(`${CONFIG.API_URL}/user/${userId}/service-account/${serviceAccountId}/group-role/${groupRoleId}`, options);
+            await fetch(
+                `${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}/group-role/${groupRoleId}`,
+                options
+            );
         } catch (error: unknown) {
             const errorLog = 'ERROR: assign group role from service account';
             console.error(errorLog, { userId, serviceAccountId, groupRoleId, time: Date.now(), error: JSON.stringify(error) });
@@ -79,7 +84,10 @@ export const actions = {
         };
 
         try {
-            await fetch(`${CONFIG.API_URL}/user/${userId}/service-account/${serviceAccountId}/group-role/${groupRoleId}`, options);
+            await fetch(
+                `${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}/group-role/${groupRoleId}`,
+                options
+            );
         } catch (error: unknown) {
             const errorLog = 'ERROR: removing group role from service account';
             console.error(errorLog, { userId, serviceAccountId, groupRoleId, time: Date.now(), error: JSON.stringify(error) });
@@ -115,7 +123,7 @@ export const actions = {
         };
 
         try {
-            await fetch(`${CONFIG.API_URL}/user/${userId}/service-account/${serviceAccountId}`, options);
+            await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}`, options);
         } catch (error: unknown) {
             const errorLog = 'ERROR: removing group role from service account';
             console.error(errorLog, { userId, serviceAccountId, serviceAccountUpdate, time: Date.now(), error: JSON.stringify(error) });

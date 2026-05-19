@@ -6,7 +6,7 @@
     import Fieldset from '$lib/components/Fieldset.svelte';
     import { DateTime } from 'luxon';
     import Collapse from '$lib/components/Collapse.svelte';
-    import { reduceGroupRolesByGroup } from '$lib/utils/user/reduceGroupRolesByGroup.js';
+    import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles.js';
     import Spinner from '$lib/components/Spinner.svelte';
 
     export let data;
@@ -19,7 +19,7 @@
     const originalServiceAccount = structuredClone(data.serviceAccount);
 
     // aggregate group roles into groups for display
-    let serviceAccountGroupRoles = reduceGroupRolesByGroup(serviceAccount.group_roles);
+    let serviceAccountGroupRoles = getGroupsFromRoles(serviceAccount.group_roles);
 
     // filter down groups and roles list to only unassigned roles for current service account
     const assignableGroupRoles = userGroupRoles
@@ -48,7 +48,9 @@
         <a class="btn btn-info text-lg" href={resolve('/user/service-accounts')}>← <i class="bx bx-pen mx-2"></i>Manage Service Accounts</a>
     </div>
     <Section>
-        <Alert>Updating a service account will re-compute the expiration date based on expiration in days provided, it does not rotate the key</Alert>
+        <Alert
+            >Updating a service account will re-compute the expiration date based on expiration in days provided, it does not rotate the key</Alert
+        >
         <Fieldset>
             <form method="post" action="?/updateServiceAccount">
                 <label class="text-lg" for="name">Name</label>

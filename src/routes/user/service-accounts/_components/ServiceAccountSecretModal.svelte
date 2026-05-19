@@ -18,8 +18,9 @@
                 <h3 class="flex">New Service Account Key Created</h3>
             </div>
             <div role="alert" class="alert alert-warning alert-soft font-bold w-full place-content-center mx-auto">
-                Warning! Once you close this modal the secret_key will no longer be visible unless you rotate the key. Please store the client_id and secret_key
-                in a secure location. These client credentials are used to authenticate your service account through the across-client
+                Warning! Once you close this modal the secret_key will no longer be visible unless you rotate the key. Please store the
+                client_id and secret_key in a secure location. These client credentials are used to authenticate your service account
+                through the across-client
             </div>
 
             <div class="text-left flex flex-col p-3 bg-carbon-10 overflow-x-scroll text-nowrap">
@@ -38,7 +39,7 @@
                         data-sveltekit-preload-code="off"
                         class="btn btn-sm btn-info w-xs max-w-md"
                         type="submit"
-                        title="Delete my User Account"
+                        title="Download service account credentials"
                         on:click={() => {
                             downloadJSON(serviceAccountSecret, 'across_client_credentials.json');
                         }}

@@ -48,7 +48,7 @@ export const actions = {
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/user/${user.id}/service-account/`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: Creating a NEW Service Account for user id [${user.id}] user email [${user.email}] at [${Date.now()}]`;
             console.error(errorLog, JSON.stringify(error));
@@ -89,7 +89,7 @@ export const actions = {
 
         let response;
         try {
-            const url = `${CONFIG.API_URL}/user/${user.id}/service-account/${id}`;
+            const url = `${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/${id}`;
             response = await fetch(url, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: Deleting a Service Account id: ${id} for userId: ${user.id} userEmail: ${user.email} at [${Date.now()}]`;
@@ -105,7 +105,7 @@ export const actions = {
             return fail(500, { fail: true });
         }
 
-        return { deleteServiceAccountSuccess: true };
+        return { success: true };
     },
     restoreServiceAccount: async (event: RequestEvent) => {
         const { request, locals, fetch, setHeaders } = event;
@@ -126,7 +126,7 @@ export const actions = {
 
         let response;
         try {
-            const url = `${CONFIG.API_URL}/user/${user.id}/service-account/${serviceAccountId}/rotate-key`;
+            const url = `${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/${serviceAccountId}/rotate-key`;
             response = await fetch(url, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: Restoring a Service Account id: ${serviceAccountId} for userId: ${user.id} userEmail: ${user.email} at [${Date.now()}]`;

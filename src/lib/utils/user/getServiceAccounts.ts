@@ -9,7 +9,7 @@ export const getServiceAccounts = async (user: User, fetch: typeof globalThis.fe
 
     let response;
     try {
-        response = await fetch(`${CONFIG.API_URL}/user/${user.id}/service-account`, options);
+        response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account`, options);
     } catch (e) {
         console.error(`ERROR: catch getting service accounts [${user.email}] at [${Date.now()}]`, JSON.stringify(e));
         throw new Error('Unexpected Error while fetching service accounts');

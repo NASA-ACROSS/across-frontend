@@ -14,7 +14,7 @@ export class UserCredentialsManager {
 
         if (refreshed) {
             // if the tokens were refreshed, update the cookie with the new tokens
-            console.debug('Access token was refreshed, updating cookie with new tokens.');
+            console.debug('Access token was refreshed; updating cookie with new tokens');
             await this.SetCookie(cookies, PUBLIC_CONFIG.USER_TOKENS_COOKIE_NAME, { access_token, refresh_token });
         }
 
@@ -25,7 +25,7 @@ export class UserCredentialsManager {
      * Exchange verification token for access token and refresh token
      * sets the cookie with the retrieved tokens.
      */
-    public static async Verify(token: string, cookies: Cookies, rememberMe: boolean): Promise<string> {
+    public static async Verify(token: string, cookies: Cookies, rememberMe: boolean = false): Promise<string> {
         const options = {
             method: 'GET',
             headers: {

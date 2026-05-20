@@ -29,7 +29,7 @@ export async function aesGcmEncrypt(plaintext: string, password: string) {
     const ctArray = Array.from(new Uint8Array(ctBuffer)); // ciphertext as byte array
     const ctStr = ctArray.map((byte) => String.fromCharCode(byte)).join(''); // ciphertext as string
 
-    return btoa(ivStr + ctStr); // iv+ciphertext base64-encoded
+    return Buffer.from(ivStr + ctStr).toString('base64'); // iv+ciphertext base64-encoded
 }
 
 /**
@@ -48,14 +48,16 @@ export async function aesGcmDecrypt(ciphertext: string, password: string) {
     const pwUtf8 = new TextEncoder().encode(password); // encode password as UTF-8
     const pwHash = await crypto.subtle.digest('SHA-256', pwUtf8); // hash the password
 
-    const ivStr = atob(ciphertext).slice(0, 12); // decode base64 iv
+    const decoded = Buffer.from(ciphertext, 'base64').toString('utf-8'); // decode base64
+
+    const ivStr = decoded.slice(0, 12); // decode base64 iv
     const iv = new Uint8Array(Array.from(ivStr).map((ch) => ch.charCodeAt(0))); // iv as Uint8Array
 
     const alg = { name: 'AES-GCM', iv: iv }; // specify algorithm to use
 
     const key = await crypto.subtle.importKey('raw', pwHash, alg, false, ['decrypt']); // generate key from pw
 
-    const ctStr = atob(ciphertext).slice(12); // decode base64 ciphertext
+    const ctStr = decoded.slice(12); // decode base64 ciphertext
     const ctUint8 = new Uint8Array(Array.from(ctStr).map((ch) => ch.charCodeAt(0))); // ciphertext as Uint8Array
     // note: why doesn't ctUint8 = new TextEncoder().encode(ctStr) work?
 

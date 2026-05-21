@@ -25,7 +25,8 @@
     });
 
     $: activeServiceAccountsTitle = 'Active Service Accounts' + (activeServiceAccounts?.length ? ` (${activeServiceAccounts.length})` : '');
-    $: expiredServiceAccountsTitle = 'Expired Service Accounts' + (expiredServiceAccounts?.length ? ` (${expiredServiceAccounts.length})` : '');
+    $: expiredServiceAccountsTitle =
+        'Expired Service Accounts' + (expiredServiceAccounts?.length ? ` (${expiredServiceAccounts.length})` : '');
 </script>
 
 <Section title="My Service Accounts" icon="server">
@@ -156,7 +157,7 @@
                         name="description"
                         title="Description"
                         type="text"
-                        placeholder="Description of Purpose"
+                        placeholder="Purpose of use for service account"
                     />
                 </div>
             </div>

@@ -1,25 +1,24 @@
 import type { PageServerLoad, RequestEvent } from './$types';
 
 import { CONFIG } from '../../../../config/config.js';
-import { error, fail } from '@sveltejs/kit';
+import { error, fail, type ActionFailure } from '@sveltejs/kit';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 
-import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
 import { getServiceAccounts } from '$lib/utils/user/getServiceAccounts';
 import guards from '$lib/utils/guards';
 import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles';
+
+import { type FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();
     const localUser = guards.requireUser(locals);
 
     const user = await getUserInfo(localUser.id, fetch);
-    const serviceAccounts: ServiceAccountDetail[] = await getServiceAccounts(user, fetch);
+    const serviceAccounts = await getServiceAccounts(user, fetch);
     const serviceAccount = serviceAccounts.find((serviceAccount) => serviceAccount.id === params.serviceAccountId);
 
-    const userGroupRoles = getGroupsFromRoles(user.group_roles);
-
-    console.log('userGroupRoles', JSON.stringify(userGroupRoles, null, 2));
+    const groupRoles = getGroupsFromRoles(user.group_roles);
 
     // 404 if we don't have the service account by id
     if (!serviceAccount) {
@@ -33,19 +32,19 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
         slug: params.serviceAccountId,
         user,
         serviceAccount,
-        userGroupRoles,
+        userGroupRoles: groupRoles,
     };
 };
 
 export const actions = {
-    assignGroupRole: async ({ request, fetch }: RequestEvent) => {
+    assignGroupRole: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
 
-        const userId = data.get('userId') as string;
+        const userId = (data.get('userId') as string) + 'asft';
         const groupRoleId = data.get('groupRoleId') as string;
         const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log(`assign group role for serviceAccountId: ${serviceAccountId} userId: ${userId} roleId: ${userId}`);
+        console.log('assigning group role for serviceAccount', { userId, serviceAccountId, groupRoleId });
 
         const options = {
             method: 'POST',
@@ -60,21 +59,21 @@ export const actions = {
                 options
             );
         } catch (error: unknown) {
-            const errorLog = 'ERROR: assign group role from service account';
+            const errorLog = 'Unknown error trying to assign group role to service account';
             console.error(errorLog, { userId, serviceAccountId, groupRoleId, time: Date.now(), error: JSON.stringify(error) });
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog });
         }
 
-        return { successAssignGroupRole: true };
+        return { type: 'success', message: 'Group role assigned successfully!' };
     },
-    removeGroupRole: async ({ request, fetch }: RequestEvent) => {
+    removeGroupRole: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
         const groupRoleId = data.get('groupRoleId') as string;
         const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log(`remove group role for serviceAccountId: ${serviceAccountId} userId: ${userId} roleId: ${userId}`);
+        console.log('removing group role for serviceAccount', { userId, serviceAccountId, groupRoleId });
 
         const options = {
             method: 'DELETE',
@@ -89,14 +88,14 @@ export const actions = {
                 options
             );
         } catch (error: unknown) {
-            const errorLog = 'ERROR: removing group role from service account';
+            const errorLog = 'Unknown error trying to remove group role from service account';
             console.error(errorLog, { userId, serviceAccountId, groupRoleId, time: Date.now(), error: JSON.stringify(error) });
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog });
         }
 
-        return { successRemoveGroupRole: true };
+        return { type: 'success', message: 'Group role removed successfully!' };
     },
-    updateServiceAccount: async ({ request, fetch }: RequestEvent) => {
+    updateServiceAccount: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
@@ -112,7 +111,7 @@ export const actions = {
             expiration_duration,
         };
 
-        console.log(`updating properties for serviceAccountId: ${serviceAccountId} userId: ${userId}`, serviceAccountUpdate);
+        console.log('updating properties for serviceAccount', { userId, serviceAccountId, serviceAccountUpdate });
 
         const options = {
             method: 'PATCH',
@@ -125,11 +124,11 @@ export const actions = {
         try {
             await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}`, options);
         } catch (error: unknown) {
-            const errorLog = 'ERROR: removing group role from service account';
+            const errorLog = 'Unknown error trying to update properties for service account';
             console.error(errorLog, { userId, serviceAccountId, serviceAccountUpdate, time: Date.now(), error: JSON.stringify(error) });
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog });
         }
 
-        return { successRemoveGroupRole: true };
+        return { type: 'success', message: 'Service account details updated and expiration recomputed successfully!' };
     },
 };

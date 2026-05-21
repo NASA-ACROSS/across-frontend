@@ -1,5 +1,6 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
+    import type { PageData } from './$types';
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
     import Alert from '$lib/components/Alert.svelte';
@@ -9,19 +10,19 @@
     import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles.js';
     import Spinner from '$lib/components/Spinner.svelte';
 
-    export let data;
+    export let data: PageData;
 
-    let serviceAccount = data.serviceAccount;
-    let user = data.user;
-    let userGroupRoles = data.userGroupRoles;
+    const serviceAccount = data.serviceAccount;
+    const user = data.user;
+    const userGroupRoles = data.userGroupRoles;
 
     // enable diffing for changes
     const originalServiceAccount = structuredClone(data.serviceAccount);
 
     // aggregate group roles into groups for display
-    let serviceAccountGroupRoles = getGroupsFromRoles(serviceAccount.group_roles);
+    const serviceAccountGroupRoles = getGroupsFromRoles(serviceAccount.group_roles);
 
-    // filter down groups and roles list to only unassigned roles for current service account
+    // filter down groups and roles list to only assignable roles for current service account
     const assignableGroupRoles = userGroupRoles
         .map((group) => ({
             ...group,
@@ -48,9 +49,6 @@
         <a class="btn btn-info text-lg" href={resolve('/user/service-accounts')}>← <i class="bx bx-pen mx-2"></i>Manage Service Accounts</a>
     </div>
     <Section>
-        <Alert
-            >Updating a service account will re-compute the expiration date based on expiration in days provided, it does not rotate the key</Alert
-        >
         <Fieldset>
             <form method="post" action="?/updateServiceAccount">
                 <label class="text-lg" for="name">Name</label>
@@ -80,7 +78,7 @@
                             name="description"
                             title="Description"
                             type="text"
-                            placeholder="Description of Purpose"
+                            placeholder="Purpose of use for service account"
                         />
                     </div>
                 </div>
@@ -127,6 +125,14 @@
                         {/if}</button
                     >
                 </div>
+
+                <div class="pt-6">
+                    <Alert type="warning" soft={disableUpdate}
+                        >Updating a service account will re-compute the expiration date based on expiration in days provided, it does not
+                        rotate the key</Alert
+                    >
+                </div>
+
                 <input type="hidden" name="serviceAccountId" value={serviceAccount.id} />
                 <input type="hidden" name="userId" value={user.id} />
             </form>

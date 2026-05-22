@@ -1,4 +1,5 @@
 import { PUBLIC_CONFIG } from '$config/config.public';
+import logger from '$lib/logger';
 import { error } from '@sveltejs/kit';
 
 export const localOnlyRoute = () => {
@@ -8,4 +9,6 @@ export const localOnlyRoute = () => {
             errorId: crypto.randomUUID(),
         });
     }
+
+    logger.debug('Local only route accessed.');
 };

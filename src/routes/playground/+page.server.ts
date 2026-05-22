@@ -1,6 +1,6 @@
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
-import type { Actions } from './$types';
+import type { Actions } from '@sveltejs/kit';
 
 export const load = () => {
     guards.localOnlyRoute();

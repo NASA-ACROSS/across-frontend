@@ -61,6 +61,7 @@ export const actions = {
                 type: 'error',
                 message: `You are being rate limited, please retry after ${rateStatus.retryAfter} seconds.`,
                 retryAfter: rateStatus.retryAfter,
+                error: `Too many login attempts. Please try again in ${rateStatus.retryAfter} seconds.`,
             });
         }
 
@@ -77,7 +78,10 @@ export const actions = {
             if (err instanceof Error) {
                 return fail(500, { type: 'error', message: err.message });
             } else {
-                return fail(500, { type: 'error', message: 'Unknown error trying to login.' });
+                return fail(500, {
+                    type: 'error',
+                    message: 'Unknown error trying to login. If this error persists, please contact support.',
+                });
             }
         }
 
@@ -89,7 +93,7 @@ export const actions = {
             });
         }
 
-        if (response.status == 401) {
+        if (response.status === 401) {
             const errorResponse = (await response.json()) as { detail: string };
             logger.warn({ msg: errorResponse.detail, email, ip: event.getClientAddress() });
             return fail(401, { type: 'error', message: 'The email address is not registered.' });

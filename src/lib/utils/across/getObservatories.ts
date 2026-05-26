@@ -1,6 +1,7 @@
 import logger from '$lib/logger';
 import type { Observatory } from '$lib/types/across/Observatory';
 import searchParams from '../searchParams/searchParams';
+import logger from '$lib/logger';
 
 type GetObservatoryParams = {
     name?: string;

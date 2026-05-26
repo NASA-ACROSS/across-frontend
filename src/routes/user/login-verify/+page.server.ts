@@ -38,15 +38,17 @@ export const actions = {
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {
+            const msg = `Too many login attempts. Please try again in ${rateStatus.retryAfter} seconds.`;
             logger.error({
-                msg: `Rate limit exceeded for login-verify.`,
+                msg,
                 verificationToken,
                 ip: event.getClientAddress(),
                 retryAfter: rateStatus.retryAfter,
             });
+
             return fail(429, {
                 type: 'error',
-                message: `You are being rate-limited, please retry after ${rateStatus.retryAfter} seconds.`,
+                message: msg,
             });
         }
 
@@ -61,10 +63,10 @@ export const actions = {
 
         if (!userId) {
             logger.error({
-                msg: `Login-verify failed to decode user id from access token`,
+                msg: 'Login-verify failed to decode user id from access token',
                 verificationToken,
             });
-            return fail(500, { type: 'error', message: 'Failed to decode user information from token' });
+            return fail(500, { type: 'error', message: 'Failed to login user.' });
         }
 
         const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}`, { method: 'GET' });

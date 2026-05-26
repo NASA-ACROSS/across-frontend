@@ -43,7 +43,7 @@ export const actions = {
         const email = data.get('email') as string;
         const groupId = data.get('groupId') as string;
 
-        logger.info({ msg: `Inviting user.`, email, groupId });
+        logger.info({ msg: 'Inviting user to group', email, groupId });
 
         const groupInviteBody = {
             receiver_email: email,
@@ -62,12 +62,13 @@ export const actions = {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/invite`, options);
         } catch (err: unknown) {
             const errorLog = `Failed inviting user to group.`;
-            logger.error({ err, email, groupId }, errorLog);
+            logger.error({ err, email, groupId, msg: errorLog });
             return fail(500, { type: 'error', message: errorLog, _action: 'inviteUser' });
         }
 
         if (response.status == 500) {
-            logger.error({ email, groupId, status: response.status }, `Failed inviting user to group`);
+            const errorResponse = (await response.json()) as ErrorResponse;
+            logger.error({ email, groupId, status: response.status, error: errorResponse.detail }, `Failed inviting user to group`);
             return fail(500, { type: 'error', message: 'Failed to invite user.', _action: 'inviteUser' });
         }
 
@@ -76,12 +77,12 @@ export const actions = {
             return { type: 'warning', message: 'User is already invited or in the group.', _action: 'inviteUser' };
         }
 
-        if (response.status == 404) {
+        if (response.status === 404) {
             const errorResponse = (await response.json()) as ErrorResponse;
-            logger.error({ email, groupId, status: response.status }, `User not found to invite to group.`);
+            logger.error({ email, groupId, status: response.status, error: errorResponse.detail }, `User not found to invite to group.`);
             return fail(500, {
                 type: 'error',
-                message: errorResponse.detail || 'User not found.',
+                message: 'User not found.',
                 _action: 'inviteUser',
             });
         }
@@ -108,21 +109,28 @@ export const actions = {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${userGroupId}/invite/${userInviteId}`, options);
         } catch (err: unknown) {
             const errorLog = `Failed deleting user invite.`;
-            logger.error({ err, userInviteId, userGroupId }, errorLog);
+            logger.error({ err, userInviteId, userGroupId, msg: errorLog });
             return fail(500, { type: 'error', message: errorLog, _action: 'deleteInvite' });
         }
 
         if (response.status == 500) {
-            logger.error({ userInviteId, userGroupId, status: response.status }, `Failed deleting user invite.`);
+            const errorResponse = (await response.json()) as ErrorResponse;
+            logger.error(
+                { userInviteId, userGroupId, status: response.status, error: errorResponse.detail },
+                `Failed deleting user invite.`
+            );
             return fail(500, { type: 'error', message: 'Failed to delete invite.', _action: 'deleteInvite' });
         }
 
         if (response.status == 400) {
             const errorResponse = (await response.json()) as ErrorResponse;
-            logger.error({ userInviteId, userGroupId, status: response.status }, `Failed deleting user invite.`);
+            logger.error(
+                { userInviteId, userGroupId, status: response.status, error: errorResponse.detail },
+                `Failed deleting user invite.`
+            );
             return fail(500, {
                 type: 'error',
-                message: errorResponse.detail,
+                message: 'Failed to delete invite.',
                 _action: 'deleteInvite',
             });
         }
@@ -149,12 +157,13 @@ export const actions = {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}`, options);
         } catch (err: unknown) {
             const errorLog = `Failed removing user from group.`;
-            logger.error({ err, userId, groupId }, errorLog);
+            logger.error({ err, userId, groupId, msg: errorLog });
             return fail(500, { type: 'error', message: errorLog, _action: 'removeUser' });
         }
 
         if (response.status == 500) {
-            logger.error({ userId, groupId, status: response.status }, `Failed removing user from group.`);
+            const errorResponse = (await response.json()) as ErrorResponse;
+            logger.error({ userId, groupId, status: response.status, error: errorResponse.detail }, `Failed removing user from group.`);
             return fail(500, { type: 'error', message: 'Failed to remove user from group.', _action: 'removeUser' });
         }
 
@@ -182,12 +191,13 @@ export const actions = {
             res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (err: unknown) {
             const errorLog = `Failed assigning user role.`;
-            logger.error({ err, groupId, userId, roleId }, errorLog);
+            logger.error({ err, groupId, userId, roleId, msg: errorLog });
             return fail(500, { type: 'error', message: errorLog, _action: 'assignRole' });
         }
 
         if (res.status >= 300) {
-            logger.error({ groupId, userId, roleId, status: res.status }, `Failed assigning user role.`);
+            const errorResponse = (await res.json()) as ErrorResponse;
+            logger.error({ groupId, userId, roleId, status: res.status, error: errorResponse.detail }, `Failed assigning user role.`);
             return fail(res.status, { type: 'error', message: 'Failed to assign role.', _action: 'assignRole' });
         }
 
@@ -213,7 +223,7 @@ export const actions = {
             await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (err: unknown) {
             const errorLog = `Failed removing user role.`;
-            logger.error({ err, groupId, userId, roleId }, errorLog);
+            logger.error({ err, groupId, userId, roleId, msg: errorLog });
             return fail(500, { type: 'error', message: errorLog, _action: 'removeRole' });
         }
 

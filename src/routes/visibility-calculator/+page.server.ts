@@ -65,7 +65,7 @@ export const actions = {
         try {
             response = await fetch(apiUrl);
         } catch (err: unknown) {
-            logger.error({ err, params: params.toString() }, 'Request failed fetching visibility windows.');
+            logger.error({ err, params: params.toString(), msg: 'Request failed fetching visibility windows.' });
 
             return fail(500, {
                 type: 'error',

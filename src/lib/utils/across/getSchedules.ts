@@ -25,7 +25,7 @@ export const getSchedules = async (telescopeIds: string[], fetch: typeof window.
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404, 401];
     if (errorCodes.includes(response.status)) {
-        logger.error({ status: response.status }, 'Error getting schedules');
+        logger.error({ msg: 'Error getting schedules', status: response.status });
     }
 
     const schedules = (await response.json()) as Paginate<Schedule>;

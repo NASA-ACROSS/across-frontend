@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ fetch, url }) => {
     // catch known errors from api and hide error from user
     const errorCodes = [500, 401, 403];
     if (errorCodes.includes(res.status)) {
-        logger.error({ status: res.status }, 'Error fetching telescopes');
+        logger.error({ msg: 'Failed to get telescopes.', status: res.status });
     }
 
     const body = (await res.json()) as Telescope[];

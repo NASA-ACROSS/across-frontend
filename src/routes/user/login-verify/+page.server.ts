@@ -8,6 +8,7 @@ import type { RequestEvent } from './$types';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 import guards from '$lib/utils/guards';
 import { PUBLIC_CONFIG } from '$config/config.public';
+import logger from '$lib/logger/logger';
 
 export function load(event: RequestEvent) {
     guards.localOnlyRoute();
@@ -36,11 +37,17 @@ export const actions = {
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {
-            console.error(
-                `ERROR: rate-limiting at /verify for verificationToken [${verificationToken}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`
-            );
+            const msg = `Too many login attempts. Please try again in ${rateStatus.retryAfter} seconds.`;
+            logger.error({
+                msg,
+                verificationToken,
+                ip: event.getClientAddress(),
+                retryAfter: rateStatus.retryAfter,
+            });
+
             return fail(429, {
                 rateLimit: true,
+                error: msg,
                 retryAfter: rateStatus.retryAfter,
             });
         }
@@ -55,11 +62,11 @@ export const actions = {
         const userId = await UserCredentialsManager.Verify(verificationToken, cookies, rememberMe);
 
         if (!userId) {
-            console.error(`Login-verify failed to decode user id from access token`, {
+            logger.error({
+                msg: 'Login-verify failed to decode user id from access token',
                 verificationToken,
-                time: Date.now(),
             });
-            return fail(500, { error: 'Failed to decode user information from token' });
+            return fail(500, { error: 'Failed to login user.' });
         }
 
         const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}`, { method: 'GET' });

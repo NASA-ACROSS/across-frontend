@@ -1,6 +1,7 @@
 import { resolve } from '$app/paths';
 import { CONFIG } from '$config/config';
-import type { User } from '$lib/types/User/User';
+import logger from '$lib/logger';
+import type { Group } from '$lib/types/User/Group';
 import { json, redirect, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ fetch, params }) => {
@@ -13,10 +14,10 @@ export const GET: RequestHandler = async ({ fetch, params }) => {
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404, 401];
     if (errorCodes.includes(res.status)) {
-        console.error(`ERROR: getting group [${params.id}] at [${Date.now()}] with status code [${res.status}]`);
+        logger.error({ msg: `Failed to get group.`, status: res.status, groupId: params.id });
         redirect(302, resolve('/user/login'));
     }
 
-    const body = (await res.json()) as User;
+    const body = (await res.json()) as Group;
     return json(body, { status: res.status });
 };

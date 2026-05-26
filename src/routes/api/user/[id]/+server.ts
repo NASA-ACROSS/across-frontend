@@ -1,6 +1,7 @@
 import { resolve } from '$app/paths';
 import { CONFIG } from '$config/config';
 import { clearAuth } from '$lib/handles/clearAuth';
+import logger from '$lib/logger';
 import type { User } from '$lib/types/User/User';
 import { json, redirect, type RequestHandler } from '@sveltejs/kit';
 
@@ -16,7 +17,7 @@ export const GET: RequestHandler = async (event) => {
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404, 401, 403];
     if (errorCodes.includes(res.status)) {
-        console.error(`ERROR: getting user roles [${locals.user?.email}] at [${Date.now()}] with status code [${res.status}]`);
+        logger.error({ msg: `Failed to get user roles. Redirecting to login.`, status: res.status, userEmail: locals.user?.email });
         clearAuth(event);
         redirect(302, resolve('/user/login'));
     }

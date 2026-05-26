@@ -1,6 +1,7 @@
 import { CONFIG } from '../../../config/config';
 import type { Schedule } from '$lib/types/across/Schedule';
 import type { Paginate } from '$lib/types/Paginate';
+import logger from '$lib/logger';
 
 export const getSchedules = async (telescopeIds: string[], fetch: typeof window.fetch) => {
     const options: RequestInit = {
@@ -16,15 +17,15 @@ export const getSchedules = async (telescopeIds: string[], fetch: typeof window.
     let response;
     try {
         response = await fetch(url, options);
-    } catch (e) {
-        console.error(`ERROR: catch getting schedules at [${Date.now()}]`, JSON.stringify(e));
+    } catch (err) {
+        logger.error({ err }, `Unexpected Error while fetching schedules.`);
         throw new Error('Unexpected Error while fetching schedules');
     }
 
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404, 401];
     if (errorCodes.includes(response.status)) {
-        console.error(`ERROR: getting schedules at [${Date.now()}] with status code [${response.status}]`);
+        logger.error({ msg: 'Error getting schedules', status: response.status });
     }
 
     const schedules = (await response.json()) as Paginate<Schedule>;

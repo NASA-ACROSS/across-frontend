@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { JwtRefresher, type Tokens } from './JwtRefresher';
+import logger from '$lib/logger';
 
 vi.mock('luxon', () => {
     return {
@@ -22,6 +23,17 @@ vi.mock('jwt-decode', () => {
     };
 });
 
+vi.mock('$lib/logger', () => {
+    return {
+        default: {
+            info: vi.fn(),
+            error: vi.fn(),
+            warn: vi.fn(),
+            debug: vi.fn(),
+        },
+    };
+});
+
 describe('JwtRefresher', () => {
     const fakeTokenRes = {
         json: () => ({
@@ -36,8 +48,6 @@ describe('JwtRefresher', () => {
             },
         },
     };
-
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -110,7 +120,7 @@ describe('JwtRefresher', () => {
 
         it('should log a debug message with isExpired result', () => {
             JwtRefresher.IsExpired('expired');
-            expect(debugSpy).toHaveBeenCalledWith('Checking token expiration', { isExpired: true });
+            expect(logger.debug).toHaveBeenCalledWith({ isExpired: true }, 'Checking token expiration');
         });
     });
 

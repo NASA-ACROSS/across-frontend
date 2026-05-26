@@ -8,6 +8,8 @@ import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import guards from '$lib/utils/guards';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 import { PUBLIC_CONFIG } from '$config/config.public';
+import logger from '$lib/logger';
+import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
 
 export async function load(event: RequestEvent) {
     guards.localOnlyRoute();
@@ -39,10 +41,10 @@ export const actions = {
 
         // reject if any inputs are null after sanitization, this should never happen
         if (first_name === null || last_name === null || username === null) {
-            console.error(
-                `ERROR: could not validate user input to update user info, something is null.`,
-                JSON.stringify(userPutBody, null, 2)
-            );
+            logger.error({
+                msg: 'Could not validate user input to update user info, something is null.',
+                userPutBody,
+            });
             return fail(500, { failValidation: true });
         }
 
@@ -57,22 +59,25 @@ export const actions = {
         let response;
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: updating user information [${username}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
+        } catch (err: unknown) {
+            const msg = 'Request failed to update user information.';
+            logger.error({
+                msg,
+                err,
+            });
             return fail(500, {
-                error: errorLog,
+                error: msg,
                 failUpdateUserInformation: true,
             });
         }
 
-        if (response.status == 403) {
-            console.error(`ERROR: API not accessible or API TOKEN not valid`);
-            return fail(500, { failUpdateUserInformation: true });
-        }
-
-        if (response.status == 500) {
-            console.error(`ERROR: updating user information with [${username}] at [${Date.now()}] with status code [500]`);
+        if (response.status >= 400) {
+            logger.error({
+                msg: 'Failed to update user information.',
+                userId: user.id,
+                status: response.status,
+                userPutBody,
+            });
             return fail(500, { failUpdateUserInformation: true });
         }
 
@@ -95,7 +100,7 @@ export const actions = {
 
         const userInviteId = data.get('userInviteId') as string;
 
-        console.log(`accept invite userInviteId: ${userInviteId}`);
+        logger.info({ msg: 'Accepting group invite.', userInviteId, userId: user.id });
 
         const options = {
             method: 'PATCH',
@@ -107,15 +112,28 @@ export const actions = {
         let response;
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/invite/${userInviteId}`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
-            return fail(500, { error: errorLog, fail: true });
+        } catch (err: unknown) {
+            const msg = 'Request failed to accept group invite';
+            logger.error({
+                msg,
+                err,
+                userInviteId,
+                userId: user.id,
+            });
+            return fail(500, { error: msg, fail: true });
         }
 
-        if (response.status == 500) {
-            console.error(`ERROR: accepting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`);
-            return fail(500, { fail: true });
+        if (response.status >= 400) {
+            const msg = 'Failed to accept group invite.';
+            const errorResponse = (await response.json()) as ErrorResponse;
+            logger.error({
+                msg,
+                userInviteId,
+                userId: user.id,
+                status: response.status,
+                error: errorResponse.detail,
+            });
+            return fail(response.status, { error: msg, fail: true });
         }
 
         return { successAcceptInvite: true };
@@ -128,7 +146,7 @@ export const actions = {
 
         const userInviteId = data.get('userInviteId') as string;
 
-        console.log(`rejecting invite userInviteId: ${userInviteId}`);
+        logger.info({ msg: 'Rejecting group invite.', userInviteId, userId: user.id });
 
         const options = {
             method: 'DELETE',
@@ -140,15 +158,28 @@ export const actions = {
         let response;
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/invite/${userInviteId}`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
-            return fail(500, { error: errorLog, fail: true });
+        } catch (err: unknown) {
+            const msg = 'Request failed to reject group invite';
+            logger.error({
+                msg,
+                err,
+                userInviteId,
+                userId: user.id,
+            });
+            return fail(500, { error: msg, fail: true });
         }
 
-        if (response.status == 500) {
-            console.error(`ERROR: rejecting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`);
-            return fail(500, { fail: true });
+        if (response.status >= 400) {
+            const msg = 'Failed to reject group invite.';
+            const errorResponse = (await response.json()) as ErrorResponse;
+            logger.error({
+                msg,
+                userInviteId,
+                userId: user.id,
+                status: response.status,
+                error: errorResponse.detail,
+            });
+            return fail(response.status, { error: msg, fail: true });
         }
 
         return { successRejectInvite: true };
@@ -161,7 +192,7 @@ export const actions = {
         const userId = data.get('userId') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(`leaving group userGroupId: ${groupId}  userId: ${userId} `);
+        logger.info({ msg: 'User is leaving group', groupId, userId });
 
         const options = {
             method: 'DELETE',
@@ -173,15 +204,28 @@ export const actions = {
         let response;
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}/group/${groupId}/`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: leaving group id [${groupId}] for user id [${userId}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
-            return fail(500, { error: errorLog, fail: true });
+        } catch (err: unknown) {
+            const msg = 'Request failed to leave group';
+            logger.error({
+                msg,
+                err,
+                groupId,
+                userId,
+            });
+            return fail(500, { error: msg, fail: true });
         }
 
-        if (response.status == 500) {
-            console.error(`ERROR: leaving group id [${groupId}] for user id [${userId}] at [${Date.now()}] with status code [500]`);
-            return fail(500, { fail: true });
+        if (response.status >= 400) {
+            const msg = 'Failed to leave group.';
+            const errorResponse = (await response.json()) as ErrorResponse;
+            logger.error({
+                msg,
+                groupId,
+                userId,
+                status: response.status,
+                error: errorResponse.detail,
+            });
+            return fail(response.status, { error: msg, fail: true });
         }
 
         return { successLeaveGroup: true };
@@ -190,7 +234,7 @@ export const actions = {
         const { fetch } = event;
         const user = guards.requireUser(event.locals);
 
-        console.log(`Deleting user. email: ${user.email} userId: ${user.id}`);
+        logger.info({ msg: `Deleting user.`, userId: user.id });
 
         const options = {
             method: 'DELETE',
@@ -202,15 +246,26 @@ export const actions = {
         let response;
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: deleting user id [${user.id}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
-            return fail(500, { error: errorLog, fail: true });
+        } catch (err: unknown) {
+            const msg = 'Request failed to delete user';
+            logger.error({
+                msg,
+                err,
+                userId: user.id,
+            });
+            return fail(500, { error: msg, fail: true });
         }
 
-        if (response.status != 200) {
-            console.error(`ERROR: deleting user id [${user.id}] at [${Date.now()}] with status code [${response.status}]`);
-            return fail(response.status, { fail: true });
+        if (response.status >= 400) {
+            const msg = 'Failed to delete user.';
+            const errorResponse = (await response.json()) as ErrorResponse;
+            logger.error({
+                msg,
+                userId: user.id,
+                status: response.status,
+                error: errorResponse.detail,
+            });
+            return fail(response.status, { error: msg, fail: true });
         }
 
         redirect(302, resolve('/user/logout'));

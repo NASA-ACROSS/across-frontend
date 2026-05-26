@@ -9,6 +9,7 @@ import { getGroupData } from '$lib/utils/manage/getGroupData';
 import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
 import { isAdmin } from '$lib/utils/user/isAdmin';
 import guards from '$lib/utils/guards';
+import logger from '$lib/logger';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();
@@ -41,7 +42,7 @@ export const actions = {
         const email = data.get('email') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(`invite user with email: ${email} groupId: ${groupId}`);
+        logger.info({ msg: 'Inviting user to group', email, groupId });
 
         const groupInviteBody = {
             receiver_email: email,
@@ -58,27 +59,29 @@ export const actions = {
         let response;
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/invite`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: inviting user to group [${email}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
-            return fail(500, { error: errorLog, fail: true });
+        } catch (err: unknown) {
+            const msg = 'Request failed to invite user to group.';
+            logger.error({ msg, err, email, groupId });
+            return fail(500, { error: msg, fail: true });
         }
 
-        if (response.status == 500) {
-            console.error(`ERROR: inviting user to group [${email}] at [${Date.now()}] with status code [500]`);
+        if (response.status >= 500) {
+            const errorResponse = (await response.json()) as ErrorResponse;
+            logger.error({ msg: 'Failed to invite user to group', error: errorResponse.detail, email, groupId });
             return fail(500, { fail: true });
         }
 
-        if (response.status == 409) {
-            console.log(`Attempted to invite a user [${email}] to group id [${groupId}] who was already in the group`);
+        if (response.status === 409) {
+            logger.warn({ msg: 'The user is already in the group', email, groupId });
             return { userInGroup: true };
         }
 
-        if (response.status == 404) {
+        if (response.status === 404) {
             const errorResponse = (await response.json()) as ErrorResponse;
-            console.error(`ERROR: inviting user to group NOT FOUND [${email}] at [${Date.now()}] with status code [404]`);
+            const msg = 'The group to invite to is not found';
+            logger.error({ msg, email, groupId, error: errorResponse.detail });
             return fail(500, {
-                error: errorResponse.detail,
+                error: msg,
                 invalidEmail: true,
             });
         }
@@ -91,7 +94,7 @@ export const actions = {
         const userInviteId = data.get('userInviteId') as string;
         const userGroupId = data.get('userGroupId') as string;
 
-        console.log(`delete invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`);
+        logger.info({ msg: 'Deleting user invite', userInviteId, userGroupId });
 
         const options = {
             method: 'DELETE',
@@ -104,19 +107,26 @@ export const actions = {
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${userGroupId}/invite/${userInviteId}`, options);
         } catch (error: unknown) {
-            const errorLog = `ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
-            return fail(500, { error: errorLog, fail: true });
+            const msg = 'Request failed to delete user invite.';
+            logger.error({ msg, error, userInviteId, userGroupId });
+            return fail(500, { error: msg, fail: true });
         }
 
-        if (response.status == 500) {
-            console.error(`ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`);
-            return fail(500, { fail: true });
-        }
-
-        if (response.status == 400) {
+        if (response.status >= 500) {
+            const msg = 'Failed to delete user invite.';
             const errorResponse = (await response.json()) as ErrorResponse;
-            console.error(`ERROR: deleting user invite id [${userInviteId}] NOT FOUND at [${Date.now()}] with status code [400]`);
+            logger.error({ msg, error: errorResponse.detail, userInviteId, userGroupId });
+            return fail(500, { error: msg, fail: true });
+        }
+
+        if (response.status === 404) {
+            const errorResponse = (await response.json()) as ErrorResponse;
+            logger.error({
+                msg: 'The group or invite to delete is not found',
+                userInviteId,
+                userGroupId,
+                error: errorResponse.detail,
+            });
             return fail(500, {
                 error: errorResponse.detail,
                 invalidEmail: true,
@@ -131,7 +141,7 @@ export const actions = {
         const userId = data.get('userId') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(`remove user from group userId: ${userId} userGroupId: ${groupId}`);
+        logger.info({ msg: `Removing user from group`, userId, groupId });
 
         const options = {
             method: 'DELETE',
@@ -144,16 +154,16 @@ export const actions = {
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}`, options);
         } catch (error: unknown) {
-            const errorLog = `ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
-            return fail(500, { error: errorLog, fail: true });
+            const msg = 'Request failed to remove user from group.';
+            logger.error({ msg, error: JSON.stringify(error), userId, groupId });
+            return fail(500, { error: msg, fail: true });
         }
 
-        if (response.status == 500) {
-            console.error(
-                `ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}] with status code [500]`
-            );
-            return fail(500, { fail: true });
+        if (response.status >= 300) {
+            const msg = 'Failed to remove user from group.';
+            const errorResponse = (await response.json()) as ErrorResponse;
+            logger.error({ msg, userId, groupId, status: response.status, error: errorResponse.detail });
+            return fail(500, { error: msg, fail: true });
         }
 
         return { successRemoveUser: true };
@@ -165,7 +175,7 @@ export const actions = {
         const roleId = data.get('roleId') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(`assign user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId}`);
+        logger.info({ msg: `Assigning user a group role`, groupId, userId, groupRoleId: roleId });
 
         const options = {
             method: 'PUT',
@@ -179,15 +189,18 @@ export const actions = {
         try {
             res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (error: unknown) {
-            const errorLog = `ERROR: assigning user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
-            return fail(500, { error: errorLog, fail: true });
+            const msg = 'Request failed to assign user role.';
+            logger.error({ msg, error: JSON.stringify(error), groupId, userId, roleId });
+
+            return fail(500, { error: msg, fail: true });
         }
 
         if (res.status >= 300) {
-            console.error('SERVER ERROR: assigning user role.', { groupId, userId, roleId, status: res.status, time: Date.now() });
+            const msg = 'Failed to assign user a group role.';
+            const errorResponse = (await res.json()) as ErrorResponse;
+            logger.error({ msg, groupId, userId, roleId, status: res.status, error: errorResponse.detail });
 
-            return fail(res.status, { fail: true });
+            return fail(res.status, { error: msg, fail: true });
         }
 
         return { successAssignRole: true };
@@ -199,7 +212,7 @@ export const actions = {
         const roleId = data.get('roleId') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(`remove user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId}`);
+        logger.info({ msg: `Removing group role from the user`, groupId, userId, roleId });
 
         const options = {
             method: 'DELETE',
@@ -211,9 +224,9 @@ export const actions = {
         try {
             await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (error: unknown) {
-            const errorLog = `ERROR: removing user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
-            return fail(500, { error: errorLog, fail: true });
+            const msg = 'Request failed to remove group role from user.';
+            logger.error({ msg, error: JSON.stringify(error), groupId, userId, roleId });
+            return fail(500, { error: msg, fail: true });
         }
 
         return { successRemoveRole: true };

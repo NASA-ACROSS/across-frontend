@@ -1,5 +1,6 @@
 import type { Observatory } from '$lib/types/across/Observatory';
 import searchParams from '../searchParams/searchParams';
+import logger from '$lib/logger';
 
 type GetObservatoryParams = {
     name?: string;
@@ -15,17 +16,17 @@ export const getObservatories = async (fetch: typeof window.fetch, params?: GetO
 
     let response;
     try {
-        console.debug('calling to API Route [GET /api/observatory] with URL:', requestUrl); // Debug log to check the request URL
+        logger.debug({ msg: 'calling to API Route [GET /api/observatory] with URL', requestUrl }); // Debug log to check the request URL
         response = await fetch(requestUrl, { method: 'GET' });
-    } catch (e) {
-        console.error(`ERROR: catch getting observatories at [${Date.now()}]`, JSON.stringify(e));
+    } catch (err) {
+        logger.error({ err }, 'Unexpected Error while fetching observatories');
         throw new Error('Unexpected Error while fetching observatories');
     }
 
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404, 401];
     if (errorCodes.includes(response.status)) {
-        console.error(`ERROR: getting observatories at [${Date.now()}] with status code [${response.status}]`);
+        logger.error({ status: response.status }, 'Error getting observatories');
     }
 
     let observatories = (await response.json()) as Observatory[] | Observatory;

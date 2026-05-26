@@ -7,6 +7,7 @@ import { emailRegex } from '$lib/utils/regex/emailRegex';
 import type { Actions } from './$types';
 import { clearAuth } from '$lib/handles/clearAuth';
 import guards from '$lib/utils/guards';
+import logger from '$lib/logger/logger';
 
 export function load({ locals }: RequestEvent) {
     guards.localOnlyRoute();
@@ -48,13 +49,17 @@ export const actions = {
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {
-            console.error(
-                `ERROR: rate-limiting at /login for user email [${email}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`
-            );
+            logger.error({
+                msg: `Rate-limit at /login using the provided email.`,
+                email,
+                ip: event.getClientAddress(),
+                retryAfter: rateStatus.retryAfter,
+            });
 
             return fail(429, {
                 rateLimit: true,
                 retryAfter: rateStatus.retryAfter,
+                error: `Too many login attempts. Please try again in ${rateStatus.retryAfter} seconds.`,
             });
         }
 
@@ -66,23 +71,38 @@ export const actions = {
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/auth/login?email=${encodeURIComponent(email)}`, options);
         } catch (error) {
-            console.error(`ERROR: logging in user [${email}] at [${Date.now()}]`, JSON.stringify(error));
-
             if (error instanceof Error) {
                 return fail(500, { error: error.message, fail: true });
             } else {
-                return fail(500, { error: 'Unknown error trying to login.' });
+                logger.error({
+                    msg: 'Request failed to login user.',
+                    error: JSON.stringify(error),
+                    email,
+                });
+
+                return fail(500, { error: 'Request failed to login user.', fail: true });
             }
         }
 
-        if (response.status == 500) {
-            console.error(`ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`);
-            return fail(500, { fail: true });
+        if (response.status === 500) {
+            const msg = 'Login failed. Please try again later.';
+            const errorResponse = (await response.json()) as { detail: string };
+            logger.error({
+                msg,
+                email,
+                status: response.status,
+                error: errorResponse.detail,
+            });
+            return fail(500, { error: msg, fail: true });
         }
 
-        if (response.status == 401) {
+        if (response.status === 401) {
             const errorResponse = (await response.json()) as { detail: string };
-            console.warn(errorResponse.detail, JSON.stringify({ email: email, ip: event.getClientAddress() }));
+            logger.warn({
+                msg: errorResponse.detail,
+                email,
+                ip: event.getClientAddress(),
+            });
             return fail(401, { notFound: true });
         }
 

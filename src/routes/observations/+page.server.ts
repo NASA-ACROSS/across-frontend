@@ -7,6 +7,7 @@ import type { RequestEvent } from './$types';
 import type { Observation } from '$lib/types/across/Observation';
 import searchParams, { type ParamTypes } from '$lib/utils/searchParams/searchParams';
 import parseErrorResponse from '$lib/utils/error/parseErrorResponse';
+import logger from '$lib/logger';
 
 const DEFAULTS = {
     pageLimit: 20,
@@ -135,8 +136,8 @@ export async function load({ url, fetch }: RequestEvent) {
             telescopes,
             totalCount,
         };
-    } catch (error) {
-        console.error('Unknown Error fetching observations:', error);
+    } catch (err) {
+        logger.error({ msg: 'Unknown Error fetching observations', err });
 
         return {
             ...nullObservations,

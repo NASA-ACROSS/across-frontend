@@ -4,6 +4,7 @@ import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { CONFIG } from '../../config/config';
 import type { RequestEvent } from './$types';
 import type { Schedule } from '$lib/types/across/Schedule';
+import logger from '$lib/logger';
 
 const DEFAULTS = {
     pageLimit: 20,
@@ -96,7 +97,7 @@ export async function load({ url, fetch }: RequestEvent) {
         const response = await fetch(apiUrl);
 
         if (!response.ok) {
-            console.log(`API responded with status: ${response.status} for request URL ${apiUrl}`);
+            logger.error({ msg: 'Failed to get schedules.', status: response.status, url: apiUrl });
             const text = (await response.json()) as ErrorResponse;
             const knownError = isKnownError(text.detail);
             return {
@@ -131,8 +132,8 @@ export async function load({ url, fetch }: RequestEvent) {
             telescopes,
             totalCount,
         };
-    } catch (error) {
-        console.error('Error fetching schedules:', error);
+    } catch (err) {
+        logger.error({ msg: 'Error fetching schedules', err });
 
         return {
             schedules: [],

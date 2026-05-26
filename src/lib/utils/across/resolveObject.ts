@@ -1,6 +1,7 @@
 import { CONFIG } from '../../../config/config';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import type { NameResolver } from '$lib/types/across/NameResolver';
+import logger from '$lib/logger';
 
 /**
  * SvelteKit action that resolves a object name to coordinates using the ACROSS API.
@@ -52,7 +53,7 @@ export const resolveObject = async ({ request }: RequestEvent) => {
         const data = (await response.json()) as NameResolver;
         return { success: true, data };
     } catch (error) {
-        console.error('Error resolving object name:', error);
+        logger.error({ err: error }, 'Error resolving object name');
         const errorMessage = error instanceof Error ? error.message : 'Failed to resolve object coordinates. Please try again.';
         const statusCode = errorMessage.includes('Rate limited') ? 429 : 500;
         return fail(statusCode, { error: errorMessage });

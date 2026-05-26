@@ -1,4 +1,5 @@
 import { CONFIG } from '$config/config';
+import logger from '$lib/logger';
 import { jwtDecode } from 'jwt-decode';
 import * as luxon from 'luxon';
 
@@ -19,14 +20,14 @@ export class JwtRefresher {
     public static async GetTokens(currentTokens?: Partial<Tokens>): Promise<RefreshedTokens> {
         // if tokens exists, check if access is expired
         if (currentTokens?.access_token && !this.IsExpired(currentTokens.access_token)) {
-            console.debug('Access token is valid. No need to refresh');
+            logger.debug('Access token is valid. No need to refresh');
             return {
                 access_token: currentTokens.access_token,
                 refresh_token: currentTokens.refresh_token!,
                 refreshed: false,
             };
         } else if (currentTokens?.refresh_token) {
-            console.debug('Access token missing or expired; refreshing...');
+            logger.debug('Access token missing or expired; refreshing...');
             const refreshedTokens = await this.RefreshAccessToken(currentTokens.refresh_token);
             return refreshedTokens;
         }
@@ -45,7 +46,7 @@ export class JwtRefresher {
 
         const isExpired = decodedToken.exp ? decodedToken.exp - inFlightOffset < now : true;
 
-        console.debug('Checking token expiration', { isExpired });
+        logger.debug({ isExpired }, 'Checking token expiration');
 
         return isExpired;
     }

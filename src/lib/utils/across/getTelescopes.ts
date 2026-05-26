@@ -1,3 +1,4 @@
+import logger from '$lib/logger';
 import type { Telescope } from '$lib/types/across/Telescope';
 import searchParams from '../searchParams/searchParams';
 
@@ -12,7 +13,7 @@ export const getTelescopes = async (fetch: typeof window.fetch, params?: GetTele
 
     const url = `/api/telescope${qp.toString() ? `?${qp}` : ''}`;
 
-    console.debug('calling to API Route [GET /api/telescope] with URL:', url);
+    logger.debug({ msg: 'calling to API Route [GET /api/telescope] with URL', url });
 
     const response = await fetch(url, {
         method: 'GET',
@@ -21,9 +22,8 @@ export const getTelescopes = async (fetch: typeof window.fetch, params?: GetTele
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404, 401];
     if (errorCodes.includes(response.status)) {
-        const errorText = `ERROR: getting telescopes at [${Date.now()}] with status code [${response.status}]`;
-        console.error(errorText);
-        throw new Error(errorText);
+        logger.error({ status: response.status }, 'Error getting telescopes');
+        throw new Error('Error getting telescopes');
     }
 
     let telescopes = (await response.json()) as Telescope[];

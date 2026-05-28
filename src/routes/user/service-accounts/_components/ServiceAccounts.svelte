@@ -44,7 +44,9 @@
                                 {/if}
                                 <p class="text-lg text-nasa-blue-shade">
                                     Expires {DateTime.fromISO(serviceAccount.expiration).toRelative()} on
-                                    {serviceAccount.expiration}
+                                    {DateTime.fromISO(serviceAccount.expiration, { zone: 'UTC' })
+                                        .toLocal()
+                                        .toLocaleString(DateTime.DATETIME_FULL)}
                                 </p>
                             </div>
 
@@ -54,7 +56,7 @@
                                     class="btn btn-info text-lg"
                                     href={resolve('/user/service-accounts/[serviceAccountId]', { serviceAccountId: serviceAccount.id })}
                                 >
-                                    <i class="bx bx-edit me-2"></i> Edit Roles
+                                    <i class="bx bx-edit me-2"></i> Edit
                                 </a>
                                 <!-- Delete Service Account button -->
                                 <button
@@ -93,7 +95,9 @@
                                 {/if}
                                 <p class="text-lg text-warning">
                                     Expired {DateTime.fromISO(serviceAccount.expiration, { zone: 'UTC' }).toRelative()} on
-                                    {serviceAccount.expiration}
+                                    {DateTime.fromISO(serviceAccount.expiration, { zone: 'UTC' })
+                                        .toLocal()
+                                        .toLocaleString(DateTime.DATETIME_FULL)}
                                 </p>
                             </div>
                             <div class="flex justify-end items-end gap-4 w-full p-4">
@@ -101,7 +105,7 @@
                                     class="btn btn-info text-lg"
                                     href={resolve('/user/service-accounts/[serviceAccountId]', { serviceAccountId: serviceAccount.id })}
                                 >
-                                    <i class="bx bx-edit me-2"></i> Edit Roles
+                                    <i class="bx bx-edit me-2"></i> Edit
                                 </a>
                                 <!-- Restore Service Account button -->
                                 <button
@@ -172,9 +176,12 @@
                         name="expiration_duration"
                         title="Expiration in Days"
                         type="number"
-                        placeholder="Expiration in Days"
+                        min="1"
+                        max="365"
+                        step="1"
+                        placeholder="30"
                     />
-                    <p class="text-nasa-red-shade">
+                    <p class="text-nasa-red-shade pt-2">
                         {#if newServiceAccount.expiration_duration > 30}
                             We recommend keeping expiration duration under 31 days and rotating service account keys regularly
                         {/if}
@@ -185,13 +192,3 @@
         </form>
     </Fieldset>
 </Section>
-
-<style>
-    input[type='number']::-webkit-inner-spin-button,
-    input[type='number']::-webkit-outer-spin-button,
-    input[type='number'] {
-        appearance: textfield;
-        -moz-appearance: textfield;
-        -webkit-appearance: none;
-    }
-</style>

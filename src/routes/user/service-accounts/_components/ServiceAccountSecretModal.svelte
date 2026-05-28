@@ -23,28 +23,30 @@
                 through the across-client
             </div>
 
-            <div class="text-left flex flex-col p-3 bg-carbon-10 overflow-x-scroll text-nowrap">
-                <div class="">name: {serviceAccountSecret?.name}</div>
-                <div class="">description: {serviceAccountSecret?.description}</div>
-                <div class="">expiration: {serviceAccountSecret?.expiration}</div>
-                <div class="">expiration days: {serviceAccountSecret?.expiration_duration}</div>
-                <div class="mt-4">client_id: {serviceAccountSecret?.id}</div>
-                <div class="">secret_key: {serviceAccountSecret?.secret_key}</div>
-            </div>
+            <code>
+                <div class="text-left flex flex-col p-3 bg-carbon-10 overflow-x-scroll text-nowrap">
+                    <div class="">name: {serviceAccountSecret?.name}</div>
+                    <div class="">description: {serviceAccountSecret?.description}</div>
+                    <div class="">expiration: {serviceAccountSecret?.expiration}</div>
+                    <div class="">expiration days: {serviceAccountSecret?.expiration_duration}</div>
+                    <div class="mt-4">client_id: {serviceAccountSecret?.id}</div>
+                    <div class="">secret_key: {serviceAccountSecret?.secret_key}</div>
+                </div>
+            </code>
 
             <div class="flex justify-between">
                 <div>
                     <button
                         data-sveltekit-preload-data="off"
                         data-sveltekit-preload-code="off"
-                        class="btn btn-sm btn-info w-xs max-w-md"
+                        class="btn btn-sm btn-info"
                         type="submit"
                         title="Download service account credentials"
                         on:click={() => {
                             downloadJSON(serviceAccountSecret, 'across_client_credentials.json');
                         }}
                     >
-                        Download across_client_credentials.json
+                        Download Credentials
                     </button>
                 </div>
                 <div>

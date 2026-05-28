@@ -8,7 +8,7 @@ export const getGroupsFromRoles = (groupRoles: GroupRole[]) => {
         });
 
         if (existingGroup) {
-            if (existingGroup.roles == undefined) {
+            if (existingGroup.roles === undefined) {
                 existingGroup.roles = [];
             }
             existingGroup.roles.push(groupRole);

@@ -9,14 +9,25 @@ import guards from '$lib/utils/guards';
 import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles';
 
 import { type FormSubmitResult } from '$lib/types/form/FormSubmitResult';
+import { validate } from '$lib/utils/regex/validate';
+import { uuidRegex } from '$lib/utils/regex/uuidRegex';
+import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();
     const localUser = guards.requireUser(locals);
 
+    // validate that the slug id is a uuid
+    if (params.serviceAccountId && !validate(params.serviceAccountId, uuidRegex, 'serviceAccountId')) {
+        console.error('ERROR: fetching service account, service account id is not a UUID');
+        error(404, {
+            message: 'Not Found',
+            errorId: crypto.randomUUID(),
+        });
+    }
+
     const user = await getUserInfo(localUser.id, fetch);
-    const serviceAccounts = await getServiceAccounts(user, fetch);
-    const serviceAccount = serviceAccounts.find((serviceAccount) => serviceAccount.id === params.serviceAccountId);
+    const serviceAccount = await getServiceAccounts(localUser, fetch, params.serviceAccountId);
 
     const groupRoles = getGroupsFromRoles(user.group_roles);
 
@@ -40,7 +51,7 @@ export const actions = {
     assignGroupRole: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
 
-        const userId = (data.get('userId') as string) + 'asft';
+        const userId = data.get('userId') as string;
         const groupRoleId = data.get('groupRoleId') as string;
         const serviceAccountId = data.get('serviceAccountId') as string;
 
@@ -53,14 +64,29 @@ export const actions = {
             },
         };
 
+        let response;
         try {
-            await fetch(
+            response = await fetch(
                 `${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}/group-role/${groupRoleId}`,
                 options
             );
         } catch (error: unknown) {
             const errorLog = 'Unknown error trying to assign group role to service account';
             console.error(errorLog, { userId, serviceAccountId, groupRoleId, time: Date.now(), error: JSON.stringify(error) });
+            return fail(500, { type: 'error', message: errorLog });
+        }
+
+        if (!response.ok) {
+            const responseError = (await response.json()) as ErrorResponse;
+            const errorLog = 'Error trying to assign group role to service account';
+            console.error(errorLog, {
+                userId,
+                serviceAccountId,
+                groupRoleId,
+                time: Date.now(),
+                status: response.status,
+                error: JSON.stringify(responseError, null, 2),
+            });
             return fail(500, { type: 'error', message: errorLog });
         }
 
@@ -82,14 +108,29 @@ export const actions = {
             },
         };
 
+        let response;
         try {
-            await fetch(
+            response = await fetch(
                 `${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}/group-role/${groupRoleId}`,
                 options
             );
         } catch (error: unknown) {
             const errorLog = 'Unknown error trying to remove group role from service account';
             console.error(errorLog, { userId, serviceAccountId, groupRoleId, time: Date.now(), error: JSON.stringify(error) });
+            return fail(500, { type: 'error', message: errorLog });
+        }
+
+        if (!response.ok) {
+            const responseError = (await response.json()) as ErrorResponse;
+            const errorLog = 'Error trying to assign group role to service account';
+            console.error(errorLog, {
+                userId,
+                serviceAccountId,
+                groupRoleId,
+                time: Date.now(),
+                status: response.status,
+                error: JSON.stringify(responseError, null, 2),
+            });
             return fail(500, { type: 'error', message: errorLog });
         }
 
@@ -121,11 +162,26 @@ export const actions = {
             body: JSON.stringify(serviceAccountUpdate),
         };
 
+        let response;
         try {
-            await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}`, options);
         } catch (error: unknown) {
             const errorLog = 'Unknown error trying to update properties for service account';
             console.error(errorLog, { userId, serviceAccountId, serviceAccountUpdate, time: Date.now(), error: JSON.stringify(error) });
+            return fail(500, { type: 'error', message: errorLog });
+        }
+
+        if (!response.ok) {
+            const responseError = (await response.json()) as ErrorResponse;
+            const errorLog = 'Error trying to assign group role to service account';
+            console.error(errorLog, {
+                userId,
+                serviceAccountId,
+                serviceAccountUpdate,
+                time: Date.now(),
+                status: response.status,
+                error: JSON.stringify(responseError, null, 2),
+            });
             return fail(500, { type: 'error', message: errorLog });
         }
 

@@ -33,15 +33,13 @@
     // loading spinner display
     let isUpdating = false;
 
-    // lock update until changes
+    $: isServiceAccountExpired = serviceAccount.expiration < DateTime.utc().toISO();
+
+    // lock update until changes or already expired
     $: disableUpdate =
         originalServiceAccount.name == serviceAccount.name &&
         originalServiceAccount.description == serviceAccount.description &&
         originalServiceAccount.expiration_duration == serviceAccount.expiration_duration;
-
-    const isExpired = (date: string) => {
-        return date < DateTime.utc().toISO();
-    };
 </script>
 
 <Page title="Edit Service Account" icon="edit">
@@ -93,9 +91,12 @@
                             name="expiration_duration"
                             title="Expiration in Days"
                             type="number"
-                            placeholder="Expiration in Days"
+                            min="1"
+                            max="365"
+                            step="1"
+                            placeholder="30"
                         />
-                        <p class="text-nasa-red-shade min-h-5">
+                        <p class="text-nasa-red-shade min-h-5 pt-2">
                             {#if serviceAccount.expiration_duration > 30}
                                 We recommend limiting expiration duration to under 31 days and rotating service account keys regularly
                             {/if}
@@ -106,20 +107,20 @@
                 <div class="flex flex-col md:flex-row justify-between">
                     <div>
                         <p class="text-lg text-carbon-50">ID: {serviceAccount.id}</p>
-                        <p class={`text-lg ${isExpired(serviceAccount.expiration) ? 'text-warning' : 'text-nasa-blue-shade'}`}>
-                            Expire{`${isExpired(serviceAccount.expiration) ? 'd' : 's'}`}: {serviceAccount.expiration}
+                        <p class={`text-lg ${isServiceAccountExpired ? 'text-warning' : 'text-nasa-blue-shade'}`}>
+                            Expire{`${isServiceAccountExpired ? 'd' : 's'}`}: {DateTime.fromISO(serviceAccount.expiration, { zone: 'UTC' })
+                                .toLocal()
+                                .toLocaleString(DateTime.DATETIME_FULL)}
                         </p>
                     </div>
                     <button
                         type="submit"
-                        class="btn text-lg self-end {`${isExpired(serviceAccount.expiration) ? 'btn-warning' : 'btn-info'}`}"
-                        disabled={disableUpdate}
-                        on:click={() => {
-                            isUpdating = true;
-                        }}
+                        class="btn text-lg self-end {`${isServiceAccountExpired ? 'btn-warning' : 'btn-info'}`}"
+                        disabled={!isServiceAccountExpired && disableUpdate}
+                        on:click={() => (isUpdating = true)}
                     >
                         {#if !isUpdating}
-                            Update {`${isExpired(serviceAccount.expiration) ? ' And Restore' : ''}`}
+                            Update {`${isServiceAccountExpired ? ' And Restore' : ''}`}
                         {:else}
                             <Spinner></Spinner>
                         {/if}</button
@@ -127,9 +128,10 @@
                 </div>
 
                 <div class="pt-6">
-                    <Alert type="warning" soft={disableUpdate}
-                        >Updating a service account will re-compute the expiration date based on expiration in days provided, it does not
-                        rotate the key</Alert
+                    <Alert type="warning" soft={!isServiceAccountExpired && disableUpdate}
+                        >Updating a service account will re-compute the expiration date based on expiration in days provided, it <b
+                            >does not rotate the key</b
+                        ></Alert
                     >
                 </div>
 

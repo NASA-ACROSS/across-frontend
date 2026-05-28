@@ -4,21 +4,26 @@ import type { ServiceAccountSecret } from '$lib/types/User/ServiceAccountSecret'
 import guards from '$lib/utils/guards';
 import { getServiceAccounts } from '$lib/utils/user/getServiceAccounts';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
-import { fail, type RequestEvent } from '@sveltejs/kit';
+import { fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
+import type { PageServerLoad } from '../$types.js';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult.js';
+import type { ErrorResponse } from '$lib/types/error/ErrorResponse.js';
 
-export async function load(event: RequestEvent) {
+export const load: PageServerLoad = async (event: RequestEvent) => {
     guards.localOnlyRoute();
     const localUser = guards.requireUser(event.locals);
 
     const user = await getUserInfo(localUser.id, event.fetch);
-    const serviceAccounts: ServiceAccountDetail[] = await getServiceAccounts(user, event.fetch);
+    const serviceAccounts: ServiceAccountDetail[] = await getServiceAccounts(localUser, event.fetch);
 
     // Respond with user data
     return { user, serviceAccounts };
-}
+};
 
 export const actions = {
-    createServiceAccount: async (event: RequestEvent) => {
+    createServiceAccount: async (
+        event: RequestEvent
+    ): Promise<(FormSubmitResult & { serviceAccountSecret: ServiceAccountSecret }) | ActionFailure<FormSubmitResult>> => {
         const { request, locals, fetch, setHeaders } = event;
         const user = guards.requireUser(locals);
 
@@ -34,9 +39,13 @@ export const actions = {
             expiration_duration,
         };
 
-        console.log(
-            `Creating a NEW Service Account for userId: ${user.id} userEmail: ${user.email}  name: ${name} description: ${description} expiration: ${expiration_duration}`
-        );
+        console.log('Creating a NEW Service Account', {
+            userId: user.id,
+            userEmail: user.email,
+            name: name,
+            description,
+            expiration_duration: expiration_duration,
+        });
 
         const options = {
             method: 'POST',
@@ -50,17 +59,27 @@ export const actions = {
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/`, options);
         } catch (error: unknown) {
-            const errorLog = `ERROR: Creating a NEW Service Account for user id [${user.id}] user email [${user.email}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
-            return fail(500, { error: errorLog, fail: true });
+            const errorLog = `Unknown error creating a NEW Service Account`;
+            console.error(errorLog, {
+                userId: user.id,
+                userEmail: user.email,
+                time: Date.now(),
+                error: JSON.stringify(error, null, 2),
+            });
+            return fail(500, { type: 'error', message: errorLog });
         }
 
-        if (response.status != 201) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const errorResponseBody = await response.json();
-            const errorLog = `ERROR: Creating a NEW Service Account for user id [${user.id}] user email [${user.email}] at [${Date.now()}] with status code [${response.status}]`;
-            console.error(errorLog, JSON.stringify(errorResponseBody));
-            return fail(500, { fail: true });
+        if (!response.ok) {
+            const errorResponseBody = (await response.json()) as ErrorResponse;
+            const errorLog = `ERROR: Creating a NEW Service Account`;
+            console.error(errorLog, {
+                userId: user.id,
+                userEmail: user.email,
+                time: Date.now(),
+                status: response.status,
+                error: JSON.stringify(errorResponseBody),
+            });
+            return fail(500, { type: 'error', message: errorLog });
         }
 
         const serviceAccountSecret = (await response.json()) as ServiceAccountSecret;
@@ -68,17 +87,21 @@ export const actions = {
         setHeaders({
             'cache-control': 'no-store',
         });
-        return { successCreateServiceAccount: true, serviceAccountSecret };
+        return { type: 'success', serviceAccountSecret };
     },
-    deleteServiceAccount: async (event: RequestEvent) => {
+    deleteServiceAccount: async (event: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const { request, locals, fetch } = event;
         const user = guards.requireUser(locals);
 
         const data = await request.formData();
 
-        const id = data.get('serviceAccountId') as string;
+        const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log(`Deleting a Service Account id: ${id} for userId: ${user.id} userEmail: ${user.email}`);
+        console.log(`Deleting a Service Account`, {
+            serviceAccountId,
+            userId: user.id,
+            userEmail: user.email,
+        });
 
         const options = {
             method: 'DELETE',
@@ -89,25 +112,39 @@ export const actions = {
 
         let response;
         try {
-            const url = `${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/${id}`;
+            const url = `${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/${serviceAccountId}`;
             response = await fetch(url, options);
         } catch (error: unknown) {
-            const errorLog = `ERROR: Deleting a Service Account id: ${id} for userId: ${user.id} userEmail: ${user.email} at [${Date.now()}]`;
-            console.error(errorLog, { error: JSON.stringify(error) });
-            return fail(500, { error: errorLog, fail: true });
+            const errorLog = `Unknown Error deleting a service account`;
+            console.error(errorLog, {
+                userId: user.id,
+                userEmail: user.email,
+                serviceAccountId: serviceAccountId,
+                time: Date.now(),
+                error: JSON.stringify(error, null, 2),
+            });
+            return fail(500, { type: 'error', message: errorLog });
         }
 
-        if (response.status != 204) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const errorResponseBody = await response.json();
-            const errorLog = `ERROR: Deleting a Service Account id: ${id} for userId: ${user.id} userEmail: ${user.email} at [${Date.now()}] with status code [${response.status}]`;
-            console.error(errorLog, JSON.stringify(errorResponseBody));
-            return fail(500, { fail: true });
+        if (!response.ok) {
+            const errorResponseBody = (await response.json()) as ErrorResponse;
+            const errorLog = 'ERROR: Deleting a Service Account';
+            console.error(errorLog, {
+                userId: user.id,
+                userEmail: user.email,
+                serviceAccountId,
+                time: Date.now(),
+                status: response.status,
+                error: JSON.stringify(errorResponseBody, null, 2),
+            });
+            return fail(500, { type: 'error', message: errorLog });
         }
 
-        return { success: true };
+        return { type: 'success' };
     },
-    restoreServiceAccount: async (event: RequestEvent) => {
+    restoreServiceAccount: async (
+        event: RequestEvent
+    ): Promise<(FormSubmitResult & { serviceAccountSecret: ServiceAccountSecret }) | ActionFailure<FormSubmitResult>> => {
         const { request, locals, fetch, setHeaders } = event;
         const user = guards.requireUser(locals);
 
@@ -115,7 +152,11 @@ export const actions = {
 
         const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log(`Restoring a Service Account id: ${serviceAccountId} for userId: ${user.id} userEmail: ${user.email}`);
+        console.log('Restoring a Service Account', {
+            serviceAccountId,
+            userId: user.id,
+            userEmail: user.email,
+        });
 
         const options = {
             method: 'PATCH',
@@ -129,17 +170,29 @@ export const actions = {
             const url = `${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/${serviceAccountId}/rotate-key`;
             response = await fetch(url, options);
         } catch (error: unknown) {
-            const errorLog = `ERROR: Restoring a Service Account id: ${serviceAccountId} for userId: ${user.id} userEmail: ${user.email} at [${Date.now()}]`;
-            console.error(errorLog, { error: JSON.stringify(error) });
-            return fail(500, { error: errorLog, fail: true });
+            const errorLog = `Unknown error restoring a service account`;
+            console.error(errorLog, {
+                userId: user.id,
+                userEmail: user.email,
+                serviceAccountId,
+                time: Date.now(),
+                error: JSON.stringify(error, null, 2),
+            });
+            return fail(500, { type: 'error', message: errorLog });
         }
 
-        if (response.status != 200) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const errorResponseBody = await response.json();
-            const errorLog = `ERROR: Restoring a Service Account id: ${serviceAccountId} for userId: ${user.id} userEmail: ${user.email} at [${Date.now()}] with status code [${response.status}]`;
-            console.error(errorLog, JSON.stringify(errorResponseBody));
-            return fail(500, { fail: true });
+        if (!response.ok) {
+            const errorResponseBody = (await response.json()) as ErrorResponse;
+            const errorLog = 'ERROR: Restoring a Service Account';
+            console.error(errorLog, {
+                userId: user.id,
+                userEmail: user.email,
+                serviceAccountId,
+                time: Date.now(),
+                status: response.status,
+                error: JSON.stringify(errorResponseBody, null, 2),
+            });
+            fail(500, { type: 'error', message: errorLog });
         }
 
         const serviceAccountSecret = (await response.json()) as ServiceAccountSecret;
@@ -147,6 +200,6 @@ export const actions = {
         setHeaders({
             'cache-control': 'no-store',
         });
-        return { serviceAccountSecret, successRestoreServiceAccount: true };
+        return { serviceAccountSecret, type: 'success' };
     },
 };

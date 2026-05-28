@@ -1,15 +1,41 @@
 import { CONFIG } from '../../../config/config';
 import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
-import type { User } from '$lib/types/User/User';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import { uuidRegex } from '../regex/uuidRegex';
+import { validate } from '../regex/validate';
 
-export const getServiceAccounts = async (user: User, fetch: typeof globalThis.fetch) => {
+export async function getServiceAccounts(user: UserCredentialsCookie, fetch: typeof globalThis.fetch): Promise<ServiceAccountDetail[]>;
+export async function getServiceAccounts(
+    user: UserCredentialsCookie,
+    fetch: typeof globalThis.fetch,
+    serviceAccountId?: string
+): Promise<ServiceAccountDetail>;
+
+export async function getServiceAccounts(
+    user: UserCredentialsCookie,
+    fetch: typeof globalThis.fetch,
+    serviceAccountId?: string
+): Promise<ServiceAccountDetail[] | ServiceAccountDetail> {
+    // validate that the id is a uuid
+    if (serviceAccountId && !validate(serviceAccountId, uuidRegex, 'serviceAccountId')) {
+        console.error('ERROR: fetching service account, service account id is not a UUID');
+        return [];
+    }
+
     const options = {
         method: 'GET',
     };
 
     let response;
+
+    let URL = `${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account`;
+
+    if (serviceAccountId) {
+        URL += `/${serviceAccountId}`;
+    }
+
     try {
-        response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account`, options);
+        response = await fetch(URL, options);
     } catch (e) {
         console.error(`ERROR: catch getting service accounts [${user.email}] at [${Date.now()}]`, JSON.stringify(e));
         throw new Error('Unexpected Error while fetching service accounts');
@@ -21,7 +47,12 @@ export const getServiceAccounts = async (user: User, fetch: typeof globalThis.fe
         console.error(`ERROR: getting service accounts [${user.email}] at [${Date.now()}] with status code [${response.status}]`);
     }
 
-    const serviceAccounts = ((await response.json()) as ServiceAccountDetail[]) ?? ([] as ServiceAccountDetail[]);
+    let serviceAccounts;
+    if (serviceAccountId) {
+        serviceAccounts = (await response.json()) as ServiceAccountDetail;
+    } else {
+        serviceAccounts = ((await response.json()) as ServiceAccountDetail[]) ?? ([] as ServiceAccountDetail[]);
+    }
 
     return serviceAccounts;
-};
+}

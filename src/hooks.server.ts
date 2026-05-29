@@ -20,7 +20,7 @@ export const init: ServerInit = async () => {
 export const handle: Handle = async ({ event, resolve }) => {
     event = handleLogout(event);
 
-    // hydrate auth user into locals on page loads
+    // hydrate auth user into locals on page loads when the cookies are present.
     await hydrateAuthUser(event);
 
     let response: Response = await resolve(event);

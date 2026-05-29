@@ -7,7 +7,8 @@ export async function decryptCookie<T>(cookies: Cookies, cookieName: string): Pr
     const encryptedCookie = cookies.get(cookieName);
 
     if (encryptedCookie) {
-        const decryptedCookie = await aesGcmDecrypt(encryptedCookie, webserverCredentialsManager.secret);
+        const decodedEncryptedCookie = decodeURIComponent(encryptedCookie);
+        const decryptedCookie = await aesGcmDecrypt(decodedEncryptedCookie, webserverCredentialsManager.secret);
         return JSON.parse(decryptedCookie) as T;
     }
 }

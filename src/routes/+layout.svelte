@@ -6,7 +6,9 @@
     // components
     import Navigation from '$lib/components/Navigation.svelte';
     import Footer from '$lib/components/Footer.svelte';
+    import USGOVAnalytics from '$lib/components/USGOVAnalytics.svelte';
     import { resolve } from '$app/paths';
+    import { page } from '$app/stores';
 
     import type { PageData } from './$types';
     import type { Header } from '$lib/types/navigation';
@@ -61,6 +63,10 @@
     <!-- Filled Icons -->
     <link href="https://cdn.boxicons.com/3.0.8/fonts/filled/boxicons-filled.min.css" rel="stylesheet" />
 </svelte:head>
+
+{#if !$page.url.pathname.startsWith('/user') && !$page.url.pathname.startsWith('/playground')}
+    <USGOVAnalytics />
+{/if}
 
 <main class="min-h-screen m-0 flex flex-col content-between bg-primary">
     <Navigation {navItems} user={data.user}></Navigation>

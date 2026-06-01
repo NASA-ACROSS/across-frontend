@@ -9,6 +9,7 @@ import dotenv from 'dotenv';
 // add more tests and test targets.
 dotenv.config({
     path: [`.env.test`],
+    override: true,
 });
 
 const config: PlaywrightTestConfig = {

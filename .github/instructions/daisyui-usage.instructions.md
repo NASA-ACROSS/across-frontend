@@ -26,9 +26,9 @@ daisyUI 5 provides class names for common UI components
 5. when using Tailwind CSS `flex` and `grid` for layout, it should be responsive using Tailwind CSS responsive utility prefixes.
 6. Only allowed class names are existing daisyUI class names or Tailwind CSS utility classes.
 7. Ideally, you won't need to write any custom CSS. Using daisyUI class names or Tailwind CSS utility classes is preferred.
-8. suggested - if you need placeholder images, use https://picsum.photos/200/300 with the size you want
-9. suggested - when designing , don't add a custom font unless it's necessary
-10. don't add `bg-base-100 text-base-content` to body unless it's necessary
+8. Suggested: if you need placeholder images, use https://picsum.photos/200/300 with the size you want.
+9. Suggested: when designing, don't add a custom font unless it's necessary.
+10. Don't add `bg-base-100 text-base-content` to body unless it's necessary
 11. For design decisions, use Refactoring UI book best practices
 
 daisyUI 5 class names are one of the following categories. These type names are only for reference and are not used in the actual code

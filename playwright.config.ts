@@ -14,8 +14,15 @@ dotenv.config({
 
 const config: PlaywrightTestConfig = {
     webServer: {
-        command: 'npm run build && npm run preview',
+        command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4173',
         port: 4173,
+        url: 'http://127.0.0.1:4173',
+        timeout: 120_000,
+        env: {
+            ...process.env,
+            PUBLIC_RUNTIME_ENV: 'test',
+            ACROSS_TEST_ACCESS_TOKEN: process.env.ACROSS_TEST_ACCESS_TOKEN || 'dummy-token',
+        },
     },
     use: {
         // Limit navigation waits so a hung external resource can't block tests indefinitely

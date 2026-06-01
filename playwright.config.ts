@@ -17,6 +17,10 @@ const config: PlaywrightTestConfig = {
         command: 'npm run build && npm run preview',
         port: 4173,
     },
+    use: {
+        // Limit navigation waits so a hung external resource can't block tests indefinitely
+        navigationTimeout: 30_000,
+    },
     testDir: 'tests',
     testMatch: /(.+\.)?(test|spec)\.[jt]s/,
     fullyParallel: true,

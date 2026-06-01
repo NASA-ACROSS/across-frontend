@@ -2,7 +2,7 @@
 name: daisyui
 description: Official daisyUI skill
 metadata:
-    version: 5.5.x
+    version: 5.0.x
     source: https://daisyui.com/llms.txt
 alwaysApply: true
 applyTo:

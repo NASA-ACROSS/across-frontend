@@ -7,7 +7,7 @@
 
 ## Tech Stack And Runtime
 
-- SvelteKit 2 with Svelte 4 and strict TypeScript (there should not be any JavaScript files).
+- SvelteKit 2 with Svelte 4 and strict TypeScript (application/source code is TypeScript; tooling/config files may be JavaScript, e.g. svelte.config.js and eslint.config.js).
 - Node.js 22+.
 - Tailwind CSS 4 and DaisyUI 5 for UI.
 - API integration is proxied through server routes and hooks.

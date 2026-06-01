@@ -4,7 +4,7 @@
 
 <svelte:head>
     {#if PUBLIC_CONFIG.IS_PROD}
-        <!-- We participate in the US government's analytics program. See the data at analytics.usa.gov. -->
+        <!-- We participate in the US government's analytics program for NASA. See the data at analytics.usa.gov. -->
         <script
             async
             type="text/javascript"

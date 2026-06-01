@@ -42,3 +42,12 @@ npm run build
 ```
 
 You can preview the production build with `npm run preview`.
+
+## Copilot Instructions
+
+This repository includes project-specific Copilot guidance for more accurate recommendations and higher-quality reviews:
+
+- `.github/copilot-instructions.md` for global project standards.
+- `.github/instructions/*.instructions.md` for targeted, file-scoped rules.
+
+When auth, config, routing, or testing conventions change, update the instruction files in the same PR so AI guidance stays aligned with the codebase.

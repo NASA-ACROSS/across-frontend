@@ -9,24 +9,12 @@ import dotenv from 'dotenv';
 // add more tests and test targets.
 dotenv.config({
     path: [`.env.test`],
-    override: true,
 });
 
 const config: PlaywrightTestConfig = {
     webServer: {
-        command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4173',
+        command: 'npm run build && npm run preview',
         port: 4173,
-        url: 'http://127.0.0.1:4173',
-        timeout: 120_000,
-        env: {
-            ...process.env,
-            PUBLIC_RUNTIME_ENV: 'test',
-            ACROSS_TEST_ACCESS_TOKEN: process.env.ACROSS_TEST_ACCESS_TOKEN || 'dummy-token',
-        },
-    },
-    use: {
-        // Limit navigation waits so a hung external resource can't block tests indefinitely
-        navigationTimeout: 30_000,
     },
     testDir: 'tests',
     testMatch: /(.+\.)?(test|spec)\.[jt]s/,

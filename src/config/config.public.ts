@@ -9,8 +9,6 @@ import { type Level } from 'pino';
 
 export type RuntimeEnv = 'local' | 'feat1' | 'dev' | 'staging' | 'prod';
 
-export type RuntimeEnv = 'local' | 'feat1' | 'dev' | 'stag' | 'prod';
-
 /**
  * Config abstraction for static build-time public environment variables
  *

@@ -1,7 +1,6 @@
 import { resolve } from '$app/paths';
 import { CONFIG } from '$config/config';
 import logger from '$lib/logger';
-import type { Group } from '$lib/types/User/Group';
 import { json, redirect, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ fetch, params }) => {
@@ -18,6 +17,5 @@ export const GET: RequestHandler = async ({ fetch, params }) => {
         redirect(302, resolve('/user/login'));
     }
 
-    const body = (await res.json()) as Group;
-    return json(body, { status: res.status });
+    return res;
 };

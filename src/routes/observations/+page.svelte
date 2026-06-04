@@ -182,11 +182,7 @@
                 });
                 selectedColumns = availableColumns.filter((col) => col.selected);
             } catch (err) {
-<<<<<<< HEAD
-                logger.error({ err }, 'Error parsing column cookie');
-=======
                 logger.error({ msg: 'Failed to parse column cookie', err });
->>>>>>> d3d4c8c (feat: use pino logger)
             }
         }
     }

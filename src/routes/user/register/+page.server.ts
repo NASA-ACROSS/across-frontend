@@ -11,6 +11,7 @@ import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCooki
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
+import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
 
 type RegisterResult = FormSubmitResult & {
     firstname?: string;
@@ -114,7 +115,7 @@ export const actions = {
         }
 
         if (response.status === 409) {
-            const errorResponse = (await response.json()) as { detail: string };
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
             logger.error({ email, username, status: response.status, msg: `User already exists.`, error: errorResponse.detail });
             return fail(409, {
                 type: 'error',
@@ -123,7 +124,7 @@ export const actions = {
         }
 
         if (response.status === 500 || response.status === 422) {
-            const errorResponse = (await response.json()) as { detail: string };
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
             logger.error({ email, username, status: response.status, msg: `Failed registering user.`, error: errorResponse.detail });
             return fail(500, {
                 type: 'error',

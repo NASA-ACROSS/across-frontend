@@ -6,8 +6,8 @@ import { getServiceAccounts } from '$lib/utils/user/getServiceAccounts';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types.js';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult.js';
-import type { ErrorResponse } from '$lib/types/error/ErrorResponse.js';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
+import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
 
 export const load: PageServerLoad = async (event: RequestEvent) => {
     guards.localOnlyRoute();
@@ -72,7 +72,7 @@ export const actions = {
         }
 
         if (!response.ok) {
-            const errorResponseBody = (await response.json()) as ErrorResponse;
+            const errorResponseBody = (await response.json()) as AcrossApiErrorResponse;
             const errorLog = `Failed to create a NEW Service Account`;
             console.error(errorLog, {
                 userId: user.id,
@@ -129,7 +129,7 @@ export const actions = {
         }
 
         if (!response.ok) {
-            const errorResponseBody = (await response.json()) as ErrorResponse;
+            const errorResponseBody = (await response.json()) as AcrossApiErrorResponse;
             const errorLog = 'Failed to delete the Service Account';
             console.error({
                 msg: errorLog,
@@ -184,7 +184,7 @@ export const actions = {
         }
 
         if (!response.ok) {
-            const errorResponseBody = (await response.json()) as ErrorResponse;
+            const errorResponseBody = (await response.json()) as AcrossApiErrorResponse;
             const errorLog = 'Failed to restore the Service Account';
             console.error(errorLog, {
                 userId: user.id,

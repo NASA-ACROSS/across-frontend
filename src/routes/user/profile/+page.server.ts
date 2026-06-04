@@ -10,7 +10,7 @@ import guards from '$lib/utils/guards';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 import { PUBLIC_CONFIG } from '$config/config.public';
 import logger from '$lib/logger';
-import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
+import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
 
 type UpdateUserInformationResult = FormSubmitResult & {
     first_name: string;
@@ -77,7 +77,7 @@ export const actions = {
         }
 
         if (response.status == 403) {
-            const errorResponse = (await response.json()) as ErrorResponse;
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
             logger.error({ msg: `Forbidden access to user`, status: response.status, error: errorResponse.detail });
             return fail(500, {
                 type: 'error',
@@ -87,7 +87,7 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            const errorResponse = (await response.json()) as ErrorResponse;
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
             logger.error({ msg: `Failed updating user information.`, status: response.status, error: errorResponse.detail });
             return fail(500, {
                 type: 'error',
@@ -135,8 +135,8 @@ export const actions = {
             return fail(500, { type: 'error', message: errorLog, _action: 'acceptInvite' });
         }
 
-        if (response.status == 500) {
-            const errorResponse = (await response.json()) as ErrorResponse;
+        if (response.status >= 400) {
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
             logger.error({
                 msg: `Failed accepting user invite`,
                 status: response.status,
@@ -175,8 +175,8 @@ export const actions = {
             return fail(500, { type: 'error', message: errorLog, _action: 'rejectInvite' });
         }
 
-        if (response.status == 500) {
-            const errorResponse = (await response.json()) as ErrorResponse;
+        if (response.status >= 400) {
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
             logger.error({
                 msg: `Failed rejecting user invite`,
                 status: response.status,
@@ -215,8 +215,8 @@ export const actions = {
             return fail(500, { type: 'error', message: errorLog, _action: 'leaveGroup' });
         }
 
-        if (response.status == 500) {
-            const errorResponse = (await response.json()) as ErrorResponse;
+        if (response.status >= 400) {
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
             logger.error({ msg: `Failed leaving group`, status: response.status, groupId, userId, error: errorResponse.detail });
             return fail(500, { type: 'error', message: 'Failed to leave group. Please try again.', _action: 'leaveGroup' });
         }
@@ -245,8 +245,8 @@ export const actions = {
             return fail(500, { type: 'error', message: errorLog, _action: 'deleteUser' });
         }
 
-        if (response.status != 200) {
-            const errorResponse = (await response.json()) as ErrorResponse;
+        if (response.status >= 400) {
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
             logger.error({
                 msg: `Failed deleting user`,
                 status: response.status,

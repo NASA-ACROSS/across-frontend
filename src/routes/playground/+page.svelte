@@ -10,6 +10,10 @@
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
     import logger from '$lib/logger';
     import { enhance } from '$app/forms';
+    import type { ActionData } from './$types';
+    import ErrorHandling from './_components/ErrorHandling.svelte';
+
+    export let form: ActionData;
 
     const logToBrowserConsole = () => {
         logger.info('Simple info message.');
@@ -84,5 +88,9 @@
                 <FormSubmitFeedback action="mockFormSubmitFeedback" />
             </div>
         </form>
+    </Section>
+
+    <Section title="Error Handling">
+        <ErrorHandling {form} />
     </Section>
 </Page>

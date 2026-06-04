@@ -6,8 +6,8 @@ import { resolve } from '$app/paths';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 import { getGroupData } from '$lib/utils/manage/getGroupData';
-import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
+import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
 import { isAdmin } from '$lib/utils/user/isAdmin';
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
@@ -67,8 +67,8 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            const errorResponse = (await response.json()) as ErrorResponse;
-            logger.error({ email, groupId, status: response.status, error: errorResponse.detail }, `Failed inviting user to group`);
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({ email, groupId, status: response.status, error: errorResponse.detail, msg: `Failed inviting user to group` });
             return fail(500, { type: 'error', message: 'Failed to invite user.', _action: 'inviteUser' });
         }
 
@@ -78,8 +78,14 @@ export const actions = {
         }
 
         if (response.status === 404) {
-            const errorResponse = (await response.json()) as ErrorResponse;
-            logger.error({ email, groupId, status: response.status, error: errorResponse.detail }, `User not found to invite to group.`);
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({
+                email,
+                groupId,
+                status: response.status,
+                error: errorResponse.detail,
+                msg: `User not found to invite to group.`,
+            });
             return fail(500, {
                 type: 'error',
                 message: 'User not found.',
@@ -114,20 +120,26 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            const errorResponse = (await response.json()) as ErrorResponse;
-            logger.error(
-                { userInviteId, userGroupId, status: response.status, error: errorResponse.detail },
-                `Failed deleting user invite.`
-            );
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({
+                userInviteId,
+                userGroupId,
+                status: response.status,
+                error: errorResponse.detail,
+                msg: `Failed deleting user invite.`,
+            });
             return fail(500, { type: 'error', message: 'Failed to delete invite.', _action: 'deleteInvite' });
         }
 
         if (response.status == 400) {
-            const errorResponse = (await response.json()) as ErrorResponse;
-            logger.error(
-                { userInviteId, userGroupId, status: response.status, error: errorResponse.detail },
-                `Failed deleting user invite.`
-            );
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({
+                userInviteId,
+                userGroupId,
+                status: response.status,
+                error: errorResponse.detail,
+                msg: `Failed deleting user invite.`,
+            });
             return fail(500, {
                 type: 'error',
                 message: 'Failed to delete invite.',
@@ -162,8 +174,14 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            const errorResponse = (await response.json()) as ErrorResponse;
-            logger.error({ userId, groupId, status: response.status, error: errorResponse.detail }, `Failed removing user from group.`);
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({
+                userId,
+                groupId,
+                status: response.status,
+                error: errorResponse.detail,
+                msg: `Failed removing user from group.`,
+            });
             return fail(500, { type: 'error', message: 'Failed to remove user from group.', _action: 'removeUser' });
         }
 
@@ -196,8 +214,8 @@ export const actions = {
         }
 
         if (res.status >= 300) {
-            const errorResponse = (await res.json()) as ErrorResponse;
-            logger.error({ groupId, userId, roleId, status: res.status, error: errorResponse.detail }, `Failed assigning user role.`);
+            const errorResponse = (await res.json()) as AcrossApiErrorResponse;
+            logger.error({ groupId, userId, roleId, status: res.status, error: errorResponse.detail, msg: `Failed assigning user role.` });
             return fail(res.status, { type: 'error', message: 'Failed to assign role.', _action: 'assignRole' });
         }
 

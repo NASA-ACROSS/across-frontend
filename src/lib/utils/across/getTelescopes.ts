@@ -1,6 +1,6 @@
-import logger from '$lib/logger';
 import type { Telescope } from '$lib/types/across/Telescope';
 import searchParams from '../searchParams/searchParams';
+import { callApi } from './callApi';
 
 type GetTelescopesParams = {
     observatory_id?: string;
@@ -13,23 +13,10 @@ export const getTelescopes = async (fetch: typeof window.fetch, params?: GetTele
 
     const url = `/api/telescope${qp.toString() ? `?${qp}` : ''}`;
 
-    const response = await fetch(url, {
+    const telescopes = await callApi<Telescope[] | Telescope>(fetch, url, {
         method: 'GET',
     });
 
-    // catch known errors from api and hide error from user
-    const errorCodes = [500, 404, 401];
-    if (errorCodes.includes(response.status)) {
-        const errorText = `Failed getting telescopes.`;
-        logger.error({ status: response.status }, errorText);
-        throw new Error(errorText);
-    }
-
-    let telescopes = (await response.json()) as Telescope[];
-
-    if (!Array.isArray(telescopes)) {
-        telescopes = [telescopes];
-    }
-
+    if (!Array.isArray(telescopes)) return [telescopes];
     return telescopes;
 };

@@ -3,6 +3,7 @@ import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail'
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import { uuidRegex } from '../regex/uuidRegex';
 import { validate } from '../regex/validate';
+import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
 
 export async function getServiceAccounts(user: UserCredentialsCookie, fetch: typeof globalThis.fetch): Promise<ServiceAccountDetail[]>;
 export async function getServiceAccounts(
@@ -18,8 +19,9 @@ export async function getServiceAccounts(
 ): Promise<ServiceAccountDetail[] | ServiceAccountDetail> {
     // validate that the id is a uuid
     if (serviceAccountId && !validate(serviceAccountId, uuidRegex, 'serviceAccountId')) {
-        console.error('ERROR: fetching service account, service account id is not a UUID');
-        return [];
+        const errorMsg = 'Failed to fetch service account, service account id is not a UUID';
+        console.error(errorMsg);
+        throw Error(errorMsg);
     }
 
     const options = {
@@ -37,14 +39,20 @@ export async function getServiceAccounts(
     try {
         response = await fetch(URL, options);
     } catch (e) {
-        console.error(`ERROR: catch getting service accounts [${user.email}] at [${Date.now()}]`, JSON.stringify(e));
-        throw new Error('Unexpected Error while fetching service accounts');
+        console.error({ err: e, email: user.email }, 'Fetch failed to get service accounts.');
+        throw new Error('Request failure while fetching service account');
     }
 
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404, 401];
     if (errorCodes.includes(response.status)) {
-        console.error(`ERROR: getting service accounts [${user.email}] at [${Date.now()}] with status code [${response.status}]`);
+        const errRes = (await response.json()) as ErrorResponse;
+        console.error({
+            msg: 'Failed to get service accounts.',
+            status: response.status,
+            error: errRes.detail,
+            email: user.email,
+        });
     }
 
     let serviceAccounts;

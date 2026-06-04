@@ -39,7 +39,8 @@ export const actions = {
             expiration_duration,
         };
 
-        console.log('Creating a NEW Service Account', {
+        console.log({
+            msg: 'Creating a NEW Service Account',
             userId: user.id,
             userEmail: user.email,
             name: name,
@@ -59,25 +60,25 @@ export const actions = {
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/`, options);
         } catch (error: unknown) {
-            const errorLog = `Unknown error creating a NEW Service Account`;
-            console.error(errorLog, {
+            const errorLog = `Request failure while creating a NEW Service Account`;
+            console.error({
+                msg: errorLog,
                 userId: user.id,
                 userEmail: user.email,
                 time: Date.now(),
-                error: JSON.stringify(error, null, 2),
+                err: error,
             });
             return fail(500, { type: 'error', message: errorLog });
         }
 
         if (!response.ok) {
             const errorResponseBody = (await response.json()) as ErrorResponse;
-            const errorLog = `ERROR: Creating a NEW Service Account`;
+            const errorLog = `Failed to create a NEW Service Account`;
             console.error(errorLog, {
                 userId: user.id,
                 userEmail: user.email,
-                time: Date.now(),
                 status: response.status,
-                error: JSON.stringify(errorResponseBody),
+                err: errorResponseBody.detail,
             });
             return fail(500, { type: 'error', message: errorLog });
         }
@@ -97,7 +98,8 @@ export const actions = {
 
         const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log(`Deleting a Service Account`, {
+        console.log({
+            msg: `Deleting a Service Account`,
             serviceAccountId,
             userId: user.id,
             userEmail: user.email,
@@ -115,27 +117,27 @@ export const actions = {
             const url = `${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/${serviceAccountId}`;
             response = await fetch(url, options);
         } catch (error: unknown) {
-            const errorLog = `Unknown Error deleting a service account`;
-            console.error(errorLog, {
+            const errorLog = `Request failure while deleting a service account`;
+            console.error({
+                msg: errorLog,
                 userId: user.id,
                 userEmail: user.email,
                 serviceAccountId: serviceAccountId,
-                time: Date.now(),
-                error: JSON.stringify(error, null, 2),
+                err: error,
             });
             return fail(500, { type: 'error', message: errorLog });
         }
 
         if (!response.ok) {
             const errorResponseBody = (await response.json()) as ErrorResponse;
-            const errorLog = 'ERROR: Deleting a Service Account';
-            console.error(errorLog, {
+            const errorLog = 'Failed to delete the Service Account';
+            console.error({
+                msg: errorLog,
                 userId: user.id,
                 userEmail: user.email,
                 serviceAccountId,
-                time: Date.now(),
                 status: response.status,
-                error: JSON.stringify(errorResponseBody, null, 2),
+                err: errorResponseBody.detail,
             });
             return fail(500, { type: 'error', message: errorLog });
         }
@@ -152,7 +154,8 @@ export const actions = {
 
         const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log('Restoring a Service Account', {
+        console.log({
+            msg: 'Restoring a Service Account',
             serviceAccountId,
             userId: user.id,
             userEmail: user.email,
@@ -170,27 +173,25 @@ export const actions = {
             const url = `${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/${serviceAccountId}/rotate-key`;
             response = await fetch(url, options);
         } catch (error: unknown) {
-            const errorLog = `Unknown error restoring a service account`;
+            const errorLog = `Request failure while restoring a service account`;
             console.error(errorLog, {
                 userId: user.id,
                 userEmail: user.email,
                 serviceAccountId,
-                time: Date.now(),
-                error: JSON.stringify(error, null, 2),
+                err: error,
             });
             return fail(500, { type: 'error', message: errorLog });
         }
 
         if (!response.ok) {
             const errorResponseBody = (await response.json()) as ErrorResponse;
-            const errorLog = 'ERROR: Restoring a Service Account';
+            const errorLog = 'Failed to restore the Service Account';
             console.error(errorLog, {
                 userId: user.id,
                 userEmail: user.email,
                 serviceAccountId,
-                time: Date.now(),
                 status: response.status,
-                error: JSON.stringify(errorResponseBody, null, 2),
+                error: errorResponseBody,
             });
             fail(500, { type: 'error', message: errorLog });
         }

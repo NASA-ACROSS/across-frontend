@@ -55,7 +55,7 @@ export const actions = {
         const groupRoleId = data.get('groupRoleId') as string;
         const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log('assigning group role for serviceAccount', { userId, serviceAccountId, groupRoleId });
+        console.log({ msg: 'assigning group role for serviceAccount', userId, serviceAccountId, groupRoleId });
 
         const options = {
             method: 'POST',
@@ -71,21 +71,21 @@ export const actions = {
                 options
             );
         } catch (error: unknown) {
-            const errorLog = 'Unknown error trying to assign group role to service account';
-            console.error(errorLog, { userId, serviceAccountId, groupRoleId, time: Date.now(), error: JSON.stringify(error) });
+            const errorLog = 'Unknown request failure while trying to assign group role to service account';
+            console.error({ userId, serviceAccountId, groupRoleId, time: Date.now(), err: error }, errorLog);
             return fail(500, { type: 'error', message: errorLog });
         }
 
         if (!response.ok) {
             const responseError = (await response.json()) as ErrorResponse;
-            const errorLog = 'Error trying to assign group role to service account';
-            console.error(errorLog, {
+            const errorLog = 'Failed to assign group role to service account';
+            console.error({
+                msg: errorLog,
                 userId,
                 serviceAccountId,
                 groupRoleId,
-                time: Date.now(),
                 status: response.status,
-                error: JSON.stringify(responseError, null, 2),
+                error: responseError.detail,
             });
             return fail(500, { type: 'error', message: errorLog });
         }
@@ -99,7 +99,7 @@ export const actions = {
         const groupRoleId = data.get('groupRoleId') as string;
         const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log('removing group role for serviceAccount', { userId, serviceAccountId, groupRoleId });
+        console.log({ msg: 'removing group role for serviceAccount', userId, serviceAccountId, groupRoleId });
 
         const options = {
             method: 'DELETE',
@@ -115,21 +115,21 @@ export const actions = {
                 options
             );
         } catch (error: unknown) {
-            const errorLog = 'Unknown error trying to remove group role from service account';
-            console.error(errorLog, { userId, serviceAccountId, groupRoleId, time: Date.now(), error: JSON.stringify(error) });
+            const errorLog = 'Unknown request failure while removing group role from service account';
+            console.error({ msg: errorLog, userId, serviceAccountId, groupRoleId, err: error });
             return fail(500, { type: 'error', message: errorLog });
         }
 
         if (!response.ok) {
             const responseError = (await response.json()) as ErrorResponse;
-            const errorLog = 'Error trying to assign group role to service account';
-            console.error(errorLog, {
+            const errorLog = 'Failed to assign group role to service account';
+            console.error({
+                msg: errorLog,
                 userId,
                 serviceAccountId,
                 groupRoleId,
-                time: Date.now(),
                 status: response.status,
-                error: JSON.stringify(responseError, null, 2),
+                error: responseError.detail,
             });
             return fail(500, { type: 'error', message: errorLog });
         }
@@ -152,7 +152,7 @@ export const actions = {
             expiration_duration,
         };
 
-        console.log('updating properties for serviceAccount', { userId, serviceAccountId, serviceAccountUpdate });
+        console.log({ msg: 'updating properties for serviceAccount', userId, serviceAccountId, serviceAccountUpdate });
 
         const options = {
             method: 'PATCH',
@@ -166,21 +166,21 @@ export const actions = {
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}`, options);
         } catch (error: unknown) {
-            const errorLog = 'Unknown error trying to update properties for service account';
-            console.error(errorLog, { userId, serviceAccountId, serviceAccountUpdate, time: Date.now(), error: JSON.stringify(error) });
+            const errorLog = 'Request failure while updating properties for service account';
+            console.error({ msg: errorLog, userId, serviceAccountId, serviceAccountUpdate, err: error });
             return fail(500, { type: 'error', message: errorLog });
         }
 
         if (!response.ok) {
             const responseError = (await response.json()) as ErrorResponse;
-            const errorLog = 'Error trying to assign group role to service account';
-            console.error(errorLog, {
+            const errorLog = 'Failed to assign group role to service account';
+            console.error({
+                msg: errorLog,
                 userId,
                 serviceAccountId,
                 serviceAccountUpdate,
-                time: Date.now(),
                 status: response.status,
-                error: JSON.stringify(responseError, null, 2),
+                err: responseError.detail,
             });
             return fail(500, { type: 'error', message: errorLog });
         }

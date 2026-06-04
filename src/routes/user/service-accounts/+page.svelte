@@ -1,11 +1,12 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
     import Page from '$lib/components/Page.svelte';
+    import type { ActionData, PageData } from './$types';
     import ServiceAccounts from './_components/ServiceAccounts.svelte';
     import ServiceAccountSecretModal from './_components/ServiceAccountSecretModal.svelte';
 
-    export let data;
-    export let form;
+    export let data: PageData;
+    export let form: ActionData;
 
     let user = data.user;
     let serviceAccounts = data.serviceAccounts;

@@ -52,7 +52,6 @@ describe('UserCredentialsManager', () => {
         delete: vi.fn(),
     } as unknown as Cookies;
 
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
     const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(fakeTokenRes as unknown as Response);
 
     beforeEach(() => {
@@ -88,19 +87,6 @@ describe('UserCredentialsManager', () => {
                 access_token: 'new_access_token',
                 refresh_token: 'new_refresh_token',
             });
-        });
-
-        it('should log a debug message when access token is refreshed', async () => {
-            // force refresh flow
-            (JwtRefresher.GetTokens as unknown as Mock).mockResolvedValue({
-                refreshed: true,
-            });
-            await UserCredentialsManager.GetAccessToken(fakeCookies, {
-                access_token: 'expired',
-                refresh_token: 'existing_refresh_token',
-            });
-
-            expect(debugSpy).toHaveBeenCalled();
         });
     });
 

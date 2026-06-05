@@ -6,6 +6,7 @@ import type { RequestEvent } from './$types';
 import { CONFIG } from '../../config/config';
 import searchParams from '$lib/utils/searchParams/searchParams';
 import parseErrorResponse from '$lib/utils/error/parseErrorResponse';
+import logger from '$lib/logger';
 
 type ErrorResponse = {
     detail: unknown;
@@ -57,8 +58,8 @@ export const actions = {
         let response: Response;
         try {
             response = await fetch(apiUrl);
-        } catch (error) {
-            console.error('ERROR fetching visibility windows:', error);
+        } catch (err: unknown) {
+            logger.error({ err, params: params.toString() }, 'Request failed fetching visibility windows.');
 
             return {
                 jointVisibilityWindows: [],

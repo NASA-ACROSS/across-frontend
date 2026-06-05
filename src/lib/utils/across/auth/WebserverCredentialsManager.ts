@@ -2,6 +2,7 @@ import { CONFIG } from '$config/config';
 import * as luxon from 'luxon';
 import { ssm } from '../../aws/ssm';
 import { JwtRefresher } from './JwtRefresher';
+import logger from '$lib/logger';
 
 interface AccessTokenResponse {
     access_token: string;
@@ -25,7 +26,7 @@ export class WebserverCredentialsManager {
 
     public async getAccessToken(options: { retry?: boolean } = {}): Promise<string | undefined> {
         if (CONFIG.IS_BUILD || CONFIG.ACROSS_TEST_ACCESS_TOKEN) {
-            console.debug('Building or running in test environment, using dummy access token for WebserverCredentialsManager');
+            logger.debug('Building or running in test environment, using dummy access token for WebserverCredentialsManager');
             return CONFIG.ACROSS_TEST_ACCESS_TOKEN;
         }
 
@@ -52,14 +53,14 @@ export class WebserverCredentialsManager {
 
                     if (res.status === 401) {
                         if (!retry) {
-                            console.debug('Credentials may have been changed, pulling latest and retrying.');
+                            logger.debug('Credentials may have been changed, pulling latest and retrying.');
                             await this.setCredentials();
                             await this.getAccessToken({ retry: true });
                         } else {
-                            console.error(`[ERROR]: Unauthorized credentials`, errLog);
+                            logger.error({ msg: 'Unauthorized credentials', ...errLog });
                         }
                     } else {
-                        console.error(`[ERROR]: Unknown error while attempting to fetch the token.`, errLog);
+                        logger.error({ msg: 'Unknown error while attempting to fetch the token', ...errLog });
                     }
 
                     // return undefined to allow the "GET" requests and pages not dependent on the core-server to pass through.
@@ -77,16 +78,16 @@ export class WebserverCredentialsManager {
             return this.token.access_token;
         } catch (err: unknown) {
             if (err instanceof Error) {
-                console.error('[ERROR]: Unknown error while fetching, server may likely be down. Contact support.', { err });
+                logger.error({ err }, 'Unknown error while fetching, server may likely be down.');
             } else {
-                console.error('[ERROR]: Unknown error.', { err });
+                logger.error({ err }, 'Unknown error.');
             }
         }
     }
 
     private async checkAndRotate(): Promise<void> {
         if (await this.shouldRotate()) {
-            console.warn(`Service Account Credentials expiring soon, rotating credentials...`);
+            logger.warn('Service Account Credentials expiring soon, rotating credentials...');
             await this.rotateKey();
         }
     }

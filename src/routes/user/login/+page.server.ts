@@ -7,6 +7,7 @@ import { emailRegex } from '$lib/utils/regex/emailRegex';
 import type { Actions } from './$types';
 import { clearAuth } from '$lib/handles/clearAuth';
 import guards from '$lib/utils/guards';
+import logger from '$lib/logger';
 
 export function load({ locals }: RequestEvent) {
     guards.localOnlyRoute();
@@ -48,9 +49,7 @@ export const actions = {
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {
-            console.error(
-                `ERROR: rate-limiting at /login for user email [${email}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`
-            );
+            logger.error({ msg: `Rate limit exceeded for login.`, email, ip: event.getClientAddress(), retryAfter: rateStatus.retryAfter });
 
             return fail(429, {
                 rateLimit: true,
@@ -65,24 +64,24 @@ export const actions = {
         let response: Response;
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/auth/login?email=${encodeURIComponent(email)}`, options);
-        } catch (error) {
-            console.error(`ERROR: logging in user [${email}] at [${Date.now()}]`, JSON.stringify(error));
+        } catch (err: unknown) {
+            logger.error({ msg: `Failed logging in user.`, email, err });
 
-            if (error instanceof Error) {
-                return fail(500, { error: error.message, fail: true });
+            if (err instanceof Error) {
+                return fail(500, { error: err.message, fail: true });
             } else {
                 return fail(500, { error: 'Unknown error trying to login.' });
             }
         }
 
         if (response.status == 500) {
-            console.error(`ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`);
+            logger.error({ msg: `Failed logging in user.`, email, status: response.status });
             return fail(500, { fail: true });
         }
 
         if (response.status == 401) {
             const errorResponse = (await response.json()) as { detail: string };
-            console.warn(errorResponse.detail, JSON.stringify({ email: email, ip: event.getClientAddress() }));
+            logger.warn({ msg: errorResponse.detail, email, ip: event.getClientAddress() });
             return fail(401, { notFound: true });
         }
 

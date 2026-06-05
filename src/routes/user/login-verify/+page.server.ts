@@ -8,6 +8,7 @@ import type { RequestEvent } from './$types';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 import guards from '$lib/utils/guards';
 import { PUBLIC_CONFIG } from '$config/config.public';
+import logger from '$lib/logger';
 
 export function load(event: RequestEvent) {
     guards.localOnlyRoute();
@@ -36,9 +37,12 @@ export const actions = {
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {
-            console.error(
-                `ERROR: rate-limiting at /verify for verificationToken [${verificationToken}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`
-            );
+            logger.error({
+                msg: `Rate limit exceeded for login-verify.`,
+                verificationToken,
+                ip: event.getClientAddress(),
+                retryAfter: rateStatus.retryAfter,
+            });
             return fail(429, {
                 rateLimit: true,
                 retryAfter: rateStatus.retryAfter,
@@ -55,9 +59,9 @@ export const actions = {
         const userId = await UserCredentialsManager.Verify(verificationToken, cookies, rememberMe);
 
         if (!userId) {
-            console.error(`Login-verify failed to decode user id from access token`, {
+            logger.error({
+                msg: `Login-verify failed to decode user id from access token`,
                 verificationToken,
-                time: Date.now(),
             });
             return fail(500, { error: 'Failed to decode user information from token' });
         }

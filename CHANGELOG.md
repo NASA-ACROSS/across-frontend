@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.1.0...across-frontend-v1.2.0) (2026-06-02)
+
+
+### Features
+
+* add dialog component and examples ([#307](https://github.com/NASA-ACROSS/across-frontend/issues/307)) ([6cfb8e1](https://github.com/NASA-ACROSS/across-frontend/commit/6cfb8e1559dc5b43207b116fba627dce9ad28ae0))
+* add pino logger ([#320](https://github.com/NASA-ACROSS/across-frontend/issues/320)) ([bbf6d44](https://github.com/NASA-ACROSS/across-frontend/commit/bbf6d443edb44a22f148a635dbb8e9b5b9272198))
+* add USGOVAnalytics component for government analytics tracking ([#319](https://github.com/NASA-ACROSS/across-frontend/issues/319)) ([cfc848a](https://github.com/NASA-ACROSS/across-frontend/commit/cfc848ab2a31e1378e3147633d12bd8208b6e0b0))
+
+
+### Bug Fixes
+
+* **nav:** refactor nav and menu headers and links ([#303](https://github.com/NASA-ACROSS/across-frontend/issues/303)) ([70a42cc](https://github.com/NASA-ACROSS/across-frontend/commit/70a42cc3853b10c958d0704873ca423079807725))
+* **observatories:** pull observatory telescopes based off of observatory id ([#316](https://github.com/NASA-ACROSS/across-frontend/issues/316)) ([94fa8c0](https://github.com/NASA-ACROSS/across-frontend/commit/94fa8c0ae0354776856e449fe87043d15e91e844))
+* use buffer for base64, auth tests ([#317](https://github.com/NASA-ACROSS/across-frontend/issues/317)) ([090e80d](https://github.com/NASA-ACROSS/across-frontend/commit/090e80dd57693ac35e54d7289e25a6886cf4af25))
+
 ## [1.1.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.0.0...across-frontend-v1.1.0) (2026-05-11)
 
 

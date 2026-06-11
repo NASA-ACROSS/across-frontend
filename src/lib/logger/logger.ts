@@ -1,7 +1,7 @@
 import { browser } from '$app/environment';
 import { type RuntimeEnv, PUBLIC_CONFIG } from '$config/config.public';
-
 import pino, { type Logger, type LoggerOptions } from 'pino';
+import pretty from 'pino-pretty';
 
 const logger: Logger = (() => {
     const options: LoggerOptions = {
@@ -25,19 +25,15 @@ const logger: Logger = (() => {
         };
     } else {
         options.level = PUBLIC_CONFIG.DEFAULT_LOG_LEVEL;
-
-        if (PUBLIC_CONFIG.RUNTIME_ENV === 'local') {
-            options.transport = {
-                target: 'pino-pretty',
-                options: {
-                    colorize: true, // show colors in log
-                    levelFirst: true, // show levels first in log
-                    translateTime: true, // translate the time in human readable format
-                },
-            };
-        }
     }
 
+    const stream = pretty({
+        colorize: true, // show colors in log
+        levelFirst: true, // show levels first in log
+        translateTime: true, // translate the time in human readable format
+    });
+
+    if (PUBLIC_CONFIG.RUNTIME_ENV === 'local') return pino(options, stream);
     return pino(options);
 })();
 

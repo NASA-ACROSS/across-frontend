@@ -12,6 +12,5 @@ export const getUserInfo = async (id: string, fetch: typeof globalThis.fetch) =>
     }
 
     const user = (await response.json()) as User;
-
     return user;
 };

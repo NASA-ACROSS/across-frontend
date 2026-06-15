@@ -1,7 +1,7 @@
 import type { GroupInvite } from '$lib/types/User/GroupInvite';
 import { CONFIG } from '../../../config/config';
 
-export const getInvitedUsers = async (userGroupId: number, fetch: typeof globalThis.fetch) => {
+export const getInvitedUsers = async (userGroupId: string, fetch: typeof globalThis.fetch) => {
     const options = {
         method: 'GET',
     };

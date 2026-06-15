@@ -9,6 +9,7 @@
 
 <div class="my-2 {containerClasses}">
     <a
+        data-sveltekit-preload-code="hover"
         data-sveltekit-preload-data="tap"
         {href}
         target={openInNewTab ? '_blank' : '_self'}

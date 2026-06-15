@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.2.0...across-frontend-v1.3.0) (2026-06-15)
+
+
+### Features
+
+* **user:** service account management UI ([#301](https://github.com/NASA-ACROSS/across-frontend/issues/301)) ([7a54504](https://github.com/NASA-ACROSS/across-frontend/commit/7a5450483983c8f2b468c1c8d42e45018ba5da85))
+
+
+### Bug Fixes
+
+* **logs:** pino-pretty set as stream ([#327](https://github.com/NASA-ACROSS/across-frontend/issues/327)) ([d83fcbf](https://github.com/NASA-ACROSS/across-frontend/commit/d83fcbf630bc54c6cacc9940847fb9d05025dd34))
+
 ## [1.2.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.1.0...across-frontend-v1.2.0) (2026-06-02)
 
 

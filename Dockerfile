@@ -2,7 +2,7 @@ FROM node:24-bookworm-slim AS build
 
 # set the build version to local environment by default, can be overridden by passing a different value during build time
 ARG BUILD_VERSION=docker
-ARG XFF_HEADER=1
+ARG XFF_HEADER=2
 ARG ADDRESS_HEADER=x-forwarded-for
 
 # set svelte public env vars

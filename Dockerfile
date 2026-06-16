@@ -2,17 +2,10 @@ FROM node:24-bookworm-slim AS build
 
 # set the build version to local environment by default, can be overridden by passing a different value during build time
 ARG BUILD_VERSION=docker
-ARG XFF_HEADER=2
-ARG ADDRESS_HEADER=x-forwarded-for
 
 # set svelte public env vars
 ENV PUBLIC_BUILD_VERSION=$BUILD_VERSION
 ENV PUBLIC_RUNTIME_ENV=local
-
-# set ip forwarding headers from sveltekit docs
-ENV ADDRESS_HEADER=ADDRESS_HEADER
-# set to the number of proxies or load balancers before the server to find the right client ip
-ENV XFF_HEADER=XFF_HEADER
 
 RUN echo "PUBLIC_BUILD_VERSION: $PUBLIC_BUILD_VERSION"
 

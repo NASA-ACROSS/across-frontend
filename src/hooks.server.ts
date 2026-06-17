@@ -10,8 +10,6 @@ import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsMa
 import { hydrateAuthUser } from '$lib/handles/hydrateAuthUser';
 import { setLogLevel } from '$lib/logger';
 import { PUBLIC_CONFIG } from '$config/config.public';
-import { env } from '$env/dynamic/private';
-import logger from '$lib/logger';
 
 export const init: ServerInit = async () => {
     setLogLevel(PUBLIC_CONFIG.RUNTIME_ENV);
@@ -40,14 +38,6 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
     if (request.url.startsWith(CONFIG.ACROSS_SERVER_URL)) {
         // set external client ip for core-server to parse for rate-limiting
         request.headers.set('x-real-ip', event.getClientAddress());
-        logger.info({
-            'x-forwarded-for': request.headers.get('x-forwarded-for'),
-            'X-Forwarded-For': request.headers.get('X-Forwarded-For'),
-            msg: 'sending real ip',
-            clientAddress: event.getClientAddress(),
-            XFF: env.XFF_HEADER,
-            FWD: env.ADDRESS_HEADER,
-        });
 
         if (request.url.endsWith('/auth/token') || request.url.endsWith('/auth/refresh')) {
             // pass-thru to prevent infinite loops of token refreshing

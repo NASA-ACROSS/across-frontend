@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.3.0...across-frontend-v1.4.0) (2026-06-18)
+
+
+### Features
+
+* forward client ip to core server ([#330](https://github.com/NASA-ACROSS/across-frontend/issues/330)) ([90514b6](https://github.com/NASA-ACROSS/across-frontend/commit/90514b6c6cb6e255b894ab6482d8f3ec444e4749))
+
 ## [1.3.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.2.0...across-frontend-v1.3.0) (2026-06-15)
 
 

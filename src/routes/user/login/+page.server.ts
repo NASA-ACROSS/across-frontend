@@ -1,16 +1,20 @@
-import { CONFIG } from '../../../config/config.js';
+import { CONFIG } from '../../../config/config';
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
-import { emailRegex } from '$lib/utils/regex/emailRegex.js';
-import type { Actions } from './$types.js';
+import { autoLogin } from '$lib/utils/user/autoLogin.js';
+import { emailRegex } from '$lib/utils/regex/emailRegex';
+import type { Actions } from './$types';
+import { clearAuth } from '$lib/handles/clearAuth';
+import guards from '$lib/utils/guards';
 
 export function load({ locals }: RequestEvent) {
-    const userCookie = locals?.user as UserCredentialsCookie;
-    // Redirect on load when user is logged in
+    guards.localOnlyRoute();
+
+    const userCookie = locals?.user;
+    // Redirect to profile page when user is logged in
     if (userCookie) {
-        throw redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('/user/profile'));
     }
 }
 
@@ -25,12 +29,15 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export const actions = {
-    default: async (event) => {
-        const data = await event.request.formData();
+    default: async (event: RequestEvent) => {
+        const { request, fetch } = event;
+        clearAuth(event);
 
-        const email = data.get('email')?.toString();
+        const data = await request.formData();
 
-        if (!email?.match(emailRegex)) {
+        const email = data.get('email');
+
+        if (typeof email !== 'string' || !email.match(emailRegex)) {
             return fail(400, {
                 invalidEmail: true,
                 message: 'Please provide a valid email.',
@@ -53,23 +60,13 @@ export const actions = {
 
         const options = {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Bearer ${CONFIG.API_TOKEN}`,
-            },
         };
 
         let response: Response;
         try {
-            response = await fetch(
-                `${CONFIG.API_URL}/auth/login?email=${encodeURIComponent(email)}`,
-                options
-            );
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/auth/login?email=${encodeURIComponent(email)}`, options);
         } catch (error) {
-            console.error(
-                `ERROR: logging in user [${email}] at [${Date.now()}]`,
-                JSON.stringify(error)
-            );
+            console.error(`ERROR: logging in user [${email}] at [${Date.now()}]`, JSON.stringify(error));
 
             if (error instanceof Error) {
                 return fail(500, { error: error.message, fail: true });
@@ -79,19 +76,17 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`
-            );
+            console.error(`ERROR: logging in user [${email}] at [${Date.now()}] with status code [500]`);
             return fail(500, { fail: true });
         }
 
-        if (response.status == 400) {
+        if (response.status == 401) {
             const errorResponse = (await response.json()) as { detail: string };
-
-            console.warn(errorResponse.detail, JSON.stringify({ email }));
-
-            return fail(400, { notFound: true });
+            console.warn(errorResponse.detail, JSON.stringify({ email: email, ip: event.getClientAddress() }));
+            return fail(401, { notFound: true });
         }
+
+        await autoLogin(response);
 
         return { success: true, email };
     },

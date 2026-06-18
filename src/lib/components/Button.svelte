@@ -1,4 +1,6 @@
 <script lang="ts">
+    import Spinner from './Spinner.svelte';
+
     export let name: string = '';
     export let disabled = false;
     export let isLoading: boolean;
@@ -7,7 +9,7 @@
 
 <button class="btn {classes}" {disabled}>
     {#if isLoading}
-        <span class="loading loading-spinner"></span>
+        <Spinner />
     {:else if name}
         {name}
     {:else}

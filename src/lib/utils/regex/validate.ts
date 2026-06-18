@@ -3,9 +3,7 @@ export const validate = (input: string, regex: RegExp, inputName: string) => {
 
     // reject if nothing matches
     if (match === null) {
-        console.error(
-            `ERROR: validating input [${input}] against input [${inputName}]. No match found. Returning null.`
-        );
+        console.error(`ERROR: validating input [${input}] against input [${inputName}]. No match found. Returning null.`);
         return null;
     }
 

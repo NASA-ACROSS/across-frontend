@@ -5,6 +5,7 @@
     import type { GroupRole } from '$lib/types/User/GroupRole';
     import type { SubmitFunction } from '@sveltejs/kit';
     import type { UserGroup } from '$lib/types/User/UserGroup';
+    import Spinner from '$lib/components/Spinner.svelte';
 
     export let selectedUser: GroupUser | undefined;
     export let group: UserGroup;
@@ -15,9 +16,7 @@
 
     // cross match assignable roles with user's to create a list of user's current roles
     $: userRoles = selectedUser?.group_roles?.reduce((roles, userRole) => {
-        let matchingRole = assignableRoles?.find(
-            (role) => role.id == userRole.id
-        );
+        let matchingRole = assignableRoles?.find((role) => role.id == userRole.id);
 
         if (matchingRole) roles.push(matchingRole);
 
@@ -53,7 +52,7 @@
 
 <div class="flex flex-col w-1/3">
     <h2 class="text-2xl font-bold pb-2">
-        <i class="bx bx-user-pin opacity-70 me-2"></i>Selected User
+        <i class="bx bx-user opacity-70 me-2"></i>Selected User
     </h2>
     <div class="card bg-base-200 border-secondary">
         {#if !selectedUser}
@@ -75,15 +74,8 @@
                     <ul class="list-group list-group-flush">
                         {#each userRoles as userRole}
                             <li class="flex justify-between mb-2">
-                                <span class="self-center text-lg"
-                                    >{userRole?.name}</span
-                                >
-                                <form
-                                    id="{userRole.id}-role"
-                                    method="post"
-                                    use:enhance={enhancedForm}
-                                    action="?/removeRole"
-                                >
+                                <span class="self-center text-lg">{userRole?.name}</span>
+                                <form id="{userRole.id}-role" method="post" use:enhance={enhancedForm} action="?/removeRole">
                                     <button
                                         class="btn btn-sm btn-accent"
                                         type="submit"
@@ -91,14 +83,9 @@
                                             selectedRole = userRole;
                                         }}
                                         >{#if isRemovingRole && selectedRole == userRole}
-                                            <span
-                                                class="loading loading-spinner"
-                                                role="status"
-                                                aria-hidden="true"
-                                            ></span>
+                                            <Spinner />
                                         {:else}
-                                            <i class="bx bx-trash opacity-70"
-                                            ></i>
+                                            <i class="bx bx-trash opacity-70"></i>
                                             Remove Role
                                         {/if}</button
                                     >
@@ -112,12 +99,7 @@
             </div>
             <div class="card-body">
                 <div class="flex flex-row-reverse">
-                    <form
-                        id="{selectedUser.id}-remove"
-                        method="post"
-                        use:enhance={enhancedForm}
-                        action="?/removeUser"
-                    >
+                    <form id="{selectedUser.id}-remove" method="post" use:enhance={enhancedForm} action="?/removeUser">
                         <button type="submit" class="btn btn-sm btn-primary">
                             <i class="bx bx-log-out opacity-70 me-2"></i>
                             Remove User From Group

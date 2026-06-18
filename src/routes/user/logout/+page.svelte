@@ -5,14 +5,12 @@
     import Page from '$lib/components/Page.svelte';
 </script>
 
-<Page>
-    <Section
-        title="Logout"
-        icon="log-out"
-        center={true}
-        containerClasses="min-w-xs"
-    >
-        <h1>You have successfully logged out!</h1>
-        <ArrowButton href={resolve('/user/login')}>Login</ArrowButton>
-    </Section>
+<Page title="Logout" icon="door-open-alt">
+    <div class="w-xs">
+        <h1 class="text-xl">You have successfully logged out!</h1>
+        <div class="flex flex-row gap-4">
+            <ArrowButton href={resolve('/user/login')}>Login</ArrowButton>
+            <ArrowButton href={resolve('/')}>Home</ArrowButton>
+        </div>
+    </div>
 </Page>

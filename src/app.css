@@ -22,6 +22,7 @@
     --color-nasa-red-shade: rgb(182, 1, 9);
     --color-nasa-blue: rgb(28, 103, 227);
     --color-nasa-blue-tint: rgb(40, 139, 255);
+    --color-nasa-blue-lite: rgb(173, 206, 255);
     --color-nasa-blue-shade: rgb(11, 61, 145);
     --color-nasa-orange: rgb(234, 111, 36);
     --color-nasa-green: rgb(71, 218, 132);
@@ -46,8 +47,8 @@
     --color-neutral-content: oklch(98% 0.003 247.858);
     --color-info: var(--color-nasa-blue);
     --color-info-content: oklch(97% 0.014 254.604);
-    --color-success: var(--color-nasa-blue);
-    --color-success-content: oklch(97% 0.021 166.113);
+    --color-success: var(--color-nasa-green);
+    --color-success-content: var(--color-nasa-black);
     --color-warning: var(--color-nasa-orange);
     --color-warning-content: oklch(98% 0.026 102.212);
     --color-error: var(--color-nasa-red);

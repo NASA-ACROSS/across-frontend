@@ -1,13 +1,17 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { TokensCookie, UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 
 // for information about these interfaces
 declare global {
     namespace App {
-        // interface Error { }
+        interface Error {
+            message: string;
+            errorId: string;
+        }
         interface Locals {
-            user: UserCredentialsCookie | undefined;
+            user?: UserCredentialsCookie;
+            tokens?: TokensCookie;
         }
         // interface PageData {}
         // interface PageState {}

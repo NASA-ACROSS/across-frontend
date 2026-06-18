@@ -1,29 +1,13 @@
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
-import { UserCredentials } from '$lib/types/User/UserCredentials';
 import { CONFIG } from '../../../config/config';
-import { type Cookies } from '@sveltejs/kit';
-import type { Paginate, Schedule } from '$lib/types/across/Schedule';
+import type { Schedule } from '$lib/types/across/Schedule';
+import type { Paginate } from '$lib/types/Paginate';
 
-export const getSchedules = async (userCookie: UserCredentialsCookie, cookies: Cookies, telescopeIds: string[]) => {
-    let accessToken;
-    if (userCookie) {
-        const userCredentials = new UserCredentials(userCookie);
-        accessToken = await userCredentials.getAccessToken(cookies);
-    }
-
+export const getSchedules = async (telescopeIds: string[], fetch: typeof window.fetch) => {
     const options: RequestInit = {
         method: 'GET',
     };
 
-    let headers = {};
-    if (accessToken) {
-        headers = {
-            Authorization: `Bearer ${accessToken}`,
-        };
-        options.headers = headers;
-    }
-
-    const url = new URL(`${CONFIG.API_URL}/schedule/`);
+    const url = new URL(`${CONFIG.ACROSS_SERVER_URL}/schedule/`);
     const params = {
         telescopeIds: telescopeIds.toString(),
     };

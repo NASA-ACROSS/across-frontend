@@ -4,16 +4,16 @@
     import Page from '$lib/components/Page.svelte';
 </script>
 
-<Page center={true}>
+<Page>
     <Section>
         <article class="prose">
             <div class="flex gap-5">
                 <h1>{$page.status}</h1>
-                <h1>{$page.error.message}</h1>
+                <h1>{$page.error?.message}</h1>
             </div>
 
             <h3>{$page.url}</h3>
-            {#if $page.error.errorId}
+            {#if $page.error}
                 <p>{$page.error.errorId}</p>
             {/if}
         </article>

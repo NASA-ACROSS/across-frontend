@@ -2,15 +2,14 @@ import type { RequestEvent } from './$types';
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { getObservatories } from '$lib/utils/across/getObservatories';
 import { getSchedules } from '$lib/utils/across/getSchedules';
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import type { Telescope } from '$lib/types/across/Telescope';
 import type { Observatory } from '$lib/types/across/Observatory';
-import type { Paginate, Schedule } from '$lib/types/across/Schedule';
+import type { Schedule } from '$lib/types/across/Schedule';
+import type { Paginate } from '$lib/types/Paginate';
 import { DateTime } from 'luxon';
 
-export async function load({ locals, cookies }: RequestEvent) {
-    const userCookie = locals?.user as UserCredentialsCookie;
-    const telescopes: Telescope[] = await getTelescopes(userCookie, cookies);
+export async function load({ fetch }: RequestEvent) {
+    const telescopes: Telescope[] = await getTelescopes(fetch);
     const telescopesDict = telescopes.reduce(
         (dict, telescope) => {
             dict[telescope.id] = telescope;
@@ -21,9 +20,9 @@ export async function load({ locals, cookies }: RequestEvent) {
 
     const telescopeIds = Object.keys(telescopesDict);
 
-    const observatories: Observatory[] = await getObservatories(userCookie, cookies);
+    const observatories: Observatory[] = await getObservatories(fetch);
 
-    const schedules: Paginate<Schedule> = await getSchedules(userCookie, cookies, telescopeIds);
+    const schedules: Paginate<Schedule> = await getSchedules(telescopeIds, fetch);
 
     // assign latest_data_date from schedules
     for (const telescopeId of telescopeIds) {

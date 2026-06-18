@@ -5,6 +5,7 @@
     import type { GroupRole } from '$lib/types/User/GroupRole';
     import type { SubmitFunction } from '@sveltejs/kit';
     import type { UserGroup } from '$lib/types/User/UserGroup';
+    import Spinner from '$lib/components/Spinner.svelte';
 
     export let user: GroupUser | undefined;
     export let group: UserGroup;
@@ -12,9 +13,7 @@
     let selectedRole: GroupRole;
 
     // noRolesToAdd when every assignable role is found in the user's role list
-    $: noRolesToAdd = roles?.every((role) =>
-        user?.group_roles?.find((userRole) => userRole?.id == role?.id)
-    );
+    $: noRolesToAdd = roles?.every((role) => user?.group_roles?.find((userRole) => userRole?.id == role?.id));
 
     $: assignableRoles = roles?.reduce((assignableRoles, role) => {
         // if user does not have this role add it to assignable
@@ -65,12 +64,7 @@
         {:else}
             <div class="card-body">
                 {#each assignableRoles as role}
-                    <form
-                        id="{role.id}-role"
-                        method="post"
-                        use:enhance={enhancedForm}
-                        action="?/assignRole"
-                    >
+                    <form id="{role.id}-role" method="post" use:enhance={enhancedForm} action="?/assignRole">
                         <div class="flex flex-row gap-2">
                             <button
                                 class="btn btn-info w-15 text-xl"
@@ -79,11 +73,7 @@
                                     selectedRole = role;
                                 }}
                                 >{#if isAssigningRole && selectedRole == role}
-                                    <span
-                                        class="loading loading-spinner"
-                                        role="status"
-                                        aria-hidden="true"
-                                    ></span>
+                                    <Spinner />
                                 {:else}
                                     +
                                 {/if}</button

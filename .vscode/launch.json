@@ -3,9 +3,61 @@
     "configurations": [
         {
             "command": "npm run dev",
-            "name": "Run development server",
+            "name": "LOCAL",
             "request": "launch",
-            "type": "node-terminal"
+            "type": "node-terminal",
+            "env": {
+                "PUBLIC_BUILD_VERSION": "local",
+                "PUBLIC_RUNTIME_ENV": "local"
+            }
+        },
+        {
+            "command": "npm run dev",
+            "name": "FEAT1",
+            "request": "launch",
+            "type": "node-terminal",
+            "env": {
+                "PUBLIC_RUNTIME_ENV": "feat1",
+                "APP_ENV": "across-plat-ue2-feat1",
+                "AWS_PROFILE": "Project-Admin",
+                "ACROSS_SERVER_ID": "",
+                "ACROSS_SERVER_SECRET": ""
+            }
+        },
+        {
+            "command": "npm run dev",
+            "name": "DEV",
+            "request": "launch",
+            "type": "node-terminal",
+            "env": {
+                "PUBLIC_RUNTIME_ENV": "dev",
+                "ACROSS_SERVER_ID": "",
+                "ACROSS_SERVER_SECRET": "",
+                "APP_ENV": "across-plat-ue2-dev",
+                "AWS_PROFILE": "Project-Admin"
+            }
+        },
+        {
+            "command": "npm run dev",
+            "name": "STAGING",
+            "request": "launch",
+            "type": "node-terminal",
+            "env": {
+                "PUBLIC_RUNTIME_ENV": "staging",
+                "APP_ENV": "across-plat-ue2-staging",
+                "AWS_PROFILE": "Project-Admin"
+            }
+        },
+        {
+            "command": "npm run dev",
+            "name": "PROD",
+            "request": "launch",
+            "type": "node-terminal",
+            "env": {
+                "PUBLIC_RUNTIME_ENV": "prod",
+                "APP_ENV": "across-plat-ue2-prod",
+                "AWS_PROFILE": "Project-Admin"
+            }
         }
     ]
 }

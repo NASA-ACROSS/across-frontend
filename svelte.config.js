@@ -9,7 +9,7 @@ const config = {
 
     kit: {
         alias: {
-            $config: 'config',
+            $config: 'src/config',
         },
         paths: {
             relative: false,

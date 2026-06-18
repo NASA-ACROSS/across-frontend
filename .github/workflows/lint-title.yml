@@ -1,0 +1,19 @@
+name: Lint Title
+on:
+  pull_request:
+    branches: ['main']
+    types: [opened, reopened, edited]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  do:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: NASA-ACROSS/github-action-commitlint@v1.0.1

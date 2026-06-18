@@ -1,12 +1,14 @@
-import { emailRegex } from '$lib/utils/regex/emailRegex.js';
-import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex.js';
-import { validate } from '$lib/utils/regex/validate.js';
-import { CONFIG } from '../../../config/config.js';
+import { emailRegex } from '$lib/utils/regex/emailRegex';
+import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
+import { validate } from '$lib/utils/regex/validate';
+import { CONFIG } from '../../../config/config';
 import { fail, redirect } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
-import type { RequestEvent } from './$types.js';
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie.js';
 import { resolve } from '$app/paths';
+import { autoLogin } from '$lib/utils/user/autoLogin.js';
+import type { RequestEvent } from './$types';
+import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import guards from '$lib/utils/guards';
 
 // rate limit is defined as [number, unit]
 // see documentation for more info
@@ -19,39 +21,25 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export function load({ locals }: RequestEvent) {
+    guards.localOnlyRoute();
+
     const userCookie = locals?.user as UserCredentialsCookie;
-    // Redirect on load when user is logged in
+    // Redirect to profile page when user is logged in
     if (userCookie) {
-        throw redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('/user/profile'));
     }
 }
 
 export const actions = {
     default: async (event: RequestEvent) => {
-        const { request } = event;
+        const { request, fetch } = event;
         const data = await request.formData();
 
         // validate and sanitize input
-        const firstname = validate(
-            data.get('firstname') as string,
-            backendAlphaNumRegex,
-            'firstname'
-        );
-        const lastname = validate(
-            data.get('lastname') as string,
-            backendAlphaNumRegex,
-            'lastname'
-        );
-        const username = validate(
-            data.get('username') as string,
-            backendAlphaNumRegex,
-            'username'
-        );
-        const email = validate(
-            data.get('email') as string,
-            emailRegex,
-            'email'
-        );
+        const firstname = validate(data.get('firstname') as string, backendAlphaNumRegex, 'firstname');
+        const lastname = validate(data.get('lastname') as string, backendAlphaNumRegex, 'lastname');
+        const username = validate(data.get('username') as string, backendAlphaNumRegex, 'username');
+        const email = validate(data.get('email') as string, emailRegex, 'email');
 
         const user_post_data = {
             first_name: firstname,
@@ -62,12 +50,7 @@ export const actions = {
         };
 
         // reject if any inputs are null after sanitization, this should never happen
-        if (
-            firstname === null ||
-            lastname === null ||
-            username === null ||
-            email === null
-        ) {
+        if (firstname === null || lastname === null || username === null || email === null) {
             console.error(
                 `ERROR: could not validate user input to register user, something is null.`,
                 JSON.stringify(user_post_data, null, 2)
@@ -91,34 +74,27 @@ export const actions = {
 
         const options = {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${CONFIG.API_TOKEN}`,
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user_post_data),
         };
 
         let response;
         try {
-            response = await fetch(`${CONFIG.API_URL}/user`, options);
+            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user`, options);
         } catch (error: unknown) {
             const errorLog = `ERROR: registering [${email}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
+            console.error(errorLog, error);
             return fail(500, { error: errorLog, fail: true });
         }
 
-        if (response.status == 403) {
-            console.error(
-                `ERROR: API not accessible or no API TOKEN not valid`
-            );
-            return fail(500, { fail: true });
+        if (response.status == 401) {
+            console.error(`ERROR: Unauthenticated while registering email`, { email, status: response.status });
+            return fail(401, { fail: true });
         }
 
         if (response.status == 409) {
             const errorResponse = (await response.json()) as { detail: string };
-            console.error(
-                `ERROR: user already exists  [${email}, ${username}] at [${Date.now()}] with status code [409]`
-            );
+            console.error(`ERROR: user already exists  [${email}, ${username}] at [${Date.now()}] with status code [409]`);
             return fail(500, {
                 error: errorResponse.detail,
                 userAlreadyExists: true,
@@ -126,11 +102,11 @@ export const actions = {
         }
 
         if (response.status == 500 || response.status == 422) {
-            console.error(
-                `ERROR: register user with [${email}, ${username}] at [${Date.now()}] with status code [${response.status}]`
-            );
+            console.error(`ERROR: register user with [${email}, ${username}] at [${Date.now()}] with status code [${response.status}]`);
             return fail(500, { fail: true });
         }
+
+        await autoLogin(response);
 
         return { success: true, firstname, lastname, username, email };
     },

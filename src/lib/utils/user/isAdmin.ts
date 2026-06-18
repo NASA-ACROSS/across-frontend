@@ -10,22 +10,15 @@ import type { GroupRole } from '$lib/types/User/GroupRole';
  * @returns
  */
 export const isAdmin = (user: User, group: UserGroup): boolean => {
-    const adminPermissionName = 'group:user:write';
+    const adminPermissionName = 'group:all:write';
 
     // find group.roles which contain adminPermissionName
-    const adminRoles = group.roles.reduce(
-        (roles: GroupRole[], role: GroupRole) => {
-            if (
-                role.permissions.find(
-                    (permission) => permission.name == adminPermissionName
-                )
-            ) {
-                roles.push(role);
-            }
-            return roles;
-        },
-        [] as GroupRole[]
-    );
+    const adminRoles = group.roles.reduce((roles: GroupRole[], role: GroupRole) => {
+        if (role.permissions.find((permission) => permission.name == adminPermissionName)) {
+            roles.push(role);
+        }
+        return roles;
+    }, [] as GroupRole[]);
 
     // user has at least one adminRole
     const foundUserAdminRole = user?.group_roles?.find((user_group_role) =>

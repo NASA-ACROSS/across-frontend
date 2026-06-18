@@ -9,7 +9,6 @@
     import AssignRole from './_components/AssignRole.svelte';
     import UserDetailCard from './_components/UserDetailCard.svelte';
     import type { GroupUser } from '$lib/types/User/GroupUser';
-    import type { User } from '$lib/types/User/User';
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
 
@@ -27,21 +26,15 @@
         users = data.groupData.users;
 
         if (selectedUser) {
-            selectedUser =
-                users.find((user: User) => user.id == selectedUser?.id) ||
-                undefined;
+            selectedUser = users.find((user: GroupUser) => user.id == selectedUser?.id) || undefined;
         }
     });
 </script>
 
-<Page>
-    <Section title={'Manage - ' + group.name} icon="edit">
-        <div slot="buttons">
-            <a class="btn btn-info text-lg" href={resolve('/user/profile')}
-                >← <i class="bx bx-user mx-2"></i>Profile</a
-            >
-        </div>
-    </Section>
+<Page title={'Group Management - ' + group.name} icon="group">
+    <div slot="buttons">
+        <a class="btn btn-info text-lg" href={resolve('/user/profile')}>← <i class="bx bx-user mx-2"></i>Profile</a>
+    </div>
 
     <InviteUser {group} {form}></InviteUser>
     <InvitedUsers {invitedUsers}></InvitedUsers>

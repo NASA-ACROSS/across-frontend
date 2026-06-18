@@ -1,11 +1,15 @@
 <script lang="ts">
     import { asset, resolve } from '$app/paths';
     import { page } from '$app/state';
-
+    import type { Header, Link } from '$lib/types/navigation';
     import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+    import LocalOnlyRender from './dev/LocalOnlyRender.svelte';
+    import MobileHeader from './MobileHeader.svelte';
+    import NavHeader from './NavHeader.svelte';
+    import NavLink from './NavLink.svelte';
 
+    export let navItems: Header[];
     export let user: UserCredentialsCookie | undefined;
-    export let API_URL: string = 'http://127.0.0.1:8000/docs';
 
     $: currentPath = page.url.pathname;
 
@@ -26,92 +30,45 @@
                 </svg>
             </button>
             <ul class="menu menu-xl w-screen dropdown-content bg-primary text-primary-content z-1 -ms-2 pb-5">
-                <li>
-                    <a>Data</a>
-                    <ul class="p-2">
-                        <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/schedules')}>Schedules</a>
-                        </li>
-                        <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/observations')}>Observations</a>
-                        </li>
-                        <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/observatories')}>Observatories</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a>Tools</a>
-                    <ul>
-                        <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/visibility-calculator')}>Visibility Calculator</a>
-                        </li>
-                        <li class="hover:underline decoration-dashed">
-                            <a href={resolve('/ingestion-status')}>Data Ingestion Status</a>
-                        </li>
-                    </ul>
-                </li>
+                {#each navItems as header}
+                    {#if header.localOnly}
+                        <LocalOnlyRender>
+                            <MobileHeader {header} />
+                        </LocalOnlyRender>
+                    {:else}
+                        <MobileHeader {header} />
+                    {/if}
+                {/each}
             </ul>
         </div>
         <a href={resolve('/')} role="button" class="text-xl font-bold flex flex-row items-center pl-3">
             <img src={asset('/assets/img/custom/logo-nasa.svg')} width="60" alt="NASA logo" />
-            <div class="align-center text-primary-content sm:hidden md:hidden lg:block hidden text-nowrap">Astrophysics Cross-Observatory Science Support</div>
+            <div class="align-center text-primary-content hidden lg:block text-nowrap">Astrophysics Cross-Observatory Science Support</div>
             <div class="align-center text-primary-content lg:hidden">ACROSS</div>
         </a>
     </div>
     <div class="navbar-end">
         <ul class="menu menu-horizontal px-1 hidden lg:flex lg:items-center">
-            <li>
-                <div class="dropdown dropdown-hover dropdown-end m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
-                    <div tabindex="0" class="text-lg font-bold text-primary-content" role="button">
-                        Data
-                        <div class="bx bx-chevron-down"></div>
-                    </div>
-                    <ul class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm">
-                        <li>
-                            <a href={resolve('/schedules')}>Schedules</a>
-                        </li>
-                        <li>
-                            <a href={resolve('/observations')}>Observations</a>
-                        </li>
-                        <li>
-                            <a href={resolve('/observatories')}>Observatories</a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li>
-                <div class="dropdown dropdown-hover dropdown-end m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
-                    <div tabindex="0" class="text-lg font-bold text-primary-content" role="button">
-                        Tools
-                        <div class="bx bx-chevron-down"></div>
-                    </div>
-                    <ul class="dropdown-content menu bg-primary text-primary-content rounded-box z-1 w-52 p-2 shadow-sm">
-                        <li>
-                            <a href={resolve('/visibility-calculator')}>Visibility Calculator</a>
-                        </li>
-                        <li>
-                            <a href={resolve('/ingestion-status')}>Data Ingestion Status</a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li>
-                <div class="m-0.75 hover:m-0 hover:border-3 hover:border-solid hover:border-info">
-                    <a class="text-lg font-bold text-primary-content" data-sveltekit-reload href={API_URL + '/docs'}>API </a>
-                </div>
-            </li>
+            {#each navItems as header}
+                {#if header.localOnly}
+                    <LocalOnlyRender>
+                        <NavHeader {header} />
+                    </LocalOnlyRender>
+                {:else}
+                    <NavHeader {header} />
+                {/if}
+            {/each}
         </ul>
     </div>
 
-    {#key currentPath}
-        <!-- profile -->
-        {#key userEmail}
-            {#if userEmail}
-                <a href={resolve('/user/profile')} class="text-sm font-bold text-primary-content m-2">{userEmail}</a>
-            {/if}
-        {/key}
-        <div class="flex-none">
+    <LocalOnlyRender>
+        {#key currentPath}
+            <!-- profile -->
+            {#key userEmail}
+                {#if userEmail}
+                    <a href={resolve('/user/profile')} class="text-sm font-bold text-primary-content m-2">{userEmail}</a>
+                {/if}
+            {/key}
             <div class="dropdown dropdown-hover dropdown-end pr-3">
                 <a href={resolve('/user/profile')}>
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar avatar-placeholder -my-3">
@@ -122,28 +79,19 @@
                         </div>
                     </div>
                 </a>
-                <ul role="link" class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow">
+
+                <ul class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow text-primary-content">
                     {#if user}
-                        <li>
-                            <a class="justify-between text-primary-content hover:bg-info" href={resolve('/user/profile')}> Profile </a>
-                        </li>
-                        <li>
-                            <a
-                                class="text-primary-content hover:bg-accent hover:text-primary"
-                                data-sveltekit-preload-data="false"
-                                href={resolve('/user/logout')}>Logout</a
-                            >
-                        </li>
+                        <NavLink link={{ label: 'Profile', href: resolve('/user/profile') }} />
+                        <div class="hover:bg-accent hover:text-primary">
+                            <NavLink link={{ label: 'Logout', href: resolve('/user/logout'), reload: true }} />
+                        </div>
                     {:else}
-                        <li>
-                            <a class="justify-between text-primary-content" href={resolve('/user/register')}> Create Account </a>
-                        </li>
-                        <li>
-                            <a class="text-primary-content" href={resolve('/user/login')}>Login</a>
-                        </li>
+                        <NavLink link={{ label: 'Create Account', href: resolve('/user/register') }} />
+                        <NavLink link={{ label: 'Login', href: resolve('/user/login') }} />
                     {/if}
                 </ul>
             </div>
-        </div>
-    {/key}
+        {/key}
+    </LocalOnlyRender>
 </div>

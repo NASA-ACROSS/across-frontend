@@ -1,7 +1,7 @@
 <script lang="ts">
     export let type: 'error' | 'warning' | 'success' = 'success';
 
-    let styleClass = 'text-success';
+    let styleClass = 'text-info';
 
     $: if (type === 'error') {
         styleClass = 'text-error';

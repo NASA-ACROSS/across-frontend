@@ -12,7 +12,7 @@ export default tsEslint.config(
     },
 
     // Load predefined config
-    js.configs.recommended,
+    // js.configs.recommended,
 
     // TypeScript
     {

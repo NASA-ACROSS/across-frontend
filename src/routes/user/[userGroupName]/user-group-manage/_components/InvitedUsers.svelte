@@ -28,18 +28,13 @@
     };
 </script>
 
-<Section title="Recently Invited Users" icon="time">
+<Section title="Recently Invited Users" icon="inbox">
     <div>
         {#if !invitedUsers?.length}
             <p>No pending invites</p>
         {:else}
             {#each invitedUsers as userInvite}
-                <form
-                    id="{userInvite.id}-invite"
-                    method="post"
-                    use:enhance={enhancedForm}
-                    action="?/deleteInvite"
-                >
+                <form id="{userInvite.id}-invite" method="post" use:enhance={enhancedForm} action="?/deleteInvite">
                     <div class="input-group-lg flex flex-row gap-3 pb-3">
                         <button
                             class="btn btn-primary"

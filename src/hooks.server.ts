@@ -36,6 +36,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promise<Response> => {
     // Add an authorization header to internal API calls
     if (request.url.startsWith(CONFIG.ACROSS_SERVER_URL)) {
+        // set external client ip for core-server to parse for rate-limiting
+        request.headers.set('x-real-ip', event.getClientAddress());
+
         if (request.url.endsWith('/auth/token') || request.url.endsWith('/auth/refresh')) {
             // pass-thru to prevent infinite loops of token refreshing
             return fetch(request);

@@ -1,6 +1,6 @@
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
-import { type ActionFailure } from '@sveltejs/kit';
+import { fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 
 export const load = () => {
@@ -21,6 +21,30 @@ export const actions = {
         const childLogger = logger.child({ context: 'logTest' });
         childLogger.info({ msg: 'Info child log in Component Playground server page', fizz: 'buzz' });
 
-        return { type: 'success', message: 'Log output written to console' };
+        return { type: 'success', message: 'Log output written to console', _action: 'logTest' };
+    },
+    mockFormSubmitFeedback: async ({ request }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
+        guards.localOnlyRoute();
+        const data = await request.formData();
+        const feedbackType = data.get('feedbackType') as string;
+
+        switch (feedbackType) {
+            case 'success':
+                return { type: 'success', message: 'Mock operation completed successfully!', _action: 'mockFormSubmitFeedback' };
+            case 'warning':
+                return {
+                    type: 'warning',
+                    message: 'This is a mock warning message. Something may need attention.',
+                    _action: 'mockFormSubmitFeedback',
+                };
+            case 'error':
+                return fail(400, {
+                    type: 'error',
+                    message: 'A mock error occurred while processing your request.',
+                    _action: 'mockFormSubmitFeedback',
+                });
+            default:
+                return fail(400, { type: 'error', message: `Unknown feedback type: ${feedbackType}`, _action: 'mockFormSubmitFeedback' });
+        }
     },
 };

@@ -7,6 +7,7 @@
     import { resolve } from '$app/paths';
     import MultiSelectExample from './_components/MultiSelectExample.svelte';
     import DialogExamples from './_components/DialogExamples.svelte';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
     import logger from '$lib/logger';
     import { enhance } from '$app/forms';
 
@@ -52,11 +53,36 @@
 
     <Section title="Logging">
         <p class="text-lg text-gray-700">Check the respective console for logs.</p>
-        <div class="flex gap-2">
+        <div class="flex gap-2 items-center">
             <button class="btn btn-info btn-med text-white px-4 py-2" on:click={logToBrowserConsole}> Log Browser Messages </button>
             <form method="post" use:enhance action="?/logTest">
                 <button type="submit" class="btn btn-info btn-med text-white px-4 py-2"> Log Server Messages </button>
             </form>
+            <FormSubmitFeedback action="logTest" />
         </div>
+    </Section>
+
+    <Section title="FormSubmitFeedback Component">
+        <p class="text-lg text-gray-700 mb-4">Select a feedback type and submit to see FormSubmitFeedback render the response.</p>
+        <form method="post" use:enhance action="?/mockFormSubmitFeedback">
+            <div class="flex gap-4 mb-4 w-fit font-bold">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input class="radio radio-info" type="radio" name="feedbackType" value="success" checked />
+                    <span class="text-info">Success</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input class="radio radio-warning" type="radio" name="feedbackType" value="warning" />
+                    <span class="text-warning">Warning</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input class="radio radio-error" type="radio" name="feedbackType" value="error" />
+                    <span class="text-error">Error</span>
+                </label>
+            </div>
+            <div class="flex gap-2 items-center">
+                <button type="submit" class="btn btn-info btn-med text-white px-4 py-2"> Submit </button>
+                <FormSubmitFeedback action="mockFormSubmitFeedback" />
+            </div>
+        </form>
     </Section>
 </Page>

@@ -32,7 +32,7 @@
     $: if (form?.type === 'success' && form?._action === 'updateUserInformation') {
         originalUserData = structuredClone(data.user);
     }
-    console.log(form);
+
     // safari browser should force a reload on cached navigation using back button
     if (browser) {
         window.onpageshow = function (event) {
@@ -165,7 +165,7 @@
                         />
                     </div>
                 </div>
-                <div class="flex justify-end items-center">
+                <div class="flex justify-end items-center text-lg">
                     <FormSubmitFeedback action="updateUserInformation" />
                     <button type="submit" class="btn text-lg btn-info ml-5" disabled={isUserDataUnchanged}> Update </button>
                 </div>

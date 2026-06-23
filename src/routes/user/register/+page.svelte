@@ -90,7 +90,7 @@
                     </div>
                 </div>
 
-                <div class="flex justify-end gap-3 items-center">
+                <div class="flex justify-end gap-3 text-lg items-center">
                     <FormSubmitFeedback />
                     <button class="btn btn-lg btn-info" type="submit" disabled={form?.type === 'success'}>Register</button>
                 </div>

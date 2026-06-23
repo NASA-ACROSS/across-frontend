@@ -7,11 +7,8 @@ const logger: Logger = (() => {
     const options: LoggerOptions = {
         // format the level in the log to be uppercase.
         formatters: {
-            level: (label, number) => {
-                return {
-                    level: number,
-                    levelLabel: label.toUpperCase(),
-                };
+            level: (number) => {
+                return { level: number };
             },
         },
     };

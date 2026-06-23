@@ -3,6 +3,7 @@ import type { TokensCookie, UserCredentialsCookie } from '$lib/types/User/UserCr
 import { decryptCookie } from './decryptCookie';
 import { clearAuth } from './clearAuth';
 import { PUBLIC_CONFIG } from '$config/config.public';
+import logger from '$lib/logger';
 
 export async function hydrateAuthUser(event: RequestEvent) {
     // clear defaults every request
@@ -17,8 +18,8 @@ export async function hydrateAuthUser(event: RequestEvent) {
 
         if (tokens) event.locals.tokens = tokens;
         if (user) event.locals.user = user;
-    } catch (e) {
-        console.error('[ERROR] hydrateAuth failed', e);
+    } catch (err: unknown) {
+        logger.error({ err }, 'hydrateAuth failed, clearing auth cookies to prevent further issues.');
         clearAuth(event);
     }
 

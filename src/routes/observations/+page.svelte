@@ -12,6 +12,7 @@
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
+    import logger from '$lib/logger';
 
     export let data;
 
@@ -180,8 +181,8 @@
                     return col;
                 });
                 selectedColumns = availableColumns.filter((col) => col.selected);
-            } catch (e) {
-                console.error('Error parsing column cookie', e);
+            } catch (err) {
+                logger.error({ err }, 'Error parsing column cookie');
             }
         }
     }

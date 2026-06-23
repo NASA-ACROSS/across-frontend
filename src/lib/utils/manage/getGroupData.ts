@@ -1,3 +1,4 @@
+import logger from '$lib/logger';
 import type { Group } from '$lib/types/User/Group';
 
 export const getGroupData = async (userGroupId: string, fetch: typeof globalThis.fetch): Promise<Group> => {
@@ -6,7 +7,7 @@ export const getGroupData = async (userGroupId: string, fetch: typeof globalThis
     });
 
     if (!response.ok) {
-        console.error(`ERROR: getting user group data at with status code [${response.status}]`);
+        logger.error({ status: response.status, userGroupId }, 'Failed fetching user group data');
         throw new Error('Unexpected Error while fetching user group data');
     }
 

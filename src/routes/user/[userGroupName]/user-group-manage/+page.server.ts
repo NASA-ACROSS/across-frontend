@@ -9,6 +9,7 @@ import { getGroupData } from '$lib/utils/manage/getGroupData';
 import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
 import { isAdmin } from '$lib/utils/user/isAdmin';
 import guards from '$lib/utils/guards';
+import logger from '$lib/logger';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();
@@ -41,7 +42,7 @@ export const actions = {
         const email = data.get('email') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(`invite user with email: ${email} groupId: ${groupId}`);
+        logger.info({ msg: `Inviting user.`, email, groupId });
 
         const groupInviteBody = {
             receiver_email: email,
@@ -58,25 +59,25 @@ export const actions = {
         let response;
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/invite`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: inviting user to group [${email}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
+        } catch (err: unknown) {
+            const errorLog = `Failed inviting user to group.`;
+            logger.error({ err, email, groupId }, errorLog);
             return fail(500, { error: errorLog, fail: true });
         }
 
         if (response.status == 500) {
-            console.error(`ERROR: inviting user to group [${email}] at [${Date.now()}] with status code [500]`);
+            logger.error({ email, groupId, status: response.status }, `Failed inviting user to group`);
             return fail(500, { fail: true });
         }
 
         if (response.status == 409) {
-            console.log(`Attempted to invite a user [${email}] to group id [${groupId}] who was already in the group`);
+            logger.warn({ msg: `Attempted to invite a user who was already in the group.`, email, groupId });
             return { userInGroup: true };
         }
 
         if (response.status == 404) {
             const errorResponse = (await response.json()) as ErrorResponse;
-            console.error(`ERROR: inviting user to group NOT FOUND [${email}] at [${Date.now()}] with status code [404]`);
+            logger.error({ email, groupId, status: response.status }, `User not found to invite to group.`);
             return fail(500, {
                 error: errorResponse.detail,
                 invalidEmail: true,
@@ -91,7 +92,7 @@ export const actions = {
         const userInviteId = data.get('userInviteId') as string;
         const userGroupId = data.get('userGroupId') as string;
 
-        console.log(`delete invite userInviteId: ${userInviteId} userGroupId: ${userGroupId}`);
+        logger.info({ msg: `Deleting user invite.`, userInviteId, userGroupId });
 
         const options = {
             method: 'DELETE',
@@ -103,20 +104,20 @@ export const actions = {
         let response;
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${userGroupId}/invite/${userInviteId}`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
+        } catch (err: unknown) {
+            const errorLog = `Failed deleting user invite.`;
+            logger.error({ err, userInviteId, userGroupId }, errorLog);
             return fail(500, { error: errorLog, fail: true });
         }
 
         if (response.status == 500) {
-            console.error(`ERROR: deleting user invite id [${userInviteId}] at [${Date.now()}] with status code [500]`);
+            logger.error({ userInviteId, userGroupId, status: response.status }, `Failed deleting user invite.`);
             return fail(500, { fail: true });
         }
 
         if (response.status == 400) {
             const errorResponse = (await response.json()) as ErrorResponse;
-            console.error(`ERROR: deleting user invite id [${userInviteId}] NOT FOUND at [${Date.now()}] with status code [400]`);
+            logger.error({ userInviteId, userGroupId, status: response.status }, `Failed deleting user invite.`);
             return fail(500, {
                 error: errorResponse.detail,
                 invalidEmail: true,
@@ -131,7 +132,7 @@ export const actions = {
         const userId = data.get('userId') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(`remove user from group userId: ${userId} userGroupId: ${groupId}`);
+        logger.info({ msg: `Removing user from group.`, userId, groupId });
 
         const options = {
             method: 'DELETE',
@@ -143,16 +144,14 @@ export const actions = {
         let response;
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
+        } catch (err: unknown) {
+            const errorLog = `Failed removing user from group.`;
+            logger.error({ err, userId, groupId }, errorLog);
             return fail(500, { error: errorLog, fail: true });
         }
 
         if (response.status == 500) {
-            console.error(
-                `ERROR: removing user from group userId: ${userId} groupId: ${groupId} at [${Date.now()}] with status code [500]`
-            );
+            logger.error({ userId, groupId, status: response.status }, `Failed removing user from group.`);
             return fail(500, { fail: true });
         }
 
@@ -165,7 +164,7 @@ export const actions = {
         const roleId = data.get('roleId') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(`assign user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId}`);
+        logger.info({ msg: `Assigning user role.`, groupId, userId, roleId });
 
         const options = {
             method: 'PUT',
@@ -178,15 +177,14 @@ export const actions = {
 
         try {
             res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: assigning user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
+        } catch (err: unknown) {
+            const errorLog = `Failed assigning user role.`;
+            logger.error({ err, groupId, userId, roleId }, errorLog);
             return fail(500, { error: errorLog, fail: true });
         }
 
         if (res.status >= 300) {
-            console.error('SERVER ERROR: assigning user role.', { groupId, userId, roleId, status: res.status, time: Date.now() });
-
+            logger.error({ groupId, userId, roleId, status: res.status }, `Failed assigning user role.`);
             return fail(res.status, { fail: true });
         }
 
@@ -199,7 +197,7 @@ export const actions = {
         const roleId = data.get('roleId') as string;
         const groupId = data.get('groupId') as string;
 
-        console.log(`remove user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId}`);
+        logger.info({ msg: `Removing user role.`, groupId, userId, roleId });
 
         const options = {
             method: 'DELETE',
@@ -210,9 +208,9 @@ export const actions = {
 
         try {
             await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: removing user role for groupId: ${groupId} userId: ${userId} roleId: ${roleId} at [${Date.now()}]`;
-            console.error(errorLog, JSON.stringify(error));
+        } catch (err: unknown) {
+            const errorLog = `Failed removing user role.`;
+            logger.error({ err, groupId, userId, roleId }, errorLog);
             return fail(500, { error: errorLog, fail: true });
         }
 

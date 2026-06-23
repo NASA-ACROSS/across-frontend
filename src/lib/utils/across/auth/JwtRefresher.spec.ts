@@ -37,8 +37,6 @@ describe('JwtRefresher', () => {
         },
     };
 
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-
     beforeEach(() => {
         vi.clearAllMocks();
         vi.spyOn(global, 'fetch').mockResolvedValue(fakeTokenRes as unknown as Response);
@@ -106,11 +104,6 @@ describe('JwtRefresher', () => {
         it('should return true for expired access token', () => {
             const result = JwtRefresher.IsExpired('expired');
             expect(result).toBe(true);
-        });
-
-        it('should log a debug message with isExpired result', () => {
-            JwtRefresher.IsExpired('expired');
-            expect(debugSpy).toHaveBeenCalledWith('Checking token expiration', { isExpired: true });
         });
     });
 

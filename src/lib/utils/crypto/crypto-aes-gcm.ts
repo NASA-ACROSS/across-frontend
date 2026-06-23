@@ -8,7 +8,7 @@
  *
  * @example
  *   const ciphertext = await aesGcmEncrypt('my secret text', 'pw');
- *   aesGcmEncrypt('my secret text', 'pw').then(function(ciphertext) { console.log(ciphertext); });
+ *   aesGcmEncrypt('my secret text', 'pw').then(function(ciphertext) { logger.info(ciphertext); });
  */
 export async function aesGcmEncrypt(plaintext: string, password: string) {
     const pwUtf8 = new TextEncoder().encode(password); // encode password as UTF-8
@@ -42,7 +42,7 @@ export async function aesGcmEncrypt(plaintext: string, password: string) {
  *
  * @example
  *   const plaintext = await aesGcmDecrypt(ciphertext, 'pw');
- *   aesGcmDecrypt(ciphertext, 'pw').then(function(plaintext) { console.log(plaintext); });
+ *   aesGcmDecrypt(ciphertext, 'pw').then(function(plaintext) { logger.info(plaintext); });
  */
 export async function aesGcmDecrypt(ciphertext: string, password: string) {
     const pwUtf8 = new TextEncoder().encode(password); // encode password as UTF-8

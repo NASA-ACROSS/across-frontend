@@ -8,7 +8,7 @@ import { CONFIG } from '$config/config';
 import { webserverCredentialsManager } from '$lib/utils/across/auth/WebserverCredentialsManager';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 import { hydrateAuthUser } from '$lib/handles/hydrateAuthUser';
-import { setLogLevel } from '$lib/logger';
+import logger, { setLogLevel } from '$lib/logger';
 import { PUBLIC_CONFIG } from '$config/config.public';
 
 export const init: ServerInit = async () => {
@@ -79,14 +79,14 @@ export const handleError: HandleServerError = ({ error, event, message }) => {
 
     const errorLog = {
         errorId,
-        errorUrl: event?.url?.href,
+        url: event?.url?.href,
         clientAddress: event?.getClientAddress(),
         errorMessage,
         errorStack,
         errorCause,
     };
 
-    console.error(`[ERROR] Unhandled exception in ${event?.url?.toString()}`, errorLog);
+    logger.error({ msg: `Unhandled exception.`, ...errorLog });
 
     return {
         message,

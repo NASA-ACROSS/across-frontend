@@ -9,6 +9,7 @@ import { autoLogin } from '$lib/utils/user/autoLogin.js';
 import type { RequestEvent } from './$types';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import guards from '$lib/utils/guards';
+import logger from '$lib/logger';
 
 // rate limit is defined as [number, unit]
 // see documentation for more info
@@ -41,7 +42,7 @@ export const actions = {
         const username = validate(data.get('username') as string, backendAlphaNumRegex, 'username');
         const email = validate(data.get('email') as string, emailRegex, 'email');
 
-        const user_post_data = {
+        const user = {
             first_name: firstname,
             last_name: lastname,
             username,
@@ -51,10 +52,10 @@ export const actions = {
 
         // reject if any inputs are null after sanitization, this should never happen
         if (firstname === null || lastname === null || username === null || email === null) {
-            console.error(
-                `ERROR: could not validate user input to register user, something is null.`,
-                JSON.stringify(user_post_data, null, 2)
-            );
+            logger.error({
+                msg: `Could not validate user input to register user, something is null.`,
+                user,
+            });
             return fail(500, { failValidation: true });
         }
 
@@ -62,10 +63,12 @@ export const actions = {
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {
-            console.error(
-                `ERROR: rate-limiting at /register for email [${email}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds.`,
-                user_post_data
-            );
+            logger.error({
+                msg: 'Rate-limiting at /register',
+                email,
+                ip: event.getClientAddress(),
+                retryAfter: rateStatus.retryAfter,
+            });
             return fail(429, {
                 rateLimit: true,
                 retryAfter: rateStatus.retryAfter,
@@ -75,34 +78,34 @@ export const actions = {
         const options = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user_post_data),
+            body: JSON.stringify(user),
         };
 
         let response;
         try {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: registering [${email}] at [${Date.now()}]`;
-            console.error(errorLog, error);
+        } catch (err: unknown) {
+            const errorLog = `Request failed registering user`;
+            logger.error({ err }, errorLog);
             return fail(500, { error: errorLog, fail: true });
         }
 
-        if (response.status == 401) {
-            console.error(`ERROR: Unauthenticated while registering email`, { email, status: response.status });
+        if (response.status === 401) {
+            logger.error({ email, status: response.status }, `Unauthenticated while registering email`);
             return fail(401, { fail: true });
         }
 
-        if (response.status == 409) {
+        if (response.status === 409) {
             const errorResponse = (await response.json()) as { detail: string };
-            console.error(`ERROR: user already exists  [${email}, ${username}] at [${Date.now()}] with status code [409]`);
+            logger.error({ email, username, status: response.status }, `User already exists.`);
             return fail(500, {
                 error: errorResponse.detail,
                 userAlreadyExists: true,
             });
         }
 
-        if (response.status == 500 || response.status == 422) {
-            console.error(`ERROR: register user with [${email}, ${username}] at [${Date.now()}] with status code [${response.status}]`);
+        if (response.status === 500 || response.status === 422) {
+            logger.error({ email, username, status: response.status }, `Failed registering user.`);
             return fail(500, { fail: true });
         }
 

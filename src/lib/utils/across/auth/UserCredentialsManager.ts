@@ -7,6 +7,7 @@ import { JwtRefresher } from '$lib/utils/across/auth/JwtRefresher';
 import { CONFIG } from '$config/config';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { PUBLIC_CONFIG } from '$config/config.public';
+import logger from '$lib/logger';
 
 export class UserCredentialsManager {
     public static async GetAccessToken(cookies: Cookies, tokens?: TokensCookie) {
@@ -14,7 +15,7 @@ export class UserCredentialsManager {
 
         if (refreshed) {
             // if the tokens were refreshed, update the cookie with the new tokens
-            console.debug('Access token was refreshed; updating cookie with new tokens');
+            logger.debug('Access token was refreshed; updating cookie with new tokens');
             await this.SetCookie(cookies, PUBLIC_CONFIG.USER_TOKENS_COOKIE_NAME, { access_token, refresh_token });
         }
 
@@ -38,8 +39,8 @@ export class UserCredentialsManager {
 
         // short circuit for error status
         if (response.status != 200) {
-            console.error(`Login-verify failed`, {
-                time: Date.now(),
+            logger.error({
+                msg: 'Login verification failed',
                 status: response.status,
                 statusText: response.statusText,
             });

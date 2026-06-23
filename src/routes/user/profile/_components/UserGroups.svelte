@@ -3,6 +3,7 @@
     import { resolve } from '$app/paths';
     import Section from '$lib/components/Section.svelte';
     import Spinner from '$lib/components/Spinner.svelte';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
     import type { User } from '$lib/types/User/User';
     import type { UserGroup } from '$lib/types/User/UserGroup';
     import { isAdmin } from '$lib/utils/user/isAdmin';
@@ -18,6 +19,7 @@
         {#each userGroups as userGroup}
             <!-- Button addon on the right -->
             <form method="post" use:enhance={enhancedForm} action="?/leaveGroup">
+                <FormSubmitFeedback action="leaveGroup" />
                 <div class="input-group flex p-3 gap-3 bg-base-200">
                     <div class="text-xl text-center label text-primary-content btn btn-primary btn-active cursor-default">
                         <div>

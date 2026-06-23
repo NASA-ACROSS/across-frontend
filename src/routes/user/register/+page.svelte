@@ -2,7 +2,7 @@
     import { PUBLIC_CONFIG } from '$config/config.public';
     import Section from '$lib/components/Section.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
-    import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
     import Page from '$lib/components/Page.svelte';
     import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
@@ -30,7 +30,7 @@
                             pattern={frontendAlphaNumRegex}
                             title="First name (alphanumeric, 25 character max)"
                             value={form?.firstname ?? ''}
-                            disabled={form?.success}
+                            disabled={form?.type === 'success'}
                             autocomplete="off"
                             name="firstname"
                             type="text"
@@ -45,7 +45,7 @@
                             pattern={frontendAlphaNumRegex}
                             title="Last name (alphanumeric, 25 character max)"
                             value={form?.lastname ?? ''}
-                            disabled={form?.success}
+                            disabled={form?.type === 'success'}
                             autocomplete="off"
                             name="lastname"
                             type="text"
@@ -63,7 +63,7 @@
                             pattern={frontendAlphaNumRegex}
                             title="Username (alphanumeric, 25 character max)"
                             value={form?.username ?? ''}
-                            disabled={form?.success}
+                            disabled={form?.type === 'success'}
                             autocomplete="off"
                             name="username"
                             type="text"
@@ -82,7 +82,7 @@
                             title="Email"
                             type="email"
                             value={form?.email ?? ''}
-                            disabled={form?.success}
+                            disabled={form?.type === 'success'}
                             autocomplete="off"
                             name="email"
                             placeholder="Please enter your email"
@@ -91,29 +91,8 @@
                 </div>
 
                 <div class="flex justify-end gap-3 items-center">
-                    {#if form?.success}
-                        <FormInputFeedback>Please check your email for a verification link!</FormInputFeedback>
-                    {/if}
-                    {#if form?.userAlreadyExists}
-                        <FormInputFeedback type="error">Invalid Email or Username Specified. Account already exists.</FormInputFeedback>
-                    {/if}
-                    {#if form?.rateLimit}
-                        <FormInputFeedback type="error">
-                            You are being rate limited, please retry after {form?.retryAfter}
-                            seconds.
-                        </FormInputFeedback>
-                    {/if}
-                    {#if form?.failValidation}
-                        <FormInputFeedback type="error"
-                            >Form validation failed. Please try again. If this error persists, contact support.</FormInputFeedback
-                        >
-                    {/if}
-                    {#if form?.fail}
-                        <FormInputFeedback type="error"
-                            >Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback
-                        >
-                    {/if}
-                    <button class="btn btn-lg btn-info" type="submit" disabled={form?.success}>Register</button>
+                    <FormSubmitFeedback />
+                    <button class="btn btn-lg btn-info" type="submit" disabled={form?.type === 'success'}>Register</button>
                 </div>
             </form>
         </Fieldset>

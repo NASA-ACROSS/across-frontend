@@ -6,6 +6,7 @@
     import type { SubmitFunction } from '@sveltejs/kit';
     import type { UserGroup } from '$lib/types/User/UserGroup';
     import Spinner from '$lib/components/Spinner.svelte';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
 
     export let selectedUser: GroupUser | undefined;
     export let group: UserGroup;
@@ -76,6 +77,7 @@
                             <li class="flex justify-between mb-2">
                                 <span class="self-center text-lg">{userRole?.name}</span>
                                 <form id="{userRole.id}-role" method="post" use:enhance={enhancedForm} action="?/removeRole">
+                                    <FormSubmitFeedback action="removeRole" />
                                     <button
                                         class="btn btn-sm btn-accent"
                                         type="submit"
@@ -100,6 +102,7 @@
             <div class="card-body">
                 <div class="flex flex-row-reverse">
                     <form id="{selectedUser.id}-remove" method="post" use:enhance={enhancedForm} action="?/removeUser">
+                        <FormSubmitFeedback action="removeUser" />
                         <button type="submit" class="btn btn-sm btn-primary">
                             <i class="bx bx-log-out opacity-70 me-2"></i>
                             Remove User From Group

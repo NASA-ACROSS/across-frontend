@@ -1,6 +1,7 @@
 <script lang="ts">
     import Section from '$lib/components/Section.svelte';
     import Page from '$lib/components/Page.svelte';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
     import type { UserInvite } from '$lib/types/User/UserInvite';
 
     export let invitations: UserInvite[];
@@ -16,6 +17,7 @@
                         <button class="btn btn-info text-xl me-3 w-full" type="submit"
                             ><i class="bx bx-check-square fs-lg"></i>Accept</button
                         >
+                        <FormSubmitFeedback action="acceptInvite" />
                     </form>
                     <form class="flex-grow" method="post" action="?/rejectInvite">
                         <input id="userInviteId-{invitation.id}" hidden={true} name="userInviteId" bind:value={invitation.id} />
@@ -23,6 +25,7 @@
                             <i class="bx bx-no-entry fs-lg me-2"></i>
                             Reject</button
                         >
+                        <FormSubmitFeedback action="rejectInvite" />
                     </form>
                 </div>
 

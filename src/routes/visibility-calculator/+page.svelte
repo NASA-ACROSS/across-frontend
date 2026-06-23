@@ -98,7 +98,7 @@
         }
     });
 
-    const calculateVisibility: SubmitFunction<VisibilityWindowsData> = async ({ formData }) => {
+    const calculateVisibility: SubmitFunction = async ({ formData }) => {
         isLoading = true;
 
         const params = searchParams.serialize(formData);
@@ -108,16 +108,17 @@
         goto(url, { noScroll: true, invalidateAll: false, replaceState: true });
 
         return async ({ result }) => {
-            if (result.type === 'success') {
-                if (result.data) {
-                    visibilityWindowsData = result.data;
-                }
-            } else {
+            if (result.type === 'success' && result.data) {
+                const data = result.data as { visibilityWindowsData: VisibilityWindowsData };
+                visibilityWindowsData = data.visibilityWindowsData;
+            } else if (result.type === 'failure') {
+                const data = result.data as { message?: string };
                 visibilityWindowsData = {
                     jointVisibilityWindows: [],
                     visibilityWindowInstrumentIds: [],
                     observatoryVisibilityWindows: {},
-                    error: 'An error occurred while calculating visibility windows. Please contact support if it continues.',
+                    error:
+                        data?.message || 'An error occurred while calculating visibility windows. Please contact support if it continues.',
                 };
             }
 

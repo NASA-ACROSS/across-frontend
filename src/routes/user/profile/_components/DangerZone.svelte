@@ -1,6 +1,7 @@
 <script lang="ts">
     import Section from '$lib/components/Section.svelte';
     import Spinner from '$lib/components/Spinner.svelte';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
 
     const COUNTDOWN_LENGTH = 3;
 
@@ -22,6 +23,7 @@
 
 <Section title="Danger Zone" icon="bomb">
     <form method="post" action="?/deleteUser">
+        <FormSubmitFeedback action="deleteUser" />
         <!-- Delete User Modal -->
         {#if isDeleteModalOpen}
             <div class="fixed inset-0 bg-transparent flex items-center justify-center z-50">

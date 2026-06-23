@@ -68,7 +68,7 @@ export const actions = {
                 time: Date.now(),
                 err: error,
             });
-            return fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'createServiceAccount' });
         }
 
         if (!response.ok) {
@@ -80,7 +80,7 @@ export const actions = {
                 status: response.status,
                 err: errorResponseBody.detail,
             });
-            return fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'createServiceAccount' });
         }
 
         const serviceAccountSecret = (await response.json()) as ServiceAccountSecret;
@@ -88,7 +88,7 @@ export const actions = {
         setHeaders({
             'cache-control': 'no-store',
         });
-        return { type: 'success', serviceAccountSecret };
+        return { type: 'success', serviceAccountSecret, _action: 'createServiceAccount' };
     },
     deleteServiceAccount: async (event: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const { request, locals, fetch } = event;
@@ -125,7 +125,7 @@ export const actions = {
                 serviceAccountId: serviceAccountId,
                 err: error,
             });
-            return fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'deleteServiceAccount' });
         }
 
         if (!response.ok) {
@@ -139,10 +139,10 @@ export const actions = {
                 status: response.status,
                 err: errorResponseBody.detail,
             });
-            return fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'deleteServiceAccount' });
         }
 
-        return { type: 'success' };
+        return { type: 'success', _action: 'deleteServiceAccount' };
     },
     restoreServiceAccount: async (
         event: RequestEvent
@@ -180,7 +180,7 @@ export const actions = {
                 serviceAccountId,
                 err: error,
             });
-            return fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'restoreServiceAccount' });
         }
 
         if (!response.ok) {
@@ -193,7 +193,7 @@ export const actions = {
                 status: response.status,
                 error: errorResponseBody,
             });
-            fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'restoreServiceAccount' });
         }
 
         const serviceAccountSecret = (await response.json()) as ServiceAccountSecret;
@@ -201,6 +201,6 @@ export const actions = {
         setHeaders({
             'cache-control': 'no-store',
         });
-        return { serviceAccountSecret, type: 'success' };
+        return { type: 'success', serviceAccountSecret, _action: 'restoreServiceAccount' };
     },
 };

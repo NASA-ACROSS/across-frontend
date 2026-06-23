@@ -6,6 +6,7 @@
     import type { SubmitFunction } from '@sveltejs/kit';
     import type { UserGroup } from '$lib/types/User/UserGroup';
     import Spinner from '$lib/components/Spinner.svelte';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
 
     export let user: GroupUser | undefined;
     export let group: UserGroup;
@@ -65,6 +66,7 @@
             <div class="card-body">
                 {#each assignableRoles as role}
                     <form id="{role.id}-role" method="post" use:enhance={enhancedForm} action="?/assignRole">
+                        <FormSubmitFeedback action="assignRole" />
                         <div class="flex flex-row gap-2">
                             <button
                                 class="btn btn-info w-15 text-xl"

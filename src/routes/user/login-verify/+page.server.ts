@@ -1,10 +1,11 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail, redirect, type ActionFailure } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
 import { CONFIG } from '../../../config/config';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import type { LocalUser } from '$lib/types/User/UserCredentialsCookie';
 import type { User } from '$lib/types/User/User';
 import type { RequestEvent } from './$types';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 import guards from '$lib/utils/guards';
 import { PUBLIC_CONFIG } from '$config/config.public';
@@ -29,7 +30,7 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export const actions = {
-    default: async (event: RequestEvent) => {
+    default: async (event: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const { url, request, cookies, fetch } = event;
         const verificationToken = url.searchParams.get('token');
 
@@ -44,13 +45,13 @@ export const actions = {
                 retryAfter: rateStatus.retryAfter,
             });
             return fail(429, {
-                rateLimit: true,
-                retryAfter: rateStatus.retryAfter,
+                type: 'error',
+                message: `You are being rate-limited, please retry after ${rateStatus.retryAfter} seconds.`,
             });
         }
 
         if (!verificationToken) {
-            return fail(400, { error: 'Verification token is required' });
+            return fail(400, { type: 'error', message: 'Verification token is required' });
         }
 
         const data = await request.formData();
@@ -63,7 +64,7 @@ export const actions = {
                 msg: `Login-verify failed to decode user id from access token`,
                 verificationToken,
             });
-            return fail(500, { error: 'Failed to decode user information from token' });
+            return fail(500, { type: 'error', message: 'Failed to decode user information from token' });
         }
 
         const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}`, { method: 'GET' });

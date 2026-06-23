@@ -45,10 +45,10 @@
             isResolving = false;
 
             if (result.type === 'failure') {
-                const failureData = result.data as { error?: string };
-                error = new Error(failureData?.error || 'Failed to resolve object coordinates');
+                const failureData = result.data as { message?: string };
+                error = new Error(failureData?.message || 'Failed to resolve object coordinates');
             } else if (result.type === 'success') {
-                resolvedData = (result.data as { data: NameResolver }).data;
+                resolvedData = (result.data as { resolvedObject: NameResolver }).resolvedObject;
             }
 
             dialog?.showModal();

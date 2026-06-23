@@ -1,12 +1,13 @@
 import type { PageServerLoad, RequestEvent } from './$types';
 
 import { CONFIG } from '../../../../config/config.js';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail, redirect, type ActionFailure } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 import { getGroupData } from '$lib/utils/manage/getGroupData';
 import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { isAdmin } from '$lib/utils/user/isAdmin';
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
@@ -36,7 +37,7 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
 };
 
 export const actions = {
-    inviteUser: async ({ request, fetch }: RequestEvent) => {
+    inviteUser: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
 
         const email = data.get('email') as string;
@@ -62,31 +63,32 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Failed inviting user to group.`;
             logger.error({ err, email, groupId }, errorLog);
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog, _action: 'inviteUser' });
         }
 
         if (response.status == 500) {
             logger.error({ email, groupId, status: response.status }, `Failed inviting user to group`);
-            return fail(500, { fail: true });
+            return fail(500, { type: 'error', message: 'Failed to invite user.', _action: 'inviteUser' });
         }
 
         if (response.status == 409) {
             logger.warn({ msg: `Attempted to invite a user who was already in the group.`, email, groupId });
-            return { userInGroup: true };
+            return { type: 'warning', message: 'User is already invited or in the group.', _action: 'inviteUser' };
         }
 
         if (response.status == 404) {
             const errorResponse = (await response.json()) as ErrorResponse;
             logger.error({ email, groupId, status: response.status }, `User not found to invite to group.`);
             return fail(500, {
-                error: errorResponse.detail,
-                invalidEmail: true,
+                type: 'error',
+                message: errorResponse.detail || 'User not found.',
+                _action: 'inviteUser',
             });
         }
 
-        return { successInvite: true };
+        return { type: 'success', message: 'User invited!', _action: 'inviteUser' };
     },
-    deleteInvite: async ({ request, fetch }: RequestEvent) => {
+    deleteInvite: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
 
         const userInviteId = data.get('userInviteId') as string;
@@ -107,26 +109,27 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Failed deleting user invite.`;
             logger.error({ err, userInviteId, userGroupId }, errorLog);
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog, _action: 'deleteInvite' });
         }
 
         if (response.status == 500) {
             logger.error({ userInviteId, userGroupId, status: response.status }, `Failed deleting user invite.`);
-            return fail(500, { fail: true });
+            return fail(500, { type: 'error', message: 'Failed to delete invite.', _action: 'deleteInvite' });
         }
 
         if (response.status == 400) {
             const errorResponse = (await response.json()) as ErrorResponse;
             logger.error({ userInviteId, userGroupId, status: response.status }, `Failed deleting user invite.`);
             return fail(500, {
-                error: errorResponse.detail,
-                invalidEmail: true,
+                type: 'error',
+                message: errorResponse.detail,
+                _action: 'deleteInvite',
             });
         }
 
-        return { successDelete: true };
+        return { type: 'success', message: 'Invite deleted.', _action: 'deleteInvite' };
     },
-    removeUser: async ({ request, fetch }: RequestEvent) => {
+    removeUser: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
@@ -147,17 +150,17 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Failed removing user from group.`;
             logger.error({ err, userId, groupId }, errorLog);
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog, _action: 'removeUser' });
         }
 
         if (response.status == 500) {
             logger.error({ userId, groupId, status: response.status }, `Failed removing user from group.`);
-            return fail(500, { fail: true });
+            return fail(500, { type: 'error', message: 'Failed to remove user from group.', _action: 'removeUser' });
         }
 
-        return { successRemoveUser: true };
+        return { type: 'success', message: 'User removed from group.', _action: 'removeUser' };
     },
-    assignRole: async ({ request, fetch }: RequestEvent) => {
+    assignRole: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
@@ -180,17 +183,17 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Failed assigning user role.`;
             logger.error({ err, groupId, userId, roleId }, errorLog);
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog, _action: 'assignRole' });
         }
 
         if (res.status >= 300) {
             logger.error({ groupId, userId, roleId, status: res.status }, `Failed assigning user role.`);
-            return fail(res.status, { fail: true });
+            return fail(res.status, { type: 'error', message: 'Failed to assign role.', _action: 'assignRole' });
         }
 
-        return { successAssignRole: true };
+        return { type: 'success', message: 'Role assigned.', _action: 'assignRole' };
     },
-    removeRole: async ({ request, fetch }: RequestEvent) => {
+    removeRole: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
 
         const userId = data.get('userId') as string;
@@ -211,9 +214,9 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Failed removing user role.`;
             logger.error({ err, groupId, userId, roleId }, errorLog);
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog, _action: 'removeRole' });
         }
 
-        return { successRemoveRole: true };
+        return { type: 'success', message: 'Role removed.', _action: 'removeRole' };
     },
 };

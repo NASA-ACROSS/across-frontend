@@ -1,13 +1,19 @@
 import { CONFIG } from '../../../config/config';
-import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
+import { fail, redirect, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
 import { autoLogin } from '$lib/utils/user/autoLogin.js';
 import { emailRegex } from '$lib/utils/regex/emailRegex';
 import type { Actions } from './$types';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { clearAuth } from '$lib/handles/clearAuth';
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
+
+type LoginResult = FormSubmitResult & {
+    email?: string;
+    retryAfter?: number;
+};
 
 export function load({ locals }: RequestEvent) {
     guards.localOnlyRoute();
@@ -30,7 +36,7 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export const actions = {
-    default: async (event: RequestEvent) => {
+    default: async (event: RequestEvent): Promise<LoginResult | ActionFailure<FormSubmitResult>> => {
         const { request, fetch } = event;
         clearAuth(event);
 
@@ -40,7 +46,7 @@ export const actions = {
 
         if (typeof email !== 'string' || !email.match(emailRegex)) {
             return fail(400, {
-                invalidEmail: true,
+                type: 'error',
                 message: 'Please provide a valid email.',
             });
         }
@@ -52,7 +58,8 @@ export const actions = {
             logger.error({ msg: `Rate limit exceeded for login.`, email, ip: event.getClientAddress(), retryAfter: rateStatus.retryAfter });
 
             return fail(429, {
-                rateLimit: true,
+                type: 'error',
+                message: `You are being rate limited, please retry after ${rateStatus.retryAfter} seconds.`,
                 retryAfter: rateStatus.retryAfter,
             });
         }
@@ -68,25 +75,28 @@ export const actions = {
             logger.error({ msg: `Failed logging in user.`, email, err });
 
             if (err instanceof Error) {
-                return fail(500, { error: err.message, fail: true });
+                return fail(500, { type: 'error', message: err.message });
             } else {
-                return fail(500, { error: 'Unknown error trying to login.' });
+                return fail(500, { type: 'error', message: 'Unknown error trying to login.' });
             }
         }
 
         if (response.status == 500) {
             logger.error({ msg: `Failed logging in user.`, email, status: response.status });
-            return fail(500, { fail: true });
+            return fail(500, {
+                type: 'error',
+                message: 'Something went wrong, please try again. If this error persists, contact support.',
+            });
         }
 
         if (response.status == 401) {
             const errorResponse = (await response.json()) as { detail: string };
             logger.warn({ msg: errorResponse.detail, email, ip: event.getClientAddress() });
-            return fail(401, { notFound: true });
+            return fail(401, { type: 'error', message: 'The email address is not registered.' });
         }
 
         await autoLogin(response);
 
-        return { success: true, email };
+        return { type: 'success', message: 'Please check your email for a login link!', email };
     },
 } satisfies Actions;

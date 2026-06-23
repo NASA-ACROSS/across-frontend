@@ -4,6 +4,8 @@ import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { resolveObject } from '$lib/utils/across/resolveObject';
 import type { RequestEvent } from './$types';
 import { CONFIG } from '../../config/config';
+import { fail, type ActionFailure } from '@sveltejs/kit';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import searchParams from '$lib/utils/searchParams/searchParams';
 import parseErrorResponse from '$lib/utils/error/parseErrorResponse';
 import logger from '$lib/logger';
@@ -29,6 +31,10 @@ export type VisibilityWindowsData = {
     error: string;
 };
 
+export type VisibilityResult = FormSubmitResult & {
+    visibilityWindowsData: VisibilityWindowsData;
+};
+
 export type JointVisibilityPageData = {
     queryParams: JointVisibilityQueryParams;
     telescopes: Telescope[];
@@ -48,7 +54,7 @@ export async function load({ url, fetch }: RequestEvent): Promise<JointVisibilit
 // This line is needed for the object name resolver component.
 export const actions = {
     resolveObject,
-    calculateVisibilityWindows: async (event: RequestEvent): Promise<VisibilityWindowsData> => {
+    calculateVisibilityWindows: async (event: RequestEvent): Promise<VisibilityResult | ActionFailure<FormSubmitResult>> => {
         const form = await event.request.formData();
         const params = searchParams.serialize(form, { instrument_ids: 'array' });
 
@@ -61,33 +67,32 @@ export const actions = {
         } catch (err: unknown) {
             logger.error({ err, params: params.toString() }, 'Request failed fetching visibility windows.');
 
-            return {
-                jointVisibilityWindows: [],
-                visibilityWindowInstrumentIds: [],
-                observatoryVisibilityWindows: {},
-                error: 'An error occurred while fetching visibility windows. Please contact support if it continues.',
-            };
+            return fail(500, {
+                type: 'error',
+                message: 'An error occurred while fetching visibility windows. Please contact support if it continues.',
+            });
         }
 
         if (!response.ok) {
             const result = (await response.json()) as ErrorResponse;
             const detailText = parseErrorResponse(result);
 
-            return {
-                jointVisibilityWindows: [],
-                visibilityWindowInstrumentIds: [],
-                observatoryVisibilityWindows: {},
-                error: detailText,
-            };
+            return fail(response.status, {
+                type: 'error',
+                message: detailText,
+            });
         }
 
         const data = (await response.json()) as JointVisibilityWindowResponse;
 
         return {
-            jointVisibilityWindows: data.visibility_windows,
-            visibilityWindowInstrumentIds: data.instrument_ids,
-            observatoryVisibilityWindows: data.observatory_visibility_windows,
-            error: '',
+            type: 'success',
+            visibilityWindowsData: {
+                jointVisibilityWindows: data.visibility_windows,
+                visibilityWindowInstrumentIds: data.instrument_ids,
+                observatoryVisibilityWindows: data.observatory_visibility_windows,
+                error: '',
+            },
         };
     },
 };

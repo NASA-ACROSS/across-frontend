@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.4.0...across-frontend-v1.5.0) (2026-06-26)
+
+
+### Features
+
+* **about:** clarify schedule status and fidelity ([#336](https://github.com/NASA-ACROSS/across-frontend/issues/336)) ([379db11](https://github.com/NASA-ACROSS/across-frontend/commit/379db111e17d33d76a3ea77005a04114062b8550))
+
+
+### Bug Fixes
+
+* replace console logs with pino logs ([#326](https://github.com/NASA-ACROSS/across-frontend/issues/326)) ([7aa7d3a](https://github.com/NASA-ACROSS/across-frontend/commit/7aa7d3a0bc29cdcb859ec9121038cf790b61bf6c))
+* use transport option for pino-pretty ([#333](https://github.com/NASA-ACROSS/across-frontend/issues/333)) ([8cc46b4](https://github.com/NASA-ACROSS/across-frontend/commit/8cc46b4c90987d0fd0a9f7bfe6b03701e2545bf1))
+
 ## [1.4.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.3.0...across-frontend-v1.4.0) (2026-06-18)
 
 

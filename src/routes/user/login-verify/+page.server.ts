@@ -6,6 +6,7 @@ import type { User } from '$lib/types/User/User';
 import type { RequestEvent } from './$types';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
+import { verifyCaptcha } from '$lib/utils/altcha/verifyCaptcha';
 import guards from '$lib/utils/guards';
 import { PUBLIC_CONFIG } from '$config/config.public';
 import logger from '$lib/logger';
@@ -34,6 +35,10 @@ export const actions = {
     default: async (event: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const { url, request, cookies, fetch } = event;
         const verificationToken = url.searchParams.get('token');
+
+        // Check the captcha before any other work.
+        const captchaFailure = await verifyCaptcha(event, '/login-verify');
+        if (captchaFailure) return captchaFailure;
 
         // Rate limit user login-verify
         // Every call to isLimited counts as a hit towards the rate limit for the event.

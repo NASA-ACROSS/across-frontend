@@ -29,9 +29,13 @@ essential for operation, you can find an example in `.env.example`. Copy the fil
 | `ACROSS_SERVER_SECRET`     | client_secret used webserver credentials manager (defaults to current local secret) |
 | `ACROSS_SERVER_ID`         | client_id used by webserver credentials manager (defaults to current local ID)      |
 | `ACROSS_TEST_ACCESS_TOKEN` | dummy test access token                                                             |
+| `ALTCHA_HMAC_KEY`          | ALTCHA captcha HMAC secret; overrides the SSM lookup when set (local/test)          |
+| `ALTCHA_HMAC_KEY_PATH`     | SSM path of the ALTCHA HMAC secret (defaults to `frontend/altcha/hmac_key`)         |
 | `PUBLIC_BUILD_VERSION`     | Sets version in header meta tag "build-version". **REQUIRED** for `npm run build`   |
 
 **IMPORTANT:** For local development the `ACROSS_SERVER_SECRET` will be the default service account secret `'local-service-account-key'`. For any other environments, the key will be stored in the SSM param store.
+
+**ALTCHA captcha:** Register and login-verify use a self-hosted [ALTCHA](https://altcha.org) proof-of-work captcha. Deployed environments must have the HMAC secret in SSM at `/${APP_ENV}/${ALTCHA_HMAC_KEY_PATH}` (server init fails without it); locally a built-in dev key is used.
 
 ## Building
 

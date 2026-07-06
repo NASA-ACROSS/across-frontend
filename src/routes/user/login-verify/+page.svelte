@@ -4,6 +4,7 @@
     import Section from '$lib/components/Section.svelte';
     import Page from '$lib/components/Page.svelte';
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
+    import Altcha from '$lib/components/Altcha.svelte';
 
     let { form } = $props();
 </script>
@@ -21,6 +22,7 @@
                     </div>
                     <FormSubmitFeedback />
                     <ArrowButton>Login</ArrowButton>
+                    <Altcha auto="onload" />
                 </form>
             {:else if form?.type === 'error'}
                 <FormSubmitFeedback />

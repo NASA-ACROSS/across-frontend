@@ -6,6 +6,7 @@
     import Page from '$lib/components/Page.svelte';
     import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
     import OpenDataPolicyBanner from '$lib/components/OpenDataPolicyBanner.svelte';
+    import Altcha from '$lib/components/Altcha.svelte';
 
     interface Props {
         form: import('./$types').ActionData;
@@ -94,6 +95,7 @@
                     <FormSubmitFeedback />
                     <button class="btn btn-lg btn-info" type="submit" disabled={form?.type === 'success'}>Register</button>
                 </div>
+                <Altcha />
             </form>
         </Fieldset>
         <NasaSecurityBanner></NasaSecurityBanner>

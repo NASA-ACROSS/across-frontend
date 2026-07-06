@@ -8,12 +8,14 @@ import { CONFIG } from '$config/config';
 import { webserverCredentialsManager } from '$lib/utils/across/auth/WebserverCredentialsManager';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 import { hydrateAuthUser } from '$lib/handles/hydrateAuthUser';
+import { altchaSecretManager } from '$lib/utils/altcha/altchaSecret';
 import logger, { setLogLevel } from '$lib/logger';
 import { PUBLIC_CONFIG } from '$config/config.public';
 
 export const init: ServerInit = async () => {
     setLogLevel(PUBLIC_CONFIG.RUNTIME_ENV);
     await webserverCredentialsManager.initialize();
+    await altchaSecretManager.initialize();
 };
 
 /**

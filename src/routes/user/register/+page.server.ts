@@ -6,6 +6,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
 import { autoLogin } from '$lib/utils/user/autoLogin.js';
+import { verifyCaptcha } from '$lib/utils/altcha/verifyCaptcha';
 import type { RequestEvent } from './$types';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import guards from '$lib/utils/guards';
@@ -34,6 +35,12 @@ export function load({ locals }: RequestEvent) {
 export const actions = {
     default: async (event: RequestEvent) => {
         const { request, fetch } = event;
+
+        // Verify the ALTCHA proof-of-work before doing any work. The payload is
+        // carried via a cookie, so this does not consume the request body.
+        const captchaFailure = await verifyCaptcha(event, '/register');
+        if (captchaFailure) return captchaFailure;
+
         const data = await request.formData();
 
         // validate and sanitize input

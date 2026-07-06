@@ -6,6 +6,7 @@ import type { LocalUser } from '$lib/types/User/UserCredentialsCookie';
 import type { User } from '$lib/types/User/User';
 import type { RequestEvent } from './$types';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
+import { verifyCaptcha } from '$lib/utils/altcha/verifyCaptcha';
 import guards from '$lib/utils/guards';
 import { PUBLIC_CONFIG } from '$config/config.public';
 import logger from '$lib/logger';
@@ -32,6 +33,11 @@ export const actions = {
     default: async (event: RequestEvent) => {
         const { url, request, cookies, fetch } = event;
         const verificationToken = url.searchParams.get('token');
+
+        // Verify the ALTCHA proof-of-work before doing any work. The payload is
+        // carried via a cookie, so this does not consume the request body.
+        const captchaFailure = await verifyCaptcha(event, '/login-verify');
+        if (captchaFailure) return captchaFailure;
 
         // Rate limit user login-verify
         // Every call to isLimited counts as a hit towards the rate limit for the event.

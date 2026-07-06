@@ -7,6 +7,7 @@
     import Page from '$lib/components/Page.svelte';
     import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
     import Alert from '$lib/components/Alert.svelte';
+    import Altcha from '$lib/components/Altcha.svelte';
 
     /** @type {import('./$types').ActionData} */
     export let form;
@@ -108,6 +109,11 @@
                             >Form validation failed. Please try again. If this error persists, contact support.</FormInputFeedback
                         >
                     {/if}
+                    {#if form?.captchaFailed}
+                        <FormInputFeedback type="error"
+                            >Could not verify that you are human. Please reload the page and try again.</FormInputFeedback
+                        >
+                    {/if}
                     {#if form?.fail}
                         <FormInputFeedback type="error"
                             >Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback
@@ -115,6 +121,7 @@
                     {/if}
                     <button class="btn btn-lg btn-info" type="submit" disabled={form?.success}>Register</button>
                 </div>
+                <Altcha />
             </form>
         </Fieldset>
         <NasaSecurityBanner></NasaSecurityBanner>

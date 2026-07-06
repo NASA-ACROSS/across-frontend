@@ -26,6 +26,12 @@ export class PrivateConfiguration {
     public ACROSS_SERVER_ID: string = env.ACROSS_SERVER_ID || '';
     public ACROSS_SERVER_SECRET: string = env.ACROSS_SERVER_SECRET || '';
 
+    /** SSM parameter path holding the ALTCHA HMAC secret (relative to the APP_ENV prefix) */
+    public ALTCHA_HMAC_KEY_PATH: string = env.ALTCHA_HMAC_KEY_PATH || 'frontend/altcha/hmac_key';
+
+    /** ALTCHA HMAC secret. When set, takes precedence over the SSM lookup (used for local/test). */
+    public ALTCHA_HMAC_KEY: string = env.ALTCHA_HMAC_KEY || '';
+
     /** Only used in test environment */
     public ACROSS_TEST_ACCESS_TOKEN: string = env.ACROSS_TEST_ACCESS_TOKEN || '';
 

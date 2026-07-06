@@ -68,5 +68,9 @@
     "type": "module",
     "engines": {
         "node": ">=22.0.0"
+    },
+    "dependencies": {
+        "altcha": "^3.1.0",
+        "altcha-lib": "^2.2.0"
     }
 }

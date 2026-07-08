@@ -6,6 +6,7 @@
     import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
     import type { User } from '$lib/types/User/User';
     import { DateTime } from 'luxon';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
 
     export let user: User;
     export let serviceAccounts: ServiceAccountDetail[];
@@ -35,6 +36,7 @@
             <div class="input-group flex flex-col p-3 gap-3 bg-base-200 max-h-180 overflow-y-scroll">
                 {#each activeServiceAccounts as serviceAccount}
                     <form method="post" action="?/deleteServiceAccount">
+                        <FormSubmitFeedback action="deleteServiceAccount" />
                         <fieldset class="bg-base-100 w-full flex flex-row">
                             <div class="fieldset w-full p-4">
                                 <p class="text-2xl">{serviceAccount.name}</p>
@@ -86,6 +88,7 @@
             <div class="input-group flex flex-col p-3 gap-3 bg-base-200 max-h-180 overflow-y-scroll">
                 {#each expiredServiceAccounts as serviceAccount}
                     <form method="post" action="?/restoreServiceAccount">
+                        <FormSubmitFeedback action="restoreServiceAccount" />
                         <fieldset class="bg-base-100 w-full flex flex-row">
                             <div class="fieldset w-full p-4">
                                 <p class="text-2xl">{serviceAccount.name}</p>
@@ -134,6 +137,7 @@
 <Section title="Create Service Account" icon="server">
     <Fieldset>
         <form method="post" action="?/createServiceAccount">
+            <FormSubmitFeedback action="createServiceAccount" />
             <label class="text-lg" for="name">Name</label>
             <div class="flex flex-sm-row flex-column mb-3 needs-validation">
                 <div class="input-group w-full">

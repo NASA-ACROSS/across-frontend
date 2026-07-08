@@ -1,7 +1,12 @@
 import { CONFIG } from '../../../config/config';
-import { fail, type RequestEvent } from '@sveltejs/kit';
+import { fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import type { NameResolver } from '$lib/types/across/NameResolver';
 import logger from '$lib/logger';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
+
+type ResolveObjectResult = FormSubmitResult & {
+    resolvedObject: NameResolver;
+};
 
 /**
  * SvelteKit action that resolves a object name to coordinates using the ACROSS API.
@@ -10,11 +15,11 @@ import logger from '$lib/logger';
  * @param locals - SvelteKit locals (for user session data).
  * @param cookies - SvelteKit cookies helper.
  */
-export const resolveObject = async ({ request }: RequestEvent) => {
+export const resolveObject = async ({ request }: RequestEvent): Promise<ResolveObjectResult | ActionFailure<FormSubmitResult>> => {
     const objectName = (await request.formData()).get('objectName') as string;
 
     if (!objectName?.trim()) {
-        return fail(400, { error: 'Object name is required' });
+        return fail(400, { type: 'error', message: 'Object name is required' });
     }
 
     try {
@@ -50,11 +55,11 @@ export const resolveObject = async ({ request }: RequestEvent) => {
         }
 
         const data = (await response.json()) as NameResolver;
-        return { success: true, data };
+        return { type: 'success', resolvedObject: data };
     } catch (error) {
         logger.error({ err: error }, 'Error resolving object name');
         const errorMessage = error instanceof Error ? error.message : 'Failed to resolve object coordinates. Please try again.';
         const statusCode = errorMessage.includes('Rate limited') ? 429 : 500;
-        return fail(statusCode, { error: errorMessage });
+        return fail(statusCode, { type: 'error', message: errorMessage });
     }
 };

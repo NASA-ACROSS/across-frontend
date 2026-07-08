@@ -2,14 +2,23 @@ import { emailRegex } from '$lib/utils/regex/emailRegex';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
 import { validate } from '$lib/utils/regex/validate';
 import { CONFIG } from '../../../config/config';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail, redirect, type ActionFailure } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
 import { autoLogin } from '$lib/utils/user/autoLogin.js';
 import type { RequestEvent } from './$types';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
+
+type RegisterResult = FormSubmitResult & {
+    firstname?: string;
+    lastname?: string;
+    username?: string;
+    email?: string;
+    retryAfter?: number;
+};
 
 // rate limit is defined as [number, unit]
 // see documentation for more info
@@ -32,7 +41,7 @@ export function load({ locals }: RequestEvent) {
 }
 
 export const actions = {
-    default: async (event: RequestEvent) => {
+    default: async (event: RequestEvent): Promise<RegisterResult | ActionFailure<FormSubmitResult>> => {
         const { request, fetch } = event;
         const data = await request.formData();
 
@@ -56,7 +65,10 @@ export const actions = {
                 msg: `Could not validate user input to register user, something is null.`,
                 user,
             });
-            return fail(500, { failValidation: true });
+            return fail(500, {
+                type: 'error',
+                message: 'Form validation failed. Please try again. If this error persists, contact support.',
+            });
         }
 
         // Rate limit user registration
@@ -70,7 +82,8 @@ export const actions = {
                 retryAfter: rateStatus.retryAfter,
             });
             return fail(429, {
-                rateLimit: true,
+                type: 'error',
+                message: `You are being rate limited, please retry after ${rateStatus.retryAfter} seconds.`,
                 retryAfter: rateStatus.retryAfter,
             });
         }
@@ -87,30 +100,36 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Request failed registering user`;
             logger.error({ err }, errorLog);
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog });
         }
 
         if (response.status === 401) {
             logger.error({ email, status: response.status }, `Unauthenticated while registering email`);
-            return fail(401, { fail: true });
+            return fail(401, {
+                type: 'error',
+                message: 'Something went wrong, please try again. If this error persists, contact support.',
+            });
         }
 
         if (response.status === 409) {
             const errorResponse = (await response.json()) as { detail: string };
             logger.error({ email, username, status: response.status }, `User already exists.`);
-            return fail(500, {
-                error: errorResponse.detail,
-                userAlreadyExists: true,
+            return fail(409, {
+                type: 'error',
+                message: errorResponse.detail,
             });
         }
 
         if (response.status === 500 || response.status === 422) {
             logger.error({ email, username, status: response.status }, `Failed registering user.`);
-            return fail(500, { fail: true });
+            return fail(500, {
+                type: 'error',
+                message: 'Something went wrong, please try again. If this error persists, contact support.',
+            });
         }
 
         await autoLogin(response);
 
-        return { success: true, firstname, lastname, username, email };
+        return { type: 'success', message: 'Please check your email for a verification link!', firstname, lastname, username, email };
     },
 };

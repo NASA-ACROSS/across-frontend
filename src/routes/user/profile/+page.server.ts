@@ -1,14 +1,21 @@
-import { redirect, fail } from '@sveltejs/kit';
+import { redirect, fail, type ActionFailure } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
 import { CONFIG } from '../../../config/config';
 import { validate } from '$lib/utils/regex/validate';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
 import type { RequestEvent } from './$types';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import guards from '$lib/utils/guards';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 import { PUBLIC_CONFIG } from '$config/config.public';
 import logger from '$lib/logger';
+
+type UpdateUserInformationResult = FormSubmitResult & {
+    first_name: string;
+    last_name: string;
+    username: string;
+};
 
 export async function load(event: RequestEvent) {
     guards.localOnlyRoute();
@@ -21,7 +28,7 @@ export async function load(event: RequestEvent) {
 }
 
 export const actions = {
-    updateUserInformation: async (event: RequestEvent) => {
+    updateUserInformation: async (event: RequestEvent): Promise<UpdateUserInformationResult | ActionFailure<FormSubmitResult>> => {
         const { request, locals, cookies, fetch } = event;
         const user = guards.requireUser(locals);
 
@@ -44,7 +51,11 @@ export const actions = {
                 msg: `ERROR: could not validate user input to update user info, something is null.`,
                 userPutBody,
             });
-            return fail(500, { failValidation: true });
+            return fail(500, {
+                type: 'error',
+                message: 'Form validation failed. Please try again. If this error persists, contact support.',
+                _action: 'updateUserInformation',
+            });
         }
 
         const options: RequestInit = {
@@ -61,20 +72,21 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Failed updating user information.`;
             logger.error({ err, msg: errorLog });
-            return fail(500, {
-                error: errorLog,
-                failUpdateUserInformation: true,
-            });
+            return fail(500, { type: 'error', message: errorLog, _action: 'updateUserInformation' });
         }
 
         if (response.status == 403) {
             logger.error({ msg: `API not accessible or API TOKEN not valid`, status: response.status });
-            return fail(500, { failUpdateUserInformation: true });
+            return fail(500, { type: 'error', message: 'API not accessible. Please try again.', _action: 'updateUserInformation' });
         }
 
         if (response.status == 500) {
             logger.error({ msg: `Failed updating user information.`, status: response.status });
-            return fail(500, { failUpdateUserInformation: true });
+            return fail(500, {
+                type: 'error',
+                message: 'Failed to update user information. Please try again.',
+                _action: 'updateUserInformation',
+            });
         }
 
         const cookieUserData = { ...user, ...userPutBody };
@@ -82,13 +94,15 @@ export const actions = {
         await UserCredentialsManager.SetCookie(cookies, PUBLIC_CONFIG.USER_INFO_COOKIE_NAME, cookieUserData);
 
         return {
-            successUpdateUserInformation: true,
+            type: 'success',
+            message: 'Successfully updated user information!',
             first_name,
             last_name,
             username,
+            _action: 'updateUserInformation',
         };
     },
-    acceptInvite: async (event: RequestEvent) => {
+    acceptInvite: async (event: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const { request, fetch } = event;
         const user = guards.requireUser(event.locals);
 
@@ -111,17 +125,17 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Request failed accepting user invite`;
             logger.error({ err, userInviteId, userId: user.id }, errorLog);
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog, _action: 'acceptInvite' });
         }
 
         if (response.status == 500) {
             logger.error({ msg: `Failed accepting user invite`, status: response.status, userInviteId, userId: user.id });
-            return fail(500, { fail: true });
+            return fail(500, { type: 'error', message: 'Failed to accept invite. Please try again.', _action: 'acceptInvite' });
         }
 
-        return { successAcceptInvite: true };
+        return { type: 'success', message: 'Invite accepted!', _action: 'acceptInvite' };
     },
-    rejectInvite: async (event: RequestEvent) => {
+    rejectInvite: async (event: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const { request, fetch } = event;
 
         const user = guards.requireUser(event.locals);
@@ -144,17 +158,17 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Request failed rejecting user invite`;
             logger.error({ err, userInviteId, userId: user.id }, errorLog);
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog, _action: 'rejectInvite' });
         }
 
         if (response.status == 500) {
             logger.error({ msg: `Failed rejecting user invite`, status: response.status, userInviteId, userId: user.id });
-            return fail(500, { fail: true });
+            return fail(500, { type: 'error', message: 'Failed to reject invite. Please try again.', _action: 'rejectInvite' });
         }
 
-        return { successRejectInvite: true };
+        return { type: 'success', message: 'Invite rejected.', _action: 'rejectInvite' };
     },
-    leaveGroup: async (event: RequestEvent) => {
+    leaveGroup: async (event: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const { request, fetch } = event;
 
         const data = await request.formData();
@@ -177,17 +191,17 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Request failed leaving group`;
             logger.error({ err, groupId, userId }, errorLog);
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog, _action: 'leaveGroup' });
         }
 
         if (response.status == 500) {
             logger.error({ msg: `Failed leaving group`, status: response.status, groupId, userId });
-            return fail(500, { fail: true });
+            return fail(500, { type: 'error', message: 'Failed to leave group. Please try again.', _action: 'leaveGroup' });
         }
 
-        return { successLeaveGroup: true };
+        return { type: 'success', message: 'Successfully left the group.', _action: 'leaveGroup' };
     },
-    deleteUser: async (event: RequestEvent) => {
+    deleteUser: async (event: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const { fetch } = event;
         const user = guards.requireUser(event.locals);
 
@@ -206,12 +220,12 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Request failed deleting user`;
             logger.error({ err, userId: user.id, email: user.email }, errorLog);
-            return fail(500, { error: errorLog, fail: true });
+            return fail(500, { type: 'error', message: errorLog, _action: 'deleteUser' });
         }
 
         if (response.status != 200) {
             logger.error({ msg: `Failed deleting user`, status: response.status, userId: user.id, email: user.email });
-            return fail(response.status, { fail: true });
+            return fail(response.status, { type: 'error', message: 'Failed to delete user. Please try again.', _action: 'deleteUser' });
         }
 
         redirect(302, resolve('/user/logout'));

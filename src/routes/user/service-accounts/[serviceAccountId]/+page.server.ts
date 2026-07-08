@@ -73,7 +73,7 @@ export const actions = {
         } catch (error: unknown) {
             const errorLog = 'Unknown request failure while trying to assign group role to service account';
             console.error({ userId, serviceAccountId, groupRoleId, time: Date.now(), err: error }, errorLog);
-            return fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'assignGroupRole' });
         }
 
         if (!response.ok) {
@@ -87,10 +87,10 @@ export const actions = {
                 status: response.status,
                 error: responseError.detail,
             });
-            return fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'assignGroupRole' });
         }
 
-        return { type: 'success', message: 'Group role assigned successfully!' };
+        return { type: 'success', message: 'Group role assigned successfully!', _action: 'assignGroupRole' };
     },
     removeGroupRole: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
@@ -117,12 +117,12 @@ export const actions = {
         } catch (error: unknown) {
             const errorLog = 'Unknown request failure while removing group role from service account';
             console.error({ msg: errorLog, userId, serviceAccountId, groupRoleId, err: error });
-            return fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'removeGroupRole' });
         }
 
         if (!response.ok) {
             const responseError = (await response.json()) as ErrorResponse;
-            const errorLog = 'Failed to assign group role to service account';
+            const errorLog = 'Failed to remove group role from service account';
             console.error({
                 msg: errorLog,
                 userId,
@@ -131,10 +131,10 @@ export const actions = {
                 status: response.status,
                 error: responseError.detail,
             });
-            return fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'removeGroupRole' });
         }
 
-        return { type: 'success', message: 'Group role removed successfully!' };
+        return { type: 'success', message: 'Group role removed successfully!', _action: 'removeGroupRole' };
     },
     updateServiceAccount: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
@@ -168,12 +168,12 @@ export const actions = {
         } catch (error: unknown) {
             const errorLog = 'Request failure while updating properties for service account';
             console.error({ msg: errorLog, userId, serviceAccountId, serviceAccountUpdate, err: error });
-            return fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'updateServiceAccount' });
         }
 
         if (!response.ok) {
             const responseError = (await response.json()) as ErrorResponse;
-            const errorLog = 'Failed to assign group role to service account';
+            const errorLog = 'Failed to update service account';
             console.error({
                 msg: errorLog,
                 userId,
@@ -182,9 +182,13 @@ export const actions = {
                 status: response.status,
                 err: responseError.detail,
             });
-            return fail(500, { type: 'error', message: errorLog });
+            return fail(500, { type: 'error', message: errorLog, _action: 'updateServiceAccount' });
         }
 
-        return { type: 'success', message: 'Service account details updated and expiration recomputed successfully!' };
+        return {
+            type: 'success',
+            message: 'Service account details updated and expiration recomputed successfully!',
+            _action: 'updateServiceAccount',
+        };
     },
 };

@@ -9,6 +9,7 @@
     import Collapse from '$lib/components/Collapse.svelte';
     import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles.js';
     import Spinner from '$lib/components/Spinner.svelte';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
 
     export let data: PageData;
 
@@ -49,6 +50,7 @@
     <Section>
         <Fieldset>
             <form method="post" action="?/updateServiceAccount">
+                <FormSubmitFeedback action="updateServiceAccount" />
                 <label class="text-lg" for="name">Name</label>
                 <div class="flex nneeds-validation">
                     <div class="input-group mb-3 w-full">
@@ -150,6 +152,7 @@
                         <Collapse open={true} border={true} title={`[${group.short_name}] ${group.name} (${group.roles.length})`}>
                             {#each serviceAccount.group_roles as groupRole}
                                 <form method="post" action="?/removeGroupRole">
+                                    <FormSubmitFeedback action="removeGroupRole" />
                                     <div class="flex pt-2 pb-4">
                                         <div class="flex flex-col basis-5/6">
                                             <p class="text-lg tracking-wider">{groupRole.name}</p>
@@ -182,6 +185,7 @@
                             <Collapse open={true} border={true} title={`[${group.short_name}] ${group.name} (${group.roles.length})`}>
                                 {#each group.roles as groupRole}
                                     <form method="post" action="?/assignGroupRole">
+                                        <FormSubmitFeedback action="assignGroupRole" />
                                         <div class="flex pt-2 pb-4">
                                             <div class="flex flex-col basis-5/6">
                                                 <p class="text-lg tracking-wider">{groupRole.name}</p>

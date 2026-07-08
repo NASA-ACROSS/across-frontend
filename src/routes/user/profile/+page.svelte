@@ -17,7 +17,7 @@
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
-    import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
     import DangerZone from './_components/DangerZone.svelte';
     import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
@@ -29,7 +29,9 @@
     let originalUserData = structuredClone(data.user);
     let user = data.user;
     $: isUserDataUnchanged = _.isEqual(originalUserData, user);
-    $: (form?.successUpdateUserInformation, (originalUserData = structuredClone(data.user)));
+    $: if (form?.type === 'success' && form?._action === 'updateUserInformation') {
+        originalUserData = structuredClone(data.user);
+    }
 
     // safari browser should force a reload on cached navigation using back button
     if (browser) {
@@ -163,20 +165,8 @@
                         />
                     </div>
                 </div>
-                <div class="flex justify-end items-center">
-                    {#if form?.successUpdateUserInformation}
-                        <FormInputFeedback>Successfully updated user information!</FormInputFeedback>
-                    {/if}
-                    {#if form?.failUpdateUserInformation}
-                        <FormInputFeedback type="error"
-                            >Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback
-                        >
-                    {/if}
-                    {#if form?.failValidation}
-                        <FormInputFeedback type="error"
-                            >Form validation failed. Please try again. If this error persists, contact support.</FormInputFeedback
-                        >
-                    {/if}
+                <div class="flex justify-end items-center text-lg">
+                    <FormSubmitFeedback action="updateUserInformation" />
                     <button type="submit" class="btn text-lg btn-info ml-5" disabled={isUserDataUnchanged}> Update </button>
                 </div>
             </form>

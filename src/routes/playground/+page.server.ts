@@ -1,7 +1,7 @@
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
 import { fail, type ActionFailure, type RequestEvent, isHttpError } from '@sveltejs/kit';
-import type { FormSubmitResult, FormSubmitResultError } from '$lib/types/form/FormSubmitResult';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import searchParams from '$lib/utils/searchParams/searchParams';
 import { callApi } from '$lib/utils/across/callApi';
 import HTTP_CODES from '$lib/utils/HttpCodes';
@@ -52,16 +52,24 @@ export const actions = {
                     type: 'error',
                     message: 'A mock error occurred while processing your request.',
                     _action: 'mockFormSubmitFeedback',
+                    errorId: crypto.randomUUID(),
+                    code: HTTP_CODES[400],
                 });
             default:
-                return fail(400, { type: 'error', message: `Unknown feedback type: ${feedbackType}`, _action: 'mockFormSubmitFeedback' });
+                return fail(400, {
+                    type: 'error',
+                    message: `Unknown feedback type: ${feedbackType}`,
+                    _action: 'mockFormSubmitFeedback',
+                    errorId: crypto.randomUUID(),
+                    code: HTTP_CODES[400],
+                });
         }
     },
 
     callApi: async ({
         fetch,
         request,
-    }: RequestEvent): Promise<(FormSubmitResult & { data: unknown }) | ActionFailure<FormSubmitResultError>> => {
+    }: RequestEvent): Promise<(FormSubmitResult & { data: unknown }) | ActionFailure<FormSubmitResult>> => {
         guards.localOnlyRoute();
 
         const form = await request.formData();

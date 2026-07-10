@@ -10,6 +10,7 @@ import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsMa
 import guards from '$lib/utils/guards';
 import { PUBLIC_CONFIG } from '$config/config.public';
 import logger from '$lib/logger';
+import HTTP_CODES from '$lib/utils/HttpCodes';
 
 export function load(event: RequestEvent) {
     guards.localOnlyRoute();
@@ -49,11 +50,18 @@ export const actions = {
             return fail(429, {
                 type: 'error',
                 message: msg,
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[429],
             });
         }
 
         if (!verificationToken) {
-            return fail(400, { type: 'error', message: 'Verification token is required' });
+            return fail(400, {
+                type: 'error',
+                message: 'Verification token is required',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[400],
+            });
         }
 
         const data = await request.formData();
@@ -66,7 +74,12 @@ export const actions = {
                 msg: 'Login-verify failed to decode user id from access token',
                 verificationToken,
             });
-            return fail(500, { type: 'error', message: 'Failed to login user.' });
+            return fail(500, {
+                type: 'error',
+                message: 'Failed to login user.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}`, { method: 'GET' });

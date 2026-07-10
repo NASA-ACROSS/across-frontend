@@ -9,6 +9,7 @@ import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import searchParams from '$lib/utils/searchParams/searchParams';
 import parseErrorResponse from '$lib/utils/error/parseErrorResponse';
 import logger from '$lib/logger';
+import HTTP_CODES from '$lib/utils/HttpCodes';
 
 type ErrorResponse = {
     detail: unknown;
@@ -70,6 +71,8 @@ export const actions = {
             return fail(500, {
                 type: 'error',
                 message: 'An error occurred while fetching visibility windows. Please contact support if it continues.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
             });
         }
 
@@ -80,6 +83,8 @@ export const actions = {
             return fail(response.status, {
                 type: 'error',
                 message: detailText,
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[response.status],
             });
         }
 

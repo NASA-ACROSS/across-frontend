@@ -8,6 +8,7 @@ import { fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types.js';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
+import HTTP_CODES from '$lib/utils/HttpCodes';
 
 export const load: PageServerLoad = async (event: RequestEvent) => {
     guards.localOnlyRoute();
@@ -68,7 +69,13 @@ export const actions = {
                 time: Date.now(),
                 err: error,
             });
-            return fail(500, { type: 'error', message: errorLog, _action: 'createServiceAccount' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'createServiceAccount',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (!response.ok) {
@@ -80,7 +87,13 @@ export const actions = {
                 status: response.status,
                 err: errorResponseBody.detail,
             });
-            return fail(500, { type: 'error', message: errorLog, _action: 'createServiceAccount' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'createServiceAccount',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         const serviceAccountSecret = (await response.json()) as ServiceAccountSecret;
@@ -125,7 +138,13 @@ export const actions = {
                 serviceAccountId: serviceAccountId,
                 err: error,
             });
-            return fail(500, { type: 'error', message: errorLog, _action: 'deleteServiceAccount' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'deleteServiceAccount',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (!response.ok) {
@@ -139,7 +158,13 @@ export const actions = {
                 status: response.status,
                 err: errorResponseBody.detail,
             });
-            return fail(500, { type: 'error', message: errorLog, _action: 'deleteServiceAccount' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'deleteServiceAccount',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         return { type: 'success', _action: 'deleteServiceAccount' };
@@ -180,7 +205,13 @@ export const actions = {
                 serviceAccountId,
                 err: error,
             });
-            return fail(500, { type: 'error', message: errorLog, _action: 'restoreServiceAccount' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'restoreServiceAccount',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (!response.ok) {
@@ -193,7 +224,13 @@ export const actions = {
                 status: response.status,
                 error: errorResponseBody,
             });
-            return fail(500, { type: 'error', message: errorLog, _action: 'restoreServiceAccount' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'restoreServiceAccount',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         const serviceAccountSecret = (await response.json()) as ServiceAccountSecret;

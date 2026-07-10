@@ -11,6 +11,7 @@ import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsMa
 import { PUBLIC_CONFIG } from '$config/config.public';
 import logger from '$lib/logger';
 import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
+import HTTP_CODES from '$lib/utils/HttpCodes';
 
 type UpdateUserInformationResult = FormSubmitResult & {
     first_name: string;
@@ -56,6 +57,8 @@ export const actions = {
                 type: 'error',
                 message: 'Form validation failed. Please try again. If this error persists, contact support.',
                 _action: 'updateUserInformation',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
             });
         }
 
@@ -73,7 +76,13 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Failed updating user information.`;
             logger.error({ err, msg: errorLog });
-            return fail(500, { type: 'error', message: errorLog, _action: 'updateUserInformation' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'updateUserInformation',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (response.status == 403) {
@@ -83,6 +92,8 @@ export const actions = {
                 type: 'error',
                 message: 'Forbidden. Please try logging out and back in as the session may be expired.',
                 _action: 'updateUserInformation',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
             });
         }
 
@@ -93,6 +104,8 @@ export const actions = {
                 type: 'error',
                 message: 'Failed to update user information. Please try again.',
                 _action: 'updateUserInformation',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
             });
         }
 
@@ -132,7 +145,13 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Request failed accepting user invite`;
             logger.error({ err, userInviteId, userId: user.id, msg: errorLog });
-            return fail(500, { type: 'error', message: errorLog, _action: 'acceptInvite' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'acceptInvite',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (response.status >= 400) {
@@ -144,7 +163,13 @@ export const actions = {
                 userId: user.id,
                 error: errorResponse.detail,
             });
-            return fail(500, { type: 'error', message: 'Failed to accept invite. Please try again.', _action: 'acceptInvite' });
+            return fail(500, {
+                type: 'error',
+                message: 'Failed to accept invite. Please try again.',
+                _action: 'acceptInvite',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         return { type: 'success', message: 'Invite accepted!', _action: 'acceptInvite' };
@@ -172,7 +197,13 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Request failed rejecting user invite`;
             logger.error({ err, userInviteId, userId: user.id, msg: errorLog });
-            return fail(500, { type: 'error', message: errorLog, _action: 'rejectInvite' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'rejectInvite',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (response.status >= 400) {
@@ -184,7 +215,13 @@ export const actions = {
                 userId: user.id,
                 error: errorResponse.detail,
             });
-            return fail(500, { type: 'error', message: 'Failed to reject invite. Please try again.', _action: 'rejectInvite' });
+            return fail(500, {
+                type: 'error',
+                message: 'Failed to reject invite. Please try again.',
+                _action: 'rejectInvite',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         return { type: 'success', message: 'Invite rejected.', _action: 'rejectInvite' };
@@ -212,13 +249,25 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Request failed leaving group`;
             logger.error({ err, groupId, userId, msg: errorLog });
-            return fail(500, { type: 'error', message: errorLog, _action: 'leaveGroup' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'leaveGroup',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (response.status >= 400) {
             const errorResponse = (await response.json()) as AcrossApiErrorResponse;
             logger.error({ msg: `Failed leaving group`, status: response.status, groupId, userId, error: errorResponse.detail });
-            return fail(500, { type: 'error', message: 'Failed to leave group. Please try again.', _action: 'leaveGroup' });
+            return fail(500, {
+                type: 'error',
+                message: 'Failed to leave group. Please try again.',
+                _action: 'leaveGroup',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         return { type: 'success', message: 'Successfully left the group.', _action: 'leaveGroup' };
@@ -242,7 +291,13 @@ export const actions = {
         } catch (err: unknown) {
             const errorLog = `Request failed deleting user`;
             logger.error({ err, userId: user.id, email: user.email, msg: errorLog });
-            return fail(500, { type: 'error', message: errorLog, _action: 'deleteUser' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'deleteUser',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (response.status >= 400) {
@@ -254,7 +309,13 @@ export const actions = {
                 email: user.email,
                 error: errorResponse.detail,
             });
-            return fail(response.status, { type: 'error', message: 'Failed to delete user. Please try again.', _action: 'deleteUser' });
+            return fail(response.status, {
+                type: 'error',
+                message: 'Failed to delete user. Please try again.',
+                _action: 'deleteUser',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[response.status],
+            });
         }
 
         redirect(302, resolve('/user/logout'));

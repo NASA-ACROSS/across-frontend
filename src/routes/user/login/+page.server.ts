@@ -9,6 +9,7 @@ import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { clearAuth } from '$lib/handles/clearAuth';
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
+import HTTP_CODES from '$lib/utils/HttpCodes';
 
 type LoginResult = FormSubmitResult & {
     email?: string;
@@ -48,6 +49,8 @@ export const actions = {
             return fail(400, {
                 type: 'error',
                 message: 'Please provide a valid email.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[400],
             });
         }
 
@@ -62,6 +65,8 @@ export const actions = {
                 message: `You are being rate limited, please retry after ${rateStatus.retryAfter} seconds.`,
                 retryAfter: rateStatus.retryAfter,
                 error: `Too many login attempts. Please try again in ${rateStatus.retryAfter} seconds.`,
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[429],
             });
         }
 
@@ -76,11 +81,18 @@ export const actions = {
             logger.error({ msg: `Failed logging in user.`, email, err });
 
             if (err instanceof Error) {
-                return fail(500, { type: 'error', message: err.message });
+                return fail(500, {
+                    type: 'error',
+                    message: err.message,
+                    errorId: crypto.randomUUID(),
+                    code: HTTP_CODES[500],
+                });
             } else {
                 return fail(500, {
                     type: 'error',
                     message: 'Unknown error trying to login. If this error persists, please contact support.',
+                    errorId: crypto.randomUUID(),
+                    code: HTTP_CODES[500],
                 });
             }
         }
@@ -90,13 +102,20 @@ export const actions = {
             return fail(500, {
                 type: 'error',
                 message: 'Something went wrong, please try again. If this error persists, contact support.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
             });
         }
 
         if (response.status === 401) {
             const errorResponse = (await response.json()) as { detail: string };
             logger.warn({ msg: errorResponse.detail, email, ip: event.getClientAddress() });
-            return fail(401, { type: 'error', message: 'The email address is not registered.' });
+            return fail(401, {
+                type: 'error',
+                message: 'The email address is not registered.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[401],
+            });
         }
 
         await autoLogin(response);

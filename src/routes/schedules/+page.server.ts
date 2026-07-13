@@ -97,7 +97,7 @@ export async function load({ url, fetch }: RequestEvent) {
         const response = await fetch(apiUrl);
 
         if (!response.ok) {
-            logger.error({ status: response.status, url: apiUrl }, 'API responded with an error');
+            logger.error({ msg: 'Failed to get schedules.', status: response.status, url: apiUrl });
             const text = (await response.json()) as ErrorResponse;
             const knownError = isKnownError(text.detail);
             return {
@@ -133,7 +133,7 @@ export async function load({ url, fetch }: RequestEvent) {
             totalCount,
         };
     } catch (err) {
-        logger.error({ err }, 'Error fetching schedules');
+        logger.error({ msg: 'Error fetching schedules', err });
 
         return {
             schedules: [],

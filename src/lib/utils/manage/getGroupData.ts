@@ -1,14 +1,14 @@
 import logger from '$lib/logger';
 import type { Group } from '$lib/types/User/Group';
 
-export const getGroupData = async (userGroupId: string, fetch: typeof globalThis.fetch): Promise<Group> => {
-    const response = await fetch(`/api/group/${userGroupId}`, {
+export const getGroupData = async (groupId: string, fetch: typeof globalThis.fetch): Promise<Group> => {
+    const response = await fetch(`/api/group/${groupId}`, {
         method: 'GET',
     });
 
     if (!response.ok) {
-        logger.error({ status: response.status, userGroupId }, 'Failed fetching user group data');
-        throw new Error('Unexpected Error while fetching user group data');
+        logger.error({ msg: `Failed to get group data.`, status: response.status, groupId });
+        throw new Error('Unexpected Error while fetching group data');
     }
 
     const group = (await response.json()) as Group;

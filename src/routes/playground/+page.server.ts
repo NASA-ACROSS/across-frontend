@@ -1,7 +1,17 @@
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
-import { fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
+import { fail, type ActionFailure, type RequestEvent, isHttpError } from '@sveltejs/kit';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
+import searchParams from '$lib/utils/searchParams/searchParams';
+import { callApi } from '$lib/utils/across/callApi';
+import HTTP_CODES from '$lib/utils/HttpCodes';
+
+const userFriendlyErrors: Record<number, string> = {
+    401: 'The Krusty Krab is closed.',
+    403: "Now only the really real Mr. Krabs can answer this...If we're discussing the secret formula on the third Wednesday in January and it's not raining outside after we've gargled with vanilla pudding, what do we do?",
+    404: 'The Krabby Patty secret formula cannot be found anywhere.',
+    500: 'Oops! Spongebob forgot how to make the Krabby Patty!',
+};
 
 export const load = () => {
     guards.localOnlyRoute();
@@ -42,9 +52,66 @@ export const actions = {
                     type: 'error',
                     message: 'A mock error occurred while processing your request.',
                     _action: 'mockFormSubmitFeedback',
+                    errorId: crypto.randomUUID(),
+                    code: HTTP_CODES[400],
                 });
             default:
-                return fail(400, { type: 'error', message: `Unknown feedback type: ${feedbackType}`, _action: 'mockFormSubmitFeedback' });
+                return fail(400, {
+                    type: 'error',
+                    message: `Unknown feedback type: ${feedbackType}`,
+                    _action: 'mockFormSubmitFeedback',
+                    errorId: crypto.randomUUID(),
+                    code: HTTP_CODES[400],
+                });
+        }
+    },
+
+    callApi: async ({
+        fetch,
+        request,
+    }: RequestEvent): Promise<(FormSubmitResult & { data: unknown }) | ActionFailure<FormSubmitResult>> => {
+        guards.localOnlyRoute();
+
+        const form = await request.formData();
+        const qp = searchParams.serialize(form);
+
+        const status = qp.get('status');
+        const failureType = qp.get('failure_type');
+
+        if (!failureType && status && isNaN(Number(status))) {
+            return fail(400, {
+                type: 'error',
+                message: "That's not a valid status code or failure type. Pick one and try again.",
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[400],
+            });
+        }
+
+        try {
+            if (failureType === 'unknown_error') {
+                // simulate an unknown error that doesn't come from the API, such as a network error or unexpected exception
+                throw new Error("*wiggle wiggle wiggle* It's still a mystery!");
+            }
+
+            const data = await callApi(fetch, `/api/playground/fake-route?${qp.toString()}`, {
+                method: 'GET',
+            });
+
+            logger.info({ msg: 'Fake-Route API call successful', data });
+
+            return { type: 'success', data };
+        } catch (err: unknown) {
+            if (isHttpError(err)) {
+                logger.error(err);
+                return fail(err.status, {
+                    type: 'error',
+                    errorId: err.body.errorId,
+                    code: err.body.code,
+                    message: userFriendlyErrors[err.status] || err.body.message,
+                });
+            }
+
+            throw err;
         }
     },
 };

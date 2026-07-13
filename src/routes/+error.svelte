@@ -7,14 +7,15 @@
 <Page>
     <Section>
         <article class="prose">
-            <div class="flex gap-5">
+            <div class="flex flex-col gap-2">
                 <h1>{$page.status}</h1>
                 <h1>{$page.error?.message}</h1>
             </div>
 
             <h3>{$page.url}</h3>
             {#if $page.error}
-                <p>{$page.error.errorId}</p>
+                <span>Error ID: </span><code>{$page.error.errorId}</code>
+                <span>Error Code: </span><code>{$page.error.code}</code>
             {/if}
         </article>
     </Section>

@@ -6,11 +6,12 @@ import { resolve } from '$app/paths';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 import { getGroupData } from '$lib/utils/manage/getGroupData';
-import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
+import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
 import { isAdmin } from '$lib/utils/user/isAdmin';
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
+import HTTP_CODES from '$lib/utils/HttpCodes';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();
@@ -43,7 +44,7 @@ export const actions = {
         const email = data.get('email') as string;
         const groupId = data.get('groupId') as string;
 
-        logger.info({ msg: `Inviting user.`, email, groupId });
+        logger.info({ msg: 'Inviting user to group', email, groupId });
 
         const groupInviteBody = {
             receiver_email: email,
@@ -62,13 +63,26 @@ export const actions = {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/invite`, options);
         } catch (err: unknown) {
             const errorLog = `Failed inviting user to group.`;
-            logger.error({ err, email, groupId }, errorLog);
-            return fail(500, { type: 'error', message: errorLog, _action: 'inviteUser' });
+            logger.error({ err, email, groupId, msg: errorLog });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'inviteUser',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (response.status == 500) {
-            logger.error({ email, groupId, status: response.status }, `Failed inviting user to group`);
-            return fail(500, { type: 'error', message: 'Failed to invite user.', _action: 'inviteUser' });
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({ email, groupId, status: response.status, error: errorResponse.detail, msg: `Failed inviting user to group` });
+            return fail(500, {
+                type: 'error',
+                message: 'Failed to invite user.',
+                _action: 'inviteUser',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (response.status == 409) {
@@ -76,13 +90,21 @@ export const actions = {
             return { type: 'warning', message: 'User is already invited or in the group.', _action: 'inviteUser' };
         }
 
-        if (response.status == 404) {
-            const errorResponse = (await response.json()) as ErrorResponse;
-            logger.error({ email, groupId, status: response.status }, `User not found to invite to group.`);
+        if (response.status === 404) {
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({
+                email,
+                groupId,
+                status: response.status,
+                error: errorResponse.detail,
+                msg: `User not found to invite to group.`,
+            });
             return fail(500, {
                 type: 'error',
-                message: errorResponse.detail || 'User not found.',
+                message: 'User not found.',
                 _action: 'inviteUser',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
             });
         }
 
@@ -108,22 +130,49 @@ export const actions = {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${userGroupId}/invite/${userInviteId}`, options);
         } catch (err: unknown) {
             const errorLog = `Failed deleting user invite.`;
-            logger.error({ err, userInviteId, userGroupId }, errorLog);
-            return fail(500, { type: 'error', message: errorLog, _action: 'deleteInvite' });
+            logger.error({ err, userInviteId, userGroupId, msg: errorLog });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'deleteInvite',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (response.status == 500) {
-            logger.error({ userInviteId, userGroupId, status: response.status }, `Failed deleting user invite.`);
-            return fail(500, { type: 'error', message: 'Failed to delete invite.', _action: 'deleteInvite' });
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({
+                userInviteId,
+                userGroupId,
+                status: response.status,
+                error: errorResponse.detail,
+                msg: `Failed deleting user invite.`,
+            });
+            return fail(500, {
+                type: 'error',
+                message: 'Failed to delete invite.',
+                _action: 'deleteInvite',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (response.status == 400) {
-            const errorResponse = (await response.json()) as ErrorResponse;
-            logger.error({ userInviteId, userGroupId, status: response.status }, `Failed deleting user invite.`);
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({
+                userInviteId,
+                userGroupId,
+                status: response.status,
+                error: errorResponse.detail,
+                msg: `Failed deleting user invite.`,
+            });
             return fail(500, {
                 type: 'error',
-                message: errorResponse.detail,
+                message: 'Failed to delete invite.',
                 _action: 'deleteInvite',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
             });
         }
 
@@ -149,13 +198,32 @@ export const actions = {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}`, options);
         } catch (err: unknown) {
             const errorLog = `Failed removing user from group.`;
-            logger.error({ err, userId, groupId }, errorLog);
-            return fail(500, { type: 'error', message: errorLog, _action: 'removeUser' });
+            logger.error({ err, userId, groupId, msg: errorLog });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'removeUser',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (response.status == 500) {
-            logger.error({ userId, groupId, status: response.status }, `Failed removing user from group.`);
-            return fail(500, { type: 'error', message: 'Failed to remove user from group.', _action: 'removeUser' });
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({
+                userId,
+                groupId,
+                status: response.status,
+                error: errorResponse.detail,
+                msg: `Failed removing user from group.`,
+            });
+            return fail(500, {
+                type: 'error',
+                message: 'Failed to remove user from group.',
+                _action: 'removeUser',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         return { type: 'success', message: 'User removed from group.', _action: 'removeUser' };
@@ -182,13 +250,26 @@ export const actions = {
             res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (err: unknown) {
             const errorLog = `Failed assigning user role.`;
-            logger.error({ err, groupId, userId, roleId }, errorLog);
-            return fail(500, { type: 'error', message: errorLog, _action: 'assignRole' });
+            logger.error({ err, groupId, userId, roleId, msg: errorLog });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'assignRole',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (res.status >= 300) {
-            logger.error({ groupId, userId, roleId, status: res.status }, `Failed assigning user role.`);
-            return fail(res.status, { type: 'error', message: 'Failed to assign role.', _action: 'assignRole' });
+            const errorResponse = (await res.json()) as AcrossApiErrorResponse;
+            logger.error({ groupId, userId, roleId, status: res.status, error: errorResponse.detail, msg: `Failed assigning user role.` });
+            return fail(res.status, {
+                type: 'error',
+                message: 'Failed to assign role.',
+                _action: 'assignRole',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[res.status],
+            });
         }
 
         return { type: 'success', message: 'Role assigned.', _action: 'assignRole' };
@@ -213,8 +294,14 @@ export const actions = {
             await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
         } catch (err: unknown) {
             const errorLog = `Failed removing user role.`;
-            logger.error({ err, groupId, userId, roleId }, errorLog);
-            return fail(500, { type: 'error', message: errorLog, _action: 'removeRole' });
+            logger.error({ err, groupId, userId, roleId, msg: errorLog });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'removeRole',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         return { type: 'success', message: 'Role removed.', _action: 'removeRole' };

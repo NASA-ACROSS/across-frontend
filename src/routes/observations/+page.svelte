@@ -182,7 +182,7 @@
                 });
                 selectedColumns = availableColumns.filter((col) => col.selected);
             } catch (err) {
-                logger.error({ err }, 'Error parsing column cookie');
+                logger.error({ msg: 'Failed to parse column cookie', err });
             }
         }
     }

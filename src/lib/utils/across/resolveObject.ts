@@ -3,6 +3,7 @@ import { fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import type { NameResolver } from '$lib/types/across/NameResolver';
 import logger from '$lib/logger';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
+import HTTP_CODES from '$lib/utils/HttpCodes';
 
 type ResolveObjectResult = FormSubmitResult & {
     resolvedObject: NameResolver;
@@ -19,7 +20,12 @@ export const resolveObject = async ({ request }: RequestEvent): Promise<ResolveO
     const objectName = (await request.formData()).get('objectName') as string;
 
     if (!objectName?.trim()) {
-        return fail(400, { type: 'error', message: 'Object name is required' });
+        return fail(400, {
+            type: 'error',
+            message: 'Object name is required',
+            errorId: crypto.randomUUID(),
+            code: HTTP_CODES[400],
+        });
     }
 
     try {
@@ -60,6 +66,11 @@ export const resolveObject = async ({ request }: RequestEvent): Promise<ResolveO
         logger.error({ err: error }, 'Error resolving object name');
         const errorMessage = error instanceof Error ? error.message : 'Failed to resolve object coordinates. Please try again.';
         const statusCode = errorMessage.includes('Rate limited') ? 429 : 500;
-        return fail(statusCode, { type: 'error', message: errorMessage });
+        return fail(statusCode, {
+            type: 'error',
+            message: errorMessage,
+            errorId: crypto.randomUUID(),
+            code: HTTP_CODES[statusCode],
+        });
     }
 };

@@ -3,6 +3,8 @@ import * as luxon from 'luxon';
 import { ssm } from '../../aws/ssm';
 import { JwtRefresher } from './JwtRefresher';
 import logger from '$lib/logger';
+import { callApi } from '../callApi';
+import { isHttpError } from '@sveltejs/kit';
 
 interface AccessTokenResponse {
     access_token: string;
@@ -32,13 +34,13 @@ export class WebserverCredentialsManager {
 
         const { retry = false } = options;
 
-        try {
-            if (!this.token?.access_token || JwtRefresher.IsExpired(this.token.access_token)) {
+        if (!this.token?.access_token || JwtRefresher.IsExpired(this.token.access_token)) {
+            try {
                 // Only the webserver credentials manager should be calling the
                 // token endpoint with its own credentials, so we can use basic
                 // auth with the client id and secret to get the access token.
                 // service accounts do not need refresh tokens.
-                const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/auth/token`, {
+                this.token = await callApi<AccessTokenResponse>(fetch, `${CONFIG.ACROSS_SERVER_URL}/auth/token`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -46,43 +48,41 @@ export class WebserverCredentialsManager {
                     },
                     body: new URLSearchParams({ grant_type: 'client_credentials' }),
                 });
-
-                if (res.status >= 400) {
-                    const body = (await res.json()) as { details: string };
-                    const errLog = { status: res.status, details: body.details };
-
-                    if (res.status === 401) {
+            } catch (err: unknown) {
+                // We will catch and log errors here, but return undefined to allow the application to continue
+                // running without the credentials. This is because the credentials are only needed for specific
+                // server-side requests to the ACROSS API, and we don't want the entire application to crash if
+                // the credentials are not available for some reason. Pages and requests that require the
+                // credentials will handle the errors appropriately when they attempt to use the credentials and
+                // find them missing or invalid.
+                if (isHttpError(err)) {
+                    if (err.status === 401) {
                         if (!retry) {
                             logger.debug('Credentials may have been changed, pulling latest and retrying.');
                             await this.setCredentials();
-                            await this.getAccessToken({ retry: true });
+                            return this.getAccessToken({ retry: true });
                         } else {
-                            logger.error({ msg: 'Unauthorized credentials', ...errLog });
+                            logger.error({ msg: 'Unauthorized credentials', err });
                         }
-                    } else {
-                        logger.error({ msg: 'Unknown error while attempting to fetch the token', ...errLog });
                     }
-
-                    // return undefined to allow the "GET" requests and pages not dependent on the core-server to pass through.
-                    return;
+                } else {
+                    logger.error({
+                        msg: 'Unknown error while attempting to fetch the token. Server may likely be down or unreachable.',
+                        err,
+                    });
                 }
 
-                this.token = (await res.json()) as AccessTokenResponse;
-            }
-
-            // on requests after the initial token fetch, check
-            // if the secret is close to expiring and rotate if needed
-            // before returning the token
-            await this.checkAndRotate();
-
-            return this.token.access_token;
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                logger.error({ err }, 'Unknown error while fetching, server may likely be down.');
-            } else {
-                logger.error({ err }, 'Unknown error.');
+                // return undefined to allow the "GET" requests and pages not dependent on the core-server to pass through.
+                return;
             }
         }
+
+        // on requests after the initial token fetch, check
+        // if the secret is close to expiring and rotate if needed
+        // before returning the token
+        await this.checkAndRotate();
+
+        return this.token.access_token;
     }
 
     private async checkAndRotate(): Promise<void> {

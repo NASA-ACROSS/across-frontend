@@ -10,8 +10,12 @@
 
 {#if isMatch && formData?.message}
     <div class={formData.type === 'error' ? 'text-error' : formData.type === 'warning' ? 'text-warning' : 'text-info'}>
-        {formData.type === 'error' ? 'ERROR: ' : ''}
-        {formData.type === 'warning' ? 'WARNING: ' : ''}
-        {formData.message}
+        {#if formData.type === 'warning'}
+            WARNING: {formData.message}
+        {:else if formData.type === 'error'}
+            ERROR: {formData.message} <span class="text-sm">(ID: <code>{formData.errorId}</code>)</span>
+        {:else}
+            {formData.message}
+        {/if}
     </div>
 {/if}

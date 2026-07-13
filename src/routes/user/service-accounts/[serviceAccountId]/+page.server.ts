@@ -11,7 +11,8 @@ import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles';
 import { type FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { validate } from '$lib/utils/regex/validate';
 import { uuidRegex } from '$lib/utils/regex/uuidRegex';
-import type { ErrorResponse } from '$lib/types/error/ErrorResponse';
+import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
+import { HTTP_CODES } from '$lib';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();
@@ -23,6 +24,7 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
         error(404, {
             message: 'Not Found',
             errorId: crypto.randomUUID(),
+            code: HTTP_CODES[404],
         });
     }
 
@@ -36,6 +38,7 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
         error(404, {
             message: 'Not Found',
             errorId: crypto.randomUUID(),
+            code: HTTP_CODES[404],
         });
     }
 
@@ -73,11 +76,17 @@ export const actions = {
         } catch (error: unknown) {
             const errorLog = 'Unknown request failure while trying to assign group role to service account';
             console.error({ userId, serviceAccountId, groupRoleId, time: Date.now(), err: error }, errorLog);
-            return fail(500, { type: 'error', message: errorLog, _action: 'assignGroupRole' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'assignGroupRole',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (!response.ok) {
-            const responseError = (await response.json()) as ErrorResponse;
+            const responseError = (await response.json()) as AcrossApiErrorResponse;
             const errorLog = 'Failed to assign group role to service account';
             console.error({
                 msg: errorLog,
@@ -87,7 +96,13 @@ export const actions = {
                 status: response.status,
                 error: responseError.detail,
             });
-            return fail(500, { type: 'error', message: errorLog, _action: 'assignGroupRole' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'assignGroupRole',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         return { type: 'success', message: 'Group role assigned successfully!', _action: 'assignGroupRole' };
@@ -117,11 +132,17 @@ export const actions = {
         } catch (error: unknown) {
             const errorLog = 'Unknown request failure while removing group role from service account';
             console.error({ msg: errorLog, userId, serviceAccountId, groupRoleId, err: error });
-            return fail(500, { type: 'error', message: errorLog, _action: 'removeGroupRole' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'removeGroupRole',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (!response.ok) {
-            const responseError = (await response.json()) as ErrorResponse;
+            const responseError = (await response.json()) as AcrossApiErrorResponse;
             const errorLog = 'Failed to remove group role from service account';
             console.error({
                 msg: errorLog,
@@ -131,7 +152,13 @@ export const actions = {
                 status: response.status,
                 error: responseError.detail,
             });
-            return fail(500, { type: 'error', message: errorLog, _action: 'removeGroupRole' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'removeGroupRole',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         return { type: 'success', message: 'Group role removed successfully!', _action: 'removeGroupRole' };
@@ -168,11 +195,17 @@ export const actions = {
         } catch (error: unknown) {
             const errorLog = 'Request failure while updating properties for service account';
             console.error({ msg: errorLog, userId, serviceAccountId, serviceAccountUpdate, err: error });
-            return fail(500, { type: 'error', message: errorLog, _action: 'updateServiceAccount' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'updateServiceAccount',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (!response.ok) {
-            const responseError = (await response.json()) as ErrorResponse;
+            const responseError = (await response.json()) as AcrossApiErrorResponse;
             const errorLog = 'Failed to update service account';
             console.error({
                 msg: errorLog,
@@ -182,7 +215,13 @@ export const actions = {
                 status: response.status,
                 err: responseError.detail,
             });
-            return fail(500, { type: 'error', message: errorLog, _action: 'updateServiceAccount' });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                _action: 'updateServiceAccount',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         return {

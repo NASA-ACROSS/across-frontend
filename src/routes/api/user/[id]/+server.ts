@@ -17,7 +17,7 @@ export const GET: RequestHandler = async (event) => {
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404, 401, 403];
     if (errorCodes.includes(res.status)) {
-        logger.error({ email: locals.user?.email, status: res.status, userId: params.id }, 'Error fetching user roles');
+        logger.error({ email: locals.user?.email, status: res.status, userId: params.id }, 'Error fetching user');
         clearAuth(event);
         redirect(302, resolve('/user/login'));
     }

@@ -24,7 +24,7 @@ export const findKnownError = (detail: unknown, knownErrors: Record<string, stri
             }
         }
     } catch (err) {
-        logger.error({ err, detail }, 'Error processing error detail');
+        logger.error({ msg: 'Error processing error detail', detail, err });
         return DEFAULT_ERROR_MESSAGE;
     }
 

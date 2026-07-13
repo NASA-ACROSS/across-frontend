@@ -10,6 +10,7 @@ import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsMa
 import guards from '$lib/utils/guards';
 import { PUBLIC_CONFIG } from '$config/config.public';
 import logger from '$lib/logger';
+import HTTP_CODES from '$lib/utils/HttpCodes';
 
 export function load(event: RequestEvent) {
     guards.localOnlyRoute();
@@ -38,20 +39,29 @@ export const actions = {
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {
+            const msg = `Too many login attempts. Please try again in ${rateStatus.retryAfter} seconds.`;
             logger.error({
-                msg: `Rate limit exceeded for login-verify.`,
+                msg,
                 verificationToken,
                 ip: event.getClientAddress(),
                 retryAfter: rateStatus.retryAfter,
             });
+
             return fail(429, {
                 type: 'error',
-                message: `You are being rate-limited, please retry after ${rateStatus.retryAfter} seconds.`,
+                message: msg,
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[429],
             });
         }
 
         if (!verificationToken) {
-            return fail(400, { type: 'error', message: 'Verification token is required' });
+            return fail(400, {
+                type: 'error',
+                message: 'Verification token is required',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[400],
+            });
         }
 
         const data = await request.formData();
@@ -61,10 +71,15 @@ export const actions = {
 
         if (!userId) {
             logger.error({
-                msg: `Login-verify failed to decode user id from access token`,
+                msg: 'Login-verify failed to decode user id from access token',
                 verificationToken,
             });
-            return fail(500, { type: 'error', message: 'Failed to decode user information from token' });
+            return fail(500, {
+                type: 'error',
+                message: 'Failed to login user.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}`, { method: 'GET' });

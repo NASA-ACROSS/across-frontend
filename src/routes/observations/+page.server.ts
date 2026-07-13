@@ -137,7 +137,7 @@ export async function load({ url, fetch }: RequestEvent) {
             totalCount,
         };
     } catch (err) {
-        logger.error({ err }, 'Unknown Error fetching observations');
+        logger.error({ msg: 'Unknown Error fetching observations', err });
 
         return {
             ...nullObservations,

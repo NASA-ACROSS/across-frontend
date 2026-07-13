@@ -8,6 +8,7 @@ declare global {
         interface Error {
             message: string;
             errorId: string;
+            code: string;
         }
         interface Locals {
             user?: UserCredentialsCookie;

@@ -11,6 +11,8 @@ import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCooki
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
+import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
+import HTTP_CODES from '$lib/utils/HttpCodes';
 
 type RegisterResult = FormSubmitResult & {
     firstname?: string;
@@ -68,6 +70,8 @@ export const actions = {
             return fail(500, {
                 type: 'error',
                 message: 'Form validation failed. Please try again. If this error persists, contact support.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
             });
         }
 
@@ -81,10 +85,14 @@ export const actions = {
                 ip: event.getClientAddress(),
                 retryAfter: rateStatus.retryAfter,
             });
+
             return fail(429, {
                 type: 'error',
                 message: `You are being rate limited, please retry after ${rateStatus.retryAfter} seconds.`,
                 retryAfter: rateStatus.retryAfter,
+                error: `Too many registration attempts. Please try again in ${rateStatus.retryAfter} seconds.`,
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[429],
             });
         }
 
@@ -99,32 +107,44 @@ export const actions = {
             response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user`, options);
         } catch (err: unknown) {
             const errorLog = `Request failed registering user`;
-            logger.error({ err }, errorLog);
-            return fail(500, { type: 'error', message: errorLog });
+            logger.error({ err, msg: errorLog });
+            return fail(500, {
+                type: 'error',
+                message: errorLog,
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         if (response.status === 401) {
-            logger.error({ email, status: response.status }, `Unauthenticated while registering email`);
+            logger.error({ email, status: response.status, msg: `Unauthenticated while registering email` });
             return fail(401, {
                 type: 'error',
                 message: 'Something went wrong, please try again. If this error persists, contact support.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[401],
             });
         }
 
         if (response.status === 409) {
-            const errorResponse = (await response.json()) as { detail: string };
-            logger.error({ email, username, status: response.status }, `User already exists.`);
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({ email, username, status: response.status, msg: `User already exists.`, error: errorResponse.detail });
             return fail(409, {
                 type: 'error',
-                message: errorResponse.detail,
+                message: 'The email address is unavailable.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[409],
             });
         }
 
         if (response.status === 500 || response.status === 422) {
-            logger.error({ email, username, status: response.status }, `Failed registering user.`);
+            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            logger.error({ email, username, status: response.status, msg: `Failed registering user.`, error: errorResponse.detail });
             return fail(500, {
                 type: 'error',
                 message: 'Something went wrong, please try again. If this error persists, contact support.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
             });
         }
 

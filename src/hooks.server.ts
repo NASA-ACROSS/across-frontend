@@ -1,8 +1,6 @@
 import type { Handle, HandleFetch, HandleServerError, ServerInit } from '@sveltejs/kit';
 import { handleLogout } from '$lib/handles/handleLogout';
 import { handleRedirect } from '$lib/handles/handleRedirect';
-import { getErrorMessage } from '$lib/utils/error/getErrorMessage';
-import { getErrorStack } from '$lib/utils/error/getErrorStack';
 import { getErrorCause } from '$lib/utils/error/getErrorCause';
 import { CONFIG } from '$config/config';
 import { webserverCredentialsManager } from '$lib/utils/across/auth/WebserverCredentialsManager';
@@ -68,28 +66,27 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
     return fetch(request);
 };
 
-export const handleError: HandleServerError = ({ error, event, message }) => {
+export const handleError: HandleServerError = ({ error, event, message, status }) => {
     const errorId = crypto.randomUUID();
-
-    const errorMessage = getErrorMessage(error);
-    const errorStack = getErrorStack(error);
 
     // undefined for some errors, present for others
     const errorCause = getErrorCause(error);
 
-    const errorLog = {
-        errorId,
-        url: event?.url?.href,
-        clientAddress: event?.getClientAddress(),
-        errorMessage,
-        errorStack,
-        errorCause,
-    };
-
-    logger.error({ msg: `Unhandled exception.`, ...errorLog });
+    logger.error(
+        {
+            err: error,
+            errorCause,
+            errorId,
+            url: event?.url?.href,
+            clientIP: event?.getClientAddress(),
+            status,
+        },
+        message
+    );
 
     return {
         message,
         errorId,
+        code: 'UNKNOWN_ERROR',
     };
 };

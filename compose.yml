@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: deploy
+      target: local
       args:
         RUNTIME_ENV: local
     environment:

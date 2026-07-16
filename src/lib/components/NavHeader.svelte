@@ -9,7 +9,7 @@
 
 <li class="text-primary-content text-lg font-bold">
     {#if header.links}
-        <div class="dropdown dropdown-hover dropdown-end {borderClasses}">
+        <div data-testid="NavHeader:{header.id}" class="dropdown dropdown-hover dropdown-end {borderClasses}">
             <div tabindex="0" role="button">
                 {header.label}
                 <div class="bx bx-chevron-down"></div>

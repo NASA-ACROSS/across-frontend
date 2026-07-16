@@ -9,7 +9,7 @@
 </script>
 
 <!-- Section -->
-<div {id} class="w-full my-4 flex flex-col text-primary grow">
+<div data-testid="Section:{id}" {id} class="w-full my-4 flex flex-col text-primary grow">
     <!-- Heading -->
     {#if icon || title || $$slots.buttons}
         <h2 class="text-3xl flex flex-col md:flex-row justify-between text-primary pb-3">

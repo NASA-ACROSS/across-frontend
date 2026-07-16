@@ -17,30 +17,35 @@
 
     const navItems: Header[] = [
         {
+            id: 'playground',
             label: 'Playground',
             href: resolve('/playground'),
             localOnly: true,
         },
         {
+            id: 'data',
             label: 'Data',
             links: [
-                { label: 'Schedules', href: resolve('/schedules') },
-                { label: 'Observations', href: resolve('/observations') },
-                { label: 'Observatories', href: resolve('/observatories') },
+                { id: 'schedules', label: 'Schedules', href: resolve('/schedules') },
+                { id: 'observations', label: 'Observations', href: resolve('/observations') },
+                { id: 'observatories', label: 'Observatories', href: resolve('/observatories') },
             ],
         },
         {
+            id: 'tools',
             label: 'Tools',
             links: [
-                { label: 'Data Ingestion Status', href: resolve('/ingestion-status') },
-                { label: 'Visibility Calculator', href: resolve('/visibility-calculator') },
+                { id: 'data-ingestion-status', label: 'Data Ingestion Status', href: resolve('/ingestion-status') },
+                { id: 'visibility-calculator', label: 'Visibility Calculator', href: resolve('/visibility-calculator') },
             ],
         },
         {
+            id: 'about',
             label: 'About',
             href: resolve('/about'),
         },
         {
+            id: 'api',
             label: 'API',
             href: data.apiDocsUrl,
             newTab: false,
@@ -71,7 +76,7 @@
 <main class="min-h-screen m-0 flex flex-col content-between bg-primary">
     <Navigation {navItems} user={data.user}></Navigation>
 
-    <slot />
+    <slot testid="main-slot" />
 
     <Footer></Footer>
 </main>

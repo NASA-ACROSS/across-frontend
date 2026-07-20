@@ -1,6 +1,6 @@
 # Please follow these instructions to create a pull request:
 
-1.  PRs should have an associated issue with them, unless they are a hotfix, then, additional details should be added to the description to ensure the changes are described well.
+1. PRs should have an associated issue, unless they are a hotfix. In that case, add additional details to the description to ensure the changes are well described.
 2.  Titles - the PR should follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary), as all the commits within the PR will be squashed under the title. An example of a PR title following conventional commits: `feat(location): add Foo to Bar`.
 3.  Fill out the following sections in the template.
 4.  Finally, remove these instructions once the PR is ready.

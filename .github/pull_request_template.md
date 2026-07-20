@@ -1,37 +1,26 @@
-### IMPORTANT: Please do not create a Pull Request without creating an issue first.
+# Please follow these instructions to create a pull request:
 
-### Title
+1.  PRs should have an associated issue with them, unless they are a hotfix, then, additional details should be added to the description to ensure the changes are described well.
+2.  Titles - the PR should follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary), as all the commits within the PR will be squashed under the title. An example of a PR title following conventional commits: `feat(location): add Foo to Bar`.
+3.  Fill out the following sections in the template.
+4.  Finally, remove these instructions once the PR is ready.
 
-The title of the PR should follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary), as all the commits within the PR will be squashed under the title.
-
-feat(location): add Foo to Bar
-
-### Description
+## Description
 
 A one to two sentence summary of the PR for easy digestion, must be
-different and more descriptive than title. Combination of tile and
+different and more descriptive than title. Combination of title and
 description should summarize the issue + solution.
 
-Feel free to add any additional information as a bulleted list.
+Feel free to add any additional information as a bulleted list. This can include changes that were needed for the solution but were not originally part of the refined ticket.
 
-### Related Issue(s)
+### Resolved Issue(s)
 
-Remove this line and link your issue here with the `Resolves` keyword
-Resolves #1234
+Resolves #<1234>
 
-### Reviewers
+## Acceptance Criteria
 
-List all reviewers here and briefly describe why they are invited for
-review.
-By default, the PR author should merge once the reviewers have had a
-chance to review.
-If you have a different preference or cannot merge after review for some
-other constraint, leave a note about it here.
+Add what needs to happen functionally for this work to pass review These can be copy-paste from the associated issue.
 
-### Acceptance Criteria
+## Testing
 
-What needs to happen functionally for this work to pass review, copy paste from issue.
-
-### Testing
-
-Add how you tested this PR and add a sequence of steps, with images where appropriate, for testing this PR.
+Add how to test the changes with a sequence of steps, and images where appropriate. Please include any relevant test/mock data if it is required. Testing steps should provide evidence that acceptance criteria are met.

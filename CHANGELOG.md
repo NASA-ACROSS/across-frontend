@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.5.0...across-frontend-v1.6.0) (2026-07-20)
+
+
+### Features
+
+* **actions:** standardize form action response interface and parsing form feedback ([#334](https://github.com/NASA-ACROSS/across-frontend/issues/334)) ([1bd7852](https://github.com/NASA-ACROSS/across-frontend/commit/1bd7852f576aab45faf8a61164d9e301884eb065))
+* add `callApi` for consistent error handling ([#324](https://github.com/NASA-ACROSS/across-frontend/issues/324)) ([1a92c6c](https://github.com/NASA-ACROSS/across-frontend/commit/1a92c6c4074d172aef122c9b697b98808f8d21ac))
+
+
+### Bug Fixes
+
+* **docs:** adjust pr template ([#349](https://github.com/NASA-ACROSS/across-frontend/issues/349)) ([a171bb5](https://github.com/NASA-ACROSS/across-frontend/commit/a171bb55ac6541d3789253de0414f1c2a55e2335))
+
 ## [1.5.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.4.0...across-frontend-v1.5.0) (2026-06-26)
 
 

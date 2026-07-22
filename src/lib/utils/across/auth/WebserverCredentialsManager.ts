@@ -21,12 +21,12 @@ export class WebserverCredentialsManager {
 
     private expiration?: luxon.DateTime;
 
-    public async initialize(): Promise<void> {
+    public async initialize(fetch: typeof window.fetch): Promise<void> {
         await this.setCredentials();
-        await this.getAccessToken();
+        await this.getAccessToken(fetch);
     }
 
-    public async getAccessToken(options: { retry?: boolean } = {}): Promise<string | undefined> {
+    public async getAccessToken(fetch: typeof window.fetch, options: { retry?: boolean } = {}): Promise<string | undefined> {
         if (CONFIG.IS_BUILD || CONFIG.ACROSS_TEST_ACCESS_TOKEN) {
             logger.debug('Building or running in test environment, using dummy access token for WebserverCredentialsManager');
             return CONFIG.ACROSS_TEST_ACCESS_TOKEN;
@@ -60,7 +60,7 @@ export class WebserverCredentialsManager {
                         if (!retry) {
                             logger.debug('Credentials may have been changed, pulling latest and retrying.');
                             await this.setCredentials();
-                            return this.getAccessToken({ retry: true });
+                            return this.getAccessToken(fetch, { retry: true });
                         } else {
                             logger.error({ msg: 'Unauthorized credentials', err });
                         }

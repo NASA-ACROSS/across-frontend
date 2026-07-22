@@ -3,7 +3,7 @@ import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail'
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import { uuidRegex } from '../regex/uuidRegex';
 import { validate } from '../regex/validate';
-import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
+import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
 
 export async function getServiceAccounts(user: UserCredentialsCookie, fetch: typeof globalThis.fetch): Promise<ServiceAccountDetail[]>;
 export async function getServiceAccounts(
@@ -46,7 +46,7 @@ export async function getServiceAccounts(
     // catch known errors from api and hide error from user
     const errorCodes = [500, 404, 401];
     if (errorCodes.includes(response.status)) {
-        const errRes = (await response.json()) as AcrossApiErrorResponse;
+        const errRes = (await response.json()) as AcrossApiErrorResponseBody;
         console.error({
             msg: 'Failed to get service accounts.',
             status: response.status,

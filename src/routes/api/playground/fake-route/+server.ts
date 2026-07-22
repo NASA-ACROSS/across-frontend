@@ -1,4 +1,4 @@
-import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
+import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
 import searchParams from '$lib/utils/searchParams/searchParams';
 import { type RequestHandler, error } from '@sveltejs/kit';
 import HTTP_CODES from '$lib/utils/HttpCodes';
@@ -44,5 +44,5 @@ export const GET: RequestHandler = ({ url }) => {
     }
 
     const errorMsg = mappedErrors[status];
-    return new Response(JSON.stringify({ detail: errorMsg } as AcrossApiErrorResponse), { status });
+    return new Response(JSON.stringify({ detail: errorMsg } as AcrossApiErrorResponseBody), { status });
 };

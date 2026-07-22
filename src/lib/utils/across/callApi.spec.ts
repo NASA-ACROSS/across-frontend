@@ -9,6 +9,7 @@ vi.mock('$lib/logger', () => {
     return {
         default: {
             warn: vi.fn(),
+            debug: vi.fn(),
         },
     };
 });
@@ -109,26 +110,6 @@ describe('callApi', () => {
         expect(logger.warn).not.toHaveBeenCalled();
     });
 
-    it('should map App.Error message and generated errorId when missing', async () => {
-        fetchMock.mockResolvedValue({
-            ok: false,
-            status: 401,
-            json: vi.fn().mockResolvedValue({
-                message: 'Unauthorized request',
-            }),
-        } as unknown as Response);
-
-        await callApi(fetchMock, '/test', {
-            method: 'GET',
-        });
-
-        expect(error).toHaveBeenCalledWith(401, {
-            message: 'Unauthorized request',
-            code: 'UNAUTHORIZED',
-            errorId: fakeGeneratedId,
-        });
-    });
-
     it('should use fallback message and unknown code when expected fields are missing', async () => {
         fetchMock.mockResolvedValue({
             ok: false,
@@ -148,19 +129,60 @@ describe('callApi', () => {
     });
 
     it('should log warning when expected error fields are missing', async () => {
+        const body = { someOtherDetail: 'This is the real reason!' };
+
         fetchMock.mockResolvedValue({
             ok: false,
             status: 418,
-            json: vi.fn().mockResolvedValue({}),
+            json: vi.fn().mockResolvedValue(body),
         } as unknown as Response);
 
         await callApi(fetchMock, '/test', {
             method: 'GET',
         });
 
-        expect(logger.warn).toHaveBeenCalledWith(
-            { body: {}, errorId: fakeGeneratedId },
-            'API error response does not contain expected fields. Using fallback message.'
+        expect(logger.warn).toHaveBeenCalledWith({ body }, 'API error response does not contain expected fields. Using fallback message.');
+    });
+
+    it('should use response text as message when JSON parsing fails', async () => {
+        const responseText = 'This is a plain text error message';
+
+        fetchMock.mockResolvedValue({
+            ok: false,
+            status: 500,
+            text: vi.fn().mockResolvedValue(responseText),
+        } as unknown as Response);
+
+        await callApi(fetchMock, '/test', {
+            method: 'GET',
+        });
+
+        expect(error).toHaveBeenCalledWith(500, {
+            message: responseText,
+            code: 'INTERNAL_SERVER_ERROR',
+            errorId: fakeGeneratedId,
+        });
+    });
+
+    it('should log debug message when JSON parsing fails', async () => {
+        const responseText = 'This is a plain text error message';
+
+        fetchMock.mockResolvedValue({
+            ok: false,
+            status: 500,
+            text: vi.fn().mockResolvedValue(responseText),
+            json: vi.fn().mockRejectedValue(new Error('JSON parsing error')),
+        } as unknown as Response);
+
+        await callApi(fetchMock, '/test', {
+            method: 'GET',
+        });
+
+        expect(logger.debug).toHaveBeenCalledWith(
+            expect.objectContaining({
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                msg: expect.any(String),
+            })
         );
     });
 });

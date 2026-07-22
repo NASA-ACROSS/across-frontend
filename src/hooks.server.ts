@@ -11,7 +11,7 @@ import { PUBLIC_CONFIG } from '$config/config.public';
 
 export const init: ServerInit = async () => {
     setLogLevel(PUBLIC_CONFIG.RUNTIME_ENV);
-    await webserverCredentialsManager.initialize();
+    await webserverCredentialsManager.initialize(fetch);
 };
 
 /**
@@ -54,7 +54,7 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
             access_token = await UserCredentialsManager.GetAccessToken(event.cookies, tokens);
         } else {
             // this is for server-side requests that need to authenticate with the API, such as login and registering
-            access_token = await webserverCredentialsManager.getAccessToken();
+            access_token = await webserverCredentialsManager.getAccessToken(fetch);
         }
 
         if (access_token) {

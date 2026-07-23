@@ -6,8 +6,8 @@ import { resolveObject } from '$lib/utils/across/resolveObject';
 import type { RequestEvent } from './$types';
 import type { Observation } from '$lib/types/across/Observation';
 import searchParams, { type ParamTypes } from '$lib/utils/searchParams/searchParams';
-import parseErrorResponse from '$lib/utils/error/parseErrorResponse';
-import logger from '$lib/logger';
+import { callApi } from '$lib/utils/across/callApi';
+import { isHttpError } from '@sveltejs/kit';
 
 const DEFAULTS = {
     pageLimit: 20,
@@ -41,18 +41,6 @@ type ObservationQueryParams = {
 
 // This is not an api param, but is used to select the energy regime in the frontend, so it should be preserved and shared for WYSIWYG
 // const excluded_params = ['bandpass_regime'];
-
-/** Confirms Paginate response structure */
-const isPaginateResponse = (result: unknown): result is Paginate<Observation> => {
-    return (
-        typeof result === 'object' &&
-        result !== null &&
-        'items' in result &&
-        Array.isArray(result.items) &&
-        'total_number' in result &&
-        typeof result.total_number === 'number'
-    );
-};
 
 const nullObservations = {
     observations: [],
@@ -95,31 +83,13 @@ export async function load({ url, fetch }: RequestEvent) {
 
     try {
         // Fetch observations
-        const response = await fetch(`/api/observation?${qp}`, { method: 'GET' });
+        const res = await callApi<Paginate<Observation>>(fetch, `/api/observation?${qp}`, { method: 'GET' });
 
-        const result: unknown = await response.json();
-
-        if (!response.ok) {
-            const errorMessage = parseErrorResponse(result);
-
-            return {
-                ...nullObservations,
-                currentPage: queryParams.page || 1,
-                queryParams,
-                urlColumns: queryParams.columns || [],
-                error: errorMessage,
-            };
-        }
-
-        if (!isPaginateResponse(result)) {
-            throw new Error('Invalid API response format for observations');
-        }
-
-        const observations = result.items;
+        const observations = res.items;
 
         // In a real implementation, the total count might be returned in headers or response metadata
         // For now, we'll estimate based on the returned results
-        const totalCount = result.total_number;
+        const totalCount = res.total_number;
         const totalPages = Math.ceil(totalCount / DEFAULTS.pageLimit);
 
         // Fetch instrument details for mapping IDs to names
@@ -137,7 +107,9 @@ export async function load({ url, fetch }: RequestEvent) {
             totalCount,
         };
     } catch (err) {
-        logger.error({ msg: 'Unknown Error fetching observations', err });
+        if (isHttpError(err)) {
+            nullObservations.error = err.body?.message;
+        }
 
         return {
             ...nullObservations,

@@ -4,16 +4,12 @@ import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { resolveObject } from '$lib/utils/across/resolveObject';
 import type { RequestEvent } from './$types';
 import { CONFIG } from '../../config/config';
-import { fail, type ActionFailure } from '@sveltejs/kit';
+import { fail, isHttpError, type ActionFailure } from '@sveltejs/kit';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import searchParams from '$lib/utils/searchParams/searchParams';
-import parseErrorResponse from '$lib/utils/error/parseErrorResponse';
-import logger from '$lib/logger';
 import HTTP_CODES from '$lib/utils/HttpCodes';
-
-type ErrorResponse = {
-    detail: unknown;
-};
+import { callApi } from '$lib/utils/across/callApi';
+import logger from '$lib/logger';
 
 type JointVisibilityQueryParams = {
     instrument_ids?: string[];
@@ -62,42 +58,38 @@ export const actions = {
         // Build API URL with parameters
         const apiUrl = new URL(`${CONFIG.ACROSS_SERVER_URL}/tools/visibility-calculator/windows?${params.toString()}`);
 
-        let response: Response;
         try {
-            response = await fetch(apiUrl);
+            const data = await callApi<JointVisibilityWindowResponse>(event.fetch, apiUrl.toString(), {
+                method: 'GET',
+            });
+
+            return {
+                type: 'success',
+                visibilityWindowsData: {
+                    jointVisibilityWindows: data.visibility_windows,
+                    visibilityWindowInstrumentIds: data.instrument_ids,
+                    observatoryVisibilityWindows: data.observatory_visibility_windows,
+                    error: '',
+                },
+            };
         } catch (err: unknown) {
-            logger.error({ err, params: params.toString(), msg: 'Request failed fetching visibility windows.' });
-
-            return fail(500, {
-                type: 'error',
-                message: 'An error occurred while fetching visibility windows. Please contact support if it continues.',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            if (isHttpError(err)) {
+                return fail(err.status, {
+                    type: 'error',
+                    message: err.body.message,
+                    errorId: err.body.errorId,
+                    code: err.body.code,
+                });
+            } else {
+                const errorId = crypto.randomUUID();
+                logger.error({ err, errorId });
+                return fail(500, {
+                    type: 'error',
+                    message: 'An unexpected error occurred while calculating visibility windows.',
+                    errorId,
+                    code: HTTP_CODES[500],
+                });
+            }
         }
-
-        if (!response.ok) {
-            const result = (await response.json()) as ErrorResponse;
-            const detailText = parseErrorResponse(result);
-
-            return fail(response.status, {
-                type: 'error',
-                message: detailText,
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[response.status],
-            });
-        }
-
-        const data = (await response.json()) as JointVisibilityWindowResponse;
-
-        return {
-            type: 'success',
-            visibilityWindowsData: {
-                jointVisibilityWindows: data.visibility_windows,
-                visibilityWindowInstrumentIds: data.instrument_ids,
-                observatoryVisibilityWindows: data.observatory_visibility_windows,
-                error: '',
-            },
-        };
     },
 };

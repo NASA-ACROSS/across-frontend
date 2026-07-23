@@ -13,8 +13,9 @@
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
     import logger from '$lib/logger';
+    import type { PageData } from './$types';
 
-    export let data;
+    export let data: PageData;
 
     $: error = data.error;
     let scheduleIdError: string = '';

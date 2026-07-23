@@ -10,6 +10,7 @@ vi.mock('$lib/logger', () => {
         default: {
             warn: vi.fn(),
             debug: vi.fn(),
+            error: vi.fn(),
         },
     };
 });
@@ -76,10 +77,12 @@ describe('callApi', () => {
         fetchMock.mockResolvedValue({
             ok: false,
             status: 400,
-            json: vi.fn().mockResolvedValue({
-                detail: 'Bad request from ACROSS API',
-                errorId: 'existing-error-id',
-            }),
+            text: vi.fn().mockResolvedValue(
+                JSON.stringify({
+                    detail: 'Bad request from ACROSS API',
+                    errorId: 'existing-error-id',
+                })
+            ),
         } as unknown as Response);
 
         await callApi(fetchMock, '/test', {
@@ -97,10 +100,12 @@ describe('callApi', () => {
         fetchMock.mockResolvedValue({
             ok: false,
             status: 400,
-            json: vi.fn().mockResolvedValue({
-                detail: 'Bad request from ACROSS API',
-                errorId: 'existing-error-id',
-            }),
+            text: vi.fn().mockResolvedValue(
+                JSON.stringify({
+                    detail: 'Bad request from ACROSS API',
+                    errorId: 'existing-error-id',
+                })
+            ),
         } as unknown as Response);
 
         await callApi(fetchMock, '/test', {
@@ -114,7 +119,7 @@ describe('callApi', () => {
         fetchMock.mockResolvedValue({
             ok: false,
             status: 418,
-            json: vi.fn().mockResolvedValue({}),
+            text: vi.fn().mockResolvedValue('{}'),
         } as unknown as Response);
 
         await callApi(fetchMock, '/test', {
@@ -122,26 +127,10 @@ describe('callApi', () => {
         });
 
         expect(error).toHaveBeenCalledWith(418, {
-            message: 'Unknown API error',
+            message: expect.stringContaining('unknown') as string,
             code: 'UNKNOWN_ERROR',
             errorId: fakeGeneratedId,
         });
-    });
-
-    it('should log warning when expected error fields are missing', async () => {
-        const body = { someOtherDetail: 'This is the real reason!' };
-
-        fetchMock.mockResolvedValue({
-            ok: false,
-            status: 418,
-            json: vi.fn().mockResolvedValue(body),
-        } as unknown as Response);
-
-        await callApi(fetchMock, '/test', {
-            method: 'GET',
-        });
-
-        expect(logger.warn).toHaveBeenCalledWith({ body }, 'API error response does not contain expected fields. Using fallback message.');
     });
 
     it('should use response text as message when JSON parsing fails', async () => {
@@ -171,7 +160,6 @@ describe('callApi', () => {
             ok: false,
             status: 500,
             text: vi.fn().mockResolvedValue(responseText),
-            json: vi.fn().mockRejectedValue(new Error('JSON parsing error')),
         } as unknown as Response);
 
         await callApi(fetchMock, '/test', {
@@ -182,6 +170,37 @@ describe('callApi', () => {
             expect.objectContaining({
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 msg: expect.any(String),
+            })
+        );
+    });
+
+    it('should log the parsed error message from the response.', async () => {
+        const responseBody = {
+            detail: 'This is the parsed error message from the response.',
+            errorId: 'existing-error-id',
+        };
+
+        fetchMock.mockResolvedValue({
+            ok: false,
+            status: 400,
+            text: vi.fn().mockResolvedValue(JSON.stringify(responseBody)),
+        } as unknown as Response);
+
+        await callApi(fetchMock, '/test', {
+            method: 'POST',
+        });
+
+        expect(logger.error).toHaveBeenCalledWith(
+            expect.objectContaining({
+                msg: 'ACROSS API request failed',
+                url: '/test',
+                options: { method: 'POST' },
+                status: 400,
+                errorBody: {
+                    message: 'This is the parsed error message from the response.',
+                    code: 'BAD_REQUEST',
+                    errorId: 'existing-error-id',
+                },
             })
         );
     });

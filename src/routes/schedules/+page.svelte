@@ -23,7 +23,7 @@
 
     // Schedule data and pagination
     $: schedules = data.schedules || [];
-    $: currentPage = data.currentPage || 1;
+    $: currentPage = Number(data.currentPage) || 1;
     $: totalPages = data.totalPages || 1;
     $: telescopes = data.telescopes || [];
     $: totalCount = data.totalCount || 0;
@@ -414,8 +414,9 @@
     <Section title="Schedules (Total: {totalCount})" icon="calendar">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">
-            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
-
+            {#key currentPage}
+                <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
+            {/key}
             <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
                 Customize
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

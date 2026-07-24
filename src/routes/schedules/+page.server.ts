@@ -5,11 +5,7 @@ import { CONFIG } from '../../config/config';
 import type { RequestEvent } from './$types';
 import type { Schedule } from '$lib/types/across/Schedule';
 import logger from '$lib/logger';
-
-const DEFAULTS = {
-    pageLimit: 20,
-    page: 1,
-};
+import { PUBLIC_CONFIG } from '$config/config.public';
 
 type ScheduleQueryParams = {
     external_id?: string | null;
@@ -87,7 +83,7 @@ export async function load({ url, fetch }: RequestEvent) {
     });
 
     // Add pagination params
-    apiParams.append('page_limit', DEFAULTS.pageLimit.toString()); // Number of results per page
+    apiParams.append('page_limit', PUBLIC_CONFIG.DEFAULT_PAGE_LIMIT.toString()); // Number of results per page
     apiParams.append('page', String(page));
 
     apiUrl += apiParams.toString();
@@ -113,10 +109,9 @@ export async function load({ url, fetch }: RequestEvent) {
         const schedulesResponse = (await response.json()) as Paginate<Schedule>;
         const schedules = schedulesResponse.items;
 
-        // In a real implementation, the total count might be returned in headers or response metadata
-        // For now, we'll estimate based on the returned results
-        const totalCount = schedulesResponse.total_number;
-        const totalPages = Math.ceil(totalCount / DEFAULTS.pageLimit);
+        const resultTotalCount = schedulesResponse.total_number;
+        const resultPageLimit = schedulesResponse.page_limit || PUBLIC_CONFIG.DEFAULT_PAGE_LIMIT;
+        const totalPages = Math.ceil(resultTotalCount / resultPageLimit);
 
         // Fetch telescope details for mapping IDs to names
         // In a real implementation, you might have a separate endpoint for this
@@ -130,7 +125,7 @@ export async function load({ url, fetch }: RequestEvent) {
             queryParams,
             urlColumns,
             telescopes,
-            totalCount,
+            totalCount: resultTotalCount,
         };
     } catch (err) {
         logger.error({ msg: 'Error fetching schedules', err });

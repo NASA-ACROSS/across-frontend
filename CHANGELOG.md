@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.6.0...across-frontend-v1.6.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* handle text error response, rename type for clarity ([#352](https://github.com/NASA-ACROSS/across-frontend/issues/352)) ([ad6fa4d](https://github.com/NASA-ACROSS/across-frontend/commit/ad6fa4d7af256c1ed7a31e2aeee5df7f10dd8cb1))
+
 ## [1.6.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.5.0...across-frontend-v1.6.0) (2026-07-20)
 
 

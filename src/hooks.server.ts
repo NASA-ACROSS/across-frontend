@@ -35,7 +35,11 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
     // Add an authorization header to internal API calls
     if (request.url.startsWith(CONFIG.ACROSS_SERVER_URL)) {
         // set external client ip for core-server to parse for rate-limiting
-        request.headers.set('x-real-ip', event.getClientAddress());
+        const forwardedFor = request.headers.get('x-forwarded-for');
+        const clientIp = event.getClientAddress();
+        logger.debug({ forwardedFor, clientIp }, 'handleFetch: adding x-real-ip header to request');
+
+        request.headers.set('x-real-ip', clientIp);
 
         if (request.url.endsWith('/auth/token') || request.url.endsWith('/auth/refresh')) {
             // pass-thru to prevent infinite loops of token refreshing

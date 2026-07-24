@@ -11,7 +11,7 @@ import { PUBLIC_CONFIG } from '$config/config.public';
 
 export const init: ServerInit = async () => {
     setLogLevel(PUBLIC_CONFIG.RUNTIME_ENV);
-    await webserverCredentialsManager.initialize();
+    await webserverCredentialsManager.initialize(fetch);
 };
 
 /**
@@ -35,7 +35,8 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
     // Add an authorization header to internal API calls
     if (request.url.startsWith(CONFIG.ACROSS_SERVER_URL)) {
         // set external client ip for core-server to parse for rate-limiting
-        request.headers.set('x-real-ip', event.getClientAddress());
+        const ip = event.getClientAddress();
+        request.headers.set('x-real-ip', ip);
 
         if (request.url.endsWith('/auth/token') || request.url.endsWith('/auth/refresh')) {
             // pass-thru to prevent infinite loops of token refreshing
@@ -54,7 +55,7 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
             access_token = await UserCredentialsManager.GetAccessToken(event.cookies, tokens);
         } else {
             // this is for server-side requests that need to authenticate with the API, such as login and registering
-            access_token = await webserverCredentialsManager.getAccessToken();
+            access_token = await webserverCredentialsManager.getAccessToken(fetch);
         }
 
         if (access_token) {

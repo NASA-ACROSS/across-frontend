@@ -9,6 +9,8 @@ vi.mock('$lib/logger', () => {
     return {
         default: {
             warn: vi.fn(),
+            debug: vi.fn(),
+            error: vi.fn(),
         },
     };
 });
@@ -75,10 +77,12 @@ describe('callApi', () => {
         fetchMock.mockResolvedValue({
             ok: false,
             status: 400,
-            json: vi.fn().mockResolvedValue({
-                detail: 'Bad request from ACROSS API',
-                errorId: 'existing-error-id',
-            }),
+            text: vi.fn().mockResolvedValue(
+                JSON.stringify({
+                    detail: 'Bad request from ACROSS API',
+                    errorId: 'existing-error-id',
+                })
+            ),
         } as unknown as Response);
 
         await callApi(fetchMock, '/test', {
@@ -96,10 +100,12 @@ describe('callApi', () => {
         fetchMock.mockResolvedValue({
             ok: false,
             status: 400,
-            json: vi.fn().mockResolvedValue({
-                detail: 'Bad request from ACROSS API',
-                errorId: 'existing-error-id',
-            }),
+            text: vi.fn().mockResolvedValue(
+                JSON.stringify({
+                    detail: 'Bad request from ACROSS API',
+                    errorId: 'existing-error-id',
+                })
+            ),
         } as unknown as Response);
 
         await callApi(fetchMock, '/test', {
@@ -109,31 +115,11 @@ describe('callApi', () => {
         expect(logger.warn).not.toHaveBeenCalled();
     });
 
-    it('should map App.Error message and generated errorId when missing', async () => {
-        fetchMock.mockResolvedValue({
-            ok: false,
-            status: 401,
-            json: vi.fn().mockResolvedValue({
-                message: 'Unauthorized request',
-            }),
-        } as unknown as Response);
-
-        await callApi(fetchMock, '/test', {
-            method: 'GET',
-        });
-
-        expect(error).toHaveBeenCalledWith(401, {
-            message: 'Unauthorized request',
-            code: 'UNAUTHORIZED',
-            errorId: fakeGeneratedId,
-        });
-    });
-
     it('should use fallback message and unknown code when expected fields are missing', async () => {
         fetchMock.mockResolvedValue({
             ok: false,
             status: 418,
-            json: vi.fn().mockResolvedValue({}),
+            text: vi.fn().mockResolvedValue('{}'),
         } as unknown as Response);
 
         await callApi(fetchMock, '/test', {
@@ -141,26 +127,81 @@ describe('callApi', () => {
         });
 
         expect(error).toHaveBeenCalledWith(418, {
-            message: 'Unknown API error',
+            message: expect.stringContaining('unknown') as string,
             code: 'UNKNOWN_ERROR',
             errorId: fakeGeneratedId,
         });
     });
 
-    it('should log warning when expected error fields are missing', async () => {
+    it('should use response text as message when JSON parsing fails', async () => {
+        const responseText = 'This is a plain text error message';
+
         fetchMock.mockResolvedValue({
             ok: false,
-            status: 418,
-            json: vi.fn().mockResolvedValue({}),
+            status: 500,
+            text: vi.fn().mockResolvedValue(responseText),
         } as unknown as Response);
 
         await callApi(fetchMock, '/test', {
             method: 'GET',
         });
 
-        expect(logger.warn).toHaveBeenCalledWith(
-            { body: {}, errorId: fakeGeneratedId },
-            'API error response does not contain expected fields. Using fallback message.'
+        expect(error).toHaveBeenCalledWith(500, {
+            message: responseText,
+            code: 'INTERNAL_SERVER_ERROR',
+            errorId: fakeGeneratedId,
+        });
+    });
+
+    it('should log debug message when JSON parsing fails', async () => {
+        const responseText = 'This is a plain text error message';
+
+        fetchMock.mockResolvedValue({
+            ok: false,
+            status: 500,
+            text: vi.fn().mockResolvedValue(responseText),
+        } as unknown as Response);
+
+        await callApi(fetchMock, '/test', {
+            method: 'GET',
+        });
+
+        expect(logger.debug).toHaveBeenCalledWith(
+            expect.objectContaining({
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                msg: expect.any(String),
+            })
+        );
+    });
+
+    it('should log the parsed error message from the response.', async () => {
+        const responseBody = {
+            detail: 'This is the parsed error message from the response.',
+            errorId: 'existing-error-id',
+        };
+
+        fetchMock.mockResolvedValue({
+            ok: false,
+            status: 400,
+            text: vi.fn().mockResolvedValue(JSON.stringify(responseBody)),
+        } as unknown as Response);
+
+        await callApi(fetchMock, '/test', {
+            method: 'POST',
+        });
+
+        expect(logger.error).toHaveBeenCalledWith(
+            expect.objectContaining({
+                msg: 'ACROSS API request failed',
+                url: '/test',
+                options: { method: 'POST' },
+                status: 400,
+                errorBody: {
+                    message: 'This is the parsed error message from the response.',
+                    code: 'BAD_REQUEST',
+                    errorId: 'existing-error-id',
+                },
+            })
         );
     });
 });

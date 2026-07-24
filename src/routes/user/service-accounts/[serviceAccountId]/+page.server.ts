@@ -11,7 +11,7 @@ import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles';
 import { type FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { validate } from '$lib/utils/regex/validate';
 import { uuidRegex } from '$lib/utils/regex/uuidRegex';
-import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
+import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
 import { HTTP_CODES } from '$lib';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
@@ -86,7 +86,7 @@ export const actions = {
         }
 
         if (!response.ok) {
-            const responseError = (await response.json()) as AcrossApiErrorResponse;
+            const responseError = (await response.json()) as AcrossApiErrorResponseBody;
             const errorLog = 'Failed to assign group role to service account';
             console.error({
                 msg: errorLog,
@@ -142,7 +142,7 @@ export const actions = {
         }
 
         if (!response.ok) {
-            const responseError = (await response.json()) as AcrossApiErrorResponse;
+            const responseError = (await response.json()) as AcrossApiErrorResponseBody;
             const errorLog = 'Failed to remove group role from service account';
             console.error({
                 msg: errorLog,
@@ -205,7 +205,7 @@ export const actions = {
         }
 
         if (!response.ok) {
-            const responseError = (await response.json()) as AcrossApiErrorResponse;
+            const responseError = (await response.json()) as AcrossApiErrorResponseBody;
             const errorLog = 'Failed to update service account';
             console.error({
                 msg: errorLog,

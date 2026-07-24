@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import parseErrorResponse, { DEFAULT_ERROR_MESSAGE } from './parseErrorResponse';
+import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
 
 describe('parseErrorResponse', () => {
     it('should return the detail string if detail is a string', () => {
@@ -21,6 +22,7 @@ describe('parseErrorResponse', () => {
 
     it('should return a default error message if the structure is unexpected', () => {
         const errorResponse = { unexpected: 'structure' };
-        expect(parseErrorResponse(errorResponse)).toBe(DEFAULT_ERROR_MESSAGE);
+        // Force type assertion to AcrossApiErrorResponseBody to simulate unexpected structure
+        expect(parseErrorResponse(errorResponse as unknown as AcrossApiErrorResponseBody)).toBe(DEFAULT_ERROR_MESSAGE);
     });
 });

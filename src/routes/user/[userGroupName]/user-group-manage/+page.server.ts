@@ -7,7 +7,7 @@ import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 import { getGroupData } from '$lib/utils/manage/getGroupData';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import type { AcrossApiErrorResponse } from '$lib/types/error/AcrossApiErrorResponse';
+import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
 import { isAdmin } from '$lib/utils/user/isAdmin';
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
@@ -74,7 +74,7 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
             logger.error({ email, groupId, status: response.status, error: errorResponse.detail, msg: `Failed inviting user to group` });
             return fail(500, {
                 type: 'error',
@@ -91,7 +91,7 @@ export const actions = {
         }
 
         if (response.status === 404) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
             logger.error({
                 email,
                 groupId,
@@ -141,7 +141,7 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
             logger.error({
                 userInviteId,
                 userGroupId,
@@ -159,7 +159,7 @@ export const actions = {
         }
 
         if (response.status == 400) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
             logger.error({
                 userInviteId,
                 userGroupId,
@@ -209,7 +209,7 @@ export const actions = {
         }
 
         if (response.status == 500) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponse;
+            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
             logger.error({
                 userId,
                 groupId,
@@ -261,7 +261,7 @@ export const actions = {
         }
 
         if (res.status >= 300) {
-            const errorResponse = (await res.json()) as AcrossApiErrorResponse;
+            const errorResponse = (await res.json()) as AcrossApiErrorResponseBody;
             logger.error({ groupId, userId, roleId, status: res.status, error: errorResponse.detail, msg: `Failed assigning user role.` });
             return fail(res.status, {
                 type: 'error',

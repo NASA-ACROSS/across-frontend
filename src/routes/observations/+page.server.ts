@@ -8,11 +8,7 @@ import type { Observation } from '$lib/types/across/Observation';
 import searchParams, { type ParamTypes } from '$lib/utils/searchParams/searchParams';
 import { callApi } from '$lib/utils/across/callApi';
 import { isHttpError } from '@sveltejs/kit';
-
-const DEFAULTS = {
-    pageLimit: 20,
-    page: 1,
-};
+import { PUBLIC_CONFIG } from '$config/config.public';
 
 type ObservationQueryParams = {
     /** table columns */
@@ -76,7 +72,7 @@ export async function load({ url, fetch }: RequestEvent) {
     // Or we don't set defaults, and treat it as optional, until a user selects or moves to a different page
     // then it gets set along with the default pageLimit.
     if (queryParams.page) {
-        queryParams.page_limit = queryParams.page_limit || DEFAULTS.pageLimit;
+        queryParams.page_limit = queryParams.page_limit || PUBLIC_CONFIG.DEFAULT_PAGE_LIMIT;
     }
 
     const qp = searchParams.serialize<ObservationQueryParams>(queryParams, paramTypes);
@@ -87,10 +83,9 @@ export async function load({ url, fetch }: RequestEvent) {
 
         const observations = res.items;
 
-        // In a real implementation, the total count might be returned in headers or response metadata
-        // For now, we'll estimate based on the returned results
-        const totalCount = res.total_number;
-        const totalPages = Math.ceil(totalCount / DEFAULTS.pageLimit);
+        const resultTotalCount = res.total_number;
+        const resultPageLimit = res.page_limit || PUBLIC_CONFIG.DEFAULT_PAGE_LIMIT;
+        const totalPages = Math.ceil(resultTotalCount / resultPageLimit);
 
         // Fetch instrument details for mapping IDs to names
         // In a real implementation, you might have a separate endpoint for this
@@ -104,7 +99,7 @@ export async function load({ url, fetch }: RequestEvent) {
             queryParams,
             urlColumns: queryParams.columns || [],
             telescopes,
-            totalCount,
+            totalCount: resultTotalCount,
         };
     } catch (err) {
         if (isHttpError(err)) {

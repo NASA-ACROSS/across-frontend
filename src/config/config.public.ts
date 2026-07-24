@@ -33,6 +33,8 @@ class PublicConfiguration {
     public USER_INFO_COOKIE_NAME: string = 'user-info';
 
     public DEFAULT_LOG_LEVEL: Level = (env.PUBLIC_DEFAULT_LOG_LEVEL as Level) || 'debug';
+
+    public DEFAULT_PAGE_LIMIT: number = 100;
 }
 
 export const PUBLIC_CONFIG = new PublicConfiguration();

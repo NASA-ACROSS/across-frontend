@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.6.1...across-frontend-v1.7.0) (2026-07-24)
+
+
+### Features
+
+* add page limit to public config ([#358](https://github.com/NASA-ACROSS/across-frontend/issues/358)) ([db6fcc3](https://github.com/NASA-ACROSS/across-frontend/commit/db6fcc3110b10fd78f54f183f57d314f71041b91))
+* add page limit to public config, update observation and schedule pages to use config for page limit, fix various pagination display bugs ([db6fcc3](https://github.com/NASA-ACROSS/across-frontend/commit/db6fcc3110b10fd78f54f183f57d314f71041b91))
+
 ## [1.6.1](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.6.0...across-frontend-v1.6.1) (2026-07-24)
 
 

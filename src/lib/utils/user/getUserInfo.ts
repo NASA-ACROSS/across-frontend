@@ -1,16 +1,10 @@
 import type { User } from '$lib/types/User/User';
+import { callApi } from '../across/callApi';
 
-export const getUserInfo = async (id: string, fetch: typeof globalThis.fetch) => {
-    const options = {
+export const getUserInfo = async (fetch: typeof globalThis.fetch, id: string) => {
+    const { data } = await callApi<User>(fetch, `/user/${id}`, {
         method: 'GET',
-    };
+    });
 
-    const response = await fetch(`/api/user/${id}`, options);
-
-    if (!response.ok) {
-        throw new Error(`[${response.status}] Failed to fetch user info: ${response.statusText}`);
-    }
-
-    const user = (await response.json()) as User;
-    return user;
+    return data;
 };

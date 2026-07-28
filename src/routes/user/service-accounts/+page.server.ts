@@ -1,21 +1,20 @@
-import { CONFIG } from '$config/config';
 import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
 import type { ServiceAccountSecret } from '$lib/types/User/ServiceAccountSecret';
 import guards from '$lib/utils/guards';
 import { getServiceAccounts } from '$lib/utils/user/getServiceAccounts';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
-import { fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
-import type { PageServerLoad } from '../$types.js';
+import { fail, isHttpError, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
+import type { PageServerLoad } from '../$types';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
-import HTTP_CODES from '$lib/utils/HttpCodes';
+import { callApi } from '$lib/utils/across/callApi';
+import logger from '$lib/logger';
 
-export const load: PageServerLoad = async (event: RequestEvent) => {
+export const load: PageServerLoad = async ({ fetch, locals }: RequestEvent) => {
     guards.localOnlyRoute();
-    const localUser = guards.requireUser(event.locals);
+    const localUser = guards.requireUser(locals);
 
-    const user = await getUserInfo(localUser.id, event.fetch);
-    const serviceAccounts: ServiceAccountDetail[] = await getServiceAccounts(localUser, event.fetch);
+    const user = await getUserInfo(fetch, localUser.id);
+    const serviceAccounts: ServiceAccountDetail[] = await getServiceAccounts(fetch, localUser);
 
     // Respond with user data
     return { user, serviceAccounts };
@@ -40,7 +39,7 @@ export const actions = {
             expiration_duration,
         };
 
-        console.log({
+        logger.debug({
             msg: 'Creating a NEW Service Account',
             userId: user.id,
             userEmail: user.email,
@@ -57,51 +56,26 @@ export const actions = {
             body: JSON.stringify(serviceAccountCreate),
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/`, options);
+            const { data: serviceAccountSecret } = await callApi<ServiceAccountSecret>(fetch, `/user/${user.id}/service-account/`, options);
+
+            // prevent caching response with secret
+            setHeaders({ 'cache-control': 'no-store' });
+
+            return { type: 'success', serviceAccountSecret, _action: 'createServiceAccount' };
         } catch (error: unknown) {
-            const errorLog = `Request failure while creating a NEW Service Account`;
-            console.error({
-                msg: errorLog,
-                userId: user.id,
-                userEmail: user.email,
-                time: Date.now(),
-                err: error,
-            });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'createServiceAccount',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(error)) {
+                return fail(error.status, {
+                    type: 'error',
+                    message: 'Failed to create service account',
+                    _action: 'createServiceAccount',
+                    errorId: error.body.errorId,
+                    code: error.body.code,
+                });
+            }
 
-        if (!response.ok) {
-            const errorResponseBody = (await response.json()) as AcrossApiErrorResponseBody;
-            const errorLog = `Failed to create a NEW Service Account`;
-            console.error(errorLog, {
-                userId: user.id,
-                userEmail: user.email,
-                status: response.status,
-                err: errorResponseBody.detail,
-            });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'createServiceAccount',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw error;
         }
-
-        const serviceAccountSecret = (await response.json()) as ServiceAccountSecret;
-        // prevent caching response with secret
-        setHeaders({
-            'cache-control': 'no-store',
-        });
-        return { type: 'success', serviceAccountSecret, _action: 'createServiceAccount' };
     },
     deleteServiceAccount: async (event: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const { request, locals, fetch } = event;
@@ -111,60 +85,35 @@ export const actions = {
 
         const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log({
+        logger.debug({
             msg: `Deleting a Service Account`,
             serviceAccountId,
             userId: user.id,
             userEmail: user.email,
         });
 
-        const options = {
+        const options: RequestInit = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
         };
 
-        let response;
         try {
-            const url = `${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/${serviceAccountId}`;
-            response = await fetch(url, options);
+            const route = `/user/${user.id}/service-account/${serviceAccountId}`;
+            await callApi(fetch, route, { ...options, responseType: 'empty' });
         } catch (error: unknown) {
-            const errorLog = `Request failure while deleting a service account`;
-            console.error({
-                msg: errorLog,
-                userId: user.id,
-                userEmail: user.email,
-                serviceAccountId: serviceAccountId,
-                err: error,
-            });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'deleteServiceAccount',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(error)) {
+                return fail(error.status, {
+                    type: 'error',
+                    message: 'Failed to delete service account',
+                    _action: 'deleteServiceAccount',
+                    errorId: error.body.errorId,
+                    code: error.body.code,
+                });
+            }
 
-        if (!response.ok) {
-            const errorResponseBody = (await response.json()) as AcrossApiErrorResponseBody;
-            const errorLog = 'Failed to delete the Service Account';
-            console.error({
-                msg: errorLog,
-                userId: user.id,
-                userEmail: user.email,
-                serviceAccountId,
-                status: response.status,
-                err: errorResponseBody.detail,
-            });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'deleteServiceAccount',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw error;
         }
 
         return { type: 'success', _action: 'deleteServiceAccount' };
@@ -179,7 +128,7 @@ export const actions = {
 
         const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log({
+        logger.debug({
             msg: 'Restoring a Service Account',
             serviceAccountId,
             userId: user.id,
@@ -193,51 +142,26 @@ export const actions = {
             },
         };
 
-        let response;
         try {
-            const url = `${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/service-account/${serviceAccountId}/rotate-key`;
-            response = await fetch(url, options);
+            const route = `/user/${user.id}/service-account/${serviceAccountId}/rotate-key`;
+            const { data: serviceAccountSecret } = await callApi<ServiceAccountSecret>(fetch, route, options);
+
+            // prevent caching response with secret
+            setHeaders({ 'cache-control': 'no-store' });
+
+            return { type: 'success', serviceAccountSecret, _action: 'restoreServiceAccount' };
         } catch (error: unknown) {
-            const errorLog = `Request failure while restoring a service account`;
-            console.error(errorLog, {
-                userId: user.id,
-                userEmail: user.email,
-                serviceAccountId,
-                err: error,
-            });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'restoreServiceAccount',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(error)) {
+                return fail(error.status, {
+                    type: 'error',
+                    message: 'Failed to restore service account',
+                    _action: 'restoreServiceAccount',
+                    errorId: error.body.errorId,
+                    code: error.body.code,
+                });
+            }
 
-        if (!response.ok) {
-            const errorResponseBody = (await response.json()) as AcrossApiErrorResponseBody;
-            const errorLog = 'Failed to restore the Service Account';
-            console.error(errorLog, {
-                userId: user.id,
-                userEmail: user.email,
-                serviceAccountId,
-                status: response.status,
-                error: errorResponseBody,
-            });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'restoreServiceAccount',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw error;
         }
-
-        const serviceAccountSecret = (await response.json()) as ServiceAccountSecret;
-        // prevent caching response with secret
-        setHeaders({
-            'cache-control': 'no-store',
-        });
-        return { type: 'success', serviceAccountSecret, _action: 'restoreServiceAccount' };
     },
 };

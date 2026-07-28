@@ -7,14 +7,11 @@ type GetObservatoryParams = {
 };
 
 export const getObservatories = async (fetch: typeof window.fetch, params?: GetObservatoryParams) => {
-    const apiUrl = '/api/observatory';
-
-    let requestUrl = apiUrl;
-
+    let route = '/observatory';
     const qp = searchParams.serialize(params);
-    if (qp.entries().toArray().length) requestUrl = `${requestUrl}?${qp}`;
+    if (qp.entries().toArray().length) route = `${route}?${qp}`;
 
-    const observatories = await callApi<Observatory[] | Observatory>(fetch, requestUrl, {
+    const { data: observatories } = await callApi<Observatory[] | Observatory>(fetch, route, {
         method: 'GET',
     });
 

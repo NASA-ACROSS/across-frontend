@@ -11,7 +11,7 @@ import { PUBLIC_CONFIG } from '$config/config.public';
 
 export const init: ServerInit = async () => {
     setLogLevel(PUBLIC_CONFIG.RUNTIME_ENV);
-    await webserverCredentialsManager.initialize(fetch);
+    await webserverCredentialsManager.initialize();
 };
 
 /**
@@ -52,7 +52,7 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
         // check if the request is from the client or server and use the appropriate strategy
         if (tokens) {
             // client will have the token in the cookie
-            access_token = await UserCredentialsManager.GetAccessToken(event.cookies, tokens);
+            access_token = await UserCredentialsManager.GetAccessToken(fetch, event.cookies, tokens);
         } else {
             // this is for server-side requests that need to authenticate with the API, such as login and registering
             access_token = await webserverCredentialsManager.getAccessToken(fetch);

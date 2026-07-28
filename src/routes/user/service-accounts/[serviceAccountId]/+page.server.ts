@@ -1,7 +1,6 @@
 import type { PageServerLoad, RequestEvent } from './$types';
 
-import { CONFIG } from '../../../../config/config.js';
-import { error, fail, type ActionFailure } from '@sveltejs/kit';
+import { error, fail, isHttpError, type ActionFailure } from '@sveltejs/kit';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 
 import { getServiceAccounts } from '$lib/utils/user/getServiceAccounts';
@@ -11,8 +10,8 @@ import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles';
 import { type FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { validate } from '$lib/utils/regex/validate';
 import { uuidRegex } from '$lib/utils/regex/uuidRegex';
-import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
 import { HTTP_CODES } from '$lib';
+import { callApi } from '$lib/utils/across/callApi';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();
@@ -28,8 +27,8 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
         });
     }
 
-    const user = await getUserInfo(localUser.id, fetch);
-    const serviceAccount = await getServiceAccounts(localUser, fetch, params.serviceAccountId);
+    const user = await getUserInfo(fetch, localUser.id);
+    const serviceAccount = await getServiceAccounts(fetch, localUser, params.serviceAccountId);
 
     const groupRoles = getGroupsFromRoles(user.group_roles);
 
@@ -67,42 +66,20 @@ export const actions = {
             },
         };
 
-        let response;
         try {
-            response = await fetch(
-                `${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}/group-role/${groupRoleId}`,
-                options
-            );
+            await callApi(fetch, `/user/${userId}/service-account/${serviceAccountId}/group-role/${groupRoleId}`, options);
         } catch (error: unknown) {
-            const errorLog = 'Unknown request failure while trying to assign group role to service account';
-            console.error({ userId, serviceAccountId, groupRoleId, time: Date.now(), err: error }, errorLog);
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'assignGroupRole',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(error)) {
+                return fail(error.status, {
+                    type: 'error',
+                    message: 'Failed to assign group role to service account',
+                    _action: 'assignGroupRole',
+                    errorId: error.body.errorId,
+                    code: error.body.code,
+                });
+            }
 
-        if (!response.ok) {
-            const responseError = (await response.json()) as AcrossApiErrorResponseBody;
-            const errorLog = 'Failed to assign group role to service account';
-            console.error({
-                msg: errorLog,
-                userId,
-                serviceAccountId,
-                groupRoleId,
-                status: response.status,
-                error: responseError.detail,
-            });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'assignGroupRole',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw error;
         }
 
         return { type: 'success', message: 'Group role assigned successfully!', _action: 'assignGroupRole' };
@@ -123,42 +100,20 @@ export const actions = {
             },
         };
 
-        let response;
         try {
-            response = await fetch(
-                `${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}/group-role/${groupRoleId}`,
-                options
-            );
+            await callApi(fetch, `/user/${userId}/service-account/${serviceAccountId}/group-role/${groupRoleId}`, options);
         } catch (error: unknown) {
-            const errorLog = 'Unknown request failure while removing group role from service account';
-            console.error({ msg: errorLog, userId, serviceAccountId, groupRoleId, err: error });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'removeGroupRole',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(error)) {
+                return fail(error.status, {
+                    type: 'error',
+                    message: 'Failed to remove group role from service account',
+                    _action: 'removeGroupRole',
+                    errorId: error.body.errorId,
+                    code: error.body.code,
+                });
+            }
 
-        if (!response.ok) {
-            const responseError = (await response.json()) as AcrossApiErrorResponseBody;
-            const errorLog = 'Failed to remove group role from service account';
-            console.error({
-                msg: errorLog,
-                userId,
-                serviceAccountId,
-                groupRoleId,
-                status: response.status,
-                error: responseError.detail,
-            });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'removeGroupRole',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw error;
         }
 
         return { type: 'success', message: 'Group role removed successfully!', _action: 'removeGroupRole' };
@@ -189,39 +144,20 @@ export const actions = {
             body: JSON.stringify(serviceAccountUpdate),
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}/service-account/${serviceAccountId}`, options);
+            await callApi(fetch, `/user/${userId}/service-account/${serviceAccountId}`, options);
         } catch (error: unknown) {
-            const errorLog = 'Request failure while updating properties for service account';
-            console.error({ msg: errorLog, userId, serviceAccountId, serviceAccountUpdate, err: error });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'updateServiceAccount',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(error)) {
+                return fail(error.status, {
+                    type: 'error',
+                    message: 'Failed to update service account',
+                    _action: 'updateServiceAccount',
+                    errorId: error.body.errorId,
+                    code: error.body.code,
+                });
+            }
 
-        if (!response.ok) {
-            const responseError = (await response.json()) as AcrossApiErrorResponseBody;
-            const errorLog = 'Failed to update service account';
-            console.error({
-                msg: errorLog,
-                userId,
-                serviceAccountId,
-                serviceAccountUpdate,
-                status: response.status,
-                err: responseError.detail,
-            });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'updateServiceAccount',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw error;
         }
 
         return {

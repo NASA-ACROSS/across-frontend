@@ -3,6 +3,14 @@ import { error } from '@sveltejs/kit';
 import HTTP_CODES from '../HttpCodes';
 import logger from '$lib/logger';
 import parseErrorResponse from '../error/parseErrorResponse';
+import { CONFIG } from '$config/config';
+
+type CallApiOptions = RequestInit & {
+    responseType?: 'json' | 'empty';
+};
+type JsonResult<T> = { data: T; response: Response };
+type EmptyResult = { data: undefined; response: Response };
+type Result<T> = JsonResult<T> | EmptyResult;
 
 /**
  * Get an error body from the response which can be
@@ -36,7 +44,36 @@ const getAppError = async (status: number, response: Response): Promise<App.Erro
     return appError;
 };
 
-export const callApi = async <T>(fetch: typeof window.fetch, url: string | URL, options: RequestInit): Promise<T> => {
+/**
+ * Main wrapper to call the ACROSS API. This will handle error parsing and return a consistent error responses.
+ *
+ * @param fetch - The fetch function to use for making the API call. This is typically the fetch function provided by SvelteKit's RequestEvent.
+ * @param route - The API route to call, relative to the ACROSS server URL.
+ * @param options - DEFAULT: `{ method: 'GET', responseType: 'json' }`. The options to pass
+ * to the fetch function, such as method, headers, and body. The `responseType` option can be set to 'json' or 'empty' to specify the expected response type. When there is no content, the `responseType` should be set to 'empty' to avoid parsing errors.
+ * @returns A promise that resolves with an object containing the data from the API response and the response object itself.
+ */
+export function callApi<T>(
+    fetch: typeof globalThis.fetch,
+    route: string,
+    options?: CallApiOptions & { responseType?: 'json' }
+): Promise<JsonResult<T>>;
+
+export function callApi(
+    fetch: typeof globalThis.fetch,
+    route: string,
+    options: CallApiOptions & { responseType: 'empty' }
+): Promise<EmptyResult>;
+
+export async function callApi<T>(
+    fetch: typeof globalThis.fetch,
+    route: string,
+    options: CallApiOptions = { method: 'GET', responseType: 'json' }
+): Promise<Result<T>> {
+    const responseType = options.responseType || 'json';
+
+    const url = new URL(`${CONFIG.ACROSS_SERVER_URL}${route}`);
+
     const response = await fetch(url, options);
 
     if (!response.ok) {
@@ -50,8 +87,12 @@ export const callApi = async <T>(fetch: typeof window.fetch, url: string | URL, 
             errorBody,
         });
 
-        return error(response.status, errorBody);
+        error(response.status, errorBody);
     }
 
-    return (await response.json()) as T;
-};
+    if (responseType === 'empty' || response.status === 204) {
+        return { data: undefined, response };
+    } else {
+        return { data: (await response.json()) as T, response };
+    }
+}

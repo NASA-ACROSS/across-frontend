@@ -3,8 +3,8 @@ import logger from '$lib/logger';
 import { fail, type ActionFailure, type RequestEvent, isHttpError } from '@sveltejs/kit';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import searchParams from '$lib/utils/searchParams/searchParams';
-import { callApi } from '$lib/utils/across/callApi';
 import HTTP_CODES from '$lib/utils/HttpCodes';
+import { getKrabbyPattySecretFormula } from './util/getKrabbyPattySecretFormula';
 
 const userFriendlyErrors: Record<number, string> = {
     401: 'The Krusty Krab is closed.',
@@ -66,18 +66,16 @@ export const actions = {
         }
     },
 
-    callApi: async ({
-        fetch,
-        request,
-    }: RequestEvent): Promise<(FormSubmitResult & { data: unknown }) | ActionFailure<FormSubmitResult>> => {
+    mockCallApi: async ({ request }: RequestEvent): Promise<(FormSubmitResult & { data: unknown }) | ActionFailure<FormSubmitResult>> => {
         guards.localOnlyRoute();
 
         const form = await request.formData();
         const qp = searchParams.serialize(form);
 
-        const status = qp.get('status');
-        const failureType = qp.get('failure_type');
+        const status = qp.get('status') || undefined;
+        const failureType = qp.get('failure_type') || undefined;
 
+        // Initial error handling for the page.
         if (!failureType && status && isNaN(Number(status))) {
             return fail(400, {
                 type: 'error',
@@ -93,9 +91,9 @@ export const actions = {
                 throw new Error("*wiggle wiggle wiggle* It's still a mystery!");
             }
 
-            const data = await callApi(fetch, `/api/playground/fake-route?${qp.toString()}`, {
-                method: 'GET',
-            });
+            // use the utility function to help simulate an api call. Internally this will use `callApi` to make the request, but
+            // it will use a mock fetch that simulates the API response based on the query parameters.
+            const data = await getKrabbyPattySecretFormula(failureType, Number(status));
 
             logger.info({ msg: 'Fake-Route API call successful', data });
 

@@ -22,7 +22,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-    <form method="post" use:enhance={handleSubmit} action="playground?/callApi">
+    <form method="post" use:enhance={handleSubmit} action="playground?/mockCallApi">
         <div class="flex flex-col gap-2">
             <fieldset class="fieldset">
                 <legend class="fieldset-legend">Error Status</legend>

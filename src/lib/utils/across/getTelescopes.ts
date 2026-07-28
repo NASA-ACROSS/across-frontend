@@ -1,4 +1,3 @@
-import { CONFIG } from '$config/config';
 import type { Telescope } from '$lib/types/across/Telescope';
 import searchParams from '../searchParams/searchParams';
 import { callApi } from './callApi';
@@ -10,13 +9,11 @@ type GetTelescopesParams = {
 };
 
 export const getTelescopes = async (fetch: typeof window.fetch, params?: GetTelescopesParams) => {
-    const url = new URL(`${CONFIG.ACROSS_SERVER_URL}/telescope/`);
+    const path = '/telescope';
     const qp = searchParams.serialize(params);
-    url.search = qp.toString();
+    const route = `${qp.toString() ? `${path}?${qp}` : path}`;
 
-    const telescopes = await callApi<Telescope[] | Telescope>(fetch, url, {
-        method: 'GET',
-    });
+    const { data: telescopes } = await callApi<Telescope[] | Telescope>(fetch, route, { method: 'GET' });
 
     if (!Array.isArray(telescopes)) return [telescopes];
     return telescopes;

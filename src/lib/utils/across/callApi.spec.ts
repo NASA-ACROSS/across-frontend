@@ -2,8 +2,9 @@ import logger from '$lib/logger';
 import { error } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { callApi } from './callApi';
+import { HTTP_CODES } from '$lib';
 
-const fetchMock = vi.fn();
+const mockFetch = vi.fn();
 
 vi.mock('$lib/logger', () => {
     return {
@@ -17,77 +18,100 @@ vi.mock('$lib/logger', () => {
 
 vi.mock('@sveltejs/kit', () => {
     return {
-        error: vi.fn((status: number, body: App.Error) => ({ status, body })),
+        error: vi.fn(() => {
+            throw new Error();
+        }),
     };
 });
 
+vi.mock('$config/config', () => {
+    return {
+        CONFIG: {
+            ACROSS_SERVER_URL: 'http://across-server.com',
+        },
+    };
+});
+
+const getFakeResponse = <T>({ ok, status, body }: { ok: boolean; status: number; body: T }) => {
+    const res = {
+        ok,
+        status,
+    } as unknown as Response;
+
+    if (typeof body === 'object') {
+        res.text = vi.fn().mockResolvedValue(JSON.stringify(body));
+        res.json = vi.fn().mockResolvedValue(body);
+    } else {
+        res.text = vi.fn().mockResolvedValue(body as string);
+        res.json = vi.fn().mockRejectedValue(new Error('Invalid JSON'));
+    }
+
+    return res;
+};
+
 describe('callApi', () => {
     const fakeGeneratedId = 'generated-error-uuid-id-1234';
+    const fakeResponse = getFakeResponse({ ok: true, status: 200, body: { id: 'abc' } });
 
     beforeEach(() => {
         vi.clearAllMocks();
-        fetchMock.mockReset();
+        mockFetch.mockResolvedValue(fakeResponse);
         vi.spyOn(globalThis.crypto, 'randomUUID').mockReturnValue(fakeGeneratedId);
     });
 
-    it('should call fetch with url and options when response is ok', async () => {
-        const responseBody = { id: 'abc', status: 'ok' };
+    it('should call fetch with url and options', async () => {
+        await callApi(mockFetch, '/test', { method: 'GET' });
 
-        fetchMock.mockResolvedValue({
-            ok: true,
-            json: vi.fn().mockResolvedValue(responseBody),
-        } as unknown as Response);
-
-        await callApi<typeof responseBody>(fetchMock, '/test', {
-            method: 'GET',
-        });
-
-        expect(fetchMock).toHaveBeenCalledWith('/test', { method: 'GET' });
+        expect(mockFetch).toHaveBeenCalledWith(new URL('http://across-server.com/test'), { method: 'GET' });
     });
 
     it('should return parsed JSON when response is ok', async () => {
-        const responseBody = { id: 'abc', status: 'ok' };
-
-        fetchMock.mockResolvedValue({
-            ok: true,
-            json: vi.fn().mockResolvedValue(responseBody),
-        } as unknown as Response);
-
-        const result = await callApi<typeof responseBody>(fetchMock, '/test', {
+        const { data } = await callApi(mockFetch, '/test', {
             method: 'GET',
         });
 
-        expect(result).toEqual(responseBody);
+        expect(data).toEqual({ id: 'abc' });
     });
 
     it('should not call svelte error helper when response is ok', async () => {
-        fetchMock.mockResolvedValue({
-            ok: true,
-            json: vi.fn().mockResolvedValue({ id: 'abc' }),
-        } as unknown as Response);
-
-        await callApi(fetchMock, '/test', {
+        await callApi(mockFetch, '/test', {
             method: 'GET',
         });
 
         expect(error).not.toHaveBeenCalled();
     });
 
+    it('should throw error when response is not ok', async () => {
+        mockFetch.mockResolvedValue(
+            getFakeResponse({
+                ok: false,
+                status: 500,
+                body: { detail: 'Internal server error' },
+            }) as unknown as Response
+        );
+
+        await expect(
+            callApi(mockFetch, '/test', {
+                method: 'GET',
+            })
+        ).rejects.toThrowError();
+    });
+
     it('should map ACROSS API detail and existing errorId', async () => {
-        fetchMock.mockResolvedValue({
-            ok: false,
-            status: 400,
-            text: vi.fn().mockResolvedValue(
-                JSON.stringify({
+        mockFetch.mockResolvedValue(
+            getFakeResponse({
+                ok: false,
+                status: 400,
+                body: {
                     detail: 'Bad request from ACROSS API',
                     errorId: 'existing-error-id',
-                })
-            ),
-        } as unknown as Response);
+                },
+            })
+        );
 
-        await callApi(fetchMock, '/test', {
+        await callApi(mockFetch, '/test', {
             method: 'POST',
-        });
+        }).catch(() => {});
 
         expect(error).toHaveBeenCalledWith(400, {
             message: 'Bad request from ACROSS API',
@@ -97,34 +121,36 @@ describe('callApi', () => {
     });
 
     it('should not log warning when detail exists', async () => {
-        fetchMock.mockResolvedValue({
-            ok: false,
-            status: 400,
-            text: vi.fn().mockResolvedValue(
-                JSON.stringify({
+        mockFetch.mockResolvedValue(
+            getFakeResponse({
+                ok: false,
+                status: 400,
+                body: {
                     detail: 'Bad request from ACROSS API',
                     errorId: 'existing-error-id',
-                })
-            ),
-        } as unknown as Response);
+                },
+            })
+        );
 
-        await callApi(fetchMock, '/test', {
+        await callApi(mockFetch, '/test', {
             method: 'POST',
-        });
+        }).catch(() => {});
 
         expect(logger.warn).not.toHaveBeenCalled();
     });
 
     it('should use fallback message and unknown code when expected fields are missing', async () => {
-        fetchMock.mockResolvedValue({
-            ok: false,
-            status: 418,
-            text: vi.fn().mockResolvedValue('{}'),
-        } as unknown as Response);
+        mockFetch.mockResolvedValue(
+            getFakeResponse({
+                ok: false,
+                status: 418,
+                body: {},
+            })
+        );
 
-        await callApi(fetchMock, '/test', {
+        await callApi(mockFetch, '/test', {
             method: 'GET',
-        });
+        }).catch(() => {});
 
         expect(error).toHaveBeenCalledWith(418, {
             message: expect.stringContaining('unknown') as string,
@@ -136,15 +162,17 @@ describe('callApi', () => {
     it('should use response text as message when JSON parsing fails', async () => {
         const responseText = 'This is a plain text error message';
 
-        fetchMock.mockResolvedValue({
-            ok: false,
-            status: 500,
-            text: vi.fn().mockResolvedValue(responseText),
-        } as unknown as Response);
+        mockFetch.mockResolvedValue(
+            getFakeResponse({
+                ok: false,
+                status: 500,
+                body: responseText,
+            })
+        );
 
-        await callApi(fetchMock, '/test', {
+        await callApi(mockFetch, '/test', {
             method: 'GET',
-        });
+        }).catch(() => {});
 
         expect(error).toHaveBeenCalledWith(500, {
             message: responseText,
@@ -156,15 +184,17 @@ describe('callApi', () => {
     it('should log debug message when JSON parsing fails', async () => {
         const responseText = 'This is a plain text error message';
 
-        fetchMock.mockResolvedValue({
-            ok: false,
-            status: 500,
-            text: vi.fn().mockResolvedValue(responseText),
-        } as unknown as Response);
+        mockFetch.mockResolvedValue(
+            getFakeResponse({
+                ok: false,
+                status: 500,
+                body: responseText,
+            })
+        );
 
-        await callApi(fetchMock, '/test', {
+        await callApi(mockFetch, '/test', {
             method: 'GET',
-        });
+        }).catch(() => {});
 
         expect(logger.debug).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -180,28 +210,58 @@ describe('callApi', () => {
             errorId: 'existing-error-id',
         };
 
-        fetchMock.mockResolvedValue({
-            ok: false,
-            status: 400,
-            text: vi.fn().mockResolvedValue(JSON.stringify(responseBody)),
-        } as unknown as Response);
+        mockFetch.mockResolvedValue(getFakeResponse({ ok: false, status: 400, body: responseBody }));
 
-        await callApi(fetchMock, '/test', {
+        await callApi(mockFetch, '/test', {
             method: 'POST',
-        });
+        }).catch(() => {});
 
         expect(logger.error).toHaveBeenCalledWith(
             expect.objectContaining({
                 msg: 'ACROSS API request failed',
-                url: '/test',
+                url: new URL('http://across-server.com/test'),
                 options: { method: 'POST' },
                 status: 400,
                 errorBody: {
                     message: 'This is the parsed error message from the response.',
-                    code: 'BAD_REQUEST',
+                    code: HTTP_CODES[400],
                     errorId: 'existing-error-id',
                 },
             })
         );
+    });
+
+    it('should return undefined data when there is no content in the response and responseType is empty', async () => {
+        mockFetch.mockResolvedValue(
+            getFakeResponse({
+                ok: true,
+                status: 201,
+                body: undefined,
+            })
+        );
+
+        const { data } = await callApi(mockFetch, '/test', {
+            method: 'DELETE',
+            responseType: 'empty',
+        });
+
+        expect(data).toBeUndefined();
+    });
+
+    it('should return undefined data when status is 204', async () => {
+        mockFetch.mockResolvedValue(
+            getFakeResponse({
+                ok: true,
+                status: 204,
+                body: undefined,
+            })
+        );
+
+        const { data } = await callApi(mockFetch, '/test', {
+            method: 'DELETE',
+            responseType: 'empty',
+        });
+
+        expect(data).toBeUndefined();
     });
 });

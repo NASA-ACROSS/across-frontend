@@ -482,7 +482,7 @@
                                 {column.label}
                             </th>
                         {/each}
-                        <th class="max-w-70 cursor-pointer hover:bg-nasa-blue">Observations</th>
+                        <th class="max-w-70 cursor-pointer hover:bg-nasa-blue">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -530,7 +530,12 @@
                                     </td>
                                 {/each}
                                 <td>
-                                    <ArrowButton href="/observations?schedule_ids={schedule.id}" />
+                                    <div class="flex items-center gap-2">
+                                        <ArrowButton href="/observations?schedule_ids={schedule.id}" />
+                                        <a class="btn btn-sm btn-outline btn-info" href="/schedules/{schedule.id}/visualization"
+                                            >Footprints</a
+                                        >
+                                    </div>
                                 </td>
                             </tr>
                         {/each}

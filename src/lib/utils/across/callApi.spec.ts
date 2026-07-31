@@ -264,4 +264,41 @@ describe('callApi', () => {
 
         expect(data).toBeUndefined();
     });
+
+    it('should return a string when the API returns a plaintext and responseType is json', async () => {
+        const responseString = 'This is a string response from the API';
+
+        mockFetch.mockResolvedValue(
+            getFakeResponse({
+                ok: true,
+                status: 201,
+                body: responseString,
+            })
+        );
+
+        const { data } = await callApi(mockFetch, '/test', {
+            method: 'GET',
+        });
+
+        expect(data).toBe(responseString);
+    });
+
+    it('should return a string when responseType is text', async () => {
+        const responseString = 'This is a string response from the API';
+
+        mockFetch.mockResolvedValue(
+            getFakeResponse({
+                ok: true,
+                status: 201,
+                body: responseString,
+            })
+        );
+
+        const { data } = await callApi(mockFetch, '/test', {
+            method: 'GET',
+            responseType: 'text',
+        });
+
+        expect(data).toBe(responseString);
+    });
 });

@@ -6,11 +6,12 @@ import parseErrorResponse from '../error/parseErrorResponse';
 import { CONFIG } from '$config/config';
 
 type CallApiOptions = RequestInit & {
-    responseType?: 'json' | 'empty';
+    responseType?: 'json' | 'text' | 'empty';
 };
 type JsonResult<T> = { data: T; response: Response };
+type TextResult = { data: string; response: Response };
 type EmptyResult = { data: undefined; response: Response };
-type Result<T> = JsonResult<T> | EmptyResult;
+type Result<T> = JsonResult<T> | EmptyResult | TextResult;
 
 /**
  * Get an error body from the response which can be
@@ -62,7 +63,13 @@ export function callApi<T>(
 export function callApi(
     fetch: typeof globalThis.fetch,
     route: string,
-    options: CallApiOptions & { responseType: 'empty' }
+    options?: CallApiOptions & { responseType?: 'text' }
+): Promise<TextResult>;
+
+export function callApi(
+    fetch: typeof globalThis.fetch,
+    route: string,
+    options?: CallApiOptions & { responseType?: 'empty' }
 ): Promise<EmptyResult>;
 
 export async function callApi<T>(
@@ -93,6 +100,17 @@ export async function callApi<T>(
     if (responseType === 'empty' || response.status === 204) {
         return { data: undefined, response };
     } else {
-        return { data: (await response.json()) as T, response };
+        const resText = await response.text();
+
+        if (responseType === 'json') {
+            try {
+                const jsonData = JSON.parse(resText) as T;
+                return { data: jsonData, response };
+            } catch {
+                // json parsing failed, return the raw text as a fallback
+            }
+        }
+
+        return { data: resText, response };
     }
 }

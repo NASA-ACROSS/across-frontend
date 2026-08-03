@@ -27,7 +27,7 @@ vi.mock('@sveltejs/kit', () => {
 vi.mock('$config/config', () => {
     return {
         CONFIG: {
-            ACROSS_SERVER_URL: 'http://across-server.com',
+            ACROSS_SERVER_URL: 'http://across-server.test',
         },
     };
 });
@@ -62,7 +62,7 @@ describe('callApi', () => {
     it('should call fetch with url and options', async () => {
         await callApi(mockFetch, '/test', { method: 'GET' });
 
-        expect(mockFetch).toHaveBeenCalledWith(new URL('http://across-server.com/test'), { method: 'GET' });
+        expect(mockFetch).toHaveBeenCalledWith(new URL('http://across-server.test/test'), { method: 'GET' });
     });
 
     it('should return parsed JSON when response is ok', async () => {
@@ -219,7 +219,7 @@ describe('callApi', () => {
         expect(logger.error).toHaveBeenCalledWith(
             expect.objectContaining({
                 msg: 'ACROSS API request failed',
-                url: new URL('http://across-server.com/test'),
+                url: new URL('http://across-server.test/test'),
                 options: { method: 'POST' },
                 status: 400,
                 errorBody: {

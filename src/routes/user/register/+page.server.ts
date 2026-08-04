@@ -1,8 +1,7 @@
 import { emailRegex } from '$lib/utils/regex/emailRegex';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
 import { validate } from '$lib/utils/regex/validate';
-import { CONFIG } from '../../../config/config';
-import { fail, redirect, type ActionFailure } from '@sveltejs/kit';
+import { fail, isHttpError, redirect, type ActionFailure } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
 import { autoLogin } from '$lib/utils/user/autoLogin.js';
@@ -11,8 +10,9 @@ import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCooki
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
-import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
 import HTTP_CODES from '$lib/utils/HttpCodes';
+import { callApi } from '$lib/utils/across/callApi';
+import type { MagicLinkDTO } from '$lib/types/auth/MagicLinkDTO';
 
 type RegisterResult = FormSubmitResult & {
     firstname?: string;
@@ -102,53 +102,44 @@ export const actions = {
             body: JSON.stringify(user),
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user`, options);
+            const { data } = await callApi(fetch, `/user`, options);
+            autoLogin(data as MagicLinkDTO);
         } catch (err: unknown) {
-            const errorLog = `Request failed registering user`;
-            logger.error({ err, msg: errorLog });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(err)) {
+                if (err.status === 401) {
+                    return fail(err.status, {
+                        type: 'error',
+                        message: 'Something went wrong, please try again. If this error persists, contact support.',
+                        errorId: err.body.errorId,
+                        code: err.body.code,
+                    });
+                } else if (err.status === 409) {
+                    return fail(err.status, {
+                        type: 'error',
+                        message: 'The email address is unavailable.',
+                        errorId: err.body.errorId,
+                        code: err.body.code,
+                    });
+                } else if (err.status === 422) {
+                    return fail(err.status, {
+                        type: 'error',
+                        message: 'Please check your input and try again. If this error persists, contact support.',
+                        errorId: err.body.errorId,
+                        code: err.body.code,
+                    });
+                } else if (err.status === 500) {
+                    return fail(err.status, {
+                        type: 'error',
+                        message: 'Failed to register user. Please try again. If this error persists, contact support.',
+                        errorId: err.body.errorId,
+                        code: err.body.code,
+                    });
+                }
+            }
 
-        if (response.status === 401) {
-            logger.error({ email, status: response.status, msg: `Unauthenticated while registering email` });
-            return fail(401, {
-                type: 'error',
-                message: 'Something went wrong, please try again. If this error persists, contact support.',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[401],
-            });
+            throw err;
         }
-
-        if (response.status === 409) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({ email, username, status: response.status, msg: `User already exists.`, error: errorResponse.detail });
-            return fail(409, {
-                type: 'error',
-                message: 'The email address is unavailable.',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[409],
-            });
-        }
-
-        if (response.status === 500 || response.status === 422) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({ email, username, status: response.status, msg: `Failed registering user.`, error: errorResponse.detail });
-            return fail(500, {
-                type: 'error',
-                message: 'Something went wrong, please try again. If this error persists, contact support.',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
-
-        await autoLogin(response);
 
         return { type: 'success', message: 'Please check your email for a verification link!', firstname, lastname, username, email };
     },

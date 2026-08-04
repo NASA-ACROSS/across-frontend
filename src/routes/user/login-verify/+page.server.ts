@@ -1,6 +1,5 @@
 import { fail, redirect, type ActionFailure } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
-import { CONFIG } from '../../../config/config';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import type { LocalUser } from '$lib/types/User/UserCredentialsCookie';
 import type { User } from '$lib/types/User/User';
@@ -11,6 +10,7 @@ import guards from '$lib/utils/guards';
 import { PUBLIC_CONFIG } from '$config/config.public';
 import logger from '$lib/logger';
 import HTTP_CODES from '$lib/utils/HttpCodes';
+import { callApi } from '$lib/utils/across/callApi';
 
 export function load(event: RequestEvent) {
     guards.localOnlyRoute();
@@ -67,7 +67,7 @@ export const actions = {
         const data = await request.formData();
         const rememberMe = Boolean(data.get('rememberMe'));
 
-        const userId = await UserCredentialsManager.Verify(verificationToken, cookies, rememberMe);
+        const userId = await UserCredentialsManager.Verify(fetch, verificationToken, cookies, rememberMe);
 
         if (!userId) {
             logger.error({
@@ -82,9 +82,7 @@ export const actions = {
             });
         }
 
-        const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}`, { method: 'GET' });
-
-        const user = (await res.json()) as User;
+        const { data: user } = await callApi<User>(fetch, `/user/${userId}`, { method: 'GET' });
 
         const localUser: LocalUser = {
             id: userId,

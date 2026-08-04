@@ -1,6 +1,5 @@
-import { redirect, fail, type ActionFailure } from '@sveltejs/kit';
+import { redirect, fail, type ActionFailure, isHttpError } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
-import { CONFIG } from '../../../config/config';
 import { validate } from '$lib/utils/regex/validate';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
 import type { RequestEvent } from './$types';
@@ -10,8 +9,8 @@ import guards from '$lib/utils/guards';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 import { PUBLIC_CONFIG } from '$config/config.public';
 import logger from '$lib/logger';
-import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
 import HTTP_CODES from '$lib/utils/HttpCodes';
+import { callApi } from '$lib/utils/across/callApi';
 
 type UpdateUserInformationResult = FormSubmitResult & {
     first_name: string;
@@ -19,11 +18,11 @@ type UpdateUserInformationResult = FormSubmitResult & {
     username: string;
 };
 
-export async function load(event: RequestEvent) {
+export async function load({ fetch, locals }: RequestEvent) {
     guards.localOnlyRoute();
-    const localUser = guards.requireUser(event.locals);
 
-    const user = await getUserInfo(localUser.id, event.fetch);
+    const localUser = guards.requireUser(locals);
+    const user = await getUserInfo(fetch, localUser.id);
 
     // Respond with user data
     return { user };
@@ -49,15 +48,19 @@ export const actions = {
 
         // reject if any inputs are null after sanitization, this should never happen
         if (first_name === null || last_name === null || username === null) {
+            const errId = crypto.randomUUID();
+
             logger.error({
                 msg: `Could not validate user input to update user info, something is null.`,
                 userPutBody,
+                errorId: errId,
             });
+
             return fail(500, {
                 type: 'error',
                 message: 'Form validation failed. Please try again. If this error persists, contact support.',
                 _action: 'updateUserInformation',
-                errorId: crypto.randomUUID(),
+                errorId: errId,
                 code: HTTP_CODES[500],
             });
         }
@@ -70,43 +73,30 @@ export const actions = {
             body: JSON.stringify(userPutBody),
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}`, options);
+            await callApi(fetch, `/user/${user.id}`, options);
         } catch (err: unknown) {
-            const errorLog = `Failed updating user information.`;
-            logger.error({ err, msg: errorLog });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'updateUserInformation',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(err)) {
+                if (err.status === 403) {
+                    return fail(err.status, {
+                        type: 'error',
+                        message: 'Forbidden. Please try logging out and back in as the session may be expired.',
+                        _action: 'updateUserInformation',
+                        errorId: err.body.errorId,
+                        code: err.body.code,
+                    });
+                } else {
+                    return fail(err.status, {
+                        type: 'error',
+                        message: 'Failed to update user information. Please try again.',
+                        _action: 'updateUserInformation',
+                        errorId: err.body.errorId,
+                        code: err.body.code,
+                    });
+                }
+            }
 
-        if (response.status == 403) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({ msg: `Forbidden access to user`, status: response.status, error: errorResponse.detail });
-            return fail(500, {
-                type: 'error',
-                message: 'Forbidden. Please try logging out and back in as the session may be expired.',
-                _action: 'updateUserInformation',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
-
-        if (response.status == 500) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({ msg: `Failed updating user information.`, status: response.status, error: errorResponse.detail });
-            return fail(500, {
-                type: 'error',
-                message: 'Failed to update user information. Please try again.',
-                _action: 'updateUserInformation',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw err;
         }
 
         const cookieUserData = { ...user, ...userPutBody };
@@ -139,37 +129,20 @@ export const actions = {
             },
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/invite/${userInviteId}`, options);
+            await callApi(fetch, `/user/${user.id}/invite/${userInviteId}`, options);
         } catch (err: unknown) {
-            const errorLog = `Request failed accepting user invite`;
-            logger.error({ err, userInviteId, userId: user.id, msg: errorLog });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'acceptInvite',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(err)) {
+                return fail(err.status, {
+                    type: 'error',
+                    message: 'Failed to accept invite. Please try again.',
+                    _action: 'acceptInvite',
+                    errorId: err.body.errorId,
+                    code: err.body.code,
+                });
+            }
 
-        if (response.status >= 400) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({
-                msg: `Failed accepting user invite`,
-                status: response.status,
-                userInviteId,
-                userId: user.id,
-                error: errorResponse.detail,
-            });
-            return fail(500, {
-                type: 'error',
-                message: 'Failed to accept invite. Please try again.',
-                _action: 'acceptInvite',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw err;
         }
 
         return { type: 'success', message: 'Invite accepted!', _action: 'acceptInvite' };
@@ -191,37 +164,20 @@ export const actions = {
             },
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}/invite/${userInviteId}`, options);
+            await callApi(fetch, `/user/${user.id}/invite/${userInviteId}`, options);
         } catch (err: unknown) {
-            const errorLog = `Request failed rejecting user invite`;
-            logger.error({ err, userInviteId, userId: user.id, msg: errorLog });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'rejectInvite',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(err)) {
+                return fail(err.status, {
+                    type: 'error',
+                    message: 'Failed to reject invite. Please try again.',
+                    _action: 'rejectInvite',
+                    errorId: err.body.errorId,
+                    code: err.body.code,
+                });
+            }
 
-        if (response.status >= 400) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({
-                msg: `Failed rejecting user invite`,
-                status: response.status,
-                userInviteId,
-                userId: user.id,
-                error: errorResponse.detail,
-            });
-            return fail(500, {
-                type: 'error',
-                message: 'Failed to reject invite. Please try again.',
-                _action: 'rejectInvite',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw err;
         }
 
         return { type: 'success', message: 'Invite rejected.', _action: 'rejectInvite' };
@@ -243,31 +199,19 @@ export const actions = {
             },
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}/group/${groupId}/`, options);
+            await callApi(fetch, `/user/${userId}/group/${groupId}/`, options);
         } catch (err: unknown) {
-            const errorLog = `Request failed leaving group`;
-            logger.error({ err, groupId, userId, msg: errorLog });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'leaveGroup',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
-
-        if (response.status >= 400) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({ msg: `Failed leaving group`, status: response.status, groupId, userId, error: errorResponse.detail });
-            return fail(500, {
-                type: 'error',
-                message: 'Failed to leave group. Please try again.',
-                _action: 'leaveGroup',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            if (isHttpError(err)) {
+                return fail(err.status, {
+                    type: 'error',
+                    message: 'Failed to leave group. Please try again.',
+                    _action: 'leaveGroup',
+                    errorId: err.body.errorId,
+                    code: err.body.code,
+                });
+            }
+            throw err;
         }
 
         return { type: 'success', message: 'Successfully left the group.', _action: 'leaveGroup' };
@@ -285,37 +229,20 @@ export const actions = {
             },
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${user.id}`, options);
+            await callApi(fetch, `/user/${user.id}`, options);
         } catch (err: unknown) {
-            const errorLog = `Request failed deleting user`;
-            logger.error({ err, userId: user.id, email: user.email, msg: errorLog });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'deleteUser',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(err)) {
+                return fail(err.status, {
+                    type: 'error',
+                    message: 'Failed to delete user. Please try again.',
+                    _action: 'deleteUser',
+                    errorId: err.body.errorId,
+                    code: err.body.code,
+                });
+            }
 
-        if (response.status >= 400) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({
-                msg: `Failed deleting user`,
-                status: response.status,
-                userId: user.id,
-                email: user.email,
-                error: errorResponse.detail,
-            });
-            return fail(response.status, {
-                type: 'error',
-                message: 'Failed to delete user. Please try again.',
-                _action: 'deleteUser',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[response.status],
-            });
+            throw err;
         }
 
         redirect(302, resolve('/user/logout'));

@@ -79,12 +79,12 @@ export async function load({ url, fetch }: RequestEvent) {
 
     try {
         // Fetch observations
-        const res = await callApi<Paginate<Observation>>(fetch, `/api/observation?${qp}`, { method: 'GET' });
+        const { data } = await callApi<Paginate<Observation>>(fetch, `/observation?${qp}`, { method: 'GET' });
 
-        const observations = res.items;
+        const observations = data.items;
 
-        const resultTotalCount = res.total_number;
-        const resultPageLimit = res.page_limit || PUBLIC_CONFIG.DEFAULT_PAGE_LIMIT;
+        const resultTotalCount = data.total_number;
+        const resultPageLimit = data.page_limit || PUBLIC_CONFIG.DEFAULT_PAGE_LIMIT;
         const totalPages = Math.ceil(resultTotalCount / resultPageLimit);
 
         // Fetch instrument details for mapping IDs to names

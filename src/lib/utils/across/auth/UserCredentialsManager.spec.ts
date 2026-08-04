@@ -1,12 +1,14 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { UserCredentialsManager } from './UserCredentialsManager';
-import type { Cookies } from '@sveltejs/kit';
+import { type Cookies } from '@sveltejs/kit';
 import { JwtRefresher } from './JwtRefresher';
 import { PUBLIC_CONFIG } from '$config/config.public';
 import { jwtDecode } from 'jwt-decode';
+import { callApi } from '../callApi';
 
-// uses shared mock in __mocks__
+// uses shared mock from __mocks__
 vi.mock('./JwtRefresher');
+vi.mock('../callApi');
 
 // should be a shared mock, but it is not straightforward.
 vi.mock('jwt-decode', () => {
@@ -29,21 +31,15 @@ vi.mock('../../crypto/crypto-aes-gcm', () => {
     };
 });
 
+const mockFetch = vi.fn();
+
 describe('UserCredentialsManager', () => {
-    const fakeTokenRes = {
-        status: 200,
-        json: vi.fn().mockResolvedValue({
-            access_token: 'valid',
-            refresh_token: 'new_refresh_token',
-        }),
-        headers: {
-            get: (header: string) => {
-                if (header === 'set-cookie') {
-                    return 'refresh_token=new_refresh_token; Path=/; HttpOnly';
-                }
-                return null;
-            },
-        },
+    let fakeTokenRes: {
+        data: { access_token: string; refresh_token: string };
+        response: {
+            status: number;
+            headers: { get: (header: string) => string | null };
+        };
     };
 
     const fakeCookies = {
@@ -52,15 +48,33 @@ describe('UserCredentialsManager', () => {
         delete: vi.fn(),
     } as unknown as Cookies;
 
-    const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue(fakeTokenRes as unknown as Response);
-
     beforeEach(() => {
         vi.clearAllMocks();
+
+        fakeTokenRes = {
+            data: {
+                access_token: 'valid',
+                refresh_token: 'new_refresh_token',
+            },
+            response: {
+                status: 200,
+                headers: {
+                    get: (header: string) => {
+                        if (header === 'set-cookie') {
+                            return 'refresh_token=new_refresh_token; Path=/; HttpOnly';
+                        }
+                        return null;
+                    },
+                },
+            },
+        };
+
+        (callApi as Mock).mockResolvedValue(fakeTokenRes);
     });
 
     describe('GetAccessToken', () => {
         it('should return existing access token if not expired', async () => {
-            const accessToken = await UserCredentialsManager.GetAccessToken(fakeCookies, {
+            const accessToken = await UserCredentialsManager.GetAccessToken(mockFetch, fakeCookies, {
                 access_token: 'existing_access_token',
                 refresh_token: 'existing_refresh_token',
             });
@@ -78,7 +92,7 @@ describe('UserCredentialsManager', () => {
 
             const setCookieSpy = vi.spyOn(UserCredentialsManager, 'SetCookie');
 
-            await UserCredentialsManager.GetAccessToken(fakeCookies, {
+            await UserCredentialsManager.GetAccessToken(mockFetch, fakeCookies, {
                 access_token: 'expired',
                 refresh_token: 'existing_refresh_token',
             });
@@ -92,9 +106,10 @@ describe('UserCredentialsManager', () => {
 
     describe('Verify', () => {
         it('should fetch tokens from verify endpoint', async () => {
-            await UserCredentialsManager.Verify('verification_token', fakeCookies);
+            await UserCredentialsManager.Verify(mockFetch, 'verification_token', fakeCookies);
 
-            expect(global.fetch).toHaveBeenCalledWith(
+            expect(callApi).toHaveBeenCalledWith(
+                mockFetch,
                 expect.stringContaining('/auth/verify?token=verification_token'),
                 expect.objectContaining({
                     method: 'GET',
@@ -106,7 +121,7 @@ describe('UserCredentialsManager', () => {
         it('should set the cookie with the retrieved tokens', async () => {
             const setCookieSpy = vi.spyOn(UserCredentialsManager, 'SetCookie');
 
-            await UserCredentialsManager.Verify('verification_token', fakeCookies);
+            await UserCredentialsManager.Verify(mockFetch, 'verification_token', fakeCookies);
 
             expect(setCookieSpy).toHaveBeenCalledWith(
                 fakeCookies,
@@ -120,26 +135,26 @@ describe('UserCredentialsManager', () => {
         });
 
         it('should decode the access token to retrieve user information', async () => {
-            await UserCredentialsManager.Verify('verification_token', fakeCookies);
+            await UserCredentialsManager.Verify(mockFetch, 'verification_token', fakeCookies);
 
             expect(jwtDecode).toHaveBeenCalledWith('valid');
         });
 
-        it('should throw an error if the response status is not 200', async () => {
-            fetchSpy.mockResolvedValueOnce({
+        it('should throw an error when callApi fails', async () => {
+            const error = {
                 status: 401,
-                statusText: 'Unauthorized',
-            } as unknown as Response);
+                body: { message: 'Unauthorized', errorId: 'err-id', code: 'UNAUTHORIZED' },
+            };
 
-            await expect(UserCredentialsManager.Verify('verification_token', fakeCookies)).rejects.toThrow(
-                'Login verification failed with status code 401'
-            );
+            (callApi as Mock).mockRejectedValueOnce(error);
+
+            await expect(UserCredentialsManager.Verify(mockFetch, 'verification_token', fakeCookies)).rejects.toEqual(error);
         });
 
         it('should throw an error if access token is not retrieved', async () => {
-            fakeTokenRes.json.mockResolvedValueOnce({});
+            fakeTokenRes.data = { access_token: '', refresh_token: '' };
 
-            await expect(UserCredentialsManager.Verify('verification_token', fakeCookies)).rejects.toThrow(
+            await expect(UserCredentialsManager.Verify(mockFetch, 'verification_token', fakeCookies)).rejects.toThrow(
                 'Login verification failed to retrieve tokens'
             );
         });
@@ -147,7 +162,7 @@ describe('UserCredentialsManager', () => {
         it('should throw an error if decoded token does not contain user information', async () => {
             (jwtDecode as unknown as Mock).mockReturnValueOnce({});
 
-            await expect(UserCredentialsManager.Verify('verification_token', fakeCookies)).rejects.toThrow(
+            await expect(UserCredentialsManager.Verify(mockFetch, 'verification_token', fakeCookies)).rejects.toThrow(
                 'Login verification failed to decode user information from token'
             );
         });

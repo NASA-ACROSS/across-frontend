@@ -1,11 +1,11 @@
 import type { Paginate } from '$lib/types/Paginate';
 import type { Telescope } from '$lib/types/across/Telescope';
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
-import { CONFIG } from '../../config/config';
 import type { RequestEvent } from './$types';
 import type { Schedule } from '$lib/types/across/Schedule';
-import logger from '$lib/logger';
 import { PUBLIC_CONFIG } from '$config/config.public';
+import { callApi } from '$lib/utils/across/callApi';
+import { isHttpError } from '@sveltejs/kit';
 
 type ScheduleQueryParams = {
     external_id?: string | null;
@@ -16,10 +16,6 @@ type ScheduleQueryParams = {
     fidelity?: string | null;
     date_range_begin?: string | null;
     date_range_end?: string | null;
-};
-
-type ErrorResponse = {
-    detail: string;
 };
 
 const knownErrors = [
@@ -33,15 +29,14 @@ const knownErrors = [
 ];
 
 // This is not an api param, but is used to select the energy regime in the frontend, so it should be preserved and shared for WYSIWYG
-const excluded_params = ['bandpass_regime'];
+const excludedParams = ['bandpass_regime'];
 
-const isKnownError = (errorText: string): string => {
+const isKnownError = (errorText: string): string | undefined => {
     for (const knownError of knownErrors) {
         if (errorText.includes(knownError)) {
             return knownError;
         }
     }
-    return 'There was an error processing the request, please modify your selection and try again';
 };
 
 export async function load({ url, fetch }: RequestEvent) {
@@ -67,55 +62,36 @@ export async function load({ url, fetch }: RequestEvent) {
     queryParams.telescope_ids = url.searchParams.get('telescope_ids')?.split(',') || [];
 
     // Build API URL with parameters
-    let apiUrl = `${CONFIG.ACROSS_SERVER_URL}/schedule/?`;
-    const apiParams = new URLSearchParams();
+    let route = `/schedule`;
+    const qp = new URLSearchParams();
 
-    // Add all query parameters to API request
     Object.entries(queryParams).forEach(([key, value]) => {
         if (value !== undefined) {
             if (Array.isArray(value)) {
-                value.forEach((item) => apiParams.append(key, item));
+                value.forEach((item) => qp.append(key, item));
             } else {
                 // only add valid api params
-                if (!excluded_params.includes(key)) apiParams.append(key, String(value));
+                if (!excludedParams.includes(key)) qp.append(key, String(value));
             }
         }
     });
 
     // Add pagination params
-    apiParams.append('page_limit', PUBLIC_CONFIG.DEFAULT_PAGE_LIMIT.toString()); // Number of results per page
-    apiParams.append('page', String(page));
+    qp.append('page_limit', PUBLIC_CONFIG.DEFAULT_PAGE_LIMIT.toString()); // Number of results per page
+    qp.append('page', String(page));
 
-    apiUrl += apiParams.toString();
+    route += `?${qp.toString()}`;
 
     try {
         // Fetch schedules
-        const response = await fetch(apiUrl);
+        const { data: schedulesResponse } = await callApi<Paginate<Schedule>>(fetch, route);
 
-        if (!response.ok) {
-            logger.error({ msg: 'Failed to get schedules.', status: response.status, url: apiUrl });
-            const text = (await response.json()) as ErrorResponse;
-            const knownError = isKnownError(text.detail);
-            return {
-                schedules: [],
-                currentPage: 1,
-                totalPages: 1,
-                queryParams: {} as ScheduleQueryParams,
-                urlColumns: [],
-                error: knownError,
-            };
-        }
-
-        const schedulesResponse = (await response.json()) as Paginate<Schedule>;
         const schedules = schedulesResponse.items;
 
         const resultTotalCount = schedulesResponse.total_number;
         const resultPageLimit = schedulesResponse.page_limit || PUBLIC_CONFIG.DEFAULT_PAGE_LIMIT;
         const totalPages = Math.ceil(resultTotalCount / resultPageLimit);
 
-        // Fetch telescope details for mapping IDs to names
-        // In a real implementation, you might have a separate endpoint for this
-        // For now, we'll create a simple mock mapping
         const telescopes: Telescope[] = await getTelescopes(fetch);
 
         return {
@@ -128,16 +104,21 @@ export async function load({ url, fetch }: RequestEvent) {
             totalCount: resultTotalCount,
         };
     } catch (err) {
-        logger.error({ msg: 'Error fetching schedules', err });
+        if (isHttpError(err)) {
+            const knownError = isKnownError(err.body.message);
 
-        return {
-            schedules: [],
-            currentPage: 1,
-            totalPages: 1,
-            queryParams: {} as ScheduleQueryParams,
-            urlColumns: [],
-            totalCount: 0,
-            error: 'Failed to load schedules. Please try again later.',
-        };
+            return {
+                schedules: [],
+                currentPage: 1,
+                totalPages: 1,
+                queryParams: {} as ScheduleQueryParams,
+                urlColumns: [],
+                error: knownError || err.body.message,
+                errorId: err.body.errorId,
+                code: err.body.code,
+            };
+        }
+
+        throw err;
     }
 }

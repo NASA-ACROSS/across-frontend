@@ -1,23 +1,21 @@
 import type { PageServerLoad, RequestEvent } from './$types';
+import { fail, isHttpError, redirect, type ActionFailure } from '@sveltejs/kit';
 
-import { CONFIG } from '../../../../config/config.js';
-import { fail, redirect, type ActionFailure } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
 import { getUserInfo } from '$lib/utils/user/getUserInfo';
 import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
 import { getGroupData } from '$lib/utils/manage/getGroupData';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
 import { isAdmin } from '$lib/utils/user/isAdmin';
 import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
-import HTTP_CODES from '$lib/utils/HttpCodes';
+import { callApi } from '$lib/utils/across/callApi';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();
     const userCookie = guards.requireUser(locals);
 
-    const user = await getUserInfo(userCookie.id, fetch);
+    const user = await getUserInfo(fetch, userCookie.id);
 
     // find current group from route by short_name
     const userGroup = user.groups.find((group) => group.short_name === params.userGroupName);
@@ -27,8 +25,8 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
         redirect(302, resolve('/user/profile'));
     }
 
-    const invitedUsers = await getInvitedUsers(userGroup.id, fetch);
-    const groupData = await getGroupData(userGroup.id, fetch);
+    const invitedUsers = await getInvitedUsers(fetch, userGroup.id);
+    const groupData = await getGroupData(fetch, userGroup.id);
 
     return {
         slug: params.userGroupName,
@@ -58,57 +56,38 @@ export const actions = {
             body: JSON.stringify(groupInviteBody),
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/invite`, options);
+            await callApi(fetch, `/group/${groupId}/invite`, options);
+            return { type: 'success', message: 'User invited!', _action: 'inviteUser' };
         } catch (err: unknown) {
-            const errorLog = `Failed inviting user to group.`;
-            logger.error({ err, email, groupId, msg: errorLog });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'inviteUser',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(err)) {
+                if (err.status === 409) {
+                    return {
+                        type: 'warning',
+                        message: 'User is already invited or in the group.',
+                        _action: 'inviteUser',
+                    };
+                } else if (err.status === 404) {
+                    return fail(err.status, {
+                        type: 'error',
+                        message: 'User not found.',
+                        _action: 'inviteUser',
+                        errorId: err.body.errorId,
+                        code: err.body.code,
+                    });
+                } else {
+                    return fail(err.status, {
+                        type: 'error',
+                        message: 'Failed to invite user.',
+                        _action: 'inviteUser',
+                        errorId: err.body.errorId,
+                        code: err.body.code,
+                    });
+                }
+            }
 
-        if (response.status == 500) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({ email, groupId, status: response.status, error: errorResponse.detail, msg: `Failed inviting user to group` });
-            return fail(500, {
-                type: 'error',
-                message: 'Failed to invite user.',
-                _action: 'inviteUser',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw err;
         }
-
-        if (response.status == 409) {
-            logger.warn({ msg: `Attempted to invite a user who was already in the group.`, email, groupId });
-            return { type: 'warning', message: 'User is already invited or in the group.', _action: 'inviteUser' };
-        }
-
-        if (response.status === 404) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({
-                email,
-                groupId,
-                status: response.status,
-                error: errorResponse.detail,
-                msg: `User not found to invite to group.`,
-            });
-            return fail(500, {
-                type: 'error',
-                message: 'User not found.',
-                _action: 'inviteUser',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
-
-        return { type: 'success', message: 'User invited!', _action: 'inviteUser' };
     },
     deleteInvite: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
@@ -125,58 +104,22 @@ export const actions = {
             },
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${userGroupId}/invite/${userInviteId}`, options);
+            await callApi(fetch, `/group/${userGroupId}/invite/${userInviteId}`, options);
+            return { type: 'success', message: 'Invite deleted.', _action: 'deleteInvite' };
         } catch (err: unknown) {
-            const errorLog = `Failed deleting user invite.`;
-            logger.error({ err, userInviteId, userGroupId, msg: errorLog });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'deleteInvite',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(err)) {
+                return fail(err.status, {
+                    type: 'error',
+                    message: 'Failed to delete user invite.',
+                    _action: 'deleteInvite',
+                    errorId: err.body.errorId,
+                    code: err.body.code,
+                });
+            }
 
-        if (response.status == 500) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({
-                userInviteId,
-                userGroupId,
-                status: response.status,
-                error: errorResponse.detail,
-                msg: `Failed deleting user invite.`,
-            });
-            return fail(500, {
-                type: 'error',
-                message: 'Failed to delete invite.',
-                _action: 'deleteInvite',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw err;
         }
-
-        if (response.status == 400) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({
-                userInviteId,
-                userGroupId,
-                status: response.status,
-                error: errorResponse.detail,
-                msg: `Failed deleting user invite.`,
-            });
-            return fail(500, {
-                type: 'error',
-                message: 'Failed to delete invite.',
-                _action: 'deleteInvite',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
-
-        return { type: 'success', message: 'Invite deleted.', _action: 'deleteInvite' };
     },
     removeUser: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
@@ -193,40 +136,22 @@ export const actions = {
             },
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}`, options);
+            await callApi(fetch, `/group/${groupId}/user/${userId}`, options);
+            return { type: 'success', message: 'User removed from group.', _action: 'removeUser' };
         } catch (err: unknown) {
-            const errorLog = `Failed removing user from group.`;
-            logger.error({ err, userId, groupId, msg: errorLog });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'removeUser',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(err)) {
+                return fail(err.status, {
+                    type: 'error',
+                    message: 'Failed to remove user from group.',
+                    _action: 'removeUser',
+                    errorId: err.body.errorId,
+                    code: err.body.code,
+                });
+            }
 
-        if (response.status == 500) {
-            const errorResponse = (await response.json()) as AcrossApiErrorResponseBody;
-            logger.error({
-                userId,
-                groupId,
-                status: response.status,
-                error: errorResponse.detail,
-                msg: `Failed removing user from group.`,
-            });
-            return fail(500, {
-                type: 'error',
-                message: 'Failed to remove user from group.',
-                _action: 'removeUser',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
+            throw err;
         }
-
-        return { type: 'success', message: 'User removed from group.', _action: 'removeUser' };
     },
     assignRole: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
@@ -244,35 +169,22 @@ export const actions = {
             },
         };
 
-        let res;
-
         try {
-            res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
+            await callApi(fetch, `/group/${groupId}/user/${userId}/role/${roleId}`, options);
+            return { type: 'success', message: 'Role assigned.', _action: 'assignRole' };
         } catch (err: unknown) {
-            const errorLog = `Failed assigning user role.`;
-            logger.error({ err, groupId, userId, roleId, msg: errorLog });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'assignRole',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(err)) {
+                return fail(err.status, {
+                    type: 'error',
+                    message: 'Failed to assign user role.',
+                    _action: 'assignRole',
+                    errorId: err.body.errorId,
+                    code: err.body.code,
+                });
+            }
 
-        if (res.status >= 300) {
-            const errorResponse = (await res.json()) as AcrossApiErrorResponseBody;
-            logger.error({ groupId, userId, roleId, status: res.status, error: errorResponse.detail, msg: `Failed assigning user role.` });
-            return fail(res.status, {
-                type: 'error',
-                message: 'Failed to assign role.',
-                _action: 'assignRole',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[res.status],
-            });
+            throw err;
         }
-
-        return { type: 'success', message: 'Role assigned.', _action: 'assignRole' };
     },
     removeRole: async ({ request, fetch }: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const data = await request.formData();
@@ -291,19 +203,20 @@ export const actions = {
         };
 
         try {
-            await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${groupId}/user/${userId}/role/${roleId}`, options);
+            await callApi(fetch, `/group/${groupId}/user/${userId}/role/${roleId}`, options);
+            return { type: 'success', message: 'Role removed.', _action: 'removeRole' };
         } catch (err: unknown) {
-            const errorLog = `Failed removing user role.`;
-            logger.error({ err, groupId, userId, roleId, msg: errorLog });
-            return fail(500, {
-                type: 'error',
-                message: errorLog,
-                _action: 'removeRole',
-                errorId: crypto.randomUUID(),
-                code: HTTP_CODES[500],
-            });
-        }
+            if (isHttpError(err)) {
+                return fail(err.status, {
+                    type: 'error',
+                    message: 'Failed to remove user role.',
+                    _action: 'removeRole',
+                    errorId: err.body.errorId,
+                    code: err.body.code,
+                });
+            }
 
-        return { type: 'success', message: 'Role removed.', _action: 'removeRole' };
+            throw err;
+        }
     },
 };

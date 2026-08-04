@@ -3,7 +3,6 @@ import type { JointVisibilityWindowResponse } from '$lib/types/across/Visibility
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { resolveObject } from '$lib/utils/across/resolveObject';
 import type { RequestEvent } from './$types';
-import { CONFIG } from '../../config/config';
 import { fail, isHttpError, type ActionFailure } from '@sveltejs/kit';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import searchParams from '$lib/utils/searchParams/searchParams';
@@ -55,11 +54,10 @@ export const actions = {
         const form = await event.request.formData();
         const params = searchParams.serialize(form, { instrument_ids: 'array' });
 
-        // Build API URL with parameters
-        const apiUrl = new URL(`${CONFIG.ACROSS_SERVER_URL}/tools/visibility-calculator/windows?${params.toString()}`);
+        const route = `/tools/visibility-calculator/windows?${params.toString()}`;
 
         try {
-            const data = await callApi<JointVisibilityWindowResponse>(event.fetch, apiUrl.toString(), {
+            const { data } = await callApi<JointVisibilityWindowResponse>(event.fetch, route, {
                 method: 'GET',
             });
 

@@ -21,12 +21,12 @@ export class WebserverCredentialsManager {
 
     private expiration?: luxon.DateTime;
 
-    public async initialize(fetch: typeof window.fetch): Promise<void> {
+    public async initialize(): Promise<void> {
         await this.setCredentials();
         await this.getAccessToken(fetch);
     }
 
-    public async getAccessToken(fetch: typeof window.fetch, options: { retry?: boolean } = {}): Promise<string | undefined> {
+    public async getAccessToken(fetch: typeof globalThis.fetch, options: { retry?: boolean } = {}): Promise<string | undefined> {
         if (CONFIG.IS_BUILD || CONFIG.ACROSS_TEST_ACCESS_TOKEN) {
             logger.debug('Building or running in test environment, using dummy access token for WebserverCredentialsManager');
             return CONFIG.ACROSS_TEST_ACCESS_TOKEN;
@@ -40,7 +40,7 @@ export class WebserverCredentialsManager {
                 // token endpoint with its own credentials, so we can use basic
                 // auth with the client id and secret to get the access token.
                 // service accounts do not need refresh tokens.
-                this.token = await callApi<AccessTokenResponse>(fetch, `${CONFIG.ACROSS_SERVER_URL}/auth/token`, {
+                const { data } = await callApi<AccessTokenResponse>(fetch, `/auth/token`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -48,6 +48,8 @@ export class WebserverCredentialsManager {
                     },
                     body: new URLSearchParams({ grant_type: 'client_credentials' }),
                 });
+
+                this.token = data;
             } catch (err: unknown) {
                 // We will catch and log errors here, but return undefined to allow the application to continue
                 // running without the credentials. This is because the credentials are only needed for specific
@@ -108,13 +110,9 @@ export class WebserverCredentialsManager {
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token?.access_token}` },
             };
 
-            const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/service-account/${this.id}`, options);
-
-            if (!res.ok) {
-                throw new Error(`Error checking credential expiration with status code ${res.status}`);
-            }
-
-            const { expiration } = (await res.json()) as { expiration: string };
+            const {
+                data: { expiration },
+            } = await callApi<{ expiration: string }>(fetch, `/service-account/${this.id}`, options);
 
             const exp = luxon.DateTime.fromISO(expiration);
             this.expiration = exp;
@@ -125,19 +123,13 @@ export class WebserverCredentialsManager {
 
     private async rotateKey(): Promise<void> {
         // call server to rotate credentials, returns new secret and expiration
-        const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/service-account/${this.id}/rotate_key`, {
+        const { data } = await callApi<{ secret: string; expiration: string }>(fetch, `/service-account/${this.id}/rotate_key`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${this.token?.access_token}`,
             },
         });
-
-        if (!res.ok) {
-            throw new Error(`Error rotating credentials with status code ${res.status}`);
-        }
-
-        const data = (await res.json()) as { secret: string; expiration: string };
 
         await this.updateKey(data.secret);
         this.expiration = luxon.DateTime.fromISO(data.expiration);

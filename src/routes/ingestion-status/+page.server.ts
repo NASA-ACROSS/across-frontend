@@ -22,7 +22,7 @@ export async function load({ fetch }: RequestEvent) {
 
     const observatories: Observatory[] = await getObservatories(fetch);
 
-    const schedules: Paginate<Schedule> = await getSchedules(telescopeIds, fetch);
+    const schedules: Paginate<Schedule> = await getSchedules(fetch, { telescopeIds });
 
     // assign latest_data_date from schedules
     for (const telescopeId of telescopeIds) {

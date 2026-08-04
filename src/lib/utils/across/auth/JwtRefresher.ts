@@ -1,7 +1,7 @@
-import { CONFIG } from '$config/config';
 import logger from '$lib/logger';
 import { jwtDecode } from 'jwt-decode';
 import * as luxon from 'luxon';
+import { callApi } from '../callApi';
 
 export interface Tokens {
     access_token: string;
@@ -17,7 +17,7 @@ export class JwtRefresher {
     /**
      * Request new access token from the refresh endpoint
      */
-    public static async GetTokens(currentTokens?: Partial<Tokens>): Promise<RefreshedTokens> {
+    public static async GetTokens(fetch: typeof globalThis.fetch, currentTokens?: Partial<Tokens>): Promise<RefreshedTokens> {
         // if tokens exists, check if access is expired
         if (currentTokens?.access_token && !this.IsExpired(currentTokens.access_token)) {
             return {
@@ -27,7 +27,7 @@ export class JwtRefresher {
             };
         } else if (currentTokens?.refresh_token) {
             logger.debug('Access token missing or expired; refreshing...');
-            const refreshedTokens = await this.RefreshAccessToken(currentTokens.refresh_token);
+            const refreshedTokens = await this.RefreshAccessToken(fetch, currentTokens.refresh_token);
             return refreshedTokens;
         }
 
@@ -61,7 +61,7 @@ export class JwtRefresher {
         return refreshToken;
     }
 
-    private static async RefreshAccessToken(refresh_token: string): Promise<RefreshedTokens> {
+    private static async RefreshAccessToken(fetch: typeof globalThis.fetch, refresh_token: string): Promise<RefreshedTokens> {
         const options = {
             method: 'POST',
             headers: {
@@ -70,9 +70,9 @@ export class JwtRefresher {
             },
         };
 
-        const response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/auth/refresh`, options);
+        const { data, response } = await callApi<{ access_token: string }>(fetch, `/auth/refresh`, options);
 
-        const { access_token } = (await response.json()) as { access_token: string };
+        const { access_token } = data;
         const refreshToken = this.ExtractRefreshToken(response.headers);
 
         return {

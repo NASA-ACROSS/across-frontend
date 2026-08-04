@@ -7,8 +7,9 @@
     export let form: ActionData;
 
     let selectedStatus: string;
-    let selectedFailureType: string;
     let isSubmitting = false;
+
+    $: resData = JSON.stringify(form?.data, null, 2);
 
     const handleSubmit: SubmitFunction = async () => {
         isSubmitting = true;
@@ -25,35 +26,40 @@
     <form method="post" use:enhance={handleSubmit} action="playground?/mockCallApi">
         <div class="flex flex-col gap-2">
             <fieldset class="fieldset">
-                <legend class="fieldset-legend">Error Status</legend>
+                <legend class="fieldset-legend">HTTP Status</legend>
                 <select class="select" bind:value={selectedStatus}>
-                    <option disabled selected value="">Pick an Error status</option>
-                    {#each [401, 403, 404, 500] as status}
+                    <option disabled selected value="200">Pick a status</option>
+                    {#each [200, 201, 204, 401, 403, 404, 500] as status}
                         <option>{status}</option>
                     {/each}
                 </select>
-                <span class="label">Optional</span>
             </fieldset>
-            <fieldset class="fieldset">
-                <legend class="fieldset-legend">Failure Type</legend>
-                <select class="select" bind:value={selectedFailureType}>
-                    <option disabled selected value="">Pick a Failure type</option>
-                    <option value="request_failure">Request Failure</option>
-                    <option value="response_failure">Response Failure</option>
-                    <option value="unknown_error">Unknown Error</option>
-                </select>
-                <span class="label">Optional</span>
-            </fieldset>
-            <button type="submit" class="btn btn-info btn-md px-4 py-2" disabled={isSubmitting}>
-                {#if isSubmitting}
-                    <Spinner />
-                {:else}
-                    Call API
-                {/if}
-            </button>
+            <div class="flex flex-row gap-2 justify-start items-center">
+                <button class="btn btn-info btn-md" disabled={isSubmitting}>
+                    {#if isSubmitting}
+                        <Spinner />
+                    {:else}
+                        Call API
+                    {/if}
+                </button>
+                OR
+                <button
+                    on:click={() => {
+                        // manually override the status to handle in the action
+                        selectedStatus = 'BOOM';
+                    }}
+                    class="btn btn-error btn-md"
+                    disabled={isSubmitting}
+                >
+                    {#if isSubmitting}
+                        <Spinner />
+                    {:else}
+                        You want me to explode?
+                    {/if}
+                </button>
+            </div>
 
             <input type="hidden" name="status" value={selectedStatus} />
-            <input type="hidden" name="failure_type" value={selectedFailureType} />
         </div>
     </form>
 
@@ -62,7 +68,7 @@
             <div class="flex flex-col p-2 bg-success text-success-content">
                 <h2 class="p-2 text-xl font-bold">API Success Response</h2>
                 <div class="bg-nasa-green-tint p-2">
-                    <p class="text-lg"><span class="font-bold">Data:</span> {JSON.stringify(form.data, null, 2)}</p>
+                    <p class="text-lg"><span class="font-bold">Data:</span> {resData ?? 'No Content'}</p>
                 </div>
             </div>
         {:else if form.type === 'error'}

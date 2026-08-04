@@ -62,12 +62,6 @@ export const actions = {
         } catch (err: unknown) {
             if (isHttpError(err)) {
                 if (err.status === 409) {
-                    logger.warn({
-                        msg: `Attempted to invite a user who was already in the group.`,
-                        email,
-                        groupId,
-                    });
-
                     return {
                         type: 'warning',
                         message: 'User is already invited or in the group.',

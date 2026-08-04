@@ -73,10 +73,13 @@ export const actions = {
         const qp = searchParams.serialize(form);
 
         const status = qp.get('status') || undefined;
-        const failureType = qp.get('failure_type') || undefined;
+
+        if (status === 'BOOM') {
+            throw new Error('GARY! YOU ARE GONNA FINISH YOUR DESSERT, AND YOU ARE GONNA LIKE IT!');
+        }
 
         // Initial error handling for the page.
-        if (!failureType && status && isNaN(Number(status))) {
+        if (isNaN(Number(status))) {
             return fail(400, {
                 type: 'error',
                 message: "That's not a valid status code or failure type. Pick one and try again.",
@@ -86,14 +89,9 @@ export const actions = {
         }
 
         try {
-            if (failureType === 'unknown_error') {
-                // simulate an unknown error that doesn't come from the API, such as a network error or unexpected exception
-                throw new Error("*wiggle wiggle wiggle* It's still a mystery!");
-            }
-
             // use the utility function to help simulate an api call. Internally this will use `callApi` to make the request, but
             // it will use a mock fetch that simulates the API response based on the query parameters.
-            const data = await getKrabbyPattySecretFormula(failureType, Number(status));
+            const data = await getKrabbyPattySecretFormula(Number(status));
 
             logger.info({ msg: 'Fake-Route API call successful', data });
 

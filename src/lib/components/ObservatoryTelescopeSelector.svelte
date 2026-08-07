@@ -2,13 +2,21 @@
     import type { Observatory } from '$lib/types/across/Observatory';
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
+    import { onMount } from 'svelte';
     import MultiSelect, { type Option } from './MultiSelect.svelte';
+    import { page } from '$app/stores';
 
-    export let observatories: TelescopeObservatory[] = [];
     export let telescopes: Telescope[] = [];
 
     export let selectedObservatories: TelescopeObservatory[] = [];
     export let selectedTelescopes: Telescope[] = [];
+
+    $: data = $page.data;
+
+    // Derive observatories and instruments from telescope response
+    let observatories: TelescopeObservatory[] = telescopes
+        .map((telescope) => telescope.observatory)
+        .filter((value, index, self) => self.findIndex((obs) => obs.id === value.id) === index);
 
     $: observatoryOptions = observatories.map(mapToOption);
     $: telescopeOptions = telescopes.map(mapToOption);
@@ -88,6 +96,21 @@
         // Update selected observatories and telescopes
         updateSelections(obsSet, telSet);
     }
+
+    onMount(() => {
+        // Populate observatory/telescope/instrument selection
+        const telescopeIds = (data?.queryParams?.telescope_ids as string[]) || ([] as string[]);
+        if (telescopeIds.length > 0) {
+            selectedTelescopes = telescopes.filter((tel) => telescopeIds.includes(tel.id));
+
+            // Auto-select parent observatories
+            const selectedObservatoryIds = new Set<string>();
+            selectedTelescopes.forEach((tel) => {
+                selectedObservatoryIds.add(tel.observatory.id);
+            });
+            selectedObservatories = observatories.filter((obs) => selectedObservatoryIds.has(obs.id));
+        }
+    });
 </script>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full auto-rows-fr">

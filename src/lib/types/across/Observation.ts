@@ -1,6 +1,6 @@
 import type { Bandpass } from './Bandpass';
 
-type Position = {
+export type Position = {
     ra: number; // Range 0-360 degrees
     dec: number; // Range -90 to +90 degrees
 };

@@ -23,6 +23,7 @@
 
     let isLoading = false;
 
+    // Observatory/Telescope/Instrument selector state
     let selectedObservatories: TelescopeObservatory[] = [];
     let selectedTelescopes: Telescope[] = [];
     let selectedInstruments: TelescopeInstrument[] = [];
@@ -41,14 +42,6 @@
 
     $: qps = [ra, dec, dateRangeBegin, dateRangeEnd, selectedInstruments, hiRes, minVisibilityDuration];
     $: isQueryEmpty = qps.every((value) => !Boolean(value) || (Array.isArray(value) && value.length === 0));
-
-    // Observatory/Telescope/Instrument selector state
-    $: observatories = telescopes
-        .map((telescope) => telescope.observatory)
-        .filter((value, index, self) => self.findIndex((obs) => obs.id === value.id) === index);
-    $: instruments = telescopes
-        .flatMap((telescope) => telescope.instruments || [])
-        .filter((value, index, self) => self.findIndex((inst) => inst.id === value.id) === index);
 
     // Create observatory short names dictionary for efficient lookups
     $: observatoryShortNames = telescopes.reduce(
@@ -73,30 +66,6 @@
         },
         [] as { instrument: TelescopeInstrument; windows: VisibilityWindow[] }[]
     );
-
-    // Populate inputs from URL parameters
-    onMount(() => {
-        // Populate instrument selection
-        const instrumentIds = data.queryParams.instrument_ids;
-        if (instrumentIds?.length) {
-            selectedInstruments = instruments.filter((inst) => instrumentIds.includes(inst.id));
-
-            // Auto-select parent telescopes and observatories
-            const selectedTelescopeIds = new Set<string>();
-            const selectedObservatoryIds = new Set<string>();
-
-            selectedInstruments.forEach((inst) => {
-                const telescope = telescopes.find((tel) => tel.instruments.some((i) => i.id === inst.id));
-                if (telescope) {
-                    selectedTelescopeIds.add(telescope.id);
-                    selectedObservatoryIds.add(telescope.observatory.id);
-                }
-            });
-
-            selectedTelescopes = telescopes.filter((tel) => selectedTelescopeIds.has(tel.id));
-            selectedObservatories = observatories.filter((obs) => selectedObservatoryIds.has(obs.id));
-        }
-    });
 
     const calculateVisibility: SubmitFunction = async ({ formData }) => {
         isLoading = true;
@@ -165,9 +134,7 @@
                         <h3 class="text-lg font-semibold mb-4">Observatory / Telescope / Instrument</h3>
                         <div class="py-4 h-200 md:min-h-80 md:max-h-100">
                             <ObservatoryTelescopeInstrumentSelector
-                                {observatories}
                                 {telescopes}
-                                {instruments}
                                 bind:selectedObservatories
                                 bind:selectedTelescopes
                                 bind:selectedInstruments

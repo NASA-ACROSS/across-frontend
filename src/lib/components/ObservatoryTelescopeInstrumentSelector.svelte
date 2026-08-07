@@ -3,14 +3,24 @@
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
     import MultiSelect, { type Option } from './MultiSelect.svelte';
+    import { onMount } from 'svelte';
+    import { page } from '$app/stores';
 
-    export let observatories: TelescopeObservatory[] = [];
     export let telescopes: Telescope[] = [];
-    export let instruments: TelescopeInstrument[] = [];
 
     export let selectedObservatories: TelescopeObservatory[] = [];
     export let selectedTelescopes: Telescope[] = [];
     export let selectedInstruments: TelescopeInstrument[] = [];
+
+    $: data = $page.data;
+
+    // Derive observatories and instruments from telescope response
+    let observatories: TelescopeObservatory[] = telescopes
+        .map((telescope) => telescope.observatory)
+        .filter((value, index, self) => self.findIndex((obs) => obs.id === value.id) === index);
+    let instruments: TelescopeInstrument[] = telescopes
+        .flatMap((telescope) => telescope.instruments || [])
+        .filter((value, index, self) => self.findIndex((inst) => inst.id === value.id) === index);
 
     function mapToOption<T extends { id: string; name: string; short_name: string }>(item: T): Option<T> {
         return {
@@ -138,6 +148,30 @@
 
         updateSelections(obsSet, telSet, instSet);
     }
+
+    // Populate inputs from URL parameters
+    onMount(() => {
+        // Populate instrument selection
+        const instrumentIds = data?.queryParams?.instrument_ids;
+        if (instrumentIds?.length) {
+            selectedInstruments = instruments.filter((inst) => instrumentIds.includes(inst.id));
+
+            // Auto-select parent telescopes and observatories
+            const selectedTelescopeIds = new Set<string>();
+            const selectedObservatoryIds = new Set<string>();
+
+            selectedInstruments.forEach((inst) => {
+                const telescope = telescopes.find((tel) => tel.instruments.some((i) => i.id === inst.id));
+                if (telescope) {
+                    selectedTelescopeIds.add(telescope.id);
+                    selectedObservatoryIds.add(telescope.observatory.id);
+                }
+            });
+
+            selectedTelescopes = telescopes.filter((tel) => selectedTelescopeIds.has(tel.id));
+            selectedObservatories = observatories.filter((obs) => selectedObservatoryIds.has(obs.id));
+        }
+    });
 </script>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-full auto-rows-fr">

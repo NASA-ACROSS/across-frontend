@@ -80,19 +80,6 @@
                 return { ...col, selected: isDefault };
             });
         }
-
-        // Populate observatory/telescope/instrument selection
-        const telescopeIds = (data.queryParams?.telescope_ids as string[]) || ([] as string[]);
-        if (telescopeIds.length > 0) {
-            selectedTelescopes = telescopes.filter((tel) => telescopeIds.includes(tel.id));
-
-            // Auto-select parent observatories
-            const selectedObservatoryIds = new Set<string>();
-            selectedTelescopes.forEach((tel) => {
-                selectedObservatoryIds.add(tel.observatory.id);
-            });
-            selectedObservatories = observatories.filter((obs) => selectedObservatoryIds.has(obs.id));
-        }
     });
 
     function updateColumnsFromUrlParams(columnIds: string[]) {

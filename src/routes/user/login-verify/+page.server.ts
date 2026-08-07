@@ -6,15 +6,12 @@ import type { User } from '$lib/types/User/User';
 import type { RequestEvent } from './$types';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
-import guards from '$lib/utils/guards';
 import { PUBLIC_CONFIG } from '$config/config.public';
 import logger from '$lib/logger';
 import HTTP_CODES from '$lib/utils/HttpCodes';
 import { callApi } from '$lib/utils/across/callApi';
 
 export function load(event: RequestEvent) {
-    guards.localOnlyRoute();
-
     const user = event.locals.user;
     // Redirect to profile page when user is logged in
     if (user) redirect(302, resolve('/user/profile'));

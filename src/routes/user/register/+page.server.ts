@@ -8,7 +8,6 @@ import { autoLogin } from '$lib/utils/user/autoLogin.js';
 import type { RequestEvent } from './$types';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
 import HTTP_CODES from '$lib/utils/HttpCodes';
 import { callApi } from '$lib/utils/across/callApi';
@@ -33,8 +32,6 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export function load({ locals }: RequestEvent) {
-    guards.localOnlyRoute();
-
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect to profile page when user is logged in
     if (userCookie) {

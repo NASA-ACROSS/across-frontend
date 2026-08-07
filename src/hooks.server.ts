@@ -38,6 +38,15 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
         const ip = event.getClientAddress();
         request.headers.set('x-real-ip', ip);
 
+        // test-only: forward MockServer's namespace header so Playwright tests can scope
+        // expectations to a single test (via MockServer's built-in multi-tenancy feature)
+        // without colliding with other tests running in parallel against the same instance.
+        // No-op outside test environments since ACROSS_TEST_ACCESS_TOKEN is never set otherwise.
+        if (CONFIG.ACROSS_TEST_ACCESS_TOKEN) {
+            const namespace = event.request.headers.get('x-mockserver-namespace');
+            if (namespace) request.headers.set('x-mockserver-namespace', namespace);
+        }
+
         if (request.url.endsWith('/auth/token') || request.url.endsWith('/auth/refresh')) {
             // pass-thru to prevent infinite loops of token refreshing
             return fetch(request);

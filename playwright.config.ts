@@ -14,10 +14,13 @@ dotenv.config({
 console.log(process.env.CI);
 
 export default defineConfig({
-    webServer: {
-        command: 'npm run build && npm run preview',
-        port: 4173,
-    },
+    globalSetup: './tests/integration/globalSetup.ts',
+    webServer: [
+        {
+            command: 'npm run build && npm run preview',
+            port: 4173,
+        },
+    ],
     testDir: 'tests',
     testMatch: /(.+\.)?(test|spec)\.[jt]s/,
     fullyParallel: true,

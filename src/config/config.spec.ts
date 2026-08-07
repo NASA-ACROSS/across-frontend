@@ -49,5 +49,10 @@ describe('PrivateConfiguration', () => {
             const config = new PrivateConfiguration();
             expect(config.ACROSS_SERVER_URL).toMatch(/^http:\/\//);
         });
+
+        it('should prefer an explicit server port when not local', () => {
+            const config = new PrivateConfiguration();
+            expect(config.ACROSS_SERVER_URL).toBe(`http://mockserver-host:${config.ACROSS_SERVER_PORT}`);
+        });
     });
 });

@@ -3,16 +3,9 @@ import { PUBLIC_CONFIG } from './config.public';
 
 /**
  * Config abstraction for dynamic environment variables
- *
- * Usage:
- * import { CONFIG } from '$config/config';
- * const apiUrl = CONFIG.ACROSS_SERVER_URL; // "http://127.0.0.1:8000"
  */
 export class PrivateConfiguration {
-    /**
-     * Webserver <-> ACROSS Server host. This is not used for user-facing browser domains.
-     * For browser facing domains use `ACROSS_SERVER_DOMAIN`
-     */
+    /** Webserver <-> ACROSS Server host (will be the service-connect alias in deployed envs). */
     public ACROSS_SERVER_HOST: string = env.ACROSS_SERVER_HOST || 'http://localhost';
     public ACROSS_SERVER_ROOT_PATH: string = env.ACROSS_SERVER_ROOT_PATH || '';
     public ACROSS_SERVER_VERSION: string = env.ACROSS_SERVER_VERSION || '/v1';
@@ -39,22 +32,23 @@ export class PrivateConfiguration {
 
     constructor(private publicConfig: typeof PUBLIC_CONFIG) {}
 
-    public get ACROSS_SERVER_URL(): string {
-        const path = `${this.ACROSS_SERVER_ROOT_PATH}${this.ACROSS_SERVER_VERSION}`;
-
-        return `${this.ACROSS_SERVER_DOMAIN}${path}`;
-    }
-
-    /** ACROSS server domain that is accessible from the browser */
-    public get ACROSS_SERVER_DOMAIN(): string {
-        if (this.publicConfig.IS_LOCAL) return `http://localhost:${this.ACROSS_SERVER_PORT}`;
-        else if (this.publicConfig.IS_PROD) return `https://api.across.sciencecloud.nasa.gov`;
-
-        return `https://api.${this.publicConfig.RUNTIME_ENV}.across.sciencecloud.nasa.gov`;
-    }
-
+    /** Returns the public facing URL to the ACROSS API Docs */
     public get ACROSS_SERVER_DOCS_URL(): string {
-        return `${this.ACROSS_SERVER_DOMAIN}${this.ACROSS_SERVER_ROOT_PATH}${this.ACROSS_SERVER_VERSION}/docs`;
+        if (this.publicConfig.IS_LOCAL) return `${this.ACROSS_SERVER_URL}/docs`;
+
+        const envSubdomain = this.publicConfig.IS_PROD ? '' : `${this.publicConfig.RUNTIME_ENV}.`;
+        const domain = `https://api.${envSubdomain}across.sciencecloud.nasa.gov`;
+
+        return `${domain}${this.ACROSS_SERVER_ROOT_PATH}${this.ACROSS_SERVER_VERSION}/docs`;
+    }
+
+    /** Returns the internal URL used by the webserver to ACROSS API */
+    public get ACROSS_SERVER_URL(): string {
+        const url = `${this.ACROSS_SERVER_HOST}`;
+        const port = this.ACROSS_SERVER_PORT ? `:${this.ACROSS_SERVER_PORT}` : '';
+        const basePath = `${this.ACROSS_SERVER_ROOT_PATH}${this.ACROSS_SERVER_VERSION}`;
+
+        return `${url}${port}${basePath}`;
     }
 }
 

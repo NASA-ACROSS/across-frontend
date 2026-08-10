@@ -63,6 +63,8 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
         }
     }
 
+    logger.info({ msg: 'Request Initiated', url: request.url, method: request.method, clientIP: event.getClientAddress() });
+
     // when no access_token, run the request without it anyways to avoid full page 500 (usually this means the core server is down)
     return fetch(request);
 };

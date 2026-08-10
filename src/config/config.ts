@@ -6,7 +6,7 @@ import { PUBLIC_CONFIG } from './config.public';
  */
 export class PrivateConfiguration {
     /** Webserver <-> ACROSS Server host (will be the service-connect alias in deployed envs). */
-    public ACROSS_SERVER_HOST: string = env.ACROSS_SERVER_HOST || 'http://localhost';
+    public ACROSS_SERVER_HOST: string = env.ACROSS_SERVER_HOST || 'localhost';
     public ACROSS_SERVER_ROOT_PATH: string = env.ACROSS_SERVER_ROOT_PATH || '';
     public ACROSS_SERVER_VERSION: string = env.ACROSS_SERVER_VERSION || '/v1';
     public ACROSS_SERVER_PORT: string = env.ACROSS_SERVER_PORT || '8000';
@@ -44,11 +44,14 @@ export class PrivateConfiguration {
 
     /** Returns the internal URL used by the webserver to ACROSS API */
     public get ACROSS_SERVER_URL(): string {
-        const url = `${this.ACROSS_SERVER_HOST}`;
+        // Protocol will be HTTP since using service connect is within the AWS VPC.
+        // The ACROSS Server is only allowing the VPC's CIDR block for direct access
+        // through service connect. All other traffic is routed through the ALB
+        const domain = `http://${this.ACROSS_SERVER_HOST}`;
         const port = this.ACROSS_SERVER_PORT ? `:${this.ACROSS_SERVER_PORT}` : '';
         const basePath = `${this.ACROSS_SERVER_ROOT_PATH}${this.ACROSS_SERVER_VERSION}`;
 
-        return `${url}${port}${basePath}`;
+        return `${domain}${port}${basePath}`;
     }
 }
 

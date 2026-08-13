@@ -15,12 +15,17 @@
     $: data = $page.data;
 
     // Derive observatories and instruments from telescope response
-    let observatories: TelescopeObservatory[] = telescopes
-        .map((telescope) => telescope.observatory)
-        .filter((value, index, self) => self.findIndex((obs) => obs.id === value.id) === index);
-    let instruments: TelescopeInstrument[] = telescopes
-        .flatMap((telescope) => telescope.instruments || [])
-        .filter((value, index, self) => self.findIndex((inst) => inst.id === value.id) === index);
+    let seenObservatories = new Set<string>();
+    let observatories: TelescopeObservatory[] = telescopes.reduce((telescopes, telescope) => {
+        const obs = telescope.observatory;
+        if (!seenObservatories.has(obs.id)) {
+            seenObservatories.add(obs.id);
+            telescopes.push(obs);
+        }
+        return telescopes;
+    }, [] as TelescopeObservatory[]);
+
+    let instruments: TelescopeInstrument[] = telescopes.flatMap((telescope) => telescope.instruments || []);
 
     function mapToOption<T extends { id: string; name: string; short_name: string }>(item: T): Option<T> {
         return {

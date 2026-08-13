@@ -7,6 +7,7 @@ import { resolveObject } from '$lib/utils/across/resolveObject';
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import type { Telescope } from '$lib/types/across/Telescope';
 import guards from '$lib/utils/guards/index.js';
+import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument.js';
 
 const demoPayload: ObservationRequestCreate = {
     science_justification: 'Demo observation for testing the observation request creation flow',
@@ -30,8 +31,20 @@ export async function load({ fetch, locals }: RequestEvent) {
 
     const telescopes: Telescope[] = await getTelescopes(fetch);
 
+    // reduce the available selections of observatories/telescopes/instruments based on instrument.is_observation_request_enabled
+    const enabledTelescopes = telescopes.reduce((telescopes: Telescope[], telescope) => {
+        telescope.instruments = telescope.instruments.reduce((instruments: TelescopeInstrument[], instrument) => {
+            if (instrument.is_observation_request_enabled === true) {
+                instruments.push(instrument);
+            }
+            return instruments;
+        }, []);
+        if (telescope.instruments.length) telescopes.push(telescope);
+        return telescopes;
+    }, []);
+
     return {
-        telescopes,
+        telescopes: enabledTelescopes,
     };
 }
 

@@ -18,9 +18,9 @@
     export let title: string = 'Resolve Object Name to Coordinates';
     export let ra: string | number = '';
     export let dec: string | number = '';
+    export let objectName: string = '';
 
     // Internal state
-    let objectNameInput = '';
     let resolvedData: NameResolver | null = null;
     let error: Error | null = null;
     let isResolving = false;
@@ -28,7 +28,6 @@
 
     function resetResolver() {
         isResolving = false;
-        objectNameInput = '';
         resolvedData = null;
         error = null;
 
@@ -77,7 +76,7 @@
                     id="object-name-resolver-input"
                     name="objectName"
                     type="text"
-                    bind:value={objectNameInput}
+                    bind:value={objectName}
                     placeholder="e.g. Crab, M31, NGC 2237"
                     class="input input-bordered text-lg w-full"
                 />

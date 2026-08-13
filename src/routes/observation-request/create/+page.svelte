@@ -22,6 +22,7 @@
     const brightnessUnitOptions = ['ab_mag', 'vega_mag', 'flux_erg', 'flux_jy'];
 
     //Object Information state
+    let objectName: string;
     let ra: number;
     let dec: number;
     let offset: number;
@@ -46,7 +47,7 @@
 <Page title="Target of Opportunity Observation Request" icon="crosshair">
     <Section>
         <Fieldset title="Object Information">
-            <CoordinateSearch bind:ra bind:dec />
+            <CoordinateSearch bind:ra bind:dec bind:objectName />
             <label class="input text-lg pe-0 w-full" for="proposal-code-input">
                 Offset:
                 <input

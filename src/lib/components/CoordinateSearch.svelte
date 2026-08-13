@@ -4,10 +4,11 @@
     export let ra: string | number = '';
     export let dec: string | number = '';
     export let radius: string | number = '';
+    export let objectName: string = '';
     export let includeRadius: boolean = false;
 </script>
 
-<ObjectNameResolver bind:ra bind:dec />
+<ObjectNameResolver bind:ra bind:dec bind:objectName />
 
 <div class="grid grid-cols-1 {includeRadius ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-2 mb-4">
     <label class="input text-lg pe-0 w-full" for="ra-input">

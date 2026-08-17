@@ -25,7 +25,7 @@
     let objectName: string;
     let ra: number;
     let dec: number;
-    let offset: number;
+    let positionOffset: number;
     let brightness: number;
     let brightnessUnit: string;
 
@@ -46,87 +46,113 @@
 
 <Page title="Target of Opportunity Observation Request" icon="crosshair">
     <Section>
-        <Fieldset title="Object Information">
-            <CoordinateSearch bind:ra bind:dec bind:objectName />
-            <label class="input text-lg pe-0 w-full" for="proposal-code-input">
-                Offset:
-                <input
-                    id="offset-input"
-                    class="input validator input-bordered text-lg w-full"
-                    type="number"
-                    inputmode="numeric"
-                    pattern="\d*"
-                    bind:value={offset}
-                    placeholder="0.0"
-                    maxlength="128"
-                />
-                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be less than or equal to 128 characters</p>
-            </label>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                <div class="form-control">
-                    <label class="label text-lg" for="brightness-unit-input">
-                        <span class="label-text">Brightness</span>
-                    </label>
-                    <select id="brightness-unit-input" bind:value={brightnessUnit} class="select select-bordered text-lg w-full">
-                        <option value="">Select type</option>
-                        {#each brightnessUnitOptions as option}
-                            <option value={option}>{option}</option>
-                        {/each}
-                    </select>
-                </div>
-
-                <div class="self-end">
-                    <label class="input text-lg w-full">
-                        Brightness Value:
-                        <input
-                            id="brightness-value-input"
-                            type="number"
-                            inputmode="numeric"
-                            pattern="\d*"
-                            bind:value={brightness}
-                            placeholder="Brightness Value"
-                            class="input validator input-bordered text-lg w-full"
-                        />
-                        {#if brightnessUnit}
-                            <span class="label">{brightnessUnit}</span>
-                        {/if}
-                        <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
-                    </label>
-                    <div class="flex items-center"></div>
-                </div>
-            </div>
-        </Fieldset>
-
-        <Fieldset title="Observation Window">
-            <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd />
-        </Fieldset>
-
-        <Fieldset title="Instrument Selection">
-            <div class="h-fit max-h-200 md:max-h-100">
-                {#if !telescopes?.length}
-                    <Alert type="error">No instruments are currently accepting requests at this time.</Alert>
-                {:else}
-                    <ObservatoryTelescopeInstrumentSelector
-                        {telescopes}
-                        bind:selectedObservatories
-                        bind:selectedTelescopes
-                        bind:selectedInstruments
-                    />
-                {/if}
-            </div>
-        </Fieldset>
-
-        <Fieldset title="Proposal Information">
-            <ProposalInfoInput bind:proposalCode bind:proposalName bind:proposalJustification bind:anonymize />
-        </Fieldset>
-
         <form method="post" use:enhance action="?/submitCreate">
+            <Fieldset title="Object Information">
+                <CoordinateSearch bind:ra bind:dec bind:objectName required={true} />
+                <label class="input text-lg pe-0 w-full" for="proposal-code-input">
+                    Position offset:
+                    <input
+                        id="offset-input"
+                        class="input validator input-bordered text-lg w-full"
+                        type="number"
+                        inputmode="decimal"
+                        placeholder="decimal° (-90 to 90)"
+                        min="-90"
+                        max="90"
+                        pattern="\d*"
+                        bind:value={positionOffset}
+                    />
+                    <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (-90 to 90)</p>
+                </label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 mb-4">
+                    <div class="form-control">
+                        <label class="label text-lg" for="brightness-unit-input">
+                            <span class="label-text">Brightness</span>
+                        </label>
+                        <select
+                            required
+                            id="brightness-unit-input"
+                            bind:value={brightnessUnit}
+                            class="select select-bordered text-lg w-full"
+                        >
+                            <option value="">Select type</option>
+                            {#each brightnessUnitOptions as option}
+                                <option value={option}>{option}</option>
+                            {/each}
+                        </select>
+                    </div>
+
+                    <div class="self-end">
+                        <label class="input text-lg w-full">
+                            Brightness Value:
+                            <input
+                                required
+                                id="brightness-value-input"
+                                type="number"
+                                inputmode="numeric"
+                                pattern="\d*"
+                                bind:value={brightness}
+                                placeholder="decimal"
+                                class="input validator input-bordered text-lg w-full"
+                            />
+                            {#if brightnessUnit}
+                                <span class="label">{brightnessUnit}</span>
+                            {/if}
+                            <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
+                        </label>
+                        <div class="flex items-center"></div>
+                    </div>
+                </div>
+            </Fieldset>
+
+            <Fieldset title="Observation Window">
+                <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd requiredBegin={true} />
+            </Fieldset>
+
+            <Fieldset title="Instrument Selection">
+                <div class="h-fit gap-1 max-h-200 md:max-h-100">
+                    {#if !telescopes?.length}
+                        <Alert type="error">No instruments are currently accepting requests at this time.</Alert>
+                    {:else}
+                        {#if selectedInstruments.length != 1}
+                            <Alert type={selectedInstruments.length < 1 ? 'info' : 'error'}>Please select a single instrument.</Alert>
+                        {/if}
+                        <ObservatoryTelescopeInstrumentSelector
+                            {telescopes}
+                            bind:selectedObservatories
+                            bind:selectedTelescopes
+                            bind:selectedInstruments
+                        />
+                    {/if}
+                </div>
+            </Fieldset>
+
+            <Fieldset title="Proposal Information">
+                <ProposalInfoInput bind:proposalCode bind:proposalName bind:proposalJustification bind:anonymize />
+            </Fieldset>
+
             <div class="flex justify-end gap-2 items-center mt-4">
                 {#if form?.created_id}
                     <Alert soft={false} type="success">Created new TOO: {form.created_id}</Alert>
                 {/if}
                 <FormSubmitFeedback action="submitCreate" />
-                <button type="submit" class="btn btn-primary justify-end">Submit Demo Payload</button>
+
+                <input type="hidden" name="objectName" value={objectName?.trim()} />
+                <input type="hidden" name="ra" value={ra} />
+                <input type="hidden" name="dec" value={dec} />
+                <input type="hidden" name="positionOffset" value={positionOffset} />
+                <input type="hidden" name="brightness" value={brightness} />
+                <input type="hidden" name="brightnessUnit" value={brightnessUnit?.trim()} />
+                <input type="hidden" name="positionOffset" value={positionOffset} />
+                <input type="hidden" name="dateRangeBegin" value={dateRangeBegin} />
+                <input type="hidden" name="dateRangeEnd" value={dateRangeEnd} />
+                <input type="hidden" name="instrumentId" value={selectedInstruments[0]?.id} />
+                <input type="hidden" name="proposalCode" value={proposalCode?.trim()} />
+                <input type="hidden" name="proposalName" value={proposalName?.trim()} />
+                <input type="hidden" name="proposalJustification" value={proposalJustification?.trim()} />
+                <input type="hidden" name="anonymize" value={anonymize} />
+
+                <button type="submit" class="btn btn-primary justify-end">Submit Observation Request</button>
             </div>
         </form>
     </Section>

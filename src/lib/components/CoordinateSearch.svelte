@@ -6,6 +6,7 @@
     export let radius: string | number = '';
     export let objectName: string = '';
     export let includeRadius: boolean = false;
+    export let required: boolean = false;
 </script>
 
 <ObjectNameResolver bind:ra bind:dec bind:objectName />
@@ -15,6 +16,7 @@
         RA:
         <input
             id="ra-input"
+            {required}
             class="input validator input-bordered text-lg w-full"
             type="number"
             inputmode="decimal"
@@ -31,6 +33,7 @@
         DEC:
         <input
             id="dec-input"
+            {required}
             type="number"
             inputmode="decimal"
             step="any"
@@ -48,6 +51,7 @@
             Radius:
             <input
                 id="radius-input"
+                {required}
                 type="number"
                 inputmode="decimal"
                 step="any"

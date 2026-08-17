@@ -9,23 +9,6 @@ import type { Telescope } from '$lib/types/across/Telescope';
 import guards from '$lib/utils/guards/index.js';
 import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument.js';
 
-const demoPayload: ObservationRequestCreate = {
-    science_justification: 'Demo observation for testing the observation request creation flow',
-    object_name: 'Vega',
-    object_coordinates: { ra: 279.23, dec: 38.78 },
-    object_brightness: { value: 0.03, unit: 'ab_mag' },
-    object_position_error: 3.13,
-    observation_window: { begin: '2026-09-28T00:00:00Z', end: '2026-10-01T00:00:00Z' },
-    exposure_time: 300.0,
-    anonymize: false,
-    is_too: true,
-    instrument_id: 'f3a2b0c1-4d5e-4f6a-8b7c-8d9e0f1a2b3c',
-    instrument_configuration: null,
-    parent_id: null,
-    proposal_name: 'FooProposalXYZ',
-    proposal_code: 'XYZ',
-};
-
 export async function load({ fetch, locals }: RequestEvent) {
     guards.requireUser(locals);
 
@@ -51,7 +34,34 @@ export async function load({ fetch, locals }: RequestEvent) {
 export const actions = {
     submitCreate: async ({
         fetch,
+        request,
     }: RequestEvent): Promise<(FormSubmitResult & { created_id: string }) | ActionFailure<FormSubmitResult>> => {
+        const form = await request.formData();
+
+        const observationRequestPayload: ObservationRequestCreate = {
+            object_name: form.get('objectName') as string,
+            object_coordinates: {
+                ra: Number(form.get('ra')),
+                dec: Number(form.get('dec')),
+            },
+            object_brightness: {
+                value: Number(form.get('brightness')),
+                unit: form.get('brightnessUnit') as string,
+            },
+            object_position_error: Number(form.get('positionOffset')) || null,
+            observation_window: {
+                begin: form.get('dateRangeBegin') as string,
+                end: (form.get('dateRangeEnd') as string) || null,
+            },
+            exposure_time: 300.0, // exposure time placeholder until instrument configuration is implemented. this field is required on the core-server.
+            anonymize: (form.get('anonymize') as string) === 'true' || false,
+            is_too: true,
+            instrument_id: form.get('instrumentId') as string,
+            proposal_name: form.get('proposalName') as string,
+            proposal_code: form.get('proposalCode') as string,
+            science_justification: form.get('proposalJustification') as string,
+        };
+
         try {
             const apiUrl = `/observation-request/`;
             const request = {
@@ -59,7 +69,7 @@ export const actions = {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(demoPayload),
+                body: JSON.stringify(observationRequestPayload),
             };
 
             const response = await callApi<string>(fetch, apiUrl, request);
@@ -71,6 +81,7 @@ export const actions = {
             if (isHttpError(err)) {
                 logger.error(err);
                 return fail(err.status, {
+                    _action: 'submitCreate',
                     type: 'error',
                     errorId: err.body.errorId,
                     code: err.body.code,

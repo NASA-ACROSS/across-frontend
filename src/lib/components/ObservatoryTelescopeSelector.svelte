@@ -13,10 +13,16 @@
 
     $: data = $page.data;
 
-    // Derive observatories and instruments from telescope response
-    let observatories: TelescopeObservatory[] = telescopes
-        .map((telescope) => telescope.observatory)
-        .filter((value, index, self) => self.findIndex((obs) => obs.id === value.id) === index);
+    // Derive observatories from telescope response
+    let seenObservatories = new Set<string>();
+    let observatories: TelescopeObservatory[] = telescopes.reduce((telescopes, telescope) => {
+        const obs = telescope.observatory;
+        if (!seenObservatories.has(obs.id)) {
+            seenObservatories.add(obs.id);
+            telescopes.push(obs);
+        }
+        return telescopes;
+    }, [] as TelescopeObservatory[]);
 
     $: observatoryOptions = observatories.map(mapToOption);
     $: telescopeOptions = telescopes.map(mapToOption);

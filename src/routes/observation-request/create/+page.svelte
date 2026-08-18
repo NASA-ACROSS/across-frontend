@@ -153,7 +153,7 @@
                 <input type="hidden" name="justification" value={justification?.trim()} />
                 <input type="hidden" name="anonymize" value={anonymize} />
 
-                <button type="submit" class="btn btn-primary justify-end">Submit Observation Request</button>
+                <button type="submit" class="btn btn-lg btn-info justify-end">Submit Observation Request</button>
             </div>
         </Section>
     </form>

@@ -6,10 +6,11 @@
 </script>
 
 <div class="flex flex-col gap-2">
-    <label class="input text-lg pe-0 w-full" for="proposal-code-input">
+    <label class="input text-lg pe-0 w-full mb-2" for="proposal-code-input">
         Proposal Code:
         <input
             id="proposal-code-input"
+            required
             class="input validator input-bordered text-lg w-full"
             type="text"
             bind:value={proposalCode}
@@ -19,10 +20,11 @@
         <p class="hidden validator-hint mt-18" style="position: absolute;">Must be less than or equal to 128 characters</p>
     </label>
 
-    <label class="input text-lg pe-0 w-full" for="proposal-name-input">
+    <label class="input text-lg pe-0 w-full mb-2" for="proposal-name-input">
         Proposal Name:
         <input
             id="proposal-name-input"
+            required
             class="input validator input-bordered text-lg w-full"
             type="text"
             bind:value={proposalName}
@@ -37,17 +39,9 @@
             <span class="label-text">Justification</span>
         </label>
         <div class="grid gap-2 w-full">
-            <textarea class="textarea textarea-lg w-full" rows="5" bind:value={justification} maxlength="8192" />
+            <textarea class="textarea textarea-lg w-full" required rows="5" bind:value={justification} maxlength="8192" />
             <p class="hidden validator-hint mt-18" style="position: absolute;">Must be less than or equal to 8192 characters</p>
         </div>
-        <input
-            id="proposal-justification-input"
-            class="input validator input-bordered text-lg w-full"
-            type="text"
-            bind:value={justification}
-            maxlength="8192"
-            hidden={true}
-        />
     </div>
 
     <div>

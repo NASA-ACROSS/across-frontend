@@ -30,10 +30,6 @@
     $: currentSearchParams = new URLSearchParams(page.url.searchParams);
 
     // Observatory/Telescope selector state
-    $: observatories = telescopes
-        .map((telescope) => telescope.observatory)
-        .filter((value, index, self) => self.findIndex((obs) => obs.id === value.id) === index);
-
     let selectedObservatories: TelescopeObservatory[] = [];
     let selectedTelescopes: Telescope[] = [];
 
@@ -280,12 +276,7 @@
                         </div>
                         <div class="collapse-content">
                             <div class="py-4 h-200 md:min-h-80 md:max-h-100">
-                                <ObservatoryTelescopeSelector
-                                    {observatories}
-                                    {telescopes}
-                                    bind:selectedObservatories
-                                    bind:selectedTelescopes
-                                />
+                                <ObservatoryTelescopeSelector {telescopes} bind:selectedObservatories bind:selectedTelescopes />
                             </div>
                         </div>
                     </div>

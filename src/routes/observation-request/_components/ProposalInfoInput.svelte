@@ -1,7 +1,7 @@
 <script lang="ts">
     export let proposalCode: string;
     export let proposalName: string;
-    export let proposalJustification: string;
+    export let justification: string;
     export let anonymize: boolean;
 </script>
 
@@ -37,15 +37,14 @@
             <span class="label-text">Justification</span>
         </label>
         <div class="grid gap-2 w-full">
-            <textarea class="textarea textarea-lg w-full" rows="5" bind:value={proposalJustification}></textarea>
+            <textarea class="textarea textarea-lg w-full" rows="5" bind:value={justification} maxlength="8192" />
             <p class="hidden validator-hint mt-18" style="position: absolute;">Must be less than or equal to 8192 characters</p>
         </div>
         <input
             id="proposal-justification-input"
             class="input validator input-bordered text-lg w-full"
             type="text"
-            bind:value={proposalJustification}
-            placeholder="This proposal meets the criteria for ...."
+            bind:value={justification}
             maxlength="8192"
             hidden={true}
         />

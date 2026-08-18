@@ -59,7 +59,7 @@ export const actions = {
             instrument_id: form.get('instrumentId') as string,
             proposal_name: form.get('proposalName') as string,
             proposal_code: form.get('proposalCode') as string,
-            science_justification: form.get('proposalJustification') as string,
+            science_justification: form.get('justification') as string,
         };
 
         try {

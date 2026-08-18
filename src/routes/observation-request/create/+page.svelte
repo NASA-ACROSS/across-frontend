@@ -33,6 +33,7 @@
     let dateRangeBegin: string, dateRangeEnd: string;
 
     // Observatory/Telescope/Instrument selector state
+    // Only the first instrument in the list of selectedInstruments is sent to the server
     let selectedObservatories: TelescopeObservatory[] = [];
     let selectedTelescopes: Telescope[] = [];
     let selectedInstruments: TelescopeInstrument[] = [];
@@ -40,7 +41,7 @@
     // Proposal Information state
     let proposalCode: string;
     let proposalName: string;
-    let proposalJustification: string;
+    let justification: string;
     let anonymize: boolean;
 </script>
 
@@ -128,7 +129,7 @@
             </Fieldset>
 
             <Fieldset title="Proposal Information">
-                <ProposalInfoInput bind:proposalCode bind:proposalName bind:proposalJustification bind:anonymize />
+                <ProposalInfoInput bind:proposalCode bind:proposalName bind:justification bind:anonymize />
             </Fieldset>
 
             <div class="flex justify-end gap-2 items-center mt-4">
@@ -149,7 +150,7 @@
                 <input type="hidden" name="instrumentId" value={selectedInstruments[0]?.id} />
                 <input type="hidden" name="proposalCode" value={proposalCode?.trim()} />
                 <input type="hidden" name="proposalName" value={proposalName?.trim()} />
-                <input type="hidden" name="proposalJustification" value={proposalJustification?.trim()} />
+                <input type="hidden" name="justification" value={justification?.trim()} />
                 <input type="hidden" name="anonymize" value={anonymize} />
 
                 <button type="submit" class="btn btn-primary justify-end">Submit Observation Request</button>

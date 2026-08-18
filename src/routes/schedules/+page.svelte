@@ -411,7 +411,7 @@
         </div>
     </Section>
 
-    <Section title="Schedules (Total: {totalCount})" icon="calendar">
+    <Section id="schedules" title="Schedules (Total: {totalCount})" icon="calendar">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">
             {#key currentPage}
@@ -489,14 +489,14 @@
                 </thead>
                 <tbody>
                     {#if schedules.length === 0}
-                        <tr>
+                        <tr data-testid="no-schedules-row">
                             <td colspan={selectedColumns.length + 1} class="text-center py-4">
                                 No schedules found. Adjust your search criteria and try again.
                             </td>
                         </tr>
                     {:else}
                         {#each schedules as schedule}
-                            <tr>
+                            <tr data-testid="schedule-row:{schedule.id}" class="hover:bg-base-200">
                                 {#each selectedColumns as column}
                                     <td class="">
                                         {#if column.id === 'observatory_telescope'}

@@ -1,4 +1,4 @@
-import type { PlaywrightTestConfig } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 import dotenv from 'dotenv';
 
 // TODO: this is a somewhat temporary solution to load environment variables
@@ -11,7 +11,9 @@ dotenv.config({
     path: [`.env.test`],
 });
 
-const config: PlaywrightTestConfig = {
+console.log(process.env.CI);
+
+export default defineConfig({
     webServer: {
         command: 'npm run build && npm run preview',
         port: 4173,
@@ -19,6 +21,6 @@ const config: PlaywrightTestConfig = {
     testDir: 'tests',
     testMatch: /(.+\.)?(test|spec)\.[jt]s/,
     fullyParallel: true,
-};
-
-export default config;
+    // Fail the build on CI if you accidentally left test.only in the source code.
+    forbidOnly: !!process.env.CI,
+});

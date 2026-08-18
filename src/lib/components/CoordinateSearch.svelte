@@ -9,7 +9,7 @@
     export let required: boolean = false;
 </script>
 
-<ObjectNameResolver bind:ra bind:dec bind:objectName />
+<ObjectNameResolver bind:ra bind:dec bind:objectName {required} />
 
 <div class="grid grid-cols-1 {includeRadius ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-2 mb-4">
     <label class="input text-lg pe-0 w-full" for="ra-input">

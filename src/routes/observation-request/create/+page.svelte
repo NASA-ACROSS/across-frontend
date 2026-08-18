@@ -45,8 +45,8 @@
 </script>
 
 <Page title="Target of Opportunity Observation Request" icon="crosshair">
-    <Section>
-        <form method="post" use:enhance action="?/submitCreate">
+    <form method="post" use:enhance action="?/submitCreate">
+        <Section>
             <Fieldset title="Object Information">
                 <CoordinateSearch bind:ra bind:dec bind:objectName required={true} />
                 <label class="input text-lg pe-0 w-full" for="proposal-code-input">
@@ -154,6 +154,6 @@
 
                 <button type="submit" class="btn btn-primary justify-end">Submit Observation Request</button>
             </div>
-        </form>
-    </Section>
+        </Section>
+    </form>
 </Page>

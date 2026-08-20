@@ -48,17 +48,19 @@ export const actions = {
                 value: Number(form.get('brightness')),
                 unit: form.get('brightnessUnit') as string,
             },
-            object_position_error: Number(form.get('positionOffset')) || null,
+            object_position_error: Number(form.get('positionOffset')) || undefined,
             observation_window: {
                 begin: form.get('dateRangeBegin') as string,
                 end: (form.get('dateRangeEnd') as string) || null,
             },
-            exposure_time: 300.0, // exposure time placeholder until instrument configuration is implemented. this field is required on the core-server.
+            exposure_time: Number(form.get('exposureTimeSeconds')),
             anonymize: (form.get('anonymize') as string) === 'true' || false,
             is_too: true,
             instrument_id: form.get('instrumentId') as string,
-            proposal_name: form.get('proposalName') as string,
-            proposal_code: form.get('proposalCode') as string,
+            proposal: {
+                name: form.get('proposalName') as string,
+                code: form.get('proposalCode') as string,
+            },
             science_justification: form.get('justification') as string,
         };
 

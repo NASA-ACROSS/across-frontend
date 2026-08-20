@@ -38,6 +38,9 @@
     let selectedTelescopes: Telescope[] = [];
     let selectedInstruments: TelescopeInstrument[] = [];
 
+    // Instrument Configuration state
+    let exposureTimeSeconds: number;
+
     // Proposal Information state
     let proposalCode: string;
     let proposalName: string;
@@ -50,48 +53,32 @@
         <Section>
             <Fieldset title="Object Information">
                 <CoordinateSearch bind:ra bind:dec bind:objectName required={true} />
-                <label class="input text-lg pe-0 w-full" for="proposal-code-input">
+                <label class="input text-lg pe-0 w-full" for="offset-input">
                     Position offset:
                     <input
                         id="offset-input"
                         class="input validator input-bordered text-lg w-full"
                         type="number"
-                        inputmode="decimal"
+                        step="any"
                         placeholder="decimal° (-90 to 90)"
                         min="-90"
                         max="90"
-                        pattern="\d*"
                         bind:value={positionOffset}
                     />
                     <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (-90 to 90)</p>
                 </label>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 mb-4">
-                    <div class="form-control">
-                        <label class="label text-lg" for="brightness-unit-input">
+                    <div>
+                        <label class="label text-lg" for="brightness-value-input">
                             <span class="label-text">Brightness</span>
                         </label>
-                        <select
-                            required
-                            id="brightness-unit-input"
-                            bind:value={brightnessUnit}
-                            class="select select-bordered text-lg w-full"
-                        >
-                            <option value="">Select type</option>
-                            {#each brightnessUnitOptions as option}
-                                <option value={option}>{option}</option>
-                            {/each}
-                        </select>
-                    </div>
-
-                    <div class="self-end">
                         <label class="input text-lg w-full">
                             Brightness Value:
                             <input
                                 required
                                 id="brightness-value-input"
                                 type="number"
-                                inputmode="numeric"
-                                pattern="\d*"
+                                step="any"
                                 bind:value={brightness}
                                 placeholder="decimal"
                                 class="input validator input-bordered text-lg w-full"
@@ -101,7 +88,19 @@
                             {/if}
                             <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
                         </label>
-                        <div class="flex items-center"></div>
+                    </div>
+                    <div class="self-end">
+                        <select
+                            required
+                            id="brightness-unit-input"
+                            bind:value={brightnessUnit}
+                            class="select select-bordered text-lg w-full"
+                        >
+                            <option value="">Select Unit</option>
+                            {#each brightnessUnitOptions as option}
+                                <option value={option}>{option}</option>
+                            {/each}
+                        </select>
                     </div>
                 </div>
             </Fieldset>
@@ -128,6 +127,25 @@
                 </div>
             </Fieldset>
 
+            <Fieldset title="Instrument Configuration">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 mb-4">
+                    <label class="input text-lg w-full">
+                        Exposure Time:
+                        <input
+                            required
+                            id="exposure-time-value-input"
+                            type="number"
+                            step="any"
+                            bind:value={exposureTimeSeconds}
+                            placeholder="seconds"
+                            class="input validator input-bordered text-lg w-full"
+                        />
+                        <span class="label">seconds</span>
+                        <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
+                    </label>
+                </div>
+            </Fieldset>
+
             <Fieldset title="Proposal Information">
                 <ProposalInfoInput bind:proposalCode bind:proposalName bind:justification bind:anonymize />
             </Fieldset>
@@ -143,8 +161,8 @@
                 <input type="hidden" name="dec" value={dec} />
                 <input type="hidden" name="positionOffset" value={positionOffset} />
                 <input type="hidden" name="brightness" value={brightness} />
+                <input type="hidden" name="exposureTimeSeconds" value={exposureTimeSeconds} />
                 <input type="hidden" name="brightnessUnit" value={brightnessUnit?.trim()} />
-                <input type="hidden" name="positionOffset" value={positionOffset} />
                 <input type="hidden" name="dateRangeBegin" value={dateRangeBegin} />
                 <input type="hidden" name="dateRangeEnd" value={dateRangeEnd} />
                 <input type="hidden" name="instrumentId" value={selectedInstruments[0]?.id} />

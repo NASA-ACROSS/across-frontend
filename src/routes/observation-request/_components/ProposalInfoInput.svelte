@@ -10,7 +10,6 @@
         Proposal Code:
         <input
             id="proposal-code-input"
-            required
             class="input validator input-bordered text-lg w-full"
             type="text"
             bind:value={proposalCode}
@@ -24,7 +23,6 @@
         Proposal Name:
         <input
             id="proposal-name-input"
-            required
             class="input validator input-bordered text-lg w-full"
             type="text"
             bind:value={proposalName}

@@ -16,8 +16,10 @@
         "lint": "eslint",
         "lint:all": "eslint .",
         "lint:fix": "eslint . --fix",
+        "test:e2e": "playwright test",
         "test:integration": "playwright test",
         "test:unit": "vitest",
+        "test:generate": "npm run compose && playwright codegen localhost:5173",
         "prepare": "husky"
     },
     "devDependencies": {

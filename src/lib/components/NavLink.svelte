@@ -6,6 +6,7 @@
 
 <li class="hover:underline decoration-dashed underline-offset-4">
     <a
+        data-testid="NavLink:{link.id}"
         data-sveltekit-reload={link.reload}
         data-sveltekit-preload-data="tap"
         target={link.newTab === true ? '_blank' : ''}

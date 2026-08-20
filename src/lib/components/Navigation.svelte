@@ -18,7 +18,7 @@
     $: userInitials = user ? user?.first_name?.[0]?.toUpperCase() + user?.last_name?.[0]?.toUpperCase() : '';
 </script>
 
-<div class="navbar bg-primary shadow-sm h-22">
+<div data-testid="navbar" class="navbar bg-primary shadow-sm h-22">
     <div class="navbar-start">
         <div class="dropdown">
             <button
@@ -41,7 +41,7 @@
                 {/each}
             </ul>
         </div>
-        <a href={resolve('/')} role="button" class="text-xl font-bold flex flex-row items-center pl-3">
+        <a data-testid="nav-home-button" href={resolve('/')} role="button" class="text-xl font-bold flex flex-row items-center pl-3">
             <img src={asset('/assets/img/custom/logo-nasa.svg')} width="60" alt="NASA logo" />
             <div class="align-center text-primary-content hidden lg:block text-nowrap">Astrophysics Cross-Observatory Science Support</div>
             <div class="align-center text-primary-content lg:hidden">ACROSS</div>

@@ -20,7 +20,6 @@
         "test:integration": "playwright test",
         "test:unit": "vitest",
         "test:generate": "npm run compose && playwright codegen localhost:5173",
-        "test:start-webserver": "tsx tests/integration/start-webserver.ts",
         "prepare": "husky"
     },
     "devDependencies": {

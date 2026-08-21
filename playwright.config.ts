@@ -11,16 +11,24 @@ dotenv.config({
     path: [`.env.test`],
 });
 
-console.log(process.env.CI);
-
 export default defineConfig({
-    globalSetup: './tests/integration/globalSetup.ts',
+    // globalSetup: './tests/integration/globalSetup.ts',
     webServer: [
         {
             command: 'npm run build && npm run preview',
             port: 4173,
+            stdout: Number(process.env.DEBUG) ? 'pipe' : 'ignore',
+            stderr: Number(process.env.DEBUG) ? 'pipe' : 'ignore',
+        },
+        {
+            command: 'npm run test:start-webserver',
+            port: process.env.ACROSS_SERVER_PORT ? Number(process.env.ACROSS_SERVER_PORT) : 8000,
+            gracefulShutdown: { signal: 'SIGTERM', timeout: 5000 },
+            stdout: Number(process.env.DEBUG) ? 'pipe' : 'ignore',
+            stderr: Number(process.env.DEBUG) ? 'pipe' : 'ignore',
         },
     ],
+    use: { baseURL: 'http://localhost:4173' },
     testDir: 'tests',
     testMatch: /(.+\.)?(test|spec)\.[jt]s/,
     fullyParallel: true,

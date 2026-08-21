@@ -33,6 +33,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promise<Response> => {
     // Add an authorization header to internal API calls
+    logger.debug({ url: CONFIG.ACROSS_SERVER_URL });
     if (request.url.startsWith(CONFIG.ACROSS_SERVER_URL)) {
         // set external client ip for core-server to parse for rate-limiting
         const ip = event.getClientAddress();
@@ -43,8 +44,8 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
         // without colliding with other tests running in parallel against the same instance.
         // No-op outside test environments since ACROSS_TEST_ACCESS_TOKEN is never set otherwise.
         if (CONFIG.ACROSS_TEST_ACCESS_TOKEN) {
-            const namespace = event.request.headers.get('x-mockserver-namespace');
-            if (namespace) request.headers.set('x-mockserver-namespace', namespace);
+            const namespace = event.request.headers.get(CONFIG.MOCKSERVER_NAMESPACE_HEADER);
+            if (namespace) request.headers.set(CONFIG.MOCKSERVER_NAMESPACE_HEADER, namespace);
         }
 
         if (request.url.endsWith('/auth/token') || request.url.endsWith('/auth/refresh')) {

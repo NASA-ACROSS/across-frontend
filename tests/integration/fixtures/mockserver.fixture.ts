@@ -56,13 +56,9 @@ export const test = base.extend<Fixtures>({
     },
 
     mockServer: async ({}, use, testInfo) => {
-        const port = process.env.MOCKSERVER_PORT;
+        const port = process.env.ACROSS_SERVER_PORT;
 
-        if (!port) {
-            throw new Error(
-                'MOCKSERVER_PORT is not set. Ensure playwright.config.ts has globalSetup configured (tests/integration/mockserver/global-setup.ts).'
-            );
-        }
+        if (!port) throw new Error('ACROSS_SERVER_PORT env var is not set.');
 
         const testId = testInfo.testId;
         const client = mockServerClient('localhost', Number(port));

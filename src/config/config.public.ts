@@ -33,6 +33,7 @@ class PublicConfiguration {
     public USER_INFO_COOKIE_NAME: string = 'user-info';
 
     public DEFAULT_LOG_LEVEL: Level = (env.PUBLIC_DEFAULT_LOG_LEVEL as Level) || 'debug';
+    public PRETTY_LOGS: number = env.PUBLIC_PRETTY_LOGS ? parseInt(env.PUBLIC_PRETTY_LOGS) : 0;
 
     public DEFAULT_PAGE_LIMIT: number = 100;
 }

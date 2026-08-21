@@ -21,6 +21,8 @@ export class PrivateConfiguration {
 
     /** Only used in test environment */
     public ACROSS_TEST_ACCESS_TOKEN: string = env.ACROSS_TEST_ACCESS_TOKEN || '';
+    /** Only used in playwright integration testing */
+    public MOCKSERVER_NAMESPACE_HEADER: string = env.MOCKSERVER_NAMESPACE_HEADER || 'X-Mockserver-Namespace';
 
     public AWS_REGION: string = env.AWS_REGION || 'us-east-2';
     public AWS_PROFILE?: string = env.AWS_PROFILE;
@@ -30,15 +32,7 @@ export class PrivateConfiguration {
      */
     public IS_BUILD: boolean = env.BUILD_ENV === 'deploy';
 
-    constructor(
-        private publicConfig: typeof PUBLIC_CONFIG,
-        /**
-         * Explicit override for `ACROSS_SERVER_DOMAIN`, taking precedence over the IS_LOCAL/IS_PROD/
-         * environment-based resolution below. Defaults to `ACROSS_SERVER_HOST` when explicitly set
-         * (e.g. by test infrastructure pointing at a local mock server).
-         */
-        private readonly explicitServerHost: string | undefined = env.ACROSS_SERVER_HOST
-    ) {}
+    constructor(private publicConfig: typeof PUBLIC_CONFIG) {}
 
     /** Returns the public facing URL to the ACROSS API Docs */
     public get ACROSS_SERVER_DOCS_URL(): string {

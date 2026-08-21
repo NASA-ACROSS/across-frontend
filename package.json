@@ -18,9 +18,9 @@
         "lint:fix": "eslint . --fix",
         "test:e2e": "playwright test",
         "test:integration": "playwright test",
-        "start:mockserver": "tsx tests/integration/mockserver/mockserver.ts",
         "test:unit": "vitest",
         "test:generate": "npm run compose && playwright codegen localhost:5173",
+        "test:start-webserver": "tsx tests/integration/start-webserver.ts",
         "prepare": "husky"
     },
     "devDependencies": {
@@ -64,6 +64,7 @@
         "svelte-tabular-table": "^1.0.6",
         "sveltekit-rate-limiter": "^0.5.1",
         "tailwindcss": "^4.1.11",
+        "testcontainers": "^12.1.0",
         "tslib": "^2.4.1",
         "tsx": "^4.23.12",
         "typescript": "^5.0.0",

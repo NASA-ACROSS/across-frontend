@@ -20,7 +20,6 @@
         "test:integration": "playwright test",
         "test:unit": "vitest",
         "test:generate": "npm run compose && playwright codegen localhost:5173",
-        "test:start-webserver": "tsx tests/integration/start-webserver.ts",
         "prepare": "husky"
     },
     "devDependencies": {
@@ -66,7 +65,6 @@
         "tailwindcss": "^4.1.11",
         "testcontainers": "^12.1.0",
         "tslib": "^2.4.1",
-        "tsx": "^4.23.12",
         "typescript": "^5.0.0",
         "typescript-eslint": "^8.55.0",
         "vite": "^5.1.7",

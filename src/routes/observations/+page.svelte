@@ -14,6 +14,7 @@
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
     import logger from '$lib/logger';
     import type { PageData } from './$types';
+    import UnitValueInput from '$lib/components/inputs/UnitValueInput.svelte';
 
     export let data: PageData;
 
@@ -64,7 +65,7 @@
     let coneSearchDec = data.queryParams?.cone_search_dec || '';
     let coneSearchRadius = data.queryParams?.cone_search_radius || '';
     let type = data.queryParams?.type || '';
-    let depthValue = data.queryParams?.depth_value || '';
+    let depthValue = Number(data.queryParams?.depth_value) || undefined;
     let depthUnit = data.queryParams?.depth_unit || '';
 
     // Column customization
@@ -351,7 +352,7 @@
         coneSearchDec = '';
         coneSearchRadius = '';
         type = '';
-        depthValue = '';
+        depthValue = undefined;
         depthUnit = '';
         scheduleIdError = '';
         selectedObservatories = [];
@@ -690,38 +691,7 @@
                             {/if}
                         </div>
                         <div class="collapse-content">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                                <div class="form-control">
-                                    <label class="label text-lg" for="depth-unit-input">
-                                        <span class="label-text">Depth Unit</span>
-                                    </label>
-                                    <select id="depth-unit-input" bind:value={depthUnit} class="select select-bordered text-lg w-full">
-                                        <option value="">Select type</option>
-                                        {#each depthUnitOptions as option}
-                                            <option value={option}>{option}</option>
-                                        {/each}
-                                    </select>
-                                </div>
-
-                                <div class="self-end">
-                                    <label class="input text-lg w-full">
-                                        Depth Value:
-                                        <input
-                                            type="number"
-                                            inputmode="numeric"
-                                            pattern="\d*"
-                                            bind:value={depthValue}
-                                            placeholder="Depth Value"
-                                            class="input validator input-bordered text-lg w-full"
-                                        />
-                                        {#if depthUnit}
-                                            <span class="label">{depthUnit}</span>
-                                        {/if}
-                                        <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
-                                    </label>
-                                    <div class="flex items-center"></div>
-                                </div>
-                            </div>
+                            <UnitValueInput name="depth" bind:value={depthValue} bind:unit={depthUnit} unitOptions={depthUnitOptions} />
                         </div>
                     </div>
 

@@ -13,6 +13,7 @@
     import type { Telescope } from '$lib/types/across/Telescope';
     import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
     import ProposalInfoInput from '../_components/ProposalInfoInput.svelte';
+    import UnitValueInput from '$lib/components/inputs/UnitValueInput.svelte';
 
     export let form: ActionData;
     export let data: PageData;
@@ -53,7 +54,7 @@
         <Section>
             <Fieldset title="Object Information">
                 <CoordinateSearch bind:ra bind:dec bind:objectName required={true} />
-                <label class="input text-lg pe-0 w-full" for="offset-input">
+                <label class="input text-lg pe-0 w-full mb-4" for="offset-input">
                     Position offset:
                     <input
                         id="offset-input"
@@ -67,42 +68,13 @@
                     />
                     <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (-90 to 90)</p>
                 </label>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 mb-4">
-                    <div>
-                        <label class="label text-lg" for="brightness-value-input">
-                            <span class="label-text">Brightness</span>
-                        </label>
-                        <label class="input text-lg w-full">
-                            Brightness Value:
-                            <input
-                                required
-                                id="brightness-value-input"
-                                type="number"
-                                step="any"
-                                bind:value={brightness}
-                                placeholder="decimal"
-                                class="input validator input-bordered text-lg w-full"
-                            />
-                            {#if brightnessUnit}
-                                <span class="label">{brightnessUnit}</span>
-                            {/if}
-                            <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
-                        </label>
-                    </div>
-                    <div class="self-end">
-                        <select
-                            required
-                            id="brightness-unit-input"
-                            bind:value={brightnessUnit}
-                            class="select select-bordered text-lg w-full"
-                        >
-                            <option value="">Select Unit</option>
-                            {#each brightnessUnitOptions as option}
-                                <option value={option}>{option}</option>
-                            {/each}
-                        </select>
-                    </div>
-                </div>
+                <UnitValueInput
+                    name="brightness"
+                    required={true}
+                    bind:unit={brightnessUnit}
+                    bind:value={brightness}
+                    unitOptions={brightnessUnitOptions}
+                />
             </Fieldset>
 
             <Fieldset title="Observation Window">

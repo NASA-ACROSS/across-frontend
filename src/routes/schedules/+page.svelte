@@ -42,7 +42,7 @@
     let externalId = $state(data.queryParams?.external_id || '');
 
     // Column customization
-    let availableColumns = $derived([
+    let availableColumns = $state([
         { id: 'observatory_telescope', label: 'Observatory/Telescope', selected: true },
         { id: 'name', label: 'Name', selected: true },
         { id: 'date_begin', label: 'Date Begin', selected: true },
@@ -388,13 +388,7 @@
 
                 <div class="flex justify-end mt-4">
                     <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
-<<<<<<< HEAD
                     <button data-testid="search-btn" class="btn btn-info text-lg" onclick={async () => await handleSearch()}>Search</button>
-=======
-                    <button data-testid="search-btn" class="btn btn-info text-lg" onclick={async () => await handleSearch()}>
-                        Search
-                    </button>
->>>>>>> dcc0ec8d (feat(test): add schedules page playwright tests)
                 </div>
             </div>
         </div>
@@ -454,17 +448,10 @@
                     <div class="flex justify-between">
                         <div>
                             <button data-testid="default-columns-btn" class="btn btn-sm btn-outline mr-2" onclick={resetToDefaultColumns}>
-<<<<<<< HEAD
                                 Default Columns
                             </button>
                             <button data-testid="load-columns-btn" class="btn btn-sm btn-outline" onclick={loadColumnsFromCookie}>
                                 Load My Columns
-=======
-                                Default Columns 
-                            </button>
-                            <button data-testid="load-columns-btn" class="btn btn-sm btn-outline" onclick={loadColumnsFromCookie}>
-                                Load My Columns 
->>>>>>> dcc0ec8d (feat(test): add schedules page playwright tests)
                             </button>
                         </div>
                         <div>

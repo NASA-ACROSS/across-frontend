@@ -10,8 +10,8 @@
 
     let { id, datetimeInput = $bindable(''), label = 'Date/Time', required = false }: Props = $props();
 
-    const dateInputId = id ? `DatetimeInput:date-${id}` : 'DatetimeInput:date';
-    const timeInputId = id ? `DatetimeInput:time-${id}` : 'DatetimeInput:time';
+    const dateInputId = $derived(id ? `DatetimeInput:date-${id}` : 'DatetimeInput:date');
+    const timeInputId = $derived(id ? `DatetimeInput:time-${id}` : 'DatetimeInput:time');
 
     const splitDateTime = (dateStr: string = '') => {
         const dt = DateTime.fromISO(dateStr, { zone: 'utc' });

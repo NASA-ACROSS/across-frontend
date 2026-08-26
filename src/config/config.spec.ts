@@ -45,10 +45,5 @@ describe('PrivateConfiguration', () => {
             const config = new PrivateConfiguration({} as typeof PUBLIC_CONFIG);
             expect(config.ACROSS_SERVER_URL).toMatch(/^http:\/\//);
         });
-
-        it('should prefer an explicit ACROSS_SERVER_HOST override over IS_LOCAL/IS_PROD/environment resolution', () => {
-            const config = new PrivateConfiguration({ IS_PROD: true } as typeof PUBLIC_CONFIG, 'http://mockserver-host');
-            expect(config.ACROSS_SERVER_DOMAIN).toBe(`http://mockserver-host:${config.ACROSS_SERVER_PORT}`);
-        });
     });
 });

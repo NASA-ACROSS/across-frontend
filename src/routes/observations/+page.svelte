@@ -691,7 +691,13 @@
                             {/if}
                         </div>
                         <div class="collapse-content">
-                            <UnitValueInput name="depth" bind:value={depthValue} bind:unit={depthUnit} unitOptions={depthUnitOptions} />
+                            <UnitValueInput
+                                id="depth"
+                                displayName="Depth"
+                                bind:value={depthValue}
+                                bind:unit={depthUnit}
+                                unitOptions={depthUnitOptions}
+                            />
                         </div>
                     </div>
 

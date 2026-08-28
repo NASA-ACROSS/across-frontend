@@ -20,6 +20,8 @@
 
     $: telescopes = data.telescopes || [];
 
+    $: disableSubmit = !telescopes || telescopes.length == 0;
+
     const brightnessUnitOptions = ['ab_mag', 'vega_mag', 'flux_erg', 'flux_jy'];
 
     //Object Information state
@@ -69,7 +71,8 @@
                     <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number (-90 to 90)</p>
                 </label>
                 <UnitValueInput
-                    name="brightness"
+                    id="brightness"
+                    displayName="Brightness"
                     required={true}
                     bind:unit={brightnessUnit}
                     bind:value={brightness}
@@ -100,22 +103,16 @@
             </Fieldset>
 
             <Fieldset title="Instrument Configuration">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 mb-4">
-                    <label class="input text-lg w-full">
-                        Exposure Time:
-                        <input
-                            required
-                            id="exposure-time-value-input"
-                            type="number"
-                            step="any"
-                            bind:value={exposureTimeSeconds}
-                            placeholder="seconds"
-                            class="input validator input-bordered text-lg w-full"
-                        />
-                        <span class="label">seconds</span>
-                        <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
-                    </label>
-                </div>
+                <UnitValueInput
+                    required={true}
+                    id="exposure-time-value-input"
+                    displayName="Exposure Time"
+                    bind:value={exposureTimeSeconds}
+                    unit="seconds"
+                    placeholder="decimal"
+                    min={0.00000001}
+                    validationRejectionText="Must be a number greater than zero"
+                />
             </Fieldset>
 
             <Fieldset title="Proposal Information">
@@ -123,8 +120,8 @@
             </Fieldset>
 
             <div class="flex justify-end gap-2 items-center mt-4">
-                {#if form?.created_id}
-                    <Alert soft={false} type="success">Created new TOO: {form.created_id}</Alert>
+                {#if form?.createdId}
+                    <Alert soft={false} type="success">Created new Observation Request: {form.createdId}</Alert>
                 {/if}
                 <FormSubmitFeedback action="submitCreate" />
 
@@ -143,7 +140,7 @@
                 <input type="hidden" name="justification" value={justification?.trim()} />
                 <input type="hidden" name="anonymize" value={anonymize} />
 
-                <button type="submit" class="btn btn-lg btn-info justify-end">Submit Observation Request</button>
+                <button type="submit" disabled={disableSubmit} class="btn btn-lg btn-info justify-end">Submit Observation Request</button>
             </div>
         </Section>
     </form>

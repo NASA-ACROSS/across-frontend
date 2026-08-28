@@ -10,7 +10,7 @@ interface UnitValue {
 
 interface NullableEndDateRange {
     begin: string;
-    end: string | null;
+    end?: string | null;
 }
 
 interface ProposalInfo {

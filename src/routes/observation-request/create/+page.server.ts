@@ -14,15 +14,19 @@ export async function load({ fetch, locals }: RequestEvent) {
 
     const telescopes: Telescope[] = await getTelescopes(fetch);
 
-    // reduce the available selections of observatories/telescopes/instruments based on instrument.is_observation_request_enabled
+    // reduce the available selections of telescopes based on instrument.is_observation_request_enabled
     const enabledTelescopes = telescopes.reduce((telescopes: Telescope[], telescope) => {
+        // only keep instruments for the current telescope if instrument.is_observation_request_enabled
         telescope.instruments = telescope.instruments.reduce((instruments: TelescopeInstrument[], instrument) => {
             if (instrument.is_observation_request_enabled === true) {
                 instruments.push(instrument);
             }
             return instruments;
         }, []);
+
+        // add current telescope to list if there are any enabled instruments
         if (telescope.instruments.length) telescopes.push(telescope);
+
         return telescopes;
     }, []);
 
@@ -35,7 +39,7 @@ export const actions = {
     submitCreate: async ({
         fetch,
         request,
-    }: RequestEvent): Promise<(FormSubmitResult & { created_id: string }) | ActionFailure<FormSubmitResult>> => {
+    }: RequestEvent): Promise<(FormSubmitResult & { createdId: string }) | ActionFailure<FormSubmitResult>> => {
         const form = await request.formData();
 
         const observationRequestPayload: ObservationRequestCreate = {
@@ -65,7 +69,7 @@ export const actions = {
         };
 
         try {
-            const apiUrl = `/observation-request/`;
+            const apiPath = `/observation-request/`;
             const request = {
                 method: 'POST',
                 headers: {
@@ -74,14 +78,13 @@ export const actions = {
                 body: JSON.stringify(observationRequestPayload),
             };
 
-            const response = await callApi<string>(fetch, apiUrl, request);
+            const response = await callApi<string>(fetch, apiPath, request);
 
-            logger.info({ msg: 'Observation request created successfully', created_id: response.data });
+            logger.info({ msg: 'Observation request created successfully', createdId: response.data });
 
-            return { type: 'success', message: 'Observation request created successfully', created_id: response.data };
+            return { type: 'success', message: 'Observation request created successfully', createdId: response.data };
         } catch (err: unknown) {
             if (isHttpError(err)) {
-                logger.error(err);
                 return fail(err.status, {
                     _action: 'submitCreate',
                     type: 'error',

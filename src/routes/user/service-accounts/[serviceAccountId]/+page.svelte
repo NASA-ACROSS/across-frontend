@@ -130,11 +130,12 @@
                 </div>
 
                 <div class="pt-6">
-                    <Alert type="warning" soft={!isServiceAccountExpired && disableUpdate}
-                        >Updating a service account will re-compute the expiration date based on expiration in days provided, it <b
-                            >does not rotate the key</b
-                        ></Alert
-                    >
+                    <Alert type="warning" soft={!isServiceAccountExpired && disableUpdate}>
+                        <p>
+                            Updating a service account will re-compute the expiration date based on expiration in days provided, it
+                            <b>does not rotate the key</b>
+                        </p>
+                    </Alert>
                 </div>
 
                 <input type="hidden" name="serviceAccountId" value={serviceAccount.id} />

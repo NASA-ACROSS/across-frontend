@@ -20,8 +20,10 @@
 
 <Page title="Observatory Metadata" icon="database">
     <Alert slot="alert">
-        ACROSS supports a layered approach to metadata. Observatories have Telescopes which have Instruments.
-        <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">See documentation for more details.</a>
+        <p>
+            ACROSS supports a layered approach to metadata. Observatories have Telescopes which have Instruments.
+            <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">See documentation for more details.</a>
+        </p>
     </Alert>
 
     <div slot="buttons" class="">

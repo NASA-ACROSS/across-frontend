@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { PUBLIC_CONFIG } from '$config/config.public';
-    import type { SubmitFunction } from '@sveltejs/kit';
+    import { type SubmitFunction } from '@sveltejs/kit';
     import type { ActionData } from './$types';
+    import OpenDataPolicyBanner from '$lib/components/OpenDataPolicyBanner.svelte';
 
     import { enhance } from '$app/forms';
     import Section from '$lib/components/Section.svelte';
@@ -11,7 +11,6 @@
     import { resolve } from '$app/paths';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
-    import Alert from '$lib/components/Alert.svelte';
 
     export let form: ActionData;
 
@@ -31,11 +30,7 @@
 </script>
 
 <Page title="Login" icon="user">
-    <Alert slot="alert">
-        Login is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">
-            See documentation for more details.</a
-        >
-    </Alert>
+    <OpenDataPolicyBanner slot="alert" />
     <Section>
         <form method="post" use:enhance={enhancedLogin} novalidate>
             <EmailInput

@@ -1,23 +1,18 @@
 <script lang="ts">
-    import { PUBLIC_CONFIG } from '$config/config.public';
     import Section from '$lib/components/Section.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
     import Page from '$lib/components/Page.svelte';
     import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
-    import Alert from '$lib/components/Alert.svelte';
+    import OpenDataPolicyBanner from '$lib/components/OpenDataPolicyBanner.svelte';
 
     /** @type {import('./$types').ActionData} */
     export let form;
 </script>
 
 <Page title="Create Account" icon="user">
-    <Alert slot="alert">
-        Registration is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal"
-            >See documentation for more details.</a
-        >
-    </Alert>
+    <OpenDataPolicyBanner slot="alert" />
     <Section>
         <Fieldset title="User Information">
             <form method="post">

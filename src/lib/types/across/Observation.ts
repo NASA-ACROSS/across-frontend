@@ -1,13 +1,17 @@
 import type { Bandpass } from './Bandpass';
 
-type Position = {
-    ra: number; // Range 0-360 degrees
-    dec: number; // Range -90 to +90 degrees
+export type Position = {
+    /** Range 0-360 degrees */
+    ra: number;
+    /** Range -90 to +90 degrees */
+    dec: number;
 };
 
 type DateRange = {
-    begin: string; // ISO date format
-    end: string; // ISO date format
+    /** ISO 8601 UTC date format */
+    begin: string;
+    /** ISO 8601 UTC date format */
+    end: string;
 };
 
 enum DepthUnit {

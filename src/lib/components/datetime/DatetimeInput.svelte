@@ -3,6 +3,7 @@
 
     export let datetimeInput: string = '';
     export let label = 'Date/Time';
+    export let required: boolean = false;
 
     const splitDateTime = (dateStr: string = '') => {
         const dt = DateTime.fromISO(dateStr, { zone: 'utc' });
@@ -32,8 +33,8 @@
     <span class="label-text">{label}</span>
 </label>
 <div class="grid grid-cols-2 gap-2 w-full">
-    <input type="date" bind:value={date} on:input={select} class="input text-primary" />
-    <input type="time" bind:value={time} on:input={select} step="1" class="input" />
+    <input {required} type="date" bind:value={date} on:input={select} class="input text-primary w-full" />
+    <input {required} type="time" bind:value={time} on:input={select} step="1" class="input w-full" />
 </div>
 
 <style>

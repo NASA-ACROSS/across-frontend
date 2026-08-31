@@ -14,6 +14,7 @@
     import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
     import logger from '$lib/logger';
     import type { PageData } from './$types';
+    import UnitValueInput from '$lib/components/inputs/UnitValueInput.svelte';
 
     export let data: PageData;
 
@@ -43,13 +44,6 @@
     $: currentSearchParams = new URLSearchParams(page.url.searchParams);
 
     // Observatory/Telescope/Instrument selector state
-    $: observatories = telescopes
-        .map((telescope) => telescope.observatory)
-        .filter((value, index, self) => self.findIndex((obs) => obs.id === value.id) === index);
-    $: instruments = telescopes
-        .flatMap((telescope) => telescope.instruments || [])
-        .filter((value, index, self) => self.findIndex((inst) => inst.id === value.id) === index);
-
     let selectedObservatories: TelescopeObservatory[] = [];
     let selectedTelescopes: Telescope[] = [];
     let selectedInstruments: TelescopeInstrument[] = [];
@@ -71,7 +65,7 @@
     let coneSearchDec = data.queryParams?.cone_search_dec || '';
     let coneSearchRadius = data.queryParams?.cone_search_radius || '';
     let type = data.queryParams?.type || '';
-    let depthValue = data.queryParams?.depth_value || '';
+    let depthValue = Number(data.queryParams?.depth_value) || undefined;
     let depthUnit = data.queryParams?.depth_unit || '';
 
     // Column customization
@@ -135,27 +129,6 @@
                 const isDefault = DEFAULT_COLUMNS.some((defCol) => defCol === col.id);
                 return { ...col, selected: isDefault };
             });
-        }
-
-        // Populate observatory/telescope/instrument selection
-        const instrumentIds = (data.queryParams?.instrument_ids as string[]) || ([] as string[]);
-        if (instrumentIds.length > 0) {
-            selectedInstruments = instruments.filter((inst) => instrumentIds.includes(inst.id));
-
-            // Auto-select parent telescopes and observatories
-            const selectedTelescopeIds = new Set<string>();
-            const selectedObservatoryIds = new Set<string>();
-
-            selectedInstruments.forEach((inst) => {
-                const telescope = telescopes.find((tel) => tel.instruments.some((i) => i.id === inst.id));
-                if (telescope) {
-                    selectedTelescopeIds.add(telescope.id);
-                    selectedObservatoryIds.add(telescope.observatory.id);
-                }
-            });
-
-            selectedTelescopes = telescopes.filter((tel) => selectedTelescopeIds.has(tel.id));
-            selectedObservatories = observatories.filter((obs) => selectedObservatoryIds.has(obs.id));
         }
     });
 
@@ -379,7 +352,7 @@
         coneSearchDec = '';
         coneSearchRadius = '';
         type = '';
-        depthValue = '';
+        depthValue = undefined;
         depthUnit = '';
         scheduleIdError = '';
         selectedObservatories = [];
@@ -442,9 +415,7 @@
                         <div class="collapse-content">
                             <div class="py-4 h-200 md:min-h-80 md:max-h-100">
                                 <ObservatoryTelescopeInstrumentSelector
-                                    {observatories}
                                     {telescopes}
-                                    {instruments}
                                     bind:selectedObservatories
                                     bind:selectedTelescopes
                                     bind:selectedInstruments
@@ -720,38 +691,13 @@
                             {/if}
                         </div>
                         <div class="collapse-content">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
-                                <div class="form-control">
-                                    <label class="label text-lg" for="depth-unit-input">
-                                        <span class="label-text">Depth Unit</span>
-                                    </label>
-                                    <select id="depth-unit-input" bind:value={depthUnit} class="select select-bordered text-lg w-full">
-                                        <option value="">Select type</option>
-                                        {#each depthUnitOptions as option}
-                                            <option value={option}>{option}</option>
-                                        {/each}
-                                    </select>
-                                </div>
-
-                                <div class="self-end">
-                                    <label class="input text-lg w-full">
-                                        Depth Value:
-                                        <input
-                                            type="number"
-                                            inputmode="numeric"
-                                            pattern="\d*"
-                                            bind:value={depthValue}
-                                            placeholder="Depth Value"
-                                            class="input validator input-bordered text-lg w-full"
-                                        />
-                                        {#if depthUnit}
-                                            <span class="label">{depthUnit}</span>
-                                        {/if}
-                                        <p class="hidden validator-hint mt-18" style="position: absolute;">Must be a number</p>
-                                    </label>
-                                    <div class="flex items-center"></div>
-                                </div>
-                            </div>
+                            <UnitValueInput
+                                id="depth"
+                                displayName="Depth"
+                                bind:value={depthValue}
+                                bind:unit={depthUnit}
+                                unitOptions={depthUnitOptions}
+                            />
                         </div>
                     </div>
 

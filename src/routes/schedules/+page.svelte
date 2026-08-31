@@ -30,10 +30,6 @@
     $: currentSearchParams = new URLSearchParams(page.url.searchParams);
 
     // Observatory/Telescope selector state
-    $: observatories = telescopes
-        .map((telescope) => telescope.observatory)
-        .filter((value, index, self) => self.findIndex((obs) => obs.id === value.id) === index);
-
     let selectedObservatories: TelescopeObservatory[] = [];
     let selectedTelescopes: Telescope[] = [];
 
@@ -79,19 +75,6 @@
                 const isDefault = DEFAULT_COLUMNS.some((defCol) => defCol === col.id);
                 return { ...col, selected: isDefault };
             });
-        }
-
-        // Populate observatory/telescope/instrument selection
-        const telescopeIds = (data.queryParams?.telescope_ids as string[]) || ([] as string[]);
-        if (telescopeIds.length > 0) {
-            selectedTelescopes = telescopes.filter((tel) => telescopeIds.includes(tel.id));
-
-            // Auto-select parent observatories
-            const selectedObservatoryIds = new Set<string>();
-            selectedTelescopes.forEach((tel) => {
-                selectedObservatoryIds.add(tel.observatory.id);
-            });
-            selectedObservatories = observatories.filter((obs) => selectedObservatoryIds.has(obs.id));
         }
     });
 
@@ -293,12 +276,7 @@
                         </div>
                         <div class="collapse-content">
                             <div class="py-4 h-200 md:min-h-80 md:max-h-100">
-                                <ObservatoryTelescopeSelector
-                                    {observatories}
-                                    {telescopes}
-                                    bind:selectedObservatories
-                                    bind:selectedTelescopes
-                                />
+                                <ObservatoryTelescopeSelector {telescopes} bind:selectedObservatories bind:selectedTelescopes />
                             </div>
                         </div>
                     </div>

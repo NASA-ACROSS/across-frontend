@@ -1,10 +1,7 @@
 import { GenericContainer, Wait } from 'testcontainers';
 import { mockServerClient, type OpenAPIExpectation } from 'mockserver-client';
-import dotenv from 'dotenv';
 
-dotenv.config({
-    path: [`.env.test`],
-});
+process.loadEnvFile('.env.test');
 
 export default async function globalSetup() {
     // Pinned to a specific stable tag (rather than `latest`) to keep CI/local runs reproducible.

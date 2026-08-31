@@ -14,7 +14,6 @@ import { HTTP_CODES } from '$lib';
 import { callApi } from '$lib/utils/across/callApi';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
-    guards.localOnlyRoute();
     const localUser = guards.requireUser(locals);
 
     // validate that the slug id is a uuid

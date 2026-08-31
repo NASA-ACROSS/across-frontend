@@ -115,12 +115,9 @@ export const actions = {
                         code: err.body.code,
                     });
                 } else if (err.status === 409) {
-                    return fail(err.status, {
-                        type: 'error',
-                        message: 'The email address is unavailable.',
-                        errorId: err.body.errorId,
-                        code: err.body.code,
-                    });
+                    // The user already exists, but we don't want to give away that information on the
+                    // frontend directly due to NASA security requirements. Continue on with a noop
+                    // for a 409 conflict, and let the user know that an email has been sent to them.
                 } else if (err.status === 422) {
                     return fail(err.status, {
                         type: 'error',
@@ -136,11 +133,11 @@ export const actions = {
                         code: err.body.code,
                     });
                 }
+            } else {
+                throw err;
             }
-
-            throw err;
         }
 
-        return { type: 'success', message: 'Please check your email for a verification link!', firstname, lastname, username, email };
+        return { type: 'success', message: `An email has been sent to ${email}.`, firstname, lastname, username, email };
     },
 };

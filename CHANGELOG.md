@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.8.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.7.0...across-frontend-v1.8.0) (2026-08-18)
+
+
+### Features
+
+* **tests:** add initial playwright integration tests ([#360](https://github.com/NASA-ACROSS/across-frontend/issues/360)) ([801b5d6](https://github.com/NASA-ACROSS/across-frontend/commit/801b5d6352a68450a8d90db3c2b88fd823a0f4c3))
+* **tests:** add playwright integration tests ([801b5d6](https://github.com/NASA-ACROSS/across-frontend/commit/801b5d6352a68450a8d90db3c2b88fd823a0f4c3))
+
+
+### Bug Fixes
+
+* all API routing for ACROSS API goes through callApi ([#350](https://github.com/NASA-ACROSS/across-frontend/issues/350)) ([9fc2917](https://github.com/NASA-ACROSS/across-frontend/commit/9fc291759c40311e253a55e358242bbc6e353576))
+* use ACROSS_SERVER_HOST in URL ([#363](https://github.com/NASA-ACROSS/across-frontend/issues/363)) ([13c48d1](https://github.com/NASA-ACROSS/across-frontend/commit/13c48d1192c471339ef48d3f8f11716db822a86d))
+
 ## [1.7.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.6.1...across-frontend-v1.7.0) (2026-07-24)
 
 

@@ -18,9 +18,10 @@
     export let title: string = 'Resolve Object Name to Coordinates';
     export let ra: string | number = '';
     export let dec: string | number = '';
+    export let objectName: string = '';
+    export let required: boolean = false;
 
     // Internal state
-    let objectNameInput = '';
     let resolvedData: NameResolver | null = null;
     let error: Error | null = null;
     let isResolving = false;
@@ -28,7 +29,6 @@
 
     function resetResolver() {
         isResolving = false;
-        objectNameInput = '';
         resolvedData = null;
         error = null;
 
@@ -67,21 +67,23 @@
 <!-- Object Name Resolver -->
 <div class="mb-6 p-4 bg-base-100 border border-base-300">
     <h4 class="text-md font-semibold mb-3">{title}</h4>
-    <form method="POST" action="?/resolveObject" use:enhance={onResolveSubmit}>
-        <div class="flex gap-2 items-end">
-            <div class="form-control flex-1">
-                <label class="label text-lg" for="object-name-resolver-input">
-                    <span class="label-text">Object Name</span>
-                </label>
-                <input
-                    id="object-name-resolver-input"
-                    name="objectName"
-                    type="text"
-                    bind:value={objectNameInput}
-                    placeholder="e.g. Crab, M31, NGC 2237"
-                    class="input input-bordered text-lg w-full"
-                />
-            </div>
+    <div class="flex gap-2 items-end">
+        <div class="form-control flex-1">
+            <label class="label text-lg" for="object-name-input">
+                <span class="label-text">Object Name</span>
+            </label>
+            <input
+                id="object-name-input"
+                {required}
+                name="objectName"
+                type="text"
+                bind:value={objectName}
+                placeholder="e.g. Crab, M31, NGC 2237"
+                class="input input-bordered text-lg w-full"
+            />
+        </div>
+        <form method="POST" action="?/resolveObject" use:enhance={onResolveSubmit}>
+            <input hidden={true} id="object-name-resolver-input" name="objectName" type="text" bind:value={objectName} />
             <button type="submit" class="btn btn-primary" disabled={isResolving}>
                 {#if isResolving}
                     <span class="loading loading-spinner loading-sm"></span>
@@ -90,8 +92,8 @@
                     Resolve
                 {/if}
             </button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 <!-- Resolver Confirmation Modal -->

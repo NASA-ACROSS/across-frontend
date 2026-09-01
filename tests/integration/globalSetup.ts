@@ -1,5 +1,4 @@
 import { GenericContainer, Wait } from 'testcontainers';
-import { mockServerClient, type OpenAPIExpectation } from 'mockserver-client';
 
 process.loadEnvFile('.env.test');
 
@@ -14,12 +13,6 @@ export default async function globalSetup() {
         .withAutoCleanup(true)
         .withWaitStrategy(Wait.forHttp('/mockserver/status', port).withMethod('PUT').forStatusCode(200))
         .start();
-
-    const specUrlOrPayload = process.env.ACROSS_OPENAPI_SPEC_URL;
-    if (specUrlOrPayload) {
-        const client = mockServerClient('localhost', port);
-        await client.openAPIExpectation({ specUrlOrPayload } as OpenAPIExpectation);
-    }
 
     return async () => {
         await container.stop();

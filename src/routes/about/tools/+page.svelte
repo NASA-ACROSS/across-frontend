@@ -16,10 +16,12 @@
             </div>
             <div class="border-l-4 border-primary pl-6 space-y-8">
                 <Section title="Visibility Calculator" id="visibility-calculator">
-                    <a slot="buttons" href="/visibility-calculator" class="btn btn-sm btn-outline btn-primary">
-                        <i class="bx bx-globe"></i>
-                        Open Visibility Calculator
-                    </a>
+                    {#snippet buttons()}
+                        <a href="/visibility-calculator" class="btn btn-sm btn-outline btn-primary">
+                            <i class="bx bx-globe"></i>
+                            Open Visibility Calculator
+                        </a>
+                    {/snippet}
 
                     <div class="border-t border-base-300 pt-3">
                         <p class="leading-relaxed pb-2">
@@ -76,10 +78,12 @@
                         </p>
 
                         <Section title="Schedules">
-                            <a slot="buttons" href="/schedules" class="btn btn-sm btn-outline btn-primary">
-                                <i class="bx bx-calendar"></i>
-                                Browse Schedules
-                            </a>
+                            {#snippet buttons()}
+                                <a href="/schedules" class="btn btn-sm btn-outline btn-primary">
+                                    <i class="bx bx-calendar"></i>
+                                    Browse Schedules
+                                </a>
+                            {/snippet}
                             <div class="space-y-2">
                                 <p class="leading-relaxed">
                                     Query observing schedules across all supported missions. Results can be filtered by the following
@@ -100,10 +104,12 @@
                         </Section>
 
                         <Section title="Observations">
-                            <a slot="buttons" href="/observations" class="btn btn-sm btn-outline btn-primary">
-                                <i class="bx bx-calendar"></i>
-                                Browse Observations
-                            </a>
+                            {#snippet buttons()}
+                                <a href="/observations" class="btn btn-sm btn-outline btn-primary">
+                                    <i class="bx bx-calendar"></i>
+                                    Browse Observations
+                                </a>
+                            {/snippet}
 
                             <p class="leading-relaxed">
                                 Query individual observations ingested from supported mission schedules. Available filter parameters
@@ -130,39 +136,41 @@
             </div>
             <div class="border-l-4 border-primary pl-6 space-y-8">
                 <Section title="across-tools">
-                    <div slot="buttons" class="flex items-center gap-2">
-                        <a
-                            href="https://across-tools.readthedocs.io/en/latest/"
-                            class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <i class="bx bx-book-open"></i>
-                            Read the Docs
-                        </a>
-                        <a
-                            href="https://pypi.org/project/across-tools/"
-                            class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <i class="bx bx-cube"></i>
-                            View on PyPI
-                        </a>
-                        <a
-                            href="https://github.com/NASA-ACROSS/across-tools"
-                            class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
-                                />
-                            </svg>
-                            View on GitHub
-                        </a>
-                    </div>
+                    {#snippet buttons()}
+                        <div class="flex items-center gap-2">
+                            <a
+                                href="https://across-tools.readthedocs.io/en/latest/"
+                                class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <i class="bx bx-book-open"></i>
+                                Read the Docs
+                            </a>
+                            <a
+                                href="https://pypi.org/project/across-tools/"
+                                class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <i class="bx bx-cube"></i>
+                                View on PyPI
+                            </a>
+                            <a
+                                href="https://github.com/NASA-ACROSS/across-tools"
+                                class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
+                                    />
+                                </svg>
+                                View on GitHub
+                            </a>
+                        </div>
+                    {/snippet}
                     <div class="border-t border-base-300 pt-3">
                         <p class="leading-relaxed">A lightweight astronomy observing Python package that provides functionality for:</p>
                         <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed">
@@ -174,39 +182,41 @@
                 </Section>
 
                 <Section title="across-client">
-                    <div slot="buttons" class="flex items-center gap-2">
-                        <a
-                            href="https://across-client.readthedocs.io/en/latest/"
-                            class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <i class="bx bx-book-open"></i>
-                            Read the Docs
-                        </a>
-                        <a
-                            href="https://pypi.org/project/across-client/"
-                            class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <i class="bx bx-cube"></i>
-                            View on PyPI
-                        </a>
-                        <a
-                            href="https://github.com/NASA-ACROSS/across-client"
-                            class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
-                                />
-                            </svg>
-                            View on GitHub
-                        </a>
-                    </div>
+                    {#snippet buttons()}
+                        <div class="flex items-center gap-2">
+                            <a
+                                href="https://across-client.readthedocs.io/en/latest/"
+                                class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <i class="bx bx-book-open"></i>
+                                Read the Docs
+                            </a>
+                            <a
+                                href="https://pypi.org/project/across-client/"
+                                class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <i class="bx bx-cube"></i>
+                                View on PyPI
+                            </a>
+                            <a
+                                href="https://github.com/NASA-ACROSS/across-client"
+                                class="inline-flex items-center gap-2 btn btn-sm btn-outline btn-primary mt-1"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
+                                    />
+                                </svg>
+                                View on GitHub
+                            </a>
+                        </div>
+                    {/snippet}
                     <div class="border-t border-base-300 pt-3">
                         <p class="leading-relaxed">
                             An API client package that wraps all astronomy observing related API endpoints, while providing resource methods

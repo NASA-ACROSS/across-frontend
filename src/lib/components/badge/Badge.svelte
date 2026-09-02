@@ -8,9 +8,14 @@
         [BadgeType.ALERT]: 'bg-danger',
     };
 
-    export let type: BadgeType = BadgeType.INFO;
+    interface Props {
+        type?: BadgeType;
+        children?: import('svelte').Snippet;
+    }
+
+    let { type = BadgeType.INFO, children }: Props = $props();
 </script>
 
 <div class="badge rounded-pill mx-1 px-2 {badgeClasses[type]} shadow-secondary">
-    <slot></slot>
+    {@render children?.()}
 </div>

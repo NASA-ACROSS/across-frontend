@@ -1,10 +1,14 @@
 <script lang="ts">
     import DatetimeInput from './DatetimeInput.svelte';
 
-    export let dateRangeBegin: string = '';
-    export let dateRangeEnd: string = '';
-    export let requiredBegin: boolean = false;
-    export let requiredEnd: boolean = false;
+    interface Props {
+        dateRangeBegin?: string;
+        dateRangeEnd?: string;
+        requiredBegin?: boolean;
+        requiredEnd?: boolean;
+    }
+
+    let { dateRangeBegin = $bindable(''), dateRangeEnd = $bindable(''), requiredBegin = false, requiredEnd = false }: Props = $props();
 </script>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">

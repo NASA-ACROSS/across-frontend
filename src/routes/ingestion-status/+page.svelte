@@ -9,11 +9,15 @@
     import cronstrue from 'cronstrue';
     import ScheduleStatusBadge from '$lib/components/ScheduleStatusBadge.svelte';
 
-    export let data: PageData;
-    $: telescopesDict = data.telescopesDict as TelescopeDict;
-    $: observatories = data.observatories as Observatory[];
+    interface Props {
+        data: PageData;
+    }
 
-    $: utcNowFormatted = DateTime.utc().toString().replace('T', ' ').replace('Z', '').slice(0, -4);
+    let { data }: Props = $props();
+    let telescopesDict = $derived(data.telescopesDict as TelescopeDict);
+    let observatories = $derived(data.observatories as Observatory[]);
+
+    let utcNowFormatted = $derived(DateTime.utc().toString().replace('T', ' ').replace('Z', '').slice(0, -4));
 
     function getStatus(cron: string, latest_data_date?: string) {
         if (!latest_data_date || !cron) return 'offline';
@@ -61,9 +65,11 @@
 </script>
 
 <Page title="Observatory Data Ingestion Status" icon="globe">
-    <div slot="buttons" class="text-2xl opacity-60 self-center">
-        UTC: {utcNowFormatted}
-    </div>
+    {#snippet buttons()}
+        <div class="text-2xl opacity-60 self-center">
+            UTC: {utcNowFormatted}
+        </div>
+    {/snippet}
     <Section>
         <div class="flex flex-row gap-2 items-center mb-2">
             <div class={'badge badge-active h-10 w-30 p-4 text-nowrap text-xl ' + statusColors['active']}>active</div>

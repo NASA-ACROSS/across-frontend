@@ -2,13 +2,17 @@
     import { beforeNavigate, afterNavigate } from '$app/navigation';
     import Spinner from './Spinner.svelte';
 
-    export let currentPage: number = 1;
-    export let totalPages: number = 1;
-    export let numButtons: number = 4;
-    export let searchParams: URLSearchParams;
+    interface Props {
+        currentPage?: number;
+        totalPages?: number;
+        numButtons?: number;
+        searchParams: URLSearchParams;
+    }
+
+    let { currentPage = 1, totalPages = 1, numButtons = 4, searchParams }: Props = $props();
 
     // Track if we're currently navigating
-    let isLoading = false;
+    let isLoading = $state(false);
 
     beforeNavigate(() => {
         isLoading = true;

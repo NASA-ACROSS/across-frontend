@@ -13,7 +13,11 @@
     import type { ActionData } from './$types';
     import ErrorHandling from './_components/ErrorHandling.svelte';
 
-    export let form: ActionData;
+    interface Props {
+        form: ActionData;
+    }
+
+    let { form }: Props = $props();
 
     const logToBrowserConsole = () => {
         logger.info('Simple info message.');
@@ -43,10 +47,12 @@
 
     <Section title="Collapse Component">
         <Collapse open={false} arrow={true} backgroundColor="bg-carbon-10">
-            <!-- Collapse title css class modification demo  -->
-            <!-- "text-info" changes the title to blue       -->
-            <!-- Alternately, use <Collapse title={myTitle}> -->
-            <div slot="title" class="text-info">Collapse Title! Click me!</div>
+            <!-- Collapse title css class modification demo -->
+            <!-- "text-info" changes the title to blue      -->
+            <!-- For a plain title, use {#snippet title()}My Title{/snippet} -->
+            {#snippet title()}
+                <div class="text-info">Collapse Title! Click me!</div>
+            {/snippet}
             Lorem ipsum dolor sit amet....
         </Collapse>
     </Section>
@@ -58,7 +64,7 @@
     <Section title="Logging">
         <p class="text-lg text-gray-700">Check the respective console for logs.</p>
         <div class="flex gap-2 items-center">
-            <button class="btn btn-info btn-med text-white px-4 py-2" on:click={logToBrowserConsole}> Log Browser Messages </button>
+            <button class="btn btn-info btn-med text-white px-4 py-2" onclick={logToBrowserConsole}> Log Browser Messages </button>
             <form method="post" use:enhance action="?/logTest">
                 <button type="submit" class="btn btn-info btn-med text-white px-4 py-2"> Log Server Messages </button>
             </form>

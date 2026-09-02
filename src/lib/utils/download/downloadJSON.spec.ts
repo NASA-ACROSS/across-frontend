@@ -20,7 +20,7 @@ describe('downloadJSON', () => {
         createObjectURL: () => void;
         revokeObjectURL: () => void;
     };
-    let mockBlob: () => void;
+    let mockBlob: any;
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -48,7 +48,13 @@ describe('downloadJSON', () => {
 
         vi.stubGlobal('URL', mockURL);
 
-        mockBlob = vi.fn().mockImplementation((content: string, options: { type: string }) => {
+        // Svelte 5 migration: unrelated to Svelte itself, but surfaced by the same
+        // dependency bump. Regenerating the lockfile moved vitest 1 -> 4, and vitest 4
+        // mocks are no longer constructible when built from an arrow function. downloadJSON
+        // calls `new Blob(...)`, so the arrow implementation threw
+        // "(content, options) => {...} is not a constructor". A function expression is
+        // constructible, so `new` works.
+        mockBlob = vi.fn(function (content: string, options: { type: string }) {
             return { content, options };
         });
 

@@ -15,40 +15,53 @@
     import ProposalInfoInput from '../_components/ProposalInfoInput.svelte';
     import UnitValueInput from '$lib/components/inputs/UnitValueInput.svelte';
 
-    export let form: ActionData;
-    export let data: PageData;
+    interface Props {
+        form: ActionData;
+        data: PageData;
+    }
 
-    $: telescopes = data.telescopes || [];
+    let { form, data }: Props = $props();
 
-    $: disableSubmit = !telescopes || telescopes.length == 0;
+    let telescopes = $derived(data.telescopes || []);
+
+    let disableSubmit = $derived(!telescopes || telescopes.length == 0);
 
     const brightnessUnitOptions = ['ab_mag', 'vega_mag', 'flux_erg', 'flux_jy'];
 
+    // Svelte 5 migration: these were all declared as `let x: T = $state()` -- a
+    // non-optional type with no initialiser, which svelte-check 4 rejects because
+    // `$state()` is `undefined` until assigned. Each is widened to match the prop type of
+    // the child component it binds into (CoordinateSearch, DateRangeInput and
+    // UnitValueInput all accept undefined), and the template already guarded with
+    // `objectName?.trim()`.
     //Object Information state
-    let objectName: string;
-    let ra: number;
-    let dec: number;
-    let positionOffset: number;
-    let brightness: number;
-    let brightnessUnit: string;
+    let objectName: string | undefined = $state();
+    let ra: number | undefined = $state();
+    let dec: number | undefined = $state();
+    let positionOffset: number | undefined = $state();
+    let brightness: number | undefined = $state();
+    let brightnessUnit: string | undefined = $state();
 
     // Observation Window state
-    let dateRangeBegin: string, dateRangeEnd: string;
+    let dateRangeBegin: string | undefined = $state();
+    let dateRangeEnd: string | undefined = $state();
 
     // Observatory/Telescope/Instrument selector state
     // Only the first instrument in the list of selectedInstruments is sent to the server
-    let selectedObservatories: TelescopeObservatory[] = [];
-    let selectedTelescopes: Telescope[] = [];
-    let selectedInstruments: TelescopeInstrument[] = [];
+    let selectedObservatories: TelescopeObservatory[] = $state([]);
+    let selectedTelescopes: Telescope[] = $state([]);
+    let selectedInstruments: TelescopeInstrument[] = $state([]);
 
     // Instrument Configuration state
-    let exposureTimeSeconds: number;
+    let exposureTimeSeconds: number | undefined = $state();
 
     // Proposal Information state
-    let proposalCode: string;
-    let proposalName: string;
-    let justification: string;
-    let anonymize: boolean;
+    // ProposalInfoInput declares these props as non-optional, so seed them
+    // rather than widening to `| undefined`.
+    let proposalCode = $state('');
+    let proposalName = $state('');
+    let justification = $state('');
+    let anonymize = $state(false);
 </script>
 
 <Page title="Target of Opportunity Observation Request" icon="crosshair">

@@ -2,30 +2,42 @@
     import { enhance } from '$app/forms';
     import type { NameResolver } from '$lib/types/across/NameResolver';
 
-    /**
-     * Generic Object Name Resolver Component
-     * Can be used in any form where RA/Dec coordinates need to be populated
-     *
-     * Usage:
-     * <ObjectNameResolver bind:ra bind:dec />
-     *
-     * Props:
-     * - title: Optional custom title (default: "Resolve Object Name to Coordinates")
-     * - ra: Two-way bound RA value
-     * - dec: Two-way bound DEC value
-     */
+    interface Props {
+        /**
+         * Generic Object Name Resolver Component
+         * Can be used in any form where RA/Dec coordinates need to be populated
+         *
+         * Usage:
+         * <ObjectNameResolver bind:ra bind:dec />
+         *
+         * Props:
+         * - title: Optional custom title (default: "Resolve Object Name to Coordinates")
+         * - ra: Two-way bound RA value
+         * - dec: Two-way bound DEC value
+         */
+        title?: string;
+        ra?: string | number;
+        dec?: string | number;
+        objectName?: string;
+        required?: boolean;
+    }
 
-    export let title: string = 'Resolve Object Name to Coordinates';
-    export let ra: string | number = '';
-    export let dec: string | number = '';
-    export let objectName: string = '';
-    export let required: boolean = false;
+    let {
+        title = 'Resolve Object Name to Coordinates',
+        ra = $bindable(''),
+        dec = $bindable(''),
+        objectName = $bindable(''),
+        required = false,
+    }: Props = $props();
 
     // Internal state
-    let resolvedData: NameResolver | null = null;
-    let error: Error | null = null;
-    let isResolving = false;
-    let dialog: HTMLDialogElement;
+    let resolvedData: NameResolver | null = $state(null);
+    let error: Error | null = $state(null);
+    let isResolving = $state(false);
+    // Svelte 5 migration: `$state()` with no argument is `undefined` until assigned,
+    // and svelte-check 4 now types that honestly (`export let` used to launder it). The
+    // annotation has to admit undefined; use sites guard with `?.`.
+    let dialog: HTMLDialogElement | undefined = $state();
 
     function resetResolver() {
         isResolving = false;
@@ -97,7 +109,7 @@
 </div>
 
 <!-- Resolver Confirmation Modal -->
-<dialog class="modal" bind:this={dialog} on:close={() => resetResolver()}>
+<dialog class="modal" bind:this={dialog} onclose={() => resetResolver()}>
     <div class="modal-box">
         {#if resolvedData}
             <div role="alert" class="alert alert-success mb-6">
@@ -118,8 +130,8 @@
                 </div>
             </div>
             <div class="modal-action flex justify-center gap-2">
-                <button type="button" class="btn btn-sm btn-outline" on:click={handleApply}> Yes, use these coordinates </button>
-                <button type="button" class="btn btn-sm btn-error" on:click={resetResolver}> No, discard </button>
+                <button type="button" class="btn btn-sm btn-outline" onclick={handleApply}> Yes, use these coordinates </button>
+                <button type="button" class="btn btn-sm btn-error" onclick={resetResolver}> No, discard </button>
             </div>
         {:else if error}
             <div role="alert" class="alert alert-error mb-6">
@@ -137,7 +149,7 @@
                 </div>
             </div>
             <div class="modal-action flex justify-center gap-2">
-                <button type="button" class="btn btn-sm btn-outline" on:click={() => resetResolver()}> Close </button>
+                <button type="button" class="btn btn-sm btn-outline" onclick={() => resetResolver()}> Close </button>
             </div>
         {/if}
     </div>

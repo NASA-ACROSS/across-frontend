@@ -5,9 +5,9 @@
 
     const COUNTDOWN_LENGTH = 3;
 
-    let countdownRemaining = 0;
-    let isDeleteModalOpen = false;
-    let isDeleteButtonEnabled = false;
+    let countdownRemaining = $state(0);
+    let isDeleteModalOpen = $state(false);
+    let isDeleteButtonEnabled = $state(false);
 
     let countdown = (countdownRemaining: number) => {
         countdownRemaining = countdownRemaining - 1;
@@ -30,10 +30,8 @@
                 <div class="bg-base-100 p-6 w-full max-w-xl shadow-2xl border-3 border-accent">
                     <div class="text-lg font-bold mb-4 flex flex-row justify-between">
                         <h3 class="flex">Confirm User Delete</h3>
-                        <button
-                            class="justify-end btn btn-sm btn-primary max-h-8"
-                            title="Close"
-                            on:click={() => (isDeleteModalOpen = false)}>X</button
+                        <button class="justify-end btn btn-sm btn-primary max-h-8" title="Close" onclick={() => (isDeleteModalOpen = false)}
+                            >X</button
                         >
                     </div>
                     <p class="bold text-accent">I understand that I am about to delete my user account.</p>
@@ -60,12 +58,7 @@
                             </button>
                         </div>
                         <div>
-                            <button
-                                class="btn btn-sm btn-primary"
-                                type="button"
-                                title="Cancel"
-                                on:click={() => (isDeleteModalOpen = false)}
-                            >
+                            <button class="btn btn-sm btn-primary" type="button" title="Cancel" onclick={() => (isDeleteModalOpen = false)}>
                                 Cancel
                             </button>
                         </div>
@@ -84,7 +77,7 @@
                 <button
                     class={`btn btn-accent text-lg`}
                     type="button"
-                    on:click={() => {
+                    onclick={() => {
                         isDeleteModalOpen = true;
                         isDeleteButtonEnabled = false;
                         countdownRemaining = COUNTDOWN_LENGTH;

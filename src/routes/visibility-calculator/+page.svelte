@@ -16,55 +16,63 @@
     import searchParams from '$lib/utils/searchParams/searchParams';
     import { type VisibilityWindow } from '$lib/types/across/VisibilityWindow';
 
-    export let data: JointVisibilityPageData;
+    interface Props {
+        data: JointVisibilityPageData;
+    }
+
+    let { data }: Props = $props();
 
     let telescopes = data?.telescopes;
-    let visibilityWindowsData: VisibilityWindowsData | undefined = undefined;
+    let visibilityWindowsData: VisibilityWindowsData | undefined = $state(undefined);
 
-    let isLoading = false;
+    let isLoading = $state(false);
 
     // Observatory/Telescope/Instrument selector state
-    let selectedObservatories: TelescopeObservatory[] = [];
-    let selectedTelescopes: Telescope[] = [];
-    let selectedInstruments: TelescopeInstrument[] = [];
+    let selectedObservatories: TelescopeObservatory[] = $state([]);
+    let selectedTelescopes: Telescope[] = $state([]);
+    let selectedInstruments: TelescopeInstrument[] = $state([]);
 
     // Coordinate inputs
-    let ra = String(data.queryParams?.ra || '');
-    let dec = String(data.queryParams?.dec || '');
+    let ra = $state(String(data.queryParams?.ra || ''));
+    let dec = $state(String(data.queryParams?.dec || ''));
 
     // Date range inputs
-    let dateRangeBegin = data.queryParams?.date_range_begin || '';
-    let dateRangeEnd = data.queryParams?.date_range_end || '';
+    let dateRangeBegin = $state(data.queryParams?.date_range_begin || '');
+    let dateRangeEnd = $state(data.queryParams?.date_range_end || '');
 
     // Optional parameters
-    let hiRes = data.queryParams?.hi_res || false;
-    let minVisibilityDuration = String(data.queryParams?.min_visibility_duration || '');
+    let hiRes = $state(data.queryParams?.hi_res || false);
+    let minVisibilityDuration = $state(String(data.queryParams?.min_visibility_duration || ''));
 
-    $: qps = [ra, dec, dateRangeBegin, dateRangeEnd, selectedInstruments, hiRes, minVisibilityDuration];
-    $: isQueryEmpty = qps.every((value) => !Boolean(value) || (Array.isArray(value) && value.length === 0));
+    let qps = $derived([ra, dec, dateRangeBegin, dateRangeEnd, selectedInstruments, hiRes, minVisibilityDuration]);
+    let isQueryEmpty = $derived(qps.every((value) => !Boolean(value) || (Array.isArray(value) && value.length === 0)));
 
     // Create observatory short names dictionary for efficient lookups
-    $: observatoryShortNames = telescopes.reduce(
-        (acc, telescope) => {
-            if (!acc[telescope.observatory.id]) {
-                acc[telescope.observatory.id] = telescope.observatory.short_name;
-            }
-            return acc;
-        },
-        {} as Record<string, string>
+    let observatoryShortNames = $derived(
+        telescopes.reduce(
+            (acc, telescope) => {
+                if (!acc[telescope.observatory.id]) {
+                    acc[telescope.observatory.id] = telescope.observatory.short_name;
+                }
+                return acc;
+            },
+            {} as Record<string, string>
+        )
     );
 
     // Map the instrument windows from selected instruments to the returned data
     // This allows us to easily display the visibility windows for each instrument in the results section.
-    $: instrumentWindows = selectedInstruments.reduce(
-        (acc, instrument) => {
-            const windows = visibilityWindowsData?.observatoryVisibilityWindows[instrument.id] || [];
+    let instrumentWindows = $derived(
+        selectedInstruments.reduce(
+            (acc, instrument) => {
+                const windows = visibilityWindowsData?.observatoryVisibilityWindows[instrument.id] || [];
 
-            if (windows.length > 0) acc.push({ instrument, windows });
+                if (windows.length > 0) acc.push({ instrument, windows });
 
-            return acc;
-        },
-        [] as { instrument: TelescopeInstrument; windows: VisibilityWindow[] }[]
+                return acc;
+            },
+            [] as { instrument: TelescopeInstrument; windows: VisibilityWindow[] }[]
+        )
     );
 
     const calculateVisibility: SubmitFunction = async ({ formData }) => {
@@ -124,7 +132,7 @@
                 <div class="bg-base-200 p-4 mb-6 w-full">
                     <div class="flex justify-between">
                         <div class="text-carbon-90 text-2xl pb-4 opacity-80">Input Parameters</div>
-                        <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}>
+                        <button class="btn btn-sm btn-primary text-md h-9" onclick={resetFilters}>
                             <div class="bx bx-refresh"></div>
                             Reset
                         </button>

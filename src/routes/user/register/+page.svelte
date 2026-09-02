@@ -8,16 +8,21 @@
     import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
     import Alert from '$lib/components/Alert.svelte';
 
-    /** @type {import('./$types').ActionData} */
-    export let form;
+    interface Props {
+        form: import('./$types').ActionData;
+    }
+
+    let { form }: Props = $props();
 </script>
 
 <Page title="Create Account" icon="user">
-    <Alert slot="alert">
-        Registration is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal"
-            >See documentation for more details.</a
-        >
-    </Alert>
+    {#snippet alert()}
+        <Alert>
+            Registration is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal"
+                >See documentation for more details.</a
+            >
+        </Alert>
+    {/snippet}
     <Section>
         <Fieldset title="User Information">
             <form method="post">

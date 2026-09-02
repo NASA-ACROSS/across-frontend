@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script module lang="ts">
     /**
      * Structure required for MultiSelect options.
      * @template T The type of the underlying data object.
@@ -24,36 +24,42 @@
      * 2. **Controlled Mode:** Pass `onToggle`. The parent handles logic (useful for complex cascading selections).
      */
 
-    /** Generic list of options to be used in selection */
-    export let options: Option<T>[] = [];
+    interface Props {
+        /** Generic list of options to be used in selection */
+        options?: Option<T>[];
+        /**
+         * The list of currently selected options. Use `bind:selected` if not using `onToggle`.
+         */
+        selected?: Option<T>[];
+        /** Text to display when search input is empty. Default: 'Search...' */
+        placeholder?: string;
+        /** Label text displayed above the component. Default: 'Select From' */
+        label?: string;
+        /** Tooltip text for the search input. Default: 'Search by name' */
+        title?: string;
+        /**
+         * Optional callback. If provided, internal selection logic is bypassed
+         * and this function is called with the value `T`.
+         * Use this for complex logic (e.g. "Selecting Parent selects Child").
+         */
+        onToggle?: ((optionValue: T) => void) | null;
+    }
 
-    /**
-     * The list of currently selected options. Use `bind:selected` if not using `onToggle`.
-     */
-    export let selected: Option<T>[] = [];
+    let {
+        options = [],
+        selected = $bindable([]),
+        placeholder = 'Search...',
+        label = 'Select From',
+        title = 'Search by name',
+        onToggle = null,
+    }: Props = $props();
 
-    /** Text to display when search input is empty. Default: 'Search...' */
-    export let placeholder: string = 'Search...';
+    let search = $state('');
 
-    /** Label text displayed above the component. Default: 'Select From' */
-    export let label: string = 'Select From';
-
-    /** Tooltip text for the search input. Default: 'Search by name' */
-    export let title: string = 'Search by name';
-
-    /**
-     * Optional callback. If provided, internal selection logic is bypassed
-     * and this function is called with the value `T`.
-     * Use this for complex logic (e.g. "Selecting Parent selects Child").
-     */
-    export let onToggle: ((optionValue: T) => void) | null = null;
-
-    let search = '';
-
-    $: filtered = options.filter((option) => option.searchableText.toLowerCase().includes(search.toLowerCase()));
-    $: selectedSet = new Set(selected.map((item: Option<T>) => item.key || item));
-    $: showSelectAll = filtered.length !== filtered.filter((opt) => selectedSet.has(opt.key)).length;
-    $: showSelectNone = filtered.some((opt) => selectedSet.has(opt.key));
+    let filtered = $derived(options.filter((option) => option.searchableText.toLowerCase().includes(search.toLowerCase())));
+    let selectedSet = $derived(new Set(selected.map((item: Option<T>) => item.key || item)));
+    let showSelectAll = $derived(filtered.length !== filtered.filter((opt) => selectedSet.has(opt.key)).length);
+    let showSelectNone = $derived(filtered.some((opt) => selectedSet.has(opt.key)));
 
     function toggle(option: Option<T>) {
         if (onToggle) {
@@ -96,9 +102,9 @@
                 <button
                     type="button"
                     class="btn btn-ghost btn-xs bx bx-x opacity-70 text-xl"
-                    on:click={() => (search = '')}
+                    onclick={() => (search = '')}
                     title="Clear Search"
-                />
+                ></button>
             {:else}
                 <i class="p-2 bx bx-search text-lg opacity-70"></i>
             {/if}
@@ -107,13 +113,13 @@
         {#if onToggle === null}
             <div class="flex justify-start pb-1">
                 {#if showSelectAll}
-                    <button class="text-xl opacity-70 cursor-pointer flex items-center pr-1" on:click={selectAll}
+                    <button class="text-xl opacity-70 cursor-pointer flex items-center pr-1" onclick={selectAll}
                         ><p class="bx bx-select-all"></p>
                         <p class="text-sm opacity-70 ps-1 font-sans">Select All</p></button
                     >
                 {/if}
                 {#if showSelectNone}
-                    <button class="text-xl opacity-70 cursor-pointer flex items-center" on:click={selectNone}
+                    <button class="text-xl opacity-70 cursor-pointer flex items-center" onclick={selectNone}
                         ><p class="bx bx-select-none"></p>
                         <p class="text-sm opacity-70 ps-1 font-sans">Select None</p></button
                     >
@@ -127,7 +133,7 @@
                         type="checkbox"
                         value={option.key}
                         checked={selectedSet.has(option.key)}
-                        on:change={() => toggle(option)}
+                        onchange={() => toggle(option)}
                         class="checkbox checkbox-primary checkbox-sm mr-2.5 shrink-0"
                     />
                     <span class="text-sm">{option.displayName}</span>

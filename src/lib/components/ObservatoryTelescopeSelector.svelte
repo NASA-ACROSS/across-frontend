@@ -6,12 +6,13 @@
     import MultiSelect, { type Option } from './MultiSelect.svelte';
     import { page } from '$app/stores';
 
-    export let telescopes: Telescope[] = [];
+    interface Props {
+        telescopes?: Telescope[];
+        selectedObservatories?: TelescopeObservatory[];
+        selectedTelescopes?: Telescope[];
+    }
 
-    export let selectedObservatories: TelescopeObservatory[] = [];
-    export let selectedTelescopes: Telescope[] = [];
-
-    $: data = $page.data;
+    let { telescopes = [], selectedObservatories = $bindable([]), selectedTelescopes = $bindable([]) }: Props = $props();
 
     // Derive observatories from telescope response
     let seenObservatories = new Set<string>();
@@ -23,12 +24,6 @@
         }
         return telescopes;
     }, [] as TelescopeObservatory[]);
-
-    $: observatoryOptions = observatories.map(mapToOption);
-    $: telescopeOptions = telescopes.map(mapToOption);
-
-    $: selectedObservatoryOptions = selectedObservatories.map(mapToOption);
-    $: selectedTelescopeOptions = selectedTelescopes.map(mapToOption);
 
     function mapToOption<T extends { id: string; name: string; short_name: string }>(item: T): Option<T> {
         return {
@@ -117,6 +112,11 @@
             selectedObservatories = observatories.filter((obs) => selectedObservatoryIds.has(obs.id));
         }
     });
+    let data = $derived($page.data);
+    let observatoryOptions = $derived(observatories.map(mapToOption));
+    let telescopeOptions = $derived(telescopes.map(mapToOption));
+    let selectedObservatoryOptions = $derived(selectedObservatories.map(mapToOption));
+    let selectedTelescopeOptions = $derived(selectedTelescopes.map(mapToOption));
 </script>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full auto-rows-fr">

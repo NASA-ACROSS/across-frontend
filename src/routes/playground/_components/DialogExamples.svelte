@@ -5,22 +5,22 @@
     import ErrorDialog from '$lib/components/dialog/ErrorDialog.svelte';
     import SuccessDialog from '$lib/components/dialog/SuccessDialog.svelte';
 
-    let isCustomOpen = false;
-    let isInfoOpen = false;
-    let isSuccessOpen = false;
-    let isWarningOpen = false;
-    let isErrorOpen = false;
+    let isCustomOpen = $state(false);
+    let isInfoOpen = $state(false);
+    let isSuccessOpen = $state(false);
+    let isWarningOpen = $state(false);
+    let isErrorOpen = $state(false);
 
-    let title: string | undefined = undefined;
-    let confirmDelaySeconds: number | undefined = undefined;
-    let icon: string | undefined = undefined;
+    let title: string | undefined = $state(undefined);
+    let confirmDelaySeconds: number | undefined = $state(undefined);
+    let icon: string | undefined = $state(undefined);
     let defaultBody: string =
         "You've opened the dialog! You can do whatever you want with this one, \
         it can have a custom icon, a title, a body or slotted content, only a confirm button, \
         a specific color (test it out). It may optionally have a confirm delay.";
 
-    let body: string | undefined = undefined;
-    let dialogColor: 'info' | 'success' | 'warning' | 'error' | undefined = undefined;
+    let body: string | undefined = $state(undefined);
+    let dialogColor: 'info' | 'success' | 'warning' | 'error' | undefined = $state(undefined);
 </script>
 
 <div class="flex flex-col gap-3">
@@ -67,11 +67,11 @@
     </div>
 
     <div class="flex flex-row gap-3">
-        <button class="btn" on:click={() => (isCustomOpen = true)}>Open Dialog</button>
-        <button class="btn btn-info" on:click={() => (isInfoOpen = true)}>Open Info</button>
-        <button class="btn btn-success" on:click={() => (isSuccessOpen = true)}>Open Success</button>
-        <button class="btn btn-warning" on:click={() => (isWarningOpen = true)}>Open Warning</button>
-        <button class="btn btn-error" on:click={() => (isErrorOpen = true)}>Open Error</button>
+        <button class="btn" onclick={() => (isCustomOpen = true)}>Open Dialog</button>
+        <button class="btn btn-info" onclick={() => (isInfoOpen = true)}>Open Info</button>
+        <button class="btn btn-success" onclick={() => (isSuccessOpen = true)}>Open Success</button>
+        <button class="btn btn-warning" onclick={() => (isWarningOpen = true)}>Open Warning</button>
+        <button class="btn btn-error" onclick={() => (isErrorOpen = true)}>Open Error</button>
     </div>
 </div>
 

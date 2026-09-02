@@ -6,13 +6,21 @@
     import { onMount } from 'svelte';
     import { page } from '$app/stores';
 
-    export let telescopes: Telescope[] = [];
+    interface Props {
+        telescopes?: Telescope[];
+        selectedObservatories?: TelescopeObservatory[];
+        selectedTelescopes?: Telescope[];
+        selectedInstruments?: TelescopeInstrument[];
+    }
 
-    export let selectedObservatories: TelescopeObservatory[] = [];
-    export let selectedTelescopes: Telescope[] = [];
-    export let selectedInstruments: TelescopeInstrument[] = [];
+    let {
+        telescopes = [],
+        selectedObservatories = $bindable([]),
+        selectedTelescopes = $bindable([]),
+        selectedInstruments = $bindable([]),
+    }: Props = $props();
 
-    $: data = $page.data;
+    let data = $derived($page.data);
 
     // Derive observatories and instruments from telescope response
     let seenObservatories = new Set<string>();

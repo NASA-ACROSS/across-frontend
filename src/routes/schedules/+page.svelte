@@ -13,36 +13,36 @@
     import type { Telescope } from '$lib/types/across/Telescope';
     import logger from '$lib/logger';
 
-    export let data;
+    let { data } = $props();
 
-    $: error = data.error;
+    let error = $derived(data.error);
 
     const DEFAULT_COLUMNS = ['observatory_telescope', 'name', 'date_begin', 'date_end', 'status', 'fidelity', 'number_of_observations'];
     const COOKIE_NAME = 'schedule_columns';
     const PAGINATION_BUTTONS = 4;
 
     // Schedule data and pagination
-    $: schedules = data.schedules || [];
-    $: currentPage = Number(data.currentPage) || 1;
-    $: totalPages = data.totalPages || 1;
-    $: telescopes = data.telescopes || [];
-    $: totalCount = data.totalCount || 0;
-    $: currentSearchParams = new URLSearchParams(page.url.searchParams);
+    let schedules = $derived(data.schedules || []);
+    let currentPage = $derived(Number(data.currentPage) || 1);
+    let totalPages = $derived(data.totalPages || 1);
+    let telescopes = $derived(data.telescopes || []);
+    let totalCount = $derived(data.totalCount || 0);
+    let currentSearchParams = $derived(new URLSearchParams(page.url.searchParams));
 
     // Observatory/Telescope selector state
-    let selectedObservatories: TelescopeObservatory[] = [];
-    let selectedTelescopes: Telescope[] = [];
+    let selectedObservatories: TelescopeObservatory[] = $state([]);
+    let selectedTelescopes: Telescope[] = $state([]);
 
     // Query parameters
-    let name = data.queryParams?.name || '';
-    let status = data.queryParams?.status || '';
-    let dateRangeBegin = data.queryParams?.date_range_begin || '';
-    let dateRangeEnd = data.queryParams?.date_range_end || '';
-    let fidelity = data.queryParams?.fidelity || '';
-    let externalId = data.queryParams?.external_id || '';
+    let name = $state(data.queryParams?.name || '');
+    let status = $state(data.queryParams?.status || '');
+    let dateRangeBegin = $state(data.queryParams?.date_range_begin || '');
+    let dateRangeEnd = $state(data.queryParams?.date_range_end || '');
+    let fidelity = $state(data.queryParams?.fidelity || '');
+    let externalId = $state(data.queryParams?.external_id || '');
 
     // Column customization
-    $: availableColumns = [
+    let availableColumns = $derived([
         { id: 'observatory_telescope', label: 'Observatory/Telescope', selected: true },
         { id: 'name', label: 'Name', selected: true },
         { id: 'date_begin', label: 'Date Begin', selected: true },
@@ -51,17 +51,17 @@
         { id: 'fidelity', label: 'Fidelity', selected: true },
         { id: 'number_of_observations', label: '# Observations', selected: true },
         { id: 'external_id', label: 'External ID', selected: false },
-    ];
+    ]);
 
-    $: selectedColumns = availableColumns.filter((col) => col.selected);
+    let selectedColumns = $derived(availableColumns.filter((col) => col.selected));
 
-    let isCustomizeModalOpen = false;
+    let isCustomizeModalOpen = $state(false);
 
     // Status options
     const statusOptions = ['planned', 'scheduled', 'unscheduled', 'performed', 'aborted'];
     const fidelityOptions = ['low', 'high'];
 
-    $: selectedFilter = '';
+    let selectedFilter = $state('');
 
     onMount(() => {
         if (data.urlColumns && data.urlColumns.length > 0) {
@@ -125,10 +125,10 @@
         selectedColumns = availableColumns.filter((col) => col.selected);
     }
 
-    $: dateBeginDisplay = dateRangeBegin ? dateRangeBegin.split('T')[0] : '';
-    $: timeBeginDisplay = dateRangeBegin ? (dateRangeBegin.split('T')[1] ?? '') : '';
-    $: dateEndDisplay = dateRangeEnd ? dateRangeEnd.split('T')[0] : '';
-    $: timeEndDisplay = dateRangeEnd ? (dateRangeEnd.split('T')[1] ?? '') : '';
+    let dateBeginDisplay = $derived(dateRangeBegin ? dateRangeBegin.split('T')[0] : '');
+    let timeBeginDisplay = $derived(dateRangeBegin ? (dateRangeBegin.split('T')[1] ?? '') : '');
+    let dateEndDisplay = $derived(dateRangeEnd ? dateRangeEnd.split('T')[0] : '');
+    let timeEndDisplay = $derived(dateRangeEnd ? (dateRangeEnd.split('T')[1] ?? '') : '');
 
     async function handleSearch() {
         const params = new URLSearchParams();
@@ -238,7 +238,7 @@
                     <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">
                         Query Filters
                     </div>
-                    <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}>
+                    <button class="btn btn-sm btn-primary text-md h-9" onclick={resetFilters}>
                         <div class="bx bx-refresh"></div>
                         Reset Filters
                     </button>
@@ -251,7 +251,7 @@
                             type="radio"
                             name="my-accordion"
                             value="observatory-telescope"
-                            on:click={() => {
+                            onclick={() => {
                                 deselectAccordion('observatory-telescope');
                             }}
                             bind:group={selectedFilter}
@@ -287,7 +287,7 @@
                             type="radio"
                             name="my-accordion"
                             value="schedule"
-                            on:click={() => {
+                            onclick={() => {
                                 deselectAccordion('schedule');
                             }}
                             bind:group={selectedFilter}
@@ -383,7 +383,7 @@
 
                 <div class="flex justify-end mt-4">
                     <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
-                    <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>
+                    <button class="btn btn-info text-lg" onclick={async () => await handleSearch()}>Search</button>
                 </div>
             </div>
         </div>
@@ -391,21 +391,23 @@
 
     <Section id="schedules" title="Schedules (Total: {totalCount})" icon="calendar">
         <!-- Pagination -->
-        <div slot="buttons" class="flex space-x-2">
-            {#key currentPage}
-                <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
-            {/key}
-            <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
-                Customize
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                        fill-rule="evenodd"
-                        d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                        clip-rule="evenodd"
-                    />
-                </svg>
-            </button>
-        </div>
+        {#snippet buttons()}
+            <div class="flex space-x-2">
+                {#key currentPage}
+                    <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
+                {/key}
+                <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
+                    Customize
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            fill-rule="evenodd"
+                            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                            clip-rule="evenodd"
+                        />
+                    </svg>
+                </button>
+            </div>
+        {/snippet}
 
         <!-- Column Customization Modal -->
         {#if isCustomizeModalOpen}
@@ -416,7 +418,7 @@
                         <button
                             class="justify-end btn btn-sm btn-primary max-h-8"
                             title="Close without saving selections to cookie"
-                            on:click={() => (isCustomizeModalOpen = false)}>X</button
+                            onclick={() => (isCustomizeModalOpen = false)}>X</button
                         >
                     </div>
                     <p class="italic">Changes apply on selection</p>
@@ -435,13 +437,13 @@
 
                     <div class="flex justify-between">
                         <div>
-                            <button class="btn btn-sm btn-outline mr-2" on:click={resetToDefaultColumns}> Default Columns </button>
-                            <button class="btn btn-sm btn-outline" on:click={loadColumnsFromCookie}> Load My Columns </button>
+                            <button class="btn btn-sm btn-outline mr-2" onclick={resetToDefaultColumns}> Default Columns </button>
+                            <button class="btn btn-sm btn-outline" onclick={loadColumnsFromCookie}> Load My Columns </button>
                         </div>
                         <div>
                             <button
                                 class="btn btn-sm btn-primary"
-                                on:click={saveColumnSelection}
+                                onclick={saveColumnSelection}
                                 title="Save column selections to cookie to be loaded next visit and close this modal"
                             >
                                 Save & Close
@@ -521,7 +523,7 @@
         <div class="flex ml-auto w-fit space-x-2 pt-4">
             <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
 
-            <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
+            <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
                 Customize
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path

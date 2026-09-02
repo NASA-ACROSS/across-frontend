@@ -3,8 +3,13 @@
 
     import InfoBadge from '../badge/InfoBadge.svelte';
 
-    export let data: CardData;
-    export let img: { url: string; description: string } | undefined = undefined;
+    interface Props {
+        data: CardData;
+        img?: { url: string; description: string } | undefined;
+        footer?: import('svelte').Snippet;
+    }
+
+    let { data, img = undefined, footer }: Props = $props();
 </script>
 
 <div class="card m-3 border-0 shadow-sm card-hover">
@@ -26,9 +31,9 @@
         {/if}
     </div>
 
-    {#if $$slots.footer}
+    {#if footer}
         <div class="card-footer">
-            <slot name="footer" />
+            {@render footer?.()}
         </div>
     {/if}
 </div>

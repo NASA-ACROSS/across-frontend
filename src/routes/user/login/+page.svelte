@@ -13,11 +13,15 @@
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
     import Alert from '$lib/components/Alert.svelte';
 
-    export let form: ActionData;
+    interface Props {
+        form: ActionData;
+    }
 
-    let isLoggingIn = false;
+    let { form }: Props = $props();
 
-    $: isButtonDisabled = isLoggingIn || form?.type === 'success';
+    let isLoggingIn = $state(false);
+
+    let isButtonDisabled = $derived(isLoggingIn || form?.type === 'success');
 
     // submit function to toggle ui state while waiting for response
     const enhancedLogin: SubmitFunction = () => {
@@ -31,11 +35,13 @@
 </script>
 
 <Page title="Login" icon="user">
-    <Alert slot="alert">
-        Login is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">
-            See documentation for more details.</a
-        >
-    </Alert>
+    {#snippet alert()}
+        <Alert>
+            Login is not required to GET data from ACROSS. <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">
+                See documentation for more details.</a
+            >
+        </Alert>
+    {/snippet}
     <Section>
         <form method="post" use:enhance={enhancedLogin} novalidate>
             <EmailInput

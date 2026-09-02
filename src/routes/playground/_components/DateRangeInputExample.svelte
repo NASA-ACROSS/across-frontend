@@ -1,8 +1,8 @@
 <script lang="ts">
     import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
 
-    let dateRangeBegin = '';
-    let dateRangeEnd = '';
+    let dateRangeBegin = $state('');
+    let dateRangeEnd = $state('');
 </script>
 
 <DateRangeInput bind:dateRangeBegin bind:dateRangeEnd></DateRangeInput>

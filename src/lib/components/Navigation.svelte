@@ -8,14 +8,18 @@
     import NavHeader from './NavHeader.svelte';
     import NavLink from './NavLink.svelte';
 
-    export let navItems: Header[];
-    export let user: UserCredentialsCookie | undefined;
+    interface Props {
+        navItems: Header[];
+        user: UserCredentialsCookie | undefined;
+    }
 
-    $: currentPath = page.url.pathname;
+    let { navItems, user }: Props = $props();
 
-    $: userEmail = user?.email ? user.email : '';
+    let currentPath = $derived(page.url.pathname);
 
-    $: userInitials = user ? user?.first_name?.[0]?.toUpperCase() + user?.last_name?.[0]?.toUpperCase() : '';
+    let userEmail = $derived(user?.email ? user.email : '');
+
+    let userInitials = $derived(user ? user?.first_name?.[0]?.toUpperCase() + user?.last_name?.[0]?.toUpperCase() : '');
 </script>
 
 <div data-testid="navbar" class="navbar bg-primary shadow-sm h-22">

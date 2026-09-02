@@ -2,7 +2,11 @@
     import { resolve } from '$app/paths';
     import ArrowButton from './ArrowButton.svelte';
 
-    export let apiDocsUrl: string;
+    interface Props {
+        apiDocsUrl: string;
+    }
+
+    let { apiDocsUrl }: Props = $props();
 </script>
 
 <!-- Hero -->

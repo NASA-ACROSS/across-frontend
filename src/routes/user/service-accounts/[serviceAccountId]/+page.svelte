@@ -11,9 +11,13 @@
     import Spinner from '$lib/components/Spinner.svelte';
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
 
-    export let data: PageData;
+    interface Props {
+        data: PageData;
+    }
 
-    const serviceAccount = data.serviceAccount;
+    let { data }: Props = $props();
+
+    const serviceAccount = $state(data.serviceAccount);
     const user = data.user;
     const userGroupRoles = data.userGroupRoles;
 
@@ -32,21 +36,26 @@
         .filter((group) => group.roles.length > 0);
 
     // loading spinner display
-    let isUpdating = false;
+    let isUpdating = $state(false);
 
-    $: isServiceAccountExpired = serviceAccount.expiration < DateTime.utc().toISO();
+    let isServiceAccountExpired = $derived(serviceAccount.expiration < DateTime.utc().toISO());
 
     // lock update until changes or already expired
-    $: disableUpdate =
+    let disableUpdate = $derived(
         originalServiceAccount.name == serviceAccount.name &&
-        originalServiceAccount.description == serviceAccount.description &&
-        originalServiceAccount.expiration_duration == serviceAccount.expiration_duration;
+            originalServiceAccount.description == serviceAccount.description &&
+            originalServiceAccount.expiration_duration == serviceAccount.expiration_duration
+    );
 </script>
 
 <Page title="Edit Service Account" icon="edit">
-    <div slot="buttons">
-        <a class="btn btn-info text-lg" href={resolve('/user/service-accounts')}>← <i class="bx bx-pen mx-2"></i>Manage Service Accounts</a>
-    </div>
+    {#snippet buttons()}
+        <div>
+            <a class="btn btn-info text-lg" href={resolve('/user/service-accounts')}
+                >← <i class="bx bx-pen mx-2"></i>Manage Service Accounts</a
+            >
+        </div>
+    {/snippet}
     <Section>
         <Fieldset>
             <form method="post" action="?/updateServiceAccount">
@@ -119,7 +128,7 @@
                         type="submit"
                         class="btn text-lg self-end {`${isServiceAccountExpired ? 'btn-warning' : 'btn-info'}`}"
                         disabled={!isServiceAccountExpired && disableUpdate}
-                        on:click={() => (isUpdating = true)}
+                        onclick={() => (isUpdating = true)}
                     >
                         {#if !isUpdating}
                             Update {`${isServiceAccountExpired ? ' And Restore' : ''}`}
@@ -149,7 +158,8 @@
             <Section title="Assigned Group Roles" icon="check-shield">
                 {#if serviceAccountGroupRoles.length}
                     {#each serviceAccountGroupRoles as group}
-                        <Collapse open={true} border={true} title={`[${group.short_name}] ${group.name} (${group.roles.length})`}>
+                        <Collapse open={true} border={true}>
+                            {#snippet title()}{`[${group.short_name}] ${group.name} (${group.roles.length})`}{/snippet}
                             {#each serviceAccount.group_roles as groupRole}
                                 <form method="post" action="?/removeGroupRole">
                                     <FormSubmitFeedback action="removeGroupRole" />
@@ -182,7 +192,8 @@
                 <div class="flex flex-col gap-5">
                     {#if assignableGroupRoles.length}
                         {#each assignableGroupRoles as group}
-                            <Collapse open={true} border={true} title={`[${group.short_name}] ${group.name} (${group.roles.length})`}>
+                            <Collapse open={true} border={true}>
+                                {#snippet title()}{`[${group.short_name}] ${group.name} (${group.roles.length})`}{/snippet}
                                 {#each group.roles as groupRole}
                                     <form method="post" action="?/assignGroupRole">
                                         <FormSubmitFeedback action="assignGroupRole" />

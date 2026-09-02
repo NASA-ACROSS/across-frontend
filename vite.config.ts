@@ -14,10 +14,11 @@ export default defineConfig({
     test: {
         include: ['src/**/*.{test,spec}.{js,ts}'],
     },
-    optimizeDeps: {
-        include: ['svelte-native-drag-drop'],
-    },
-    ssr: {
-        noExternal: ['svelte-native-drag-drop'],
-    },
+    // Svelte 5 migration: `optimizeDeps.include` and `ssr.noExternal` entries for
+    // 'svelte-native-drag-drop' were removed here. They only existed to work around
+    // `svelte-tabular-table`, which had zero imports anywhere in src/ and has been
+    // dropped from package.json. That package shipped uncompiled Svelte with no
+    // `exports` map and no peerDependencies pinning a Svelte version -- exactly the
+    // shape of dependency that breaks on a major upgrade. Removing it leaves the
+    // project with no third-party Svelte *component* dependencies at all.
 });

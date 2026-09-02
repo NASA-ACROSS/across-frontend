@@ -4,7 +4,7 @@
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
 
-    export let data;
+    let { data } = $props();
 
     let observatories = data.observatories;
 </script>

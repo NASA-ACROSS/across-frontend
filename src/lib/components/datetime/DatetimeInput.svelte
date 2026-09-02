@@ -1,9 +1,13 @@
 <script lang="ts">
     import { DateTime } from 'luxon';
 
-    export let datetimeInput: string = '';
-    export let label = 'Date/Time';
-    export let required: boolean = false;
+    interface Props {
+        datetimeInput?: string;
+        label?: string;
+        required?: boolean;
+    }
+
+    let { datetimeInput = $bindable(''), label = 'Date/Time', required = false }: Props = $props();
 
     const splitDateTime = (dateStr: string = '') => {
         const dt = DateTime.fromISO(dateStr, { zone: 'utc' });
@@ -21,20 +25,29 @@
         return DateTime.fromISO(`${date}T${timePart}`, { zone: 'utc' }).toISO({ includeOffset: false }) ?? '';
     };
 
-    let date = '';
-    let time = '';
+    // Svelte 5 migration (B8): was a `run()` shim from 'svelte/legacy'.
+    // $derived rather than $effect: this must also run during SSR so the inputs render
+    // populated on the server. $effect would leave them empty until hydration.
+    let parts = $derived(splitDateTime(datetimeInput));
+    let date = $derived(parts.date);
+    let time = $derived(parts.time);
 
-    $: ({ date, time } = splitDateTime(datetimeInput));
-
-    const select = () => (datetimeInput = joinDateTime(date, time));
+    // Push edits back up through the bindable prop; `date`/`time` stay derived from it.
+    const select = (nextDate: string, nextTime: string) => (datetimeInput = joinDateTime(nextDate, nextTime));
 </script>
 
 <label class="label text-lg" for="date-input">
     <span class="label-text">{label}</span>
 </label>
 <div class="grid grid-cols-2 gap-2 w-full">
-    <input {required} type="date" bind:value={date} on:input={select} class="input text-primary w-full" />
-    <input {required} type="time" bind:value={time} on:input={select} step="1" class="input w-full" />
+    <input
+        {required}
+        type="date"
+        value={date}
+        oninput={(event) => select(event.currentTarget.value, time)}
+        class="input text-primary w-full"
+    />
+    <input {required} type="time" value={time} oninput={(event) => select(date, event.currentTarget.value)} step="1" class="input w-full" />
 </div>
 
 <style>

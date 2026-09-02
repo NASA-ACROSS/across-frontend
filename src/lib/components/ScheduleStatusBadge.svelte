@@ -5,7 +5,11 @@
         performed: 'badge-success',
     };
 
-    export let status: 'planned' | 'scheduled' | 'performed';
+    interface Props {
+        status: 'planned' | 'scheduled' | 'performed';
+    }
+
+    let { status }: Props = $props();
 </script>
 
 <div>

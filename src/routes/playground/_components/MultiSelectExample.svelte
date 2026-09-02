@@ -23,10 +23,10 @@
         searchableText: `${fruit.name} ${fruit.color}`,
     }));
 
-    let selectedFruits: Option<Fruit>[] = [];
-    let useToggle = false;
+    let selectedFruits: Option<Fruit>[] = $state([]);
+    let useToggle = $state(false);
 
-    $: selectedSet = new Set(selectedFruits.map((item: Option<Fruit>) => item.value));
+    let selectedSet = $derived(new Set(selectedFruits.map((item: Option<Fruit>) => item.value)));
 
     let onToggle = (fruit: Fruit) => {
         const isSelected = selectedSet.has(fruit);

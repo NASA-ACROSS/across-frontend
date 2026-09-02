@@ -7,11 +7,11 @@
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
 
-    export let data;
+    let { data } = $props();
 
     const EXCLUDED_FILTER_PROPERTIES = ['reference_url'];
 
-    let observatory = data.observatory;
+    let observatory = $state(data.observatory);
     let telescopes = data.telescopes;
 
     // sort the ephemeris_types for display in order of priority
@@ -19,16 +19,20 @@
 </script>
 
 <Page title="Observatory Metadata" icon="database">
-    <Alert slot="alert">
-        ACROSS supports a layered approach to metadata. Observatories have Telescopes which have Instruments.
-        <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">See documentation for more details.</a>
-    </Alert>
+    {#snippet alert()}
+        <Alert>
+            ACROSS supports a layered approach to metadata. Observatories have Telescopes which have Instruments.
+            <a href={PUBLIC_CONFIG.DOCUMENTATION_URL} class="link font-normal">See documentation for more details.</a>
+        </Alert>
+    {/snippet}
 
-    <div slot="buttons" class="">
-        <a data-sveltekit-preload-data="false" href={resolve('/observatories/')} class="btn btn-info text-xl">
-            <i class="bx bx-arrow-out-left-square-half opacity-70 me-2"></i>Back to Index
-        </a>
-    </div>
+    {#snippet buttons()}
+        <div class="">
+            <a data-sveltekit-preload-data="false" href={resolve('/observatories/')} class="btn btn-info text-xl">
+                <i class="bx bx-arrow-out-left-square-half opacity-70 me-2"></i>Back to Index
+            </a>
+        </div>
+    {/snippet}
 
     <Section icon={'satellite-dish'} title={`[${observatory.short_name}] ${observatory.name}`}>
         <pre class="text-lg text-carbon-50">{observatory.id}</pre>
@@ -37,7 +41,8 @@
                 >{observatory.reference_url}</a
             ></pre>
 
-        <Collapse title="Observatory Ephemeris Types" border={true}>
+        <Collapse border={true}>
+            {#snippet title()}Observatory Ephemeris Types{/snippet}
             <div class="flex flex-row gap-8">
                 {#each observatory.ephemeris_types as ephemerisType}
                     <pre>{JSON.stringify(ephemerisType, null, 2)}</pre>
@@ -46,30 +51,40 @@
         </Collapse>
 
         <Collapse backgroundColor="bg-carbon-10">
-            <div slot="title" class="text-2xl">
-                Telescopes ({telescopes.length})
-            </div>
+            {#snippet title()}
+                <div class="text-2xl">
+                    Telescopes ({telescopes.length})
+                </div>
+            {/snippet}
             <div class="bg-carbon-10">
                 {#each telescopes as telescope}
                     <Collapse>
-                        <div slot="title">
-                            <h1 class="text-2xl">{`[${telescope.short_name}] ${telescope.name}`}</h1>
-                            <pre class="text-lg font-normal text-carbon-50">{telescope.id}</pre>
-                        </div>
-                        <Collapse backgroundColor="bg-carbon-10">
-                            <div slot="title" class="text-2xl">
-                                Instruments ({telescope.instruments.length})
+                        {#snippet title()}
+                            <div>
+                                <h1 class="text-2xl">{`[${telescope.short_name}] ${telescope.name}`}</h1>
+                                <pre class="text-lg font-normal text-carbon-50">{telescope.id}</pre>
                             </div>
+                        {/snippet}
+                        <Collapse backgroundColor="bg-carbon-10">
+                            {#snippet title()}
+                                <div class="text-2xl">
+                                    Instruments ({telescope.instruments.length})
+                                </div>
+                            {/snippet}
                             {#each telescope.instruments as instrument}
                                 <Collapse>
-                                    <div slot="title">
-                                        <h1 class="text-2xl">{`[${instrument.short_name}] ${instrument.name}`}</h1>
-                                        <pre class="text-lg font-normal text-carbon-50">{instrument.id}</pre>
-                                    </div>
-                                    <Collapse open={false} backgroundColor="bg-carbon-10">
-                                        <div slot="title" class="text-2xl">
-                                            Filters ({instrument.filters.length})
+                                    {#snippet title()}
+                                        <div>
+                                            <h1 class="text-2xl">{`[${instrument.short_name}] ${instrument.name}`}</h1>
+                                            <pre class="text-lg font-normal text-carbon-50">{instrument.id}</pre>
                                         </div>
+                                    {/snippet}
+                                    <Collapse open={false} backgroundColor="bg-carbon-10">
+                                        {#snippet title()}
+                                            <div class="text-2xl">
+                                                Filters ({instrument.filters.length})
+                                            </div>
+                                        {/snippet}
                                         <div class="overflow-y-scroll max-h-100 bg-carbon-10">
                                             {#each instrument.filters as filter}
                                                 <!-- Filter Title -->
@@ -106,7 +121,9 @@
 
                                     {#if instrument?.footprints.length}
                                         <Collapse open={false} backgroundColor="bg-carbon-10">
-                                            <div slot="title" class="text-2xl">Footprint</div>
+                                            {#snippet title()}
+                                                <div class="text-2xl">Footprint</div>
+                                            {/snippet}
                                             <div class="overflow-y-scroll max-h-100">
                                                 <div class="p-4 bg-secondary">
                                                     <pre>{JSON.stringify(instrument.footprints, null, 2)}</pre>
@@ -117,9 +134,11 @@
 
                                     {#if instrument?.constraints?.length}
                                         <Collapse open={false} backgroundColor="bg-carbon-10">
-                                            <div slot="title" class="text-2xl">
-                                                Constraints ({instrument?.constraints?.length})
-                                            </div>
+                                            {#snippet title()}
+                                                <div class="text-2xl">
+                                                    Constraints ({instrument?.constraints?.length})
+                                                </div>
+                                            {/snippet}
                                             {#each instrument?.constraints as constraint}
                                                 <div class="p-4 bg-secondary">
                                                     <pre>{JSON.stringify(constraint, null, 2)}</pre>

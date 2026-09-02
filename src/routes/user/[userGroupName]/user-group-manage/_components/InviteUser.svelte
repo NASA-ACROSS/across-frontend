@@ -7,10 +7,14 @@
     import type { UserGroup } from '$lib/types/User/UserGroup';
     import type { ActionData, SubmitFunction } from '../$types';
 
-    export let form: ActionData;
-    export let group: UserGroup;
+    interface Props {
+        form: ActionData;
+        group: UserGroup;
+    }
 
-    $: isSubmittingInvite = false;
+    let { form, group }: Props = $props();
+
+    let isSubmittingInvite = $state(false);
 
     const enhancedForm: SubmitFunction = ({ formData }) => {
         // render state changes

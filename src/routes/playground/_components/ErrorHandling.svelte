@@ -4,12 +4,19 @@
     import type { ActionData } from '../$types';
     import Spinner from '$lib/components/Spinner.svelte';
 
-    export let form: ActionData;
+    interface Props {
+        form: ActionData;
+    }
 
-    let selectedStatus: string;
-    let isSubmitting = false;
+    let { form }: Props = $props();
 
-    $: resData = JSON.stringify(form?.data, null, 2);
+    // Svelte 5 migration (B9): `$state()` with no argument is `undefined` until assigned,
+    // and svelte-check 4 now types that honestly (`export let` used to launder it). The
+    // annotation has to admit undefined; use sites guard with `?.`.
+    let selectedStatus: string | undefined = $state();
+    let isSubmitting = $state(false);
+
+    let resData = $derived(JSON.stringify(form?.data, null, 2));
 
     const handleSubmit: SubmitFunction = async () => {
         isSubmitting = true;
@@ -44,7 +51,7 @@
                 </button>
                 OR
                 <button
-                    on:click={() => {
+                    onclick={() => {
                         // manually override the status to handle in the action
                         selectedStatus = 'BOOM';
                     }}
@@ -76,7 +83,7 @@
                 <h2 class="p-2 text-xl font-bold">API Error Response</h2>
                 <div class="bg-nasa-red-tint p-2">
                     <p class="text-lg">{form.message}</p>
-                    <div class="divider" />
+                    <div class="divider"></div>
                     <div class="flex flex-row justify-between gap-1">
                         <code class="text-sm bg">Error ID: {form.errorId}</code>
                         <code class="text-sm bg">Error Code: {form.code}</code>

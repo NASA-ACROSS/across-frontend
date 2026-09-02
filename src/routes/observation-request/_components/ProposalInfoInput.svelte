@@ -1,8 +1,12 @@
 <script lang="ts">
-    export let proposalCode: string;
-    export let proposalName: string;
-    export let justification: string;
-    export let anonymize: boolean;
+    interface Props {
+        proposalCode: string;
+        proposalName: string;
+        justification: string;
+        anonymize: boolean;
+    }
+
+    let { proposalCode = $bindable(), proposalName = $bindable(), justification = $bindable(), anonymize = $bindable() }: Props = $props();
 </script>
 
 <div class="flex flex-col gap-2">
@@ -37,7 +41,7 @@
             <span class="label-text">Science Justification</span>
         </label>
         <div class="grid gap-2 w-full">
-            <textarea class="textarea textarea-lg w-full" required rows="5" bind:value={justification} maxlength="8192" />
+            <textarea class="textarea textarea-lg w-full" required rows="5" bind:value={justification} maxlength="8192"></textarea>
             <p class="hidden validator-hint mt-18" style="position: absolute;">Must be less than or equal to 8192 characters</p>
         </div>
     </div>

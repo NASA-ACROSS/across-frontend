@@ -388,7 +388,7 @@
 
                 <div class="flex justify-end mt-4">
                     <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
-                    <button class="btn btn-info text-lg" onclick={async () => await handleSearch()}>Search</button>
+                    <button data-testid="search-btn" class="btn btn-info text-lg" onclick={async () => await handleSearch()}>Search</button>
                 </div>
             </div>
         </div>
@@ -401,7 +401,7 @@
                 {#key currentPage}
                     <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
                 {/key}
-                <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
+                <button data-testid="customize-columns-btn" class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
                     Customize
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path
@@ -447,8 +447,12 @@
 
                     <div class="flex justify-between">
                         <div>
-                            <button class="btn btn-sm btn-outline mr-2" onclick={resetToDefaultColumns}> Default Columns </button>
-                            <button class="btn btn-sm btn-outline" onclick={loadColumnsFromCookie}> Load My Columns </button>
+                            <button data-testid="default-columns-btn" class="btn btn-sm btn-outline mr-2" onclick={resetToDefaultColumns}>
+                                Default Columns
+                            </button>
+                            <button data-testid="load-columns-btn" class="btn btn-sm btn-outline" onclick={loadColumnsFromCookie}>
+                                Load My Columns
+                            </button>
                         </div>
                         <div>
                             <button

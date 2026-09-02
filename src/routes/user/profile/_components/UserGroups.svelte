@@ -8,10 +8,17 @@
     import type { UserGroup } from '$lib/types/User/UserGroup';
     import { isAdmin } from '$lib/utils/user/isAdmin';
 
-    export let user: User;
-    export let userGroups: UserGroup[];
-    export let leaveUserGroup: UserGroup;
-    export let enhancedForm;
+    interface Props {
+        user: User;
+        userGroups: UserGroup[];
+        // Svelte 5 migration (B9): widened because the parent declares this as
+        // `$state()` with no initial value -- nothing is selected until the user picks a
+        // group. The template here already guarded with `leaveUserGroup?.id`.
+        leaveUserGroup: UserGroup | undefined;
+        enhancedForm: any;
+    }
+
+    let { user, userGroups, leaveUserGroup = $bindable(), enhancedForm }: Props = $props();
 </script>
 
 {#if userGroups && userGroups?.length}
@@ -39,7 +46,7 @@
                         <button
                             class={`btn btn-accent text-lg`}
                             type="submit"
-                            on:click={() => {
+                            onclick={() => {
                                 leaveUserGroup = userGroup;
                             }}
                         >

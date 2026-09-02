@@ -16,10 +16,17 @@
     import type { PageData } from './$types';
     import UnitValueInput from '$lib/components/inputs/UnitValueInput.svelte';
 
-    export let data: PageData;
+    // Svelte 5 migration (B7): `sv migrate` refused this file outright (see B1), so it was
+    // still entirely Svelte 4 -- `export let`, 16 `$:` statements and 19 `on:` directives.
+    // It is now fully converted to runes.
+    interface Props {
+        data: PageData;
+    }
 
-    $: error = data.error;
-    let scheduleIdError: string = '';
+    let { data }: Props = $props();
+
+    let error = $derived(data.error);
+    let scheduleIdError: string = $state('');
 
     const DEFAULT_COLUMNS = [
         'object_name',
@@ -35,41 +42,53 @@
     const COOKIE_NAME = 'observation_columns';
     const PAGINATION_BUTTONS = 4;
 
-    // Observation data and pagination
-    $: observations = data.observations || [];
-    $: currentPage = Number(data.currentPage) || 1;
-    $: totalPages = data.totalPages || 1;
-    $: telescopes = data.telescopes || [];
-    $: totalCount = data.totalCount || 0;
-    $: currentSearchParams = new URLSearchParams(page.url.searchParams);
+    // Observation data and pagination.
+    // These were `$:` statements reading `data`, i.e. genuine derivations -- so $derived,
+    // not $state. They resync correctly when `load` re-runs on client-side navigation.
+    let observations = $derived(data.observations || []);
+    let currentPage = $derived(Number(data.currentPage) || 1);
+    let totalPages = $derived(data.totalPages || 1);
+    let telescopes = $derived(data.telescopes || []);
+    let totalCount = $derived(data.totalCount || 0);
+    // reassigned by handleSearch(); $derived is reassignable as of Svelte 5.25
+    let currentSearchParams = $derived(new URLSearchParams(page.url.searchParams));
 
     // Observatory/Telescope/Instrument selector state
-    let selectedObservatories: TelescopeObservatory[] = [];
-    let selectedTelescopes: Telescope[] = [];
-    let selectedInstruments: TelescopeInstrument[] = [];
+    let selectedObservatories: TelescopeObservatory[] = $state([]);
+    let selectedTelescopes: Telescope[] = $state([]);
+    let selectedInstruments: TelescopeInstrument[] = $state([]);
 
-    // Query parameters
-    let externalId = data.queryParams?.external_id || '';
-    let scheduleId = '';
-    let scheduleIds = (data.queryParams?.schedule_ids as string[]) || ([] as string[]);
-    let status = data.queryParams?.status || '';
-    let proposal = data.queryParams?.proposal || '';
-    let objectName = data.queryParams?.object_name || '';
-    let dateRangeBegin = data.queryParams?.date_range_begin || '';
-    let dateRangeEnd = data.queryParams?.date_range_end || '';
-    let bandpassMin = data.queryParams?.bandpass_min || '';
-    let bandpassMax = data.queryParams?.bandpass_max || '';
-    let bandpassRegime: string = data.queryParams?.bandpass_regime || '';
-    let bandpassType: string = data.queryParams?.bandpass_type || '';
-    let coneSearchRa = data.queryParams?.cone_search_ra || '';
-    let coneSearchDec = data.queryParams?.cone_search_dec || '';
-    let coneSearchRadius = data.queryParams?.cone_search_radius || '';
-    let type = data.queryParams?.type || '';
-    let depthValue = Number(data.queryParams?.depth_value) || undefined;
-    let depthUnit = data.queryParams?.depth_unit || '';
+    // Query parameters -- form fields seeded once from the URL, then owned by the user as
+    // they type, so these are $state and not $derived. Reading `data` in a $state
+    // initialiser makes svelte-check emit `state_referenced_locally`; that is expected
+    // here and not a regression. A top-level `let` in Svelte 4 was also evaluated exactly
+    // once, so these never resynced on client-side navigation before either -- and
+    // resyncing would be wrong, since it would overwrite a field mid-edit.
+    let externalId = $state(data.queryParams?.external_id || '');
+    let scheduleId = $state('');
+    let scheduleIds = $state((data.queryParams?.schedule_ids as string[]) || ([] as string[]));
+    let status = $state(data.queryParams?.status || '');
+    let proposal = $state(data.queryParams?.proposal || '');
+    let objectName = $state(data.queryParams?.object_name || '');
+    let dateRangeBegin = $state(data.queryParams?.date_range_begin || '');
+    let dateRangeEnd = $state(data.queryParams?.date_range_end || '');
+    let bandpassMin = $state(data.queryParams?.bandpass_min || '');
+    let bandpassMax = $state(data.queryParams?.bandpass_max || '');
+    let bandpassRegime: string = $state(data.queryParams?.bandpass_regime || '');
+    let bandpassType: string = $state(data.queryParams?.bandpass_type || '');
+    let coneSearchRa = $state(data.queryParams?.cone_search_ra || '');
+    let coneSearchDec = $state(data.queryParams?.cone_search_dec || '');
+    let coneSearchRadius = $state(data.queryParams?.cone_search_radius || '');
+    let type = $state(data.queryParams?.type || '');
+    let depthValue = $state(Number(data.queryParams?.depth_value) || undefined);
+    let depthUnit = $state(data.queryParams?.depth_unit || '');
 
-    // Column customization
-    $: availableColumns = [
+    // Column customization.
+    // This was `$: availableColumns = [...]`, but the expression has no reactive
+    // dependencies, so in Svelte 4 it ran exactly once. It is also mutated in place
+    // (`col.selected = ...`, plus `bind:checked` in the modal) and reassigned wholesale,
+    // which makes it local state -- $state, deliberately not $derived.
+    let availableColumns = $state([
         { id: 'object_name', label: 'Object Name', selected: true },
         { id: 'telescope_instrument', label: 'Observatory/Telescope/Instrument', selected: true },
         { id: 'date_begin', label: 'Date Begin', selected: true },
@@ -84,11 +103,14 @@
         { id: 'proposal_reference', label: 'Proposal Reference', selected: false },
         { id: 'description', label: 'Description', selected: false },
         { id: 'schedule_id', label: 'Schedule ID', selected: false },
-    ];
+    ]);
 
-    $: selectedColumns = availableColumns.filter((col) => col.selected);
+    // Derived from availableColumns, so the three manual `selectedColumns = ...`
+    // recomputations that used to follow every column mutation have been removed --
+    // $derived recomputes on its own, including for in-place `col.selected` mutations.
+    let selectedColumns = $derived(availableColumns.filter((col) => col.selected));
 
-    let isCustomizeModalOpen = false;
+    let isCustomizeModalOpen = $state(false);
 
     // TODO: add sorting
     // let sortColumn = '';
@@ -113,7 +135,7 @@
     // Depth unit options
     const depthUnitOptions = ['ab_mag', 'vega_mag', 'flux_erg', 'flux_jy'];
 
-    $: selectedFilter = '';
+    let selectedFilter = $state('');
 
     onMount(() => {
         // If URL params for columns exist, use those instead of cookie values
@@ -136,7 +158,6 @@
         availableColumns.forEach((col) => {
             col.selected = columnIds.includes(col.id);
         });
-        selectedColumns = availableColumns.filter((col) => col.selected);
     }
 
     function loadColumnsFromCookie() {
@@ -154,7 +175,6 @@
                     col.selected = savedColumns.includes(col.id);
                     return col;
                 });
-                selectedColumns = availableColumns.filter((col) => col.selected);
             } catch (err) {
                 logger.error({ msg: 'Failed to parse column cookie', err });
             }
@@ -176,14 +196,12 @@
             col.selected = DEFAULT_COLUMNS.includes(col.id);
             return col;
         });
-
-        selectedColumns = availableColumns.filter((col) => col.selected);
     }
 
-    $: dateBeginDisplay = dateRangeBegin ? dateRangeBegin.split('T')[0] : '';
-    $: timeBeginDisplay = dateRangeBegin ? (dateRangeBegin.split('T')[1] ?? '') : '';
-    $: dateEndDisplay = dateRangeEnd ? dateRangeEnd.split('T')[0] : '';
-    $: timeEndDisplay = dateRangeEnd ? (dateRangeEnd.split('T')[1] ?? '') : '';
+    let dateBeginDisplay = $derived(dateRangeBegin ? dateRangeBegin.split('T')[0] : '');
+    let timeBeginDisplay = $derived(dateRangeBegin ? (dateRangeBegin.split('T')[1] ?? '') : '');
+    let dateEndDisplay = $derived(dateRangeEnd ? dateRangeEnd.split('T')[0] : '');
+    let timeEndDisplay = $derived(dateRangeEnd ? (dateRangeEnd.split('T')[1] ?? '') : '');
 
     async function handleSearch() {
         const params = new URLSearchParams();
@@ -264,7 +282,7 @@
         }
     }
 
-    // TODO: add sort to table headings with on:click={() => toggleSort(column.id)}
+    // TODO: add sort to table headings with onclick={() => toggleSort(column.id)}
     // async function toggleSort(column) {
     //     if (sortColumn === column) {
     //         if (sortDirection === 'asc') {
@@ -371,7 +389,7 @@
                     <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">
                         Query Filters
                     </div>
-                    <button class="btn btn-sm btn-primary text-md h-9" on:click={resetFilters}
+                    <button class="btn btn-sm btn-primary text-md h-9" onclick={resetFilters}
                         ><div class="bx bx-refresh"></div>
                         Reset Filters</button
                     >
@@ -384,7 +402,7 @@
                             type="radio"
                             name="my-accordion"
                             value="observatory-telescope-instrument"
-                            on:click={() => {
+                            onclick={() => {
                                 deselectAccordion('observatory-telescope-instrument');
                             }}
                             bind:group={selectedFilter}
@@ -430,7 +448,7 @@
                             type="radio"
                             name="my-accordion"
                             value="observation"
-                            on:click={() => {
+                            onclick={() => {
                                 deselectAccordion('observation');
                             }}
                             bind:group={selectedFilter}
@@ -513,7 +531,7 @@
                             type="radio"
                             name="my-accordion"
                             value="coordinate-search"
-                            on:click={() => {
+                            onclick={() => {
                                 deselectAccordion('coordinate-search');
                             }}
                             bind:group={selectedFilter}
@@ -556,7 +574,7 @@
                             type="radio"
                             name="my-accordion"
                             value="energy-regime"
-                            on:click={() => {
+                            onclick={() => {
                                 deselectAccordion('energy-regime');
                             }}
                             bind:group={selectedFilter}
@@ -596,7 +614,7 @@
                                     <select
                                         id="bandpass-type-input"
                                         bind:value={bandpassRegime}
-                                        on:change={() => (bandpassType = '')}
+                                        onchange={() => (bandpassType = '')}
                                         class="select select-bordered text-lg w-full"
                                     >
                                         <option value="">Select Regime</option>
@@ -671,7 +689,7 @@
                             type="radio"
                             name="my-accordion"
                             value="depth"
-                            on:click={() => {
+                            onclick={() => {
                                 deselectAccordion('depth');
                             }}
                             bind:group={selectedFilter}
@@ -707,7 +725,7 @@
                             type="radio"
                             name="my-accordion"
                             value="filter-schedule"
-                            on:click={() => {
+                            onclick={() => {
                                 deselectAccordion('filter-schedule');
                             }}
                             bind:group={selectedFilter}
@@ -732,12 +750,12 @@
                                     <input
                                         id="schedule-input"
                                         bind:value={scheduleId}
-                                        on:keydown={(event) => handleAddScheduleEnterKey(event, scheduleId)}
+                                        onkeydown={(event) => handleAddScheduleEnterKey(event, scheduleId)}
                                         class="input validator input-bordered text-lg w-full"
                                         type="text"
                                         placeholder="UUID"
                                     />
-                                    <button id="schedule-add" on:click={() => handleAddSchedule(scheduleId)} class="btn btn-info text-lg"
+                                    <button id="schedule-add" onclick={() => handleAddSchedule(scheduleId)} class="btn btn-info text-lg"
                                         >Add Schedule ID</button
                                     >
                                 </label>
@@ -753,12 +771,23 @@
                                                 </thead>
                                                 <tbody class="mx-4">
                                                     {#each scheduleIds as id}
-                                                        <tr class="flex w-full">
-                                                            <span class="w-full self-center">{id}</span>
-                                                            <button
-                                                                class="btn btn-sm text-sm align-end"
-                                                                on:click={() => handleRemoveSchedule(id)}>Remove</button
-                                                            >
+                                                        <tr>
+                                                            <!--
+                                                                Svelte 5 migration (B1): the <span> and <button> below
+                                                                were direct children of <tr>, which is a hard compile
+                                                                error in Svelte 5 -- <tr> permits only <th>, <td>,
+                                                                <style>, <script> and <template>. This was the error
+                                                                that broke `npm run build`. The row was laid out with
+                                                                `flex` rather than as a real table row, so the flex
+                                                                container moves onto a single spanning <td>.
+                                                            -->
+                                                            <td class="flex w-full">
+                                                                <span class="w-full self-center">{id}</span>
+                                                                <button
+                                                                    class="btn btn-sm text-sm align-end"
+                                                                    onclick={() => handleRemoveSchedule(id)}>Remove</button
+                                                                >
+                                                            </td>
                                                         </tr>
                                                     {/each}
                                                 </tbody>
@@ -772,28 +801,37 @@
                 </div>
                 <div class="flex justify-end mt-4">
                     <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
-                    <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>
+                    <button class="btn btn-info text-lg" onclick={async () => await handleSearch()}>Search</button>
                 </div>
             </div>
         </div>
     </Section>
     <Section title="Observations (Total: {totalCount})" icon="globe">
         <!-- Pagination -->
-        <div slot="buttons" class="flex space-x-2">
-            {#key currentPage}
-                <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
-            {/key}
-            <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
-                Customize
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                        fill-rule="evenodd"
-                        d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                        clip-rule="evenodd"
-                    />
-                </svg>
-            </button>
-        </div>
+        <!--
+            Svelte 5 migration (G2): this was `<div slot="buttons">`. Section/Page declare
+            `buttons` as a Snippet, and a legacy named slot passed to a runes component
+            renders *nothing at all* -- silently, with no error. Page gates its whole header
+            row on `{#if icon || title || buttons}`, so the pagination and Customize button
+            disappeared. This is the `$$slot_def is of type 'unknown'` svelte-check error.
+        -->
+        {#snippet buttons()}
+            <div class="flex space-x-2">
+                {#key currentPage}
+                    <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
+                {/key}
+                <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
+                    Customize
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            fill-rule="evenodd"
+                            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                            clip-rule="evenodd"
+                        />
+                    </svg>
+                </button>
+            </div>
+        {/snippet}
 
         <!-- Column Customization Modal -->
         {#if isCustomizeModalOpen}
@@ -804,7 +842,7 @@
                         <button
                             class="justify-end btn btn-sm btn-primary max-h-8"
                             title="Close without saving selections to cookie"
-                            on:click={() => (isCustomizeModalOpen = false)}>X</button
+                            onclick={() => (isCustomizeModalOpen = false)}>X</button
                         >
                     </div>
                     <p class="italic">Changes apply on selection</p>
@@ -823,13 +861,13 @@
 
                     <div class="flex justify-between">
                         <div>
-                            <button class="btn btn-sm btn-outline mr-2" on:click={resetToDefaultColumns}> Default Columns </button>
-                            <button class="btn btn-sm btn-outline" on:click={loadColumnsFromCookie}> Load My Columns </button>
+                            <button class="btn btn-sm btn-outline mr-2" onclick={resetToDefaultColumns}> Default Columns </button>
+                            <button class="btn btn-sm btn-outline" onclick={loadColumnsFromCookie}> Load My Columns </button>
                         </div>
                         <div>
                             <button
                                 class="btn btn-sm btn-primary"
-                                on:click={saveColumnSelection}
+                                onclick={saveColumnSelection}
                                 title="Save column selections to cookie to be loaded next visit and close this modal"
                             >
                                 Save & Close
@@ -929,7 +967,7 @@
         <div class="flex ml-auto w-fit space-x-2 pt-4">
             <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
 
-            <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
+            <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
                 Customize
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path

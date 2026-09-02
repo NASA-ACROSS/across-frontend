@@ -1,15 +1,11 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
     import _ from 'lodash';
-    /** @type {import('./$types').ActionData} */
-    export let form;
-
-    import type { PageData } from './$types';
+    import type { ActionData, PageData } from './$types';
     import { browser } from '$app/environment';
     import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import { afterUpdate } from 'svelte';
     import type { SubmitFunction } from '@sveltejs/kit';
     import UserGroups from './_components/UserGroups.svelte';
     import UserGroupInvites from './_components/UserGroupInvites.svelte';
@@ -22,16 +18,24 @@
     import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
 
-    export let data: PageData;
-
-    let leaveUserGroup: UserGroup;
-
-    let originalUserData = structuredClone(data.user);
-    let user = data.user;
-    $: isUserDataUnchanged = _.isEqual(originalUserData, user);
-    $: if (form?.type === 'success' && form?._action === 'updateUserInformation') {
-        originalUserData = structuredClone(data.user);
+    interface Props {
+        form: ActionData;
+        data: PageData;
     }
+
+    let { form, data }: Props = $props();
+
+    let leaveUserGroup: UserGroup | undefined = $state();
+
+    // Svelte 5 migration (B7): `sv migrate` refused this file ("Can't migrate code with
+    // afterUpdate"), so it was still Svelte 4.
+    // `user` is a local editable copy driven by `bind:value` on the form inputs, so it
+    // has to be real $state rather than a $derived view of `data.user`. It is cloned so
+    // editing the form no longer mutates the load data in place (which is what the old
+    // `let user = data.user` alias did).
+    let originalUserData = $state(structuredClone(data.user));
+    let user = $state(structuredClone(data.user));
+    let isUserDataUnchanged = $derived(_.isEqual(originalUserData, user));
 
     // safari browser should force a reload on cached navigation using back button
     if (browser) {
@@ -42,8 +46,8 @@
         };
     }
 
-    let userGroups = data.user.groups;
-    let invitations = data.user.received_invites;
+    let userGroups = $derived(data.user.groups);
+    let invitations = $derived(data.user.received_invites);
 
     /**
      * sveltekit progressive form enhancement
@@ -67,7 +71,7 @@
             formData.set('username', user.username);
         } else if (action.href.includes('leaveGroup')) {
             formData.set('userId', user.id.toString());
-            formData.set('groupId', leaveUserGroup.id.toString());
+            formData.set('groupId', leaveUserGroup?.id.toString() || '');
         }
 
         /**
@@ -87,19 +91,32 @@
         };
     };
 
-    afterUpdate(() => {
-        user = data.user;
-        userGroups = data.user.groups;
-        invitations = data.user.received_invites;
+    // Re-seed the editable copy whenever `load` hands us fresh user data (e.g. after a
+    // successful update calls invalidateAll). This replaces the old afterUpdate(), which
+    // for `user` was effectively a self-assignment because `user` aliased `data.user`.
+    // An $effect is warranted here specifically because we are syncing *editable local
+    // state* from an external source; the purely-derived values above use $derived.
+    // Typing does not retrigger this, since edits no longer touch `data.user`.
+    $effect(() => {
+        const fresh = data.user;
+        originalUserData = structuredClone(fresh);
+        user = structuredClone(fresh);
     });
 </script>
 
 <Page title="Profile" icon="user">
-    <div slot="buttons" class="">
-        <a data-sveltekit-preload-data="false" data-sveltekit-reload href={resolve('/user/logout')} class="btn btn-accent text-xl">
-            <i class="bx bx-door-open-alt opacity-70 me-2"></i>Logout
-        </a>
-    </div>
+    <!--
+        Svelte 5 migration (G2): was `<div slot="buttons">`, which renders nothing when
+        passed to a runes component that declares `buttons` as a Snippet. This is the
+        `$$slot_def is of type 'unknown'` svelte-check error.
+    -->
+    {#snippet buttons()}
+        <div>
+            <a data-sveltekit-preload-data="false" data-sveltekit-reload href={resolve('/user/logout')} class="btn btn-accent text-xl">
+                <i class="bx bx-door-open-alt opacity-70 me-2"></i>Logout
+            </a>
+        </div>
+    {/snippet}
     <Section>
         <Fieldset title="User Information">
             <form method="post" action="?/updateUserInformation" use:enhance={enhancedForm}>

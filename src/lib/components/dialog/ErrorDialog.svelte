@@ -2,17 +2,22 @@
     import Collapse from '../Collapse.svelte';
     import Dialog from './Dialog.svelte';
 
-    export let isOpen: boolean = false;
-    export let error: { message: string; id: string; details?: string };
-    export let title: string | undefined = 'Error!';
-    export let confirmDelaySeconds: number | undefined = undefined;
-    export let confirmText: string | undefined = undefined;
+    interface Props {
+        isOpen?: boolean;
+        error: { message: string; id: string; details?: string };
+        title?: string | undefined;
+        confirmDelaySeconds?: number | undefined;
+        confirmText?: string | undefined;
+    }
+
+    let { isOpen = $bindable(false), error, title = 'Error!', confirmDelaySeconds = undefined, confirmText = undefined }: Props = $props();
 </script>
 
 <Dialog {title} {confirmText} bind:isOpen icon="bomb" {confirmDelaySeconds} hasCancel={false} color="error">
     <div class="flex flex-col gap-3">
         <p>{error.message}</p>
-        <Collapse title="Details" border={true} open={false}>
+        <Collapse border={true} open={false}>
+            {#snippet title()}Details{/snippet}
             <div class="py-3 max-h-40 overflow-auto">
                 <pre class="whitespace-pre-wrap">{error.details}</pre>
             </div>

@@ -8,30 +8,42 @@
     import { DateTime } from 'luxon';
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
 
-    export let user: User;
-    export let serviceAccounts: ServiceAccountDetail[];
+    interface Props {
+        user: User;
+        serviceAccounts: ServiceAccountDetail[];
+    }
 
-    let newServiceAccount: Pick<ServiceAccountDetail, 'name' | 'description' | 'expiration_duration'> = {
+    let { user, serviceAccounts }: Props = $props();
+
+    let newServiceAccount: Pick<ServiceAccountDetail, 'name' | 'description' | 'expiration_duration'> = $state({
         name: '',
         description: '',
         expiration_duration: 30,
-    };
-
-    $: activeServiceAccounts = serviceAccounts.filter((serviceAccount) => {
-        return serviceAccount.expiration > DateTime.utc().toISO();
     });
 
-    $: expiredServiceAccounts = serviceAccounts.filter((serviceAccount) => {
-        return serviceAccount.expiration <= DateTime.utc().toISO();
-    });
+    let activeServiceAccounts = $derived(
+        serviceAccounts.filter((serviceAccount) => {
+            return serviceAccount.expiration > DateTime.utc().toISO();
+        })
+    );
 
-    $: activeServiceAccountsTitle = 'Active Service Accounts' + (activeServiceAccounts?.length ? ` (${activeServiceAccounts.length})` : '');
-    $: expiredServiceAccountsTitle =
-        'Expired Service Accounts' + (expiredServiceAccounts?.length ? ` (${expiredServiceAccounts.length})` : '');
+    let expiredServiceAccounts = $derived(
+        serviceAccounts.filter((serviceAccount) => {
+            return serviceAccount.expiration <= DateTime.utc().toISO();
+        })
+    );
+
+    let activeServiceAccountsTitle = $derived(
+        'Active Service Accounts' + (activeServiceAccounts?.length ? ` (${activeServiceAccounts.length})` : '')
+    );
+    let expiredServiceAccountsTitle = $derived(
+        'Expired Service Accounts' + (expiredServiceAccounts?.length ? ` (${expiredServiceAccounts.length})` : '')
+    );
 </script>
 
 <Section title="My Service Accounts" icon="server">
-    <Collapse border={true} title={activeServiceAccountsTitle}>
+    <Collapse border={true}>
+        {#snippet title()}{activeServiceAccountsTitle}{/snippet}
         {#if activeServiceAccounts && activeServiceAccounts?.length}
             <div class="input-group flex flex-col p-3 gap-3 bg-base-200 max-h-180 overflow-y-scroll">
                 {#each activeServiceAccounts as serviceAccount}
@@ -64,7 +76,7 @@
                                 <button
                                     class={`btn btn-accent text-lg`}
                                     type="submit"
-                                    on:keydown={(e) => {
+                                    onkeydown={(e) => {
                                         e.preventDefault();
                                     }}
                                 >
@@ -83,7 +95,8 @@
         {/if}
     </Collapse>
 
-    <Collapse border={true} open={false} title={expiredServiceAccountsTitle}>
+    <Collapse border={true} open={false}>
+        {#snippet title()}{expiredServiceAccountsTitle}{/snippet}
         {#if expiredServiceAccounts && expiredServiceAccounts?.length}
             <div class="input-group flex flex-col p-3 gap-3 bg-base-200 max-h-180 overflow-y-scroll">
                 {#each expiredServiceAccounts as serviceAccount}
@@ -114,7 +127,7 @@
                                 <button
                                     class="btn btn-warning text-lg text-primary"
                                     type="submit"
-                                    on:keydown={(e) => {
+                                    onkeydown={(e) => {
                                         e.preventDefault();
                                     }}
                                 >

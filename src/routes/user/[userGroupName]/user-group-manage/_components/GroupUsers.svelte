@@ -2,8 +2,20 @@
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import type { GroupUser } from '$lib/types/User/GroupUser';
 
-    export let users: GroupUser[];
-    export let selectedUser: GroupUser | undefined;
+    // Svelte 5 migration (B7): this used to bind the selected `GroupUser` *object* and
+    // compare it by reference (`selectedUser == user`). That is precisely why the parent
+    // needed an afterUpdate() hook: when `load` re-runs it hands down freshly deserialised
+    // user objects, so the stored reference matches nothing in the new array and the
+    // selection silently breaks. The old hook re-resolved it by id after every update.
+    // Binding the id instead removes the root cause rather than patching it, and lets the
+    // parent derive the user object with $derived.
+    interface Props {
+        users: GroupUser[];
+        /** id of the selected user; bound so the parent can derive the user object from it */
+        selectedUserId: string | undefined;
+    }
+
+    let { users, selectedUserId = $bindable() }: Props = $props();
 </script>
 
 <div class="flex-col w-1/3">
@@ -16,16 +28,12 @@
         {:else}
             <ul class="list list-row bg-base-200">
                 {#each users as user}
-                    <li class={`list-row  ${selectedUser?.email == user?.email ? 'bg-nasa-red-tint underline' : ''}`}>
+                    <li class={`list-row  ${selectedUserId == user?.id ? 'bg-nasa-red-tint underline' : ''}`}>
                         <div class="list-col-grow">
                             <button
                                 class="flex flex-row justify-between text-start w-full"
-                                on:click={() => {
-                                    if (selectedUser == user) {
-                                        selectedUser = undefined;
-                                    } else {
-                                        selectedUser = user;
-                                    }
+                                onclick={() => {
+                                    selectedUserId = selectedUserId == user.id ? undefined : user.id;
                                 }}
                             >
                                 <div>
@@ -38,7 +46,7 @@
                                     </div>
                                 </div>
 
-                                <ArrowButton direction={selectedUser == user ? 'left' : 'right'}></ArrowButton>
+                                <ArrowButton direction={selectedUserId == user.id ? 'left' : 'right'}></ArrowButton>
                             </button>
                         </div>
                     </li>

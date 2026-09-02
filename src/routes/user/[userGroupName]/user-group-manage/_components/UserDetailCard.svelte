@@ -8,21 +8,30 @@
     import Spinner from '$lib/components/Spinner.svelte';
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
 
-    export let selectedUser: GroupUser | undefined;
-    export let group: UserGroup;
+    interface Props {
+        selectedUser: GroupUser | undefined;
+        group: UserGroup;
+    }
 
-    $: assignableRoles = group?.roles;
-    let selectedRole: GroupRole;
-    let isRemovingRole = false;
+    let { selectedUser, group }: Props = $props();
+
+    let assignableRoles = $derived(group?.roles);
+    // Svelte 5 migration (B9): `$state()` with no argument is `undefined` until assigned,
+    // and svelte-check 4 now types that honestly (`export let` used to launder it). The
+    // annotation has to admit undefined; use sites guard with `?.`.
+    let selectedRole: GroupRole | undefined = $state();
+    let isRemovingRole = $state(false);
 
     // cross match assignable roles with user's to create a list of user's current roles
-    $: userRoles = selectedUser?.group_roles?.reduce((roles, userRole) => {
-        let matchingRole = assignableRoles?.find((role) => role.id == userRole.id);
+    let userRoles = $derived(
+        selectedUser?.group_roles?.reduce((roles, userRole) => {
+            let matchingRole = assignableRoles?.find((role) => role.id == userRole.id);
 
-        if (matchingRole) roles.push(matchingRole);
+            if (matchingRole) roles.push(matchingRole);
 
-        return roles;
-    }, [] as GroupRole[]);
+            return roles;
+        }, [] as GroupRole[])
+    );
 
     const enhancedForm: SubmitFunction = ({ formData, action }) => {
         isRemovingRole = true;
@@ -81,7 +90,7 @@
                                     <button
                                         class="btn btn-sm btn-accent"
                                         type="submit"
-                                        on:click={() => {
+                                        onclick={() => {
                                             selectedRole = userRole;
                                         }}
                                         >{#if isRemovingRole && selectedRole == userRole}

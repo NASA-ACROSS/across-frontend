@@ -12,11 +12,15 @@
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
 
-    export let form: ActionData;
+    interface Props {
+        form: ActionData;
+    }
 
-    let isLoggingIn = false;
+    let { form }: Props = $props();
 
-    $: isButtonDisabled = isLoggingIn || form?.type === 'success';
+    let isLoggingIn = $state(false);
+
+    let isButtonDisabled = $derived(isLoggingIn || form?.type === 'success');
 
     // submit function to toggle ui state while waiting for response
     const enhancedLogin: SubmitFunction = () => {
@@ -30,7 +34,9 @@
 </script>
 
 <Page title="Login" icon="user">
-    <OpenDataPolicyBanner slot="alert" />
+    {#snippet alert()}
+        <OpenDataPolicyBanner />
+    {/snippet}
     <Section>
         <form method="post" use:enhance={enhancedLogin} novalidate>
             <EmailInput

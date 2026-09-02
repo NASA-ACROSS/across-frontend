@@ -1,11 +1,31 @@
 <script lang="ts">
-    export let id: string = '';
-    export let name: string = '';
-    export let href: string | null = null;
-    export let containerClasses = '';
-    export let textClasses = '';
-    export let direction: 'right' | 'left' = 'right';
-    export let openInNewTab = false;
+    interface Props {
+        id?: string;
+        name?: string;
+        href?: string | null;
+        containerClasses?: string;
+        textClasses?: string;
+        direction?: 'right' | 'left';
+        openInNewTab?: boolean;
+        // Svelte 5 migration (B8): replaces the `createBubbler()` shim that `sv migrate`
+        // injected from 'svelte/legacy' to emulate Svelte 4 `on:click` forwarding. No
+        // caller currently forwards a click, but a callback prop keeps the capability
+        // without depending on the deprecated compatibility layer.
+        onclick?: (event: MouseEvent) => void;
+        children?: import('svelte').Snippet;
+    }
+
+    let {
+        id = '',
+        name = '',
+        href = null,
+        containerClasses = '',
+        textClasses = '',
+        direction = 'right',
+        openInNewTab = false,
+        onclick,
+        children,
+    }: Props = $props();
 </script>
 
 <div class="my-2 {containerClasses}">
@@ -17,12 +37,12 @@
         target={openInNewTab ? '_blank' : '_self'}
         class="text-lg h-auto no-underline hover:underline decoration-dashed underline-offset-4 {textClasses}"
     >
-        <button class="flex me-0 cursor-pointer gap-1" on:click>
+        <button class="flex me-0 cursor-pointer gap-1" {onclick}>
             <span class="color-primary-content self-center pb-1">
                 {#if name}
                     {name}
                 {:else}
-                    <slot></slot>
+                    {@render children?.()}
                 {/if}
             </span>
             <svg

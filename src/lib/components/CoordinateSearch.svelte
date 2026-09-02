@@ -1,12 +1,23 @@
 <script lang="ts">
     import ObjectNameResolver from './ObjectNameResolver.svelte';
 
-    export let ra: string | number = '';
-    export let dec: string | number = '';
-    export let radius: string | number = '';
-    export let objectName: string = '';
-    export let includeRadius: boolean = false;
-    export let required: boolean = false;
+    interface Props {
+        ra?: string | number;
+        dec?: string | number;
+        radius?: string | number;
+        objectName?: string;
+        includeRadius?: boolean;
+        required?: boolean;
+    }
+
+    let {
+        ra = $bindable(''),
+        dec = $bindable(''),
+        radius = $bindable(''),
+        objectName = $bindable(''),
+        includeRadius = false,
+        required = false,
+    }: Props = $props();
 </script>
 
 <ObjectNameResolver bind:ra bind:dec bind:objectName {required} />

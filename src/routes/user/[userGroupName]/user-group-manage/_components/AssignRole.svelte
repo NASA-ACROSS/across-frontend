@@ -8,29 +8,41 @@
     import Spinner from '$lib/components/Spinner.svelte';
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
 
-    export let user: GroupUser | undefined;
-    export let group: UserGroup;
+    interface Props {
+        user: GroupUser | undefined;
+        group: UserGroup;
+    }
+
+    let { user, group }: Props = $props();
     let roles: GroupRole[] = group.roles;
-    let selectedRole: GroupRole;
+    // Svelte 5 migration (B9): `$state()` with no argument is `undefined` until assigned,
+    // and svelte-check 4 now types that honestly (`export let` used to launder it). The
+    // annotation has to admit undefined; use sites guard with `?.`.
+    let selectedRole: GroupRole | undefined = $state();
 
     // noRolesToAdd when every assignable role is found in the user's role list
-    $: noRolesToAdd = roles?.every((role) => user?.group_roles?.find((userRole) => userRole?.id == role?.id));
+    let noRolesToAdd = $derived(roles?.every((role) => user?.group_roles?.find((userRole) => userRole?.id == role?.id)));
 
-    $: assignableRoles = roles?.reduce((assignableRoles, role) => {
-        // if user does not have this role add it to assignable
-        if (!user?.group_roles?.find((userRole) => userRole?.id == role?.id)) {
-            assignableRoles.push(role);
-        }
-        return assignableRoles;
-    }, [] as GroupRole[]);
+    let assignableRoles = $derived(
+        roles?.reduce((assignableRoles, role) => {
+            // if user does not have this role add it to assignable
+            if (!user?.group_roles?.find((userRole) => userRole?.id == role?.id)) {
+                assignableRoles.push(role);
+            }
+            return assignableRoles;
+        }, [] as GroupRole[])
+    );
 
-    let isAssigningRole = false;
+    let isAssigningRole = $state(false);
 
     const enhancedForm: SubmitFunction = ({ formData }) => {
         isAssigningRole = true;
         // set form data to send, specific to this form
         formData.set('userId', user?.id?.toString() || '');
-        formData.set('roleId', selectedRole.id.toString());
+        // guarded because `selectedRole` is now typed as possibly undefined (B9); this
+        // handler only runs after a role has actually been picked. Matches the existing
+        // `user?.id?.toString() || ''` idiom on the line above.
+        formData.set('roleId', selectedRole?.id.toString() || '');
         formData.set('groupId', group.id.toString());
 
         return async ({ result }) => {
@@ -71,7 +83,7 @@
                             <button
                                 class="btn btn-info w-15 text-xl"
                                 type="submit"
-                                on:click={() => {
+                                onclick={() => {
                                     selectedRole = role;
                                 }}
                                 >{#if isAssigningRole && selectedRole == role}

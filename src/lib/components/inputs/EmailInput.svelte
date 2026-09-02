@@ -1,20 +1,36 @@
 <script lang="ts">
     import Button from '../Button.svelte';
 
-    export let name = 'email';
-    export let value = '';
-    export let placeholder = 'Enter an email address';
-    export let disabled = false;
-    export let autocomplete = true;
-    export let required = true;
-    /**
-     * Button to submit `<form>` action in current context.
-     * Used for login and user invitation on group manage page.
-     * Customize text with `btnText`
-     */
-    export let includeButton = false;
-    export let btnTxt = 'Send Link';
-    export let isLoading;
+    interface Props {
+        name?: string;
+        value?: string;
+        placeholder?: string;
+        disabled?: boolean;
+        autocomplete?: boolean;
+        required?: boolean;
+        /**
+         * Button to submit `<form>` action in current context.
+         * Used for login and user invitation on group manage page.
+         * Customize text with `btnText`
+         */
+        includeButton?: boolean;
+        btnTxt?: string;
+        isLoading: any;
+        children?: import('svelte').Snippet;
+    }
+
+    let {
+        name = 'email',
+        value = '',
+        placeholder = 'Enter an email address',
+        disabled = false,
+        autocomplete = true,
+        required = true,
+        includeButton = false,
+        btnTxt = 'Send Link',
+        isLoading,
+        children,
+    }: Props = $props();
 </script>
 
 <div>
@@ -46,5 +62,5 @@
         {/if}
         <div class="validator-hint hidden text-left absolute mt-13">Enter valid email address</div>
     </div>
-    <slot></slot>
+    {@render children?.()}
 </div>

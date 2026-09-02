@@ -37,7 +37,19 @@
     let time = $derived(parts.time);
 
     // Push edits back up through the bindable prop; `date`/`time` stay derived from it.
-    const select = (nextDate: string, nextTime: string) => (datetimeInput = joinDateTime(nextDate, nextTime));
+    const handleDateChange = (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        const nextDate = target.value;
+        const nextTime = time;
+        datetimeInput = joinDateTime(nextDate, nextTime);
+    };
+
+    const handleTimeChange = (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        const nextDate = date;
+        const nextTime = target.value;
+        datetimeInput = joinDateTime(nextDate, nextTime);
+    };
 </script>
 
 <fieldset class="fieldset">
@@ -53,7 +65,7 @@
                 {required}
                 type="date"
                 bind:value={date}
-                oninput={select}
+                oninput={handleDateChange}
                 class="input text-primary"
             />
         </div>
@@ -67,7 +79,7 @@
                 {required}
                 type="time"
                 bind:value={time}
-                oninput={select}
+                oninput={handleTimeChange}
                 step="1"
                 class="input"
             />

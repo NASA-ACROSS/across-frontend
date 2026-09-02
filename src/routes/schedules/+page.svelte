@@ -18,7 +18,7 @@
     let error = $derived(data.error);
 
     const DEFAULT_COLUMNS = ['observatory_telescope', 'name', 'date_begin', 'date_end', 'status', 'fidelity', 'number_of_observations'];
-    const COOKIE_NAME = 'schedule_columns';
+    const SCHEDULE_COLUMNS_COOKIE = 'schedule_columns';
     const PAGINATION_BUTTONS = 4;
 
     // Schedule data and pagination
@@ -34,15 +34,15 @@
     let selectedTelescopes: Telescope[] = $state([]);
 
     // Query parameters
-    let name = $state(data.queryParams?.name || '');
-    let status = $state(data.queryParams?.status || '');
-    let dateRangeBegin = $state(data.queryParams?.date_range_begin || '');
-    let dateRangeEnd = $state(data.queryParams?.date_range_end || '');
-    let fidelity = $state(data.queryParams?.fidelity || '');
-    let externalId = $state(data.queryParams?.external_id || '');
+    let name = $derived(data.queryParams?.name || '');
+    let status = $derived(data.queryParams?.status || '');
+    let dateRangeBegin = $derived(data.queryParams?.date_range_begin || '');
+    let dateRangeEnd = $derived(data.queryParams?.date_range_end || '');
+    let fidelity = $derived(data.queryParams?.fidelity || '');
+    let externalId = $derived(data.queryParams?.external_id || '');
 
     // Column customization
-    let availableColumns = $derived([
+    let availableColumns = $state([
         { id: 'observatory_telescope', label: 'Observatory/Telescope', selected: true },
         { id: 'name', label: 'Name', selected: true },
         { id: 'date_begin', label: 'Date Begin', selected: true },
@@ -90,7 +90,7 @@
 
         const cookieValue = document.cookie
             .split('; ')
-            .find((row) => row.startsWith(`${COOKIE_NAME}=`))
+            .find((row) => row.startsWith(`${SCHEDULE_COLUMNS_COOKIE}=`))
             ?.split('=')[1];
 
         if (cookieValue) {
@@ -113,7 +113,7 @@
         const selectedColumnIds = availableColumns.filter((col) => col.selected).map((col) => col.id);
 
         const value = encodeURIComponent(JSON.stringify(selectedColumnIds));
-        document.cookie = `${COOKIE_NAME}=${value}; path=/; max-age=31536000`;
+        document.cookie = `${SCHEDULE_COLUMNS_COOKIE}=${value}; path=/; max-age=31536000`;
     }
 
     function resetToDefaultColumns() {
@@ -450,10 +450,10 @@
                     <div class="flex justify-between">
                         <div>
                             <button data-testid="default-columns-btn" class="btn btn-sm btn-outline mr-2" onclick={resetToDefaultColumns}>
-                                Default Columns 
+                                Default Columns
                             </button>
                             <button data-testid="load-columns-btn" class="btn btn-sm btn-outline" onclick={loadColumnsFromCookie}>
-                                Load My Columns 
+                                Load My Columns
                             </button>
                         </div>
                         <div>

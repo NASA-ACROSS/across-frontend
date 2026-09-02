@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.8.0...across-frontend-v1.9.0) (2026-09-02)
+
+
+### Features
+
+* observation request create page ([#366](https://github.com/NASA-ACROSS/across-frontend/issues/366)) ([b488e1e](https://github.com/NASA-ACROSS/across-frontend/commit/b488e1e4a2be0c7fa502b60a1e96043fb7c372ac))
+* **test:** add mockserver for mocking ACROSS server ([#367](https://github.com/NASA-ACROSS/across-frontend/issues/367)) ([34054a8](https://github.com/NASA-ACROSS/across-frontend/commit/34054a89c2a3022d6be87cc4c090bb7ea059bd17))
+
 ## [1.8.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.7.0...across-frontend-v1.8.0) (2026-08-18)
 
 

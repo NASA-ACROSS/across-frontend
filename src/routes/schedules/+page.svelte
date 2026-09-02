@@ -233,7 +233,7 @@
                     class="link link-primary">/schedules/history</a
                 > page (work in progress).
             </p>
-            <div class="bg-base-200 p-4 mb-6 w-full">
+            <div data-testid="schedule-filters" class="bg-base-200 p-4 mb-6 w-full">
                 <div class="flex justify-between">
                     <div class="text-carbon-90 text-2xl pb-4 opacity-80" title="All selected filters apply during search">
                         Query Filters
@@ -282,7 +282,7 @@
                     </div>
 
                     <!-- Schedule section -->
-                    <div class="collapse collapse-arrow join-item border-base-300 border">
+                    <div data-testid="schedule-section-collapse" class="collapse collapse-arrow join-item border-base-300 border">
                         <input
                             type="radio"
                             name="my-accordion"
@@ -324,7 +324,7 @@
                         <div class="collapse-content">
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4">
                                 <div class="form-control">
-                                    <label class="label text-lg" for="name-input">
+                                    <label class="label text-lg" for="name-input" aria-labelledby="Schedule Name">
                                         <span class="label-text">Schedule Name</span>
                                     </label>
                                     <div class="flex items-center">
@@ -339,10 +339,10 @@
                                 </div>
 
                                 <div class="form-control">
-                                    <label class="label text-lg" for="schedule-status-input">
+                                    <label class="label text-lg" for="schedule-status-select" aria-labelledby="Status">
                                         <span class="label-text">Status</span>
                                     </label>
-                                    <select id="schedule-status-input" bind:value={status} class="select select-bordered text-lg w-full">
+                                    <select id="schedule-status-select" bind:value={status} class="select select-bordered text-lg w-full">
                                         <option value="">Select status</option>
                                         {#each statusOptions as option}
                                             <option value={option}>{option}</option>
@@ -351,10 +351,15 @@
                                 </div>
 
                                 <div class="form-control">
-                                    <label class="label text-lg" for="fidelity-input">
+                                    <label class="label text-lg" for="fidelity-select" aria-labelledby="Fidelity">
                                         <span class="label-text">Fidelity</span>
                                     </label>
-                                    <select id="fidelity-input" bind:value={fidelity} class="select select-bordered text-lg w-full">
+                                    <select
+                                        data-testid="schedule-fidelity-select"
+                                        id="fidelity-select"
+                                        bind:value={fidelity}
+                                        class="select select-bordered text-lg w-full"
+                                    >
                                         <option value="">Select fidelity</option>
                                         {#each fidelityOptions as option}
                                             <option value={option}>{option}</option>
@@ -363,7 +368,7 @@
                                 </div>
 
                                 <div class="form-control">
-                                    <label class="label text-lg" for="external-id-input">
+                                    <label class="label text-lg" for="external-id-input" aria-labelledby="External ID">
                                         <span class="label-text">External ID</span>
                                     </label>
                                     <input
@@ -383,7 +388,9 @@
 
                 <div class="flex justify-end mt-4">
                     <p class="self-center pe-3 text-error {error ? '' : 'hidden'}">{error}</p>
-                    <button class="btn btn-info text-lg" on:click={async () => await handleSearch()}>Search</button>
+                    <button data-testid="search-btn" class="btn btn-info text-lg" on:click={async () => await handleSearch()}>
+                        Search
+                    </button>
                 </div>
             </div>
         </div>
@@ -395,7 +402,7 @@
             {#key currentPage}
                 <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
             {/key}
-            <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
+            <button data-testid="customize-columns-btn" class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
                 Customize
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path
@@ -409,7 +416,7 @@
 
         <!-- Column Customization Modal -->
         {#if isCustomizeModalOpen}
-            <div class="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+            <div data-testid="customize-columns-dialog" class="fixed inset-0 bg-transparent flex items-center justify-center z-50">
                 <div class="bg-base-100 p-6 w-full max-w-md shadow-2xl">
                     <div class="text-lg font-bold mb-4 flex flex-row justify-between">
                         <h3 class="flex">Customize Columns</h3>
@@ -426,7 +433,12 @@
                                 <div class="form-control odd:bg-base-200">
                                     <label class="label cursor-pointer flex justify-between">
                                         <span class="label-text ps-3">{column.label}</span>
-                                        <input type="checkbox" bind:checked={column.selected} class="checkbox me-3" />
+                                        <input
+                                            data-testid={`Checkbox:${column.id}`}
+                                            type="checkbox"
+                                            bind:checked={column.selected}
+                                            class="checkbox me-3"
+                                        />
                                     </label>
                                 </div>
                             {/key}
@@ -435,11 +447,16 @@
 
                     <div class="flex justify-between">
                         <div>
-                            <button class="btn btn-sm btn-outline mr-2" on:click={resetToDefaultColumns}> Default Columns </button>
-                            <button class="btn btn-sm btn-outline" on:click={loadColumnsFromCookie}> Load My Columns </button>
+                            <button data-testid="default-columns-btn" class="btn btn-sm btn-outline mr-2" on:click={resetToDefaultColumns}>
+                                Default Columns
+                            </button>
+                            <button data-testid="load-columns-btn" class="btn btn-sm btn-outline" on:click={loadColumnsFromCookie}>
+                                Load My Columns
+                            </button>
                         </div>
                         <div>
                             <button
+                                data-testid="save-columns-btn"
                                 class="btn btn-sm btn-primary"
                                 on:click={saveColumnSelection}
                                 title="Save column selections to cookie to be loaded next visit and close this modal"
@@ -453,12 +470,12 @@
         {/if}
 
         <!-- Data Table -->
-        <div id="data-table" class="overflow-x-auto overflow-y-scroll max-h-256 ps-0 pe-0 pb-0">
+        <div data-testid="DataTable:schedules" id="data-table" class="overflow-x-auto overflow-y-scroll max-h-256 ps-0 pe-0 pb-0">
             <table class="table table-pin-rows table-zebra w-full">
                 <thead>
                     <tr class="bg-primary text-primary-content">
                         {#each selectedColumns as column}
-                            <th class="max-w-70 cursor-pointer hover:bg-nasa-blue">
+                            <th data-testid={`TableHeader:${column.id}`} class="max-w-70 cursor-pointer hover:bg-nasa-blue">
                                 {column.label}
                             </th>
                         {/each}

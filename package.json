@@ -6,7 +6,7 @@
         "dev": "vite dev",
         "build": "BUILD_ENV=deploy vite build",
         "build:docker": "docker build --target local -t across-frontend:latest --no-cache --platform linux/amd64 .",
-        "compose": "docker compose down && docker compose build && docker compose up -d",
+        "compose": "COMPOSE_BAKE=true docker compose down && docker compose up -d",
         "preview": "vite preview",
         "test": "npm run test:integration && npm run test:unit",
         "check": "PUBLIC_BUILD_VERSION=check PUBLIC_RUNTIME_ENV=check svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -18,6 +18,7 @@
         "lint:fix": "eslint . --fix",
         "test:e2e": "playwright test",
         "test:integration": "playwright test",
+        "start:mockserver": "tsx tests/integration/mockserver/mockserver.ts",
         "test:unit": "vitest",
         "test:generate": "npm run compose && playwright codegen localhost:5173",
         "prepare": "husky"

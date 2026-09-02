@@ -1,9 +1,13 @@
 <script lang="ts">
     import { DateTime } from 'luxon';
 
+    export let id: string | undefined = undefined;
     export let datetimeInput: string = '';
     export let label = 'Date/Time';
     export let required: boolean = false;
+
+    const dateInputId = id ? `DatetimeInput:date-${id}` : 'DatetimeInput:date';
+    const timeInputId = id ? `DatetimeInput:time-${id}` : 'DatetimeInput:time';
 
     const splitDateTime = (dateStr: string = '') => {
         const dt = DateTime.fromISO(dateStr, { zone: 'utc' });
@@ -29,13 +33,40 @@
     const select = () => (datetimeInput = joinDateTime(date, time));
 </script>
 
-<label class="label text-lg" for="date-input">
-    <span class="label-text">{label}</span>
-</label>
-<div class="grid grid-cols-2 gap-2 w-full">
-    <input {required} type="date" bind:value={date} on:input={select} class="input text-primary w-full" />
-    <input {required} type="time" bind:value={time} on:input={select} step="1" class="input w-full" />
-</div>
+<fieldset class="fieldset">
+    <legend class="fieldset-legend text-lg font-normal">{label}</legend>
+    <div class="grid grid-cols-2 gap-1">
+        <div class="flex flex-col gap-2 w-full">
+            <label class="label text-lg" for={dateInputId} hidden>
+                <span class="label-text">Date</span>
+            </label>
+            <input
+                data-testid={dateInputId}
+                id={dateInputId}
+                {required}
+                type="date"
+                bind:value={date}
+                on:input={select}
+                class="input text-primary"
+            />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label class="label text-lg" for={timeInputId} hidden>
+                <span class="label-text">Time</span>
+            </label>
+            <input
+                data-testid={timeInputId}
+                id={timeInputId}
+                {required}
+                type="time"
+                bind:value={time}
+                on:input={select}
+                step="1"
+                class="input"
+            />
+        </div>
+    </div>
+</fieldset>
 
 <style>
     .input::-webkit-calendar-picker-indicator {

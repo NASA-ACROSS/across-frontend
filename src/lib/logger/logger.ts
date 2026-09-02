@@ -22,7 +22,7 @@ const logger: Logger = (() => {
     } else {
         options.level = PUBLIC_CONFIG.DEFAULT_LOG_LEVEL;
 
-        if (PUBLIC_CONFIG.RUNTIME_ENV === 'local') {
+        if (PUBLIC_CONFIG.PRETTY_LOGS === 1) {
             options.transport = {
                 target: 'pino-pretty',
                 options: {

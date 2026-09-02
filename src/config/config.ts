@@ -21,6 +21,8 @@ export class PrivateConfiguration {
 
     /** Only used in test environment */
     public ACROSS_TEST_ACCESS_TOKEN: string = env.ACROSS_TEST_ACCESS_TOKEN || '';
+    /** Only used in playwright integration testing */
+    public MOCKSERVER_NAMESPACE_HEADER: string = env.MOCKSERVER_NAMESPACE_HEADER || 'X-Mockserver-Namespace';
 
     public AWS_REGION: string = env.AWS_REGION || 'us-east-2';
     public AWS_PROFILE?: string = env.AWS_PROFILE;

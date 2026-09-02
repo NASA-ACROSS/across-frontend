@@ -15,7 +15,7 @@
 
     let { user, group }: Props = $props();
     let roles: GroupRole[] = group.roles;
-    // Svelte 5 migration (B9): `$state()` with no argument is `undefined` until assigned,
+    // Svelte 5 migration: `$state()` with no argument is `undefined` until assigned,
     // and svelte-check 4 now types that honestly (`export let` used to launder it). The
     // annotation has to admit undefined; use sites guard with `?.`.
     let selectedRole: GroupRole | undefined = $state();
@@ -39,7 +39,7 @@
         isAssigningRole = true;
         // set form data to send, specific to this form
         formData.set('userId', user?.id?.toString() || '');
-        // guarded because `selectedRole` is now typed as possibly undefined (B9); this
+        // guarded because `selectedRole` is now typed as possibly undefined; this
         // handler only runs after a role has actually been picked. Matches the existing
         // `user?.id?.toString() || ''` idiom on the line above.
         formData.set('roleId', selectedRole?.id.toString() || '');

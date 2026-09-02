@@ -11,7 +11,7 @@
     interface Props {
         user: User;
         userGroups: UserGroup[];
-        // Svelte 5 migration (B9): widened because the parent declares this as
+        // Svelte 5 migration: widened because the parent declares this as
         // `$state()` with no initial value -- nothing is selected until the user picks a
         // group. The template here already guarded with `leaveUserGroup?.id`.
         leaveUserGroup: UserGroup | undefined;

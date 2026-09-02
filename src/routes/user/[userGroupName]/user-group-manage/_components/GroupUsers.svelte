@@ -2,7 +2,7 @@
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import type { GroupUser } from '$lib/types/User/GroupUser';
 
-    // Svelte 5 migration (B7): this used to bind the selected `GroupUser` *object* and
+    // Svelte 5 migration: this used to bind the selected `GroupUser` *object* and
     // compare it by reference (`selectedUser == user`). That is precisely why the parent
     // needed an afterUpdate() hook: when `load` re-runs it hands down freshly deserialised
     // user objects, so the stored reference matches nothing in the new array and the

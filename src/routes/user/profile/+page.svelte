@@ -27,7 +27,7 @@
 
     let leaveUserGroup: UserGroup | undefined = $state();
 
-    // Svelte 5 migration (B7): `sv migrate` refused this file ("Can't migrate code with
+    // Svelte 5 migration: `sv migrate` refused this file ("Can't migrate code with
     // afterUpdate"), so it was still Svelte 4.
     // `user` is a local editable copy driven by `bind:value` on the form inputs, so it
     // has to be real $state rather than a $derived view of `data.user`. It is cloned so
@@ -106,7 +106,7 @@
 
 <Page title="Profile" icon="user">
     <!--
-        Svelte 5 migration (G2): was `<div slot="buttons">`, which renders nothing when
+        Svelte 5 migration: was `<div slot="buttons">`, which renders nothing when
         passed to a runes component that declares `buttons` as a Snippet. This is the
         `$$slot_def is of type 'unknown'` svelte-check error.
     -->

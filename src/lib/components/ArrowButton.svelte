@@ -7,7 +7,7 @@
         textClasses?: string;
         direction?: 'right' | 'left';
         openInNewTab?: boolean;
-        // Svelte 5 migration (B8): replaces the `createBubbler()` shim that `sv migrate`
+        // Svelte 5 migration: replaces the `createBubbler()` shim that `sv migrate`
         // injected from 'svelte/legacy' to emulate Svelte 4 `on:click` forwarding. No
         // caller currently forwards a click, but a callback prop keeps the capability
         // without depending on the deprecated compatibility layer.

@@ -19,8 +19,6 @@ type UpdateUserInformationResult = FormSubmitResult & {
 };
 
 export async function load({ fetch, locals }: RequestEvent) {
-    guards.localOnlyRoute();
-
     const localUser = guards.requireUser(locals);
     const user = await getUserInfo(fetch, localUser.id);
 

@@ -28,7 +28,7 @@
 
     const brightnessUnitOptions = ['ab_mag', 'vega_mag', 'flux_erg', 'flux_jy'];
 
-    // Svelte 5 migration (B9): these were all declared as `let x: T = $state()` -- a
+    // Svelte 5 migration: these were all declared as `let x: T = $state()` -- a
     // non-optional type with no initialiser, which svelte-check 4 rejects because
     // `$state()` is `undefined` until assigned. Each is widened to match the prop type of
     // the child component it binds into (CoordinateSearch, DateRangeInput and

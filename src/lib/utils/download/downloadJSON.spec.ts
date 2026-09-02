@@ -48,7 +48,7 @@ describe('downloadJSON', () => {
 
         vi.stubGlobal('URL', mockURL);
 
-        // Svelte 5 migration (B4): unrelated to Svelte itself, but surfaced by the same
+        // Svelte 5 migration: unrelated to Svelte itself, but surfaced by the same
         // dependency bump. Regenerating the lockfile moved vitest 1 -> 4, and vitest 4
         // mocks are no longer constructible when built from an arrow function. downloadJSON
         // calls `new Blob(...)`, so the arrow implementation threw

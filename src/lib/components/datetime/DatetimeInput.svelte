@@ -25,7 +25,7 @@
         return DateTime.fromISO(`${date}T${timePart}`, { zone: 'utc' }).toISO({ includeOffset: false }) ?? '';
     };
 
-    // Svelte 5 migration (B8): was a `run()` shim from 'svelte/legacy'.
+    // Svelte 5 migration: was a `run()` shim from 'svelte/legacy'.
     // $derived rather than $effect: this must also run during SSR so the inputs render
     // populated on the server. $effect would leave them empty until hydration.
     let parts = $derived(splitDateTime(datetimeInput));

@@ -16,7 +16,7 @@
     import type { PageData } from './$types';
     import UnitValueInput from '$lib/components/inputs/UnitValueInput.svelte';
 
-    // Svelte 5 migration (B7): `sv migrate` refused this file outright (see B1), so it was
+    // Svelte 5 migration: `sv migrate` refused this file outright, so it was
     // still entirely Svelte 4 -- `export let`, 16 `$:` statements and 19 `on:` directives.
     // It is now fully converted to runes.
     interface Props {
@@ -773,7 +773,7 @@
                                                     {#each scheduleIds as id}
                                                         <tr>
                                                             <!--
-                                                                Svelte 5 migration (B1): the <span> and <button> below
+                                                                Svelte 5 migration: the <span> and <button> below
                                                                 were direct children of <tr>, which is a hard compile
                                                                 error in Svelte 5 -- <tr> permits only <th>, <td>,
                                                                 <style>, <script> and <template>. This was the error
@@ -809,7 +809,7 @@
     <Section title="Observations (Total: {totalCount})" icon="globe">
         <!-- Pagination -->
         <!--
-            Svelte 5 migration (G2): this was `<div slot="buttons">`. Section/Page declare
+            Svelte 5 migration: this was `<div slot="buttons">`. Section/Page declare
             `buttons` as a Snippet, and a legacy named slot passed to a runes component
             renders *nothing at all* -- silently, with no error. Page gates its whole header
             row on `{#if icon || title || buttons}`, so the pagination and Customize button

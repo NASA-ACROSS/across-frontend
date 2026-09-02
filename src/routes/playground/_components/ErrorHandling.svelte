@@ -10,7 +10,7 @@
 
     let { form }: Props = $props();
 
-    // Svelte 5 migration (B9): `$state()` with no argument is `undefined` until assigned,
+    // Svelte 5 migration: `$state()` with no argument is `undefined` until assigned,
     // and svelte-check 4 now types that honestly (`export let` used to launder it). The
     // annotation has to admit undefined; use sites guard with `?.`.
     let selectedStatus: string | undefined = $state();

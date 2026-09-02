@@ -18,7 +18,7 @@
 
     let { form, data }: Props = $props();
 
-    // Svelte 5 migration (B7): `sv migrate` refused this file ("Can't migrate code with
+    // Svelte 5 migration: `sv migrate` refused this file ("Can't migrate code with
     // afterUpdate"), so it was still Svelte 4. These three were plain `let` aliases of
     // `data` refreshed by an afterUpdate() hook; they are pure derivations, so $derived
     // replaces both the aliases and the hook.
@@ -35,7 +35,7 @@
 
 <Page title={'Group Management - ' + group.name} icon="group">
     <!--
-        Svelte 5 migration (G2): was `<div slot="buttons">`. Page declares `buttons` as a
+        Svelte 5 migration: was `<div slot="buttons">`. Page declares `buttons` as a
         Snippet, and a legacy named slot handed to a runes component renders nothing at
         all -- with no error. Page also gates its header row on `{#if icon || title ||
         buttons}`, so the whole row vanished.

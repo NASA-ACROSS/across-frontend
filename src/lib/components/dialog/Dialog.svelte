@@ -29,7 +29,7 @@
         children,
     }: Props = $props();
 
-    // Svelte 5 migration (B9): `$state()` with no argument is `undefined` until assigned,
+    // Svelte 5 migration: `$state()` with no argument is `undefined` until assigned,
     // and svelte-check 4 now types that honestly (`export let` used to launder it). The
     // annotation has to admit undefined; use sites guard with `?.`.
     let dialog: HTMLDialogElement | undefined = $state();
@@ -76,7 +76,7 @@
 
         if (onClose) onClose();
     };
-    // Svelte 5 migration (B8): replaces two `run()` shims from 'svelte/legacy'.
+    // Svelte 5 migration: replaces two `run()` shims from 'svelte/legacy'.
     // Genuine imperative DOM side effect, so $effect is correct here (unlike the purely
     // derived values above). It intentionally does not run during SSR -- showModal()
     // needs a real element, and `dialog` is only populated after bind:this on the client.

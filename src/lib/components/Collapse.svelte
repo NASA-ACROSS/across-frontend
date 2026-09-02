@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
 
-    // Svelte 5 migration (G1): this component previously declared BOTH a string prop
+    // Svelte 5 migration: this component previously declared BOTH a string prop
     // named `title` and a `<slot name="title">`. In Svelte 5 slots become snippets, and
     // snippets are just props -- so the two collided. `sv migrate` detected that, refused
     // the component and left it in Svelte 4 syntax, but still migrated its callers to

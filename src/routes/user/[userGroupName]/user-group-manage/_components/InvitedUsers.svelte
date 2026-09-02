@@ -12,14 +12,14 @@
 
     let { invitedUsers }: Props = $props();
 
-    // Svelte 5 migration (B9): `$state()` with no argument is `undefined` until assigned,
+    // Svelte 5 migration: `$state()` with no argument is `undefined` until assigned,
     // and svelte-check 4 now types that honestly (`export let` used to launder it). The
     // annotation has to admit undefined; use sites guard with `?.`.
     let currentUserInvite: GroupInvite | undefined = $state();
 
     const enhancedForm: SubmitFunction = ({ formData }) => {
         // set form data to send, specific to this form
-        // guarded because `currentUserInvite` is now typed as possibly undefined (B9);
+        // guarded because `currentUserInvite` is now typed as possibly undefined;
         // this handler only runs once an invite row has been chosen.
         formData.set('userGroupId', currentUserInvite?.group.id.toString() || '');
         formData.set('userInviteId', currentUserInvite?.id.toString() || '');

@@ -11,7 +11,7 @@
 
 <li class="text-primary-content">
     <!--
-        Svelte 5 migration (B1): this branch used to wrap its contents in a second <li>
+        Svelte 5 migration: this branch used to wrap its contents in a second <li>
         nested directly inside this one. Svelte 5 rejects invalid HTML nesting because
         hydration assumes the server-rendered markup survives in the browser, and browsers
         "repair" <li>-inside-<li> by hoisting it out. The inner <li> was redundant anyway:

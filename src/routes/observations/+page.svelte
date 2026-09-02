@@ -64,24 +64,24 @@
     // here and not a regression. A top-level `let` in Svelte 4 was also evaluated exactly
     // once, so these never resynced on client-side navigation before either -- and
     // resyncing would be wrong, since it would overwrite a field mid-edit.
-    let externalId = $state(data.queryParams?.external_id || '');
-    let scheduleId = $state('');
-    let scheduleIds = $state((data.queryParams?.schedule_ids as string[]) || ([] as string[]));
-    let status = $state(data.queryParams?.status || '');
-    let proposal = $state(data.queryParams?.proposal || '');
-    let objectName = $state(data.queryParams?.object_name || '');
-    let dateRangeBegin = $state(data.queryParams?.date_range_begin || '');
-    let dateRangeEnd = $state(data.queryParams?.date_range_end || '');
-    let bandpassMin = $state(data.queryParams?.bandpass_min || '');
-    let bandpassMax = $state(data.queryParams?.bandpass_max || '');
-    let bandpassRegime: string = $state(data.queryParams?.bandpass_regime || '');
-    let bandpassType: string = $state(data.queryParams?.bandpass_type || '');
-    let coneSearchRa = $state(data.queryParams?.cone_search_ra || '');
-    let coneSearchDec = $state(data.queryParams?.cone_search_dec || '');
-    let coneSearchRadius = $state(data.queryParams?.cone_search_radius || '');
-    let type = $state(data.queryParams?.type || '');
-    let depthValue = $state(Number(data.queryParams?.depth_value) || undefined);
-    let depthUnit = $state(data.queryParams?.depth_unit || '');
+    let externalId = $derived(data.queryParams?.external_id || '');
+    let scheduleId = $derived('');
+    let scheduleIds = $derived((data.queryParams?.schedule_ids as string[]) || ([] as string[]));
+    let status = $derived(data.queryParams?.status || '');
+    let proposal = $derived(data.queryParams?.proposal || '');
+    let objectName = $derived(data.queryParams?.object_name || '');
+    let dateRangeBegin = $derived(data.queryParams?.date_range_begin || '');
+    let dateRangeEnd = $derived(data.queryParams?.date_range_end || '');
+    let bandpassMin = $derived(data.queryParams?.bandpass_min || '');
+    let bandpassMax = $derived(data.queryParams?.bandpass_max || '');
+    let bandpassRegime: string = $derived(data.queryParams?.bandpass_regime || '');
+    let bandpassType: string = $derived(data.queryParams?.bandpass_type || '');
+    let coneSearchRa = $derived(data.queryParams?.cone_search_ra || '');
+    let coneSearchDec = $derived(data.queryParams?.cone_search_dec || '');
+    let coneSearchRadius = $derived(data.queryParams?.cone_search_radius || '');
+    let type = $derived(data.queryParams?.type || '');
+    let depthValue = $derived(Number(data.queryParams?.depth_value) || undefined);
+    let depthUnit = $derived(data.queryParams?.depth_unit || '');
 
     // Column customization.
     // This was `$: availableColumns = [...]`, but the expression has no reactive

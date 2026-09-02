@@ -37,14 +37,18 @@
     let time = $derived(parts.time);
 
     // Push edits back up through the bindable prop; `date`/`time` stay derived from it.
-    const handleDateInput = (event: Event) => {
-        const target = event.target as HTMLInputElement;
-        datetimeInput = joinDateTime(target.value, time);
+    const handleDateChange = (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        const nextDate = target.value;
+        const nextTime = time;
+        datetimeInput = joinDateTime(nextDate, nextTime);
     };
 
-    const handleTimeInput = (event: Event) => {
-        const target = event.target as HTMLInputElement;
-        datetimeInput = joinDateTime(date, target.value);
+    const handleTimeChange = (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        const nextDate = date;
+        const nextTime = target.value;
+        datetimeInput = joinDateTime(nextDate, nextTime);
     };
 </script>
 
@@ -61,7 +65,7 @@
                 {required}
                 type="date"
                 bind:value={date}
-                oninput={handleDateInput}
+                oninput={handleDateChange}
                 class="input text-primary"
             />
         </div>
@@ -75,7 +79,7 @@
                 {required}
                 type="time"
                 bind:value={time}
-                oninput={handleTimeInput}
+                oninput={handleTimeChange}
                 step="1"
                 class="input"
             />

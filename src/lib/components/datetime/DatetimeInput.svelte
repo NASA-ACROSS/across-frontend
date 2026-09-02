@@ -13,9 +13,6 @@
     const dateInputId = $derived(id ? `DatetimeInput:date-${id}` : 'DatetimeInput:date');
     const timeInputId = $derived(id ? `DatetimeInput:time-${id}` : 'DatetimeInput:time');
 
-    const dateInputId = id ? `DatetimeInput:date-${id}` : 'DatetimeInput:date';
-    const timeInputId = id ? `DatetimeInput:time-${id}` : 'DatetimeInput:time';
-
     const splitDateTime = (dateStr: string = '') => {
         const dt = DateTime.fromISO(dateStr, { zone: 'utc' });
         if (!dt.isValid) return { date: '', time: '' };

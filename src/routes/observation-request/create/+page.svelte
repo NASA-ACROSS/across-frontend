@@ -14,6 +14,8 @@
     import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
     import ProposalInfoInput from '../_components/ProposalInfoInput.svelte';
     import UnitValueInput from '$lib/components/inputs/UnitValueInput.svelte';
+    import { resolve } from '$app/paths';
+    import ArrowButton from '$lib/components/ArrowButton.svelte';
 
     export let form: ActionData;
     export let data: PageData;
@@ -121,7 +123,13 @@
 
             <div class="flex justify-end gap-2 items-center mt-4">
                 {#if form?.createdId}
-                    <Alert soft={false} type="success">Created new Observation Request: {form.createdId}</Alert>
+                    <Alert soft={false} type="success">
+                        <ArrowButton
+                            href={resolve('/observation-request/[observationRequestId]', { observationRequestId: form.createdId })}
+                        >
+                            Created new observation request: {form.createdId}
+                        </ArrowButton>
+                    </Alert>
                 {/if}
                 <FormSubmitFeedback action="submitCreate" />
 

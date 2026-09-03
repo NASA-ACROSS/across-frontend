@@ -4,6 +4,7 @@ import { callApi } from './callApi';
 
 type GetTelescopesParams = {
     observatory_id?: string;
+    instrument_id?: string;
     include_filters?: boolean;
     include_footprints?: boolean;
 };

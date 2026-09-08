@@ -1,23 +1,8 @@
-import { test, expect } from '../fixtures/mockserver.fixture';
-import type { Schedule } from '$lib/types/across/Schedule';
+import { test } from '../fixtures';
+import { expect } from '@playwright/test';
 
 const TELESCOPE_PATH = '/v1/telescope';
 const SCHEDULE_PATH = '/v1/schedule';
-
-const buildSchedule = (overrides: Partial<Schedule>): Schedule => ({
-    telescope_id: 'telescope-1',
-    name: 'Test Schedule',
-    date_range: { begin: '2024-01-01T00:00:00', end: '2024-01-02T00:00:00' },
-    status: 'scheduled',
-    fidelity: 'high',
-    id: 'schedule-1',
-    observations: [],
-    observation_count: 0,
-    created_on: '2024-01-01T00:00:00',
-    created_by_id: 'user-1',
-    checksum: 'checksum-1',
-    ...overrides,
-});
 
 // key-value is column id: is selected by default
 const tableColumns = {
@@ -38,7 +23,7 @@ const defaultCols = Object.entries(tableColumns)
 test.describe('Initial Load without schedules', () => {
     test.beforeAll(async ({ mockServer }) => {
         await mockServer.mockJson(TELESCOPE_PATH, []);
-        await mockServer.mockJson(SCHEDULE_PATH, [], { paginate: true });
+        await mockServer.mockJson(SCHEDULE_PATH, [], { pagination: true });
     });
 
     test.beforeEach(async ({ page }) => {
@@ -194,16 +179,16 @@ test.describe('Initial Load without schedules', () => {
     });
 });
 
-test('schedules exist on load', async ({ page, mockServer }) => {
+test('schedules exist on load', async ({ page, mockServer, fake }) => {
     await mockServer.mockJson(TELESCOPE_PATH, []);
 
-    const scheduleA = buildSchedule({ id: 'schedule-a', name: 'First Schedule' });
-    await mockServer.mockJson(SCHEDULE_PATH, [scheduleA], { paginate: true });
+    const fakeSchedule = fake.schedule();
+    await mockServer.mockJson(SCHEDULE_PATH, [fakeSchedule], { pagination: true });
 
     await page.goto('/schedules');
 
     await test.step('should render schedule row', async () => {
-        await expect(page.getByTestId(`schedule-row:${scheduleA.id}`)).toBeVisible();
+        await expect(page.getByTestId(`schedule-row:${fakeSchedule.id}`)).toBeVisible();
     });
 
     await test.step('should render total number of schedules', async () => {

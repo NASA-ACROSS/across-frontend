@@ -3,16 +3,18 @@
     import Spinner from './Spinner.svelte';
 
     interface Props {
+        id?: string;
         currentPage?: number;
         totalPages?: number;
         numButtons?: number;
         searchParams: URLSearchParams;
     }
 
-    let { currentPage = 1, totalPages = 1, numButtons = 4, searchParams }: Props = $props();
+    let { id, currentPage = 1, totalPages = 1, numButtons = 4, searchParams }: Props = $props();
 
     // Track if we're currently navigating
     let isLoading = $state(false);
+    const testId = $derived(id ? `Pagination:${id}` : 'Pagination');
 
     beforeNavigate(() => {
         isLoading = true;
@@ -59,12 +61,13 @@
     }
 </script>
 
-<div class="flex items-center gap-2">
+<div data-testid={testId} class="flex items-center gap-2">
     {#if isLoading}
         <Spinner />
     {/if}
 
     <a
+        data-testid={testId + '-first'}
         data-sveltekit-noscroll
         data-sveltekit-preload-data="off"
         class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading
@@ -76,6 +79,7 @@
         &lt;&lt;
     </a>
     <a
+        data-testid={testId + '-prev'}
         data-sveltekit-noscroll
         data-sveltekit-preload-data="off"
         class="btn btn-sm {currentPage == 1 ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading
@@ -94,6 +98,7 @@
             </span>
         {:else}
             <a
+                data-testid={testId + '-currentPage'}
                 data-sveltekit-noscroll
                 data-sveltekit-preload-data="off"
                 class="btn btn-sm {isLoading ? 'pointer-events-none cursor-wait' : ''}"
@@ -106,6 +111,7 @@
     {/each}
 
     <a
+        data-testid={testId + '-next'}
         data-sveltekit-noscroll
         data-sveltekit-preload-data="off"
         class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading
@@ -118,6 +124,7 @@
     </a>
 
     <a
+        data-testid={testId + '-last'}
         data-sveltekit-noscroll
         data-sveltekit-preload-data="off"
         class="btn btn-sm {currentPage == totalPages ? 'pointer-events-none cursor-not-allowed' : ''} {isLoading

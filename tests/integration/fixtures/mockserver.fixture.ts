@@ -11,7 +11,12 @@ type MockHttpOptions = {
 
 type MockOptions = {
     /** @default false */
-    paginate?: boolean;
+    pagination?: boolean;
+    /**
+     * Whether to use the test's namespace for this mock per test.
+     * @default true
+     */
+    useNamespace?: boolean;
 };
 
 export type MockServerFixture = {
@@ -32,7 +37,7 @@ export type MockServerFixture = {
      * `schedules.mock-data.json`) and pass its contents as `body` here instead of inlining large
      * objects. For stateful/multi-call scenarios, use `client.mockAnyResponse(...)` directly.
      */
-    mockJson(path: string, body: unknown, mockOptions?: MockOptions, options?: MockHttpOptions): Promise<void>;
+    mockJson<T>(path: string, body: T | T[], mockOptions?: MockOptions, options?: MockHttpOptions): Promise<void>;
 };
 
 type Fixtures = {
@@ -55,26 +60,45 @@ if (!MOCKSERVER_NAMESPACE_HEADER) {
     throw new Error('MOCKSERVER_NAMESPACE_HEADER is not set. Ensure it is defined in the environment variables.');
 }
 
-const paginateRes = <T>(items: T[] | T, page = 0, page_limit = 10): Paginate<T> => {
-    const res = {
-        page,
-        page_limit,
-        total_number: 0,
-        items: [] as T[],
-    };
+const paginate = async <T>(client: MockServerClient, path: string, items: T[], namespace?: string) => {
+    const pageLimit = Number(process.env.PUBLIC_DEFAULT_PAGE_LIMIT ?? 10);
+    const pages = Math.ceil(items.length / pageLimit);
 
-    if (Array.isArray(items)) {
-        const sliceStart = page * page_limit;
-        const sliceEnd = (page + 1) * page_limit;
-        res.items = items.slice(sliceStart, sliceEnd);
+    // Set default page load w/o page query parameter to first page.
+    await client.mockAnyResponse({
+        namespace,
+        httpRequest: { method: 'GET', path },
+        httpResponse: {
+            statusCode: 200,
+            headers: { 'content-type': ['application/json'] },
+            body: JSON.stringify({
+                page: 1,
+                page_limit: pageLimit,
+                total_number: items.length,
+                items: items.slice(0, pageLimit),
+            } satisfies Paginate<T>),
+        },
+        times: { unlimited: true },
+        priority: -1,
+    });
 
-        res.total_number = items.length;
-    } else {
-        res.items.push(items);
-        res.total_number = 1;
+    for (const page of Array.from({ length: pages }, (_, i) => i)) {
+        await client.mockAnyResponse({
+            namespace,
+            httpRequest: { method: 'GET', path, queryStringParameters: { page: String(page + 1) } },
+            httpResponse: {
+                statusCode: 200,
+                headers: { 'content-type': ['application/json'] },
+                body: JSON.stringify({
+                    page: page + 1,
+                    page_limit: pageLimit,
+                    total_number: items.length,
+                    items: items.slice(page * pageLimit, (page + 1) * pageLimit),
+                } satisfies Paginate<T>),
+            },
+            times: { unlimited: true },
+        });
     }
-
-    return res;
 };
 
 export const test = base.extend<Fixtures>({
@@ -93,20 +117,27 @@ export const test = base.extend<Fixtures>({
         const client = mockServerClient('localhost', Number(port));
 
         const mockJson: MockServerFixture['mockJson'] = async (path, body, mockOptions = {}, options = {}) => {
-            const { paginate = false } = mockOptions;
+            const { pagination = false, useNamespace = true } = mockOptions;
 
-            await client.mockAnyResponse({
-                httpRequest: {
-                    method: options.method ?? 'GET',
-                    path,
-                },
-                httpResponse: {
-                    statusCode: options.status ?? 200,
-                    headers: { 'content-type': ['application/json'] },
-                    body: JSON.stringify(paginate ? paginateRes(body) : body),
-                },
-                namespace: testId,
-            });
+            const namespace = useNamespace ? testId : undefined;
+
+            if (pagination && Array.isArray(body)) {
+                await paginate(client, path, body, namespace);
+            } else {
+                await client.mockAnyResponse({
+                    namespace: useNamespace ? namespace : undefined,
+                    httpRequest: {
+                        method: options.method ?? 'GET',
+                        path,
+                    },
+                    httpResponse: {
+                        statusCode: options.status ?? 200,
+                        headers: { 'content-type': ['application/json'] },
+                        body: JSON.stringify(body),
+                    },
+                    times: { unlimited: true },
+                });
+            }
         };
 
         await use({ client, testId, mockJson });

@@ -13,6 +13,5 @@ export const load: PageServerLoad = async ({ params, fetch }: RequestEvent) => {
     return {
         observationRequest,
         telescopes,
-        slug: params.observationRequestId,
     };
 };

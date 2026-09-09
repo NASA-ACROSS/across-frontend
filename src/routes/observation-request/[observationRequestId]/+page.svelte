@@ -3,57 +3,105 @@
     import Fieldset from '$lib/components/Fieldset.svelte';
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
-    import type { ObservationRequest, Version } from '$lib/types/across/ObservationRequest';
+    import type { Version } from '$lib/types/across/ObservationRequest';
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { PageData } from './$types';
-    import { page } from '$app/state';
     import { prettyUTC } from '$lib/utils/datetime/prettyUTC';
+    import { goto } from '$app/navigation';
+    import { resolve } from '$app/paths';
+    import Alert from '$lib/components/Alert.svelte';
 
     export let data: PageData;
 
-    const obsReq: ObservationRequest = data.observationRequest.items[0];
-    const versions = data.observationRequest.items[0].versions;
+    $: obsReq = data.observationRequest.items[0];
+    $: versions = data.observationRequest.items[0].versions;
 
-    const instrumentId: string = obsReq.instrument_id;
+    $: instrumentId = obsReq.instrument_id;
 
     // remove instruments that were not selected from GET telescope response found by instrument_id
-    const [selectedTelescope] = data.telescopes.reduce((telescopes: Telescope[], currentTelescope: Telescope) => {
+    $: [selectedTelescope] = data.telescopes.reduce((telescopes: Telescope[], currentTelescope: Telescope) => {
         currentTelescope.instruments = currentTelescope.instruments.filter((instrument) => instrument.id == instrumentId);
         telescopes.push(currentTelescope);
 
         return telescopes;
     }, [] as Telescope[]);
 
-    const versionsById = versions?.reduce((versions, currentVersion) => {
-        // the upcoming change to server will send version objects in this shape, using python snake case to reduce changes downstream later
-        const simpleVersion = { id: currentVersion.id, created_on: currentVersion.created_on };
-        versions.push(simpleVersion);
-        return versions;
-    }, [] as Version[]);
+    let versionsById: Version[] | undefined;
 
-    console.log('versions', versionsById);
+    $: {
+        versionsById = versions?.reduce((versions, currentVersion) => {
+            // upcoming change to server will send version objects in this shape, using python snake case to reduce changes downstream later
+            const simpleVersion = { id: currentVersion.id, created_on: currentVersion.created_on };
+            versions.push(simpleVersion);
+            return versions;
+        }, [] as Version[]);
 
-    versionsById?.push({ id: obsReq.id, created_on: obsReq.created_on });
+        // add the current version, can be removed when server sends current in versions list
+        versionsById?.push({ id: obsReq.id, created_on: obsReq.created_on });
 
-    console.log('versionsById', versionsById);
+        // sort by created_on desc, can be removed when server sends versions in descending order
+        versionsById?.sort((a, b) => (a.created_on > b.created_on ? -1 : 1));
+    }
 
-    // sort by created_on desc
-    versionsById?.sort((a, b) => (a.created_on > b.created_on ? -1 : 1));
+    // fallback for rendering the option list
+    $: currentVersion = { id: obsReq.id, number: 1, created_on: obsReq.created_on };
 
-    console.log('sortedVersions', versionsById);
-
-    const numberedVersions = versionsById?.map((version, index) => {
-        version.number = versionsById.length - index;
+    $: numberedVersions = versionsById?.map((version, index) => {
+        version.number = versionsById!.length - index;
         return version;
-    });
-    console.log(numberedVersions);
+    }) || [currentVersion];
+
+    // set selected option to the current version
+    $: selectedRevision = numberedVersions?.find((rev) => obsReq.id == rev.id) || currentVersion;
+
+    $: newestRevision = numberedVersions[0];
+
+    $: isOutdatedRevision = obsReq.id !== newestRevision.id;
+
+    const navigateRevision = async () => {
+        if (selectedRevision) {
+            goto(
+                resolve('/observation-request/[observationRequestId]', {
+                    observationRequestId: selectedRevision!.id,
+                }),
+                {
+                    replaceState: true,
+                    noScroll: true,
+                }
+            );
+        }
+    };
 </script>
 
 <Page title="Observation Request View" icon="crosshair">
+    <div slot="buttons" class="flex flex-row gap-4">
+        <a href={resolve('/observation-request/[observationRequestId]/edit', { observationRequestId: obsReq?.id })}>
+            <button class="btn btn-{isOutdatedRevision ? 'warning' : 'info'} text-xl">
+                <div class="bx bx-edit opacity-80" />
+                Edit
+            </button>
+        </a>
+        <select
+            id="versions-option-input"
+            bind:value={selectedRevision}
+            on:change={navigateRevision}
+            class="select select-bordered text-lg w-full"
+        >
+            <option value="">Select Revision</option>
+            {#each numberedVersions as option}
+                <option value={option}>
+                    {`Rev ${option.number} - ${prettyUTC(option.created_on)}`}
+                </option>
+            {/each}
+        </select>
+    </div>
+    {#if isOutdatedRevision}
+        <Alert type="warning">This is an older revision, select an updated revision in the drop down on the right.</Alert>
+    {/if}
     <Section>
         <Fieldset title="Object Information">
             <div>
-                <DataItem name="Object Name" value={obsReq.object_name} />
+                <DataItem name="Object Name" value={obsReq?.object_name} />
                 <div class="flex flex-row w-full">
                     <DataItem name="RA" value={obsReq.object_coordinates.ra} />
                     <DataItem name="DEC" value={obsReq.object_coordinates.dec} />

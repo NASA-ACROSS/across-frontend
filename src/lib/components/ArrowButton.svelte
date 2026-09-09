@@ -38,7 +38,7 @@
         target={openInNewTab ? '_blank' : '_self'}
         class="text-lg h-auto no-underline hover:underline decoration-dashed underline-offset-4 {textClasses}"
     >
-        <button class="flex me-0 cursor-pointer gap-1" {onclick}>
+        <button type="button" class="flex me-0 cursor-pointer gap-1" {onclick}>
             <span class="color-primary-content self-center pb-1">
                 {#if name}
                     {name}

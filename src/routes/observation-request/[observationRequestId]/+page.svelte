@@ -99,6 +99,14 @@
         <Alert type="warning">This is an older revision, select an updated revision in the drop down on the right.</Alert>
     {/if}
     <Section>
+        <Fieldset title="Status">
+            <div>
+                <DataItem name="Status" value={obsReq?.status} />
+                {#if obsReq?.status_reason}
+                    <DataItem name="Status Reason" value={obsReq?.status_reason} />
+                {/if}
+            </div>
+        </Fieldset>
         <Fieldset title="Object Information">
             <div>
                 <DataItem name="Object Name" value={obsReq?.object_name} />
@@ -134,22 +142,27 @@
         </Fieldset>
 
         <Fieldset title="Instrument Configuration">
-            <DataItem name="Exposure Time" value={obsReq.exposure_time} />
+            <DataItem name="Exposure Time Seconds" value={obsReq.exposure_time} />
         </Fieldset>
 
-        <Fieldset title="Proposal Information">
-            <div>
-                {#if obsReq.proposal}
+        {#if obsReq.proposal && obsReq.science_justification}
+            <Fieldset title="Proposal Information">
+                <div>
                     <DataItem name="Proposal Code" value={obsReq.proposal?.code} />
                     <DataItem name="Proposal Name" value={obsReq.proposal?.name} />
-                {/if}
 
-                <DataItem name="Science Justification" value={obsReq.science_justification} />
+                    <DataItem name="Science Justification" value={obsReq.science_justification} />
 
-                {#if obsReq.anonymize}
                     <DataItem name="Anonymized" value={obsReq.anonymize} />
-                {/if}
-            </div>
-        </Fieldset>
+                </div>
+            </Fieldset>
+
+            <Fieldset title="Submission Information">
+                <div>
+                    <DataItem name="Submitted by" value={obsReq.created_by_id} />
+                    <DataItem name="Submitted at" value={prettyUTC(obsReq.created_on)} />
+                </div>
+            </Fieldset>
+        {/if}
     </Section>
 </Page>

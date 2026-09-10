@@ -47,11 +47,11 @@ export const actions = {
         const email = data.get('email');
 
         if (typeof email !== 'string' || !email.match(emailRegex)) {
-            return fail(400, {
+            return fail(422, {
                 type: 'error',
                 message: 'Please provide a valid email.',
                 errorId: crypto.randomUUID(),
-                code: HTTP_CODES[400],
+                code: HTTP_CODES[422],
             });
         }
 
@@ -80,26 +80,25 @@ export const actions = {
             autoLogin(data as MagicLinkDTO);
         } catch (err: unknown) {
             if (isHttpError(err)) {
-                if (err.status === 401) {
+                if (err.status === 401 || err.status === 404) {
+                    // noop for 401 or 404 as the system should not leak that the email does not exist to avoid
+                    // leaking information about registered emails as per NASA security requirements. The ACROSS
+                    // server returns a 401 when a user is not found to comply with the above security requirements,
+                    // and _should not_ return a 404 for this endpoint. However, if it ever does, we will treat it
+                    // the same as a 401.
+                } else {
                     return fail(err.status, {
                         type: 'error',
-                        message: 'The email address is not registered.',
-                        errorId: err.body.errorId,
-                        code: err.body.code,
-                    });
-                } else if (err.status === 404) {
-                    return fail(err.status, {
-                        type: 'error',
-                        message: 'Please register with an email.',
-                        errorId: err.body.errorId,
-                        code: err.body.code,
+                        message: 'An unexpected error occurred. Please try again later. If this issue persists, please contact support.',
+                        errorId: err.body?.errorId ?? crypto.randomUUID(),
+                        code: err.body?.code ?? HTTP_CODES[err.status] ?? HTTP_CODES[500],
                     });
                 }
+            } else {
+                throw err;
             }
-
-            throw err;
         }
 
-        return { type: 'success', message: 'Please check your email for a login link!', email };
+        return { type: 'success', message: `An email has been sent to ${email}`, email };
     },
 } satisfies Actions;

@@ -61,37 +61,35 @@
         </ul>
     </div>
 
-    <LocalOnlyRender>
-        {#key currentPath}
-            <!-- profile -->
-            {#key userEmail}
-                {#if userEmail}
-                    <a href={resolve('/user/profile')} class="text-sm font-bold text-primary-content m-2">{userEmail}</a>
-                {/if}
-            {/key}
-            <div class="dropdown dropdown-hover dropdown-end pr-3">
-                <a href={resolve('/user/profile')}>
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar avatar-placeholder -my-3">
-                        <div class="bg-info text-neutral-content w-10 rounded-full">
-                            <div class={user ? 'text-lg' : 'bx bx-user'}>
-                                {userInitials}
-                            </div>
+    {#key currentPath}
+        <!-- profile -->
+        {#key userEmail}
+            {#if userEmail}
+                <a href={resolve('/user/profile')} class="text-sm font-bold text-primary-content m-2">{userEmail}</a>
+            {/if}
+        {/key}
+        <div class="dropdown dropdown-hover dropdown-end pr-3">
+            <a href={resolve('/user/profile')}>
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar avatar-placeholder -my-3">
+                    <div class="bg-info text-neutral-content w-10 rounded-full">
+                        <div class={user ? 'text-lg' : 'bx bx-user'}>
+                            {userInitials}
                         </div>
                     </div>
-                </a>
+                </div>
+            </a>
 
-                <ul class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow text-primary-content">
-                    {#if user}
-                        <NavLink link={{ id: 'profile', label: 'Profile', href: resolve('/user/profile') }} />
-                        <div class="hover:bg-accent hover:text-primary">
-                            <NavLink link={{ id: 'logout', label: 'Logout', href: resolve('/user/logout'), reload: true }} />
-                        </div>
-                    {:else}
-                        <NavLink link={{ id: 'register', label: 'Create Account', href: resolve('/user/register') }} />
-                        <NavLink link={{ id: 'login', label: 'Login', href: resolve('/user/login') }} />
-                    {/if}
-                </ul>
-            </div>
-        {/key}
-    </LocalOnlyRender>
+            <ul class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow text-primary-content">
+                {#if user}
+                    <NavLink link={{ id: 'profile', label: 'Profile', href: resolve('/user/profile') }} />
+                    <div class="hover:bg-accent hover:text-primary">
+                        <NavLink link={{ id: 'logout', label: 'Logout', href: resolve('/user/logout'), reload: true }} />
+                    </div>
+                {:else}
+                    <NavLink link={{ id: 'register', label: 'Create Account', href: resolve('/user/register') }} />
+                    <NavLink link={{ id: 'login', label: 'Login', href: resolve('/user/login') }} />
+                {/if}
+            </ul>
+        </div>
+    {/key}
 </div>

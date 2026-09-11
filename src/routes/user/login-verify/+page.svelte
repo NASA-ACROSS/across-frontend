@@ -20,7 +20,7 @@
                         >
                     </div>
                     <FormSubmitFeedback />
-                    <ArrowButton>Login</ArrowButton>
+                    <ArrowButton type="submit">Login</ArrowButton>
                 </form>
             {:else if form?.type === 'error'}
                 <FormSubmitFeedback />

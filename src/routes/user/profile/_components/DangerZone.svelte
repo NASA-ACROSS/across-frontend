@@ -36,18 +36,28 @@
                             on:click={() => (isDeleteModalOpen = false)}>X</button
                         >
                     </div>
-                    <p class="bold text-accent">I understand that I am about to delete my user account.</p>
-                    <p class="bold text-accent">This action will expire my service accounts.</p>
-                    <p class="bold text-accent">This action will remove me from all groups and remove my group roles.</p>
-                    <p class="bold text-accent">I will not be able to register a new account with the same email.</p>
-                    <p class="bold text-accent pb-6">I will have to contact support to re-activate my account.</p>
+                    <div class="pb-2 text-error">
+                        <p class="font-bold text-error">
+                            I understand that I am about to delete my user account. This action will result in the following:
+                        </p>
+                        <ol class="list-decimal pl-6">
+                            <li class="text-error">Expire all of my service accounts.</li>
+                            <li class="text-error">Remove me from all groups and remove my group roles.</li>
+                            <li class="text-error">Prevent registration with the same email.</li>
+                        </ol>
+
+                        <p class="font-bold">
+                            If I want to re-active this email, I will need to contact
+                            <a class="link" href="mailto:gsfc-across-support@mail.nasa.gov">ACROSS Support</a>.
+                        </p>
+                    </div>
 
                     <div class="flex justify-between">
                         <div>
                             <button
                                 data-sveltekit-preload-data="off"
                                 data-sveltekit-preload-code="off"
-                                class="btn btn-sm btn-accent w-xs max-w-md"
+                                class="btn btn-sm btn-error w-xs max-w-md"
                                 disabled={!isDeleteButtonEnabled}
                                 type="submit"
                                 title="Delete my User Account"

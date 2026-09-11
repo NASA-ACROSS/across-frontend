@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.9.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.8.0...across-frontend-v1.9.0) (2026-09-11)
+
+
+### Features
+
+* observation request create page ([#366](https://github.com/NASA-ACROSS/across-frontend/issues/366)) ([b488e1e](https://github.com/NASA-ACROSS/across-frontend/commit/b488e1e4a2be0c7fa502b60a1e96043fb7c372ac))
+* **test:** add mockserver for mocking ACROSS server ([#367](https://github.com/NASA-ACROSS/across-frontend/issues/367)) ([34054a8](https://github.com/NASA-ACROSS/across-frontend/commit/34054a89c2a3022d6be87cc4c090bb7ea059bd17))
+
+
+### Bug Fixes
+
+* add ACROSS support email and clean up text ([#381](https://github.com/NASA-ACROSS/across-frontend/issues/381)) ([6b19b43](https://github.com/NASA-ACROSS/across-frontend/commit/6b19b43868c3cca917eabba93bec7bd1e925ddb9))
+* display success when registering returns 409 ([3d67f2c](https://github.com/NASA-ACROSS/across-frontend/commit/3d67f2cbba7ce6ee5ddba03e0104aff92c302153))
+* link to about page for open-data policy ([#379](https://github.com/NASA-ACROSS/across-frontend/issues/379)) ([cd77564](https://github.com/NASA-ACROSS/across-frontend/commit/cd775646d44ff002bf5751176e818274cbf3de72))
+* login displays success message on 401 and 404 ([6c8777e](https://github.com/NASA-ACROSS/across-frontend/commit/6c8777e4a196fc09ba2d34feb12f2dced2756504))
+* login displays success message on 401 and 404 from the core server ([#383](https://github.com/NASA-ACROSS/across-frontend/issues/383)) ([6c8777e](https://github.com/NASA-ACROSS/across-frontend/commit/6c8777e4a196fc09ba2d34feb12f2dced2756504))
+* register displays success message on 409 from the core-server ([#382](https://github.com/NASA-ACROSS/across-frontend/issues/382)) ([3d67f2c](https://github.com/NASA-ACROSS/across-frontend/commit/3d67f2cbba7ce6ee5ddba03e0104aff92c302153))
+
 ## [1.8.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.7.0...across-frontend-v1.8.0) (2026-08-18)
 
 

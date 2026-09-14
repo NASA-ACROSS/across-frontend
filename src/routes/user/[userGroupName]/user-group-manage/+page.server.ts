@@ -12,7 +12,6 @@ import logger from '$lib/logger';
 import { callApi } from '$lib/utils/across/callApi';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
-    guards.localOnlyRoute();
     const userCookie = guards.requireUser(locals);
 
     const user = await getUserInfo(fetch, userCookie.id);

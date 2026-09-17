@@ -51,12 +51,13 @@
         return version;
     }) || [currentVersion];
 
+    let selectedRevision: Version, newestRevision: Version, isOutdatedRevision: boolean;
     // set selected option to the current version
-    $: selectedRevision = numberedVersions?.find((rev) => obsReq.id == rev.id) || currentVersion;
-
-    $: newestRevision = numberedVersions[0];
-
-    $: isOutdatedRevision = obsReq.id !== newestRevision.id;
+    $: {
+        selectedRevision = numberedVersions?.find((rev) => obsReq.id == rev.id) || currentVersion;
+        newestRevision = numberedVersions[0];
+        isOutdatedRevision = obsReq.id !== newestRevision.id;
+    }
 
     const navigateRevision = async (event: Event & { currentTarget: HTMLSelectElement }) => {
         console.log(event);

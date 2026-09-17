@@ -2,7 +2,13 @@
     export let id: string = '';
     export let name: string = '';
     export let href: string | null = null;
+
+    /**
+     * Set the button type, "submit" for forms, default to "button" for everything else used with client side listeners for scripted behavior.
+     * For more info see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#type
+     */
     export let type: 'button' | 'submit' = 'button';
+
     export let containerClasses = '';
     export let textClasses = '';
     export let direction: 'right' | 'left' = 'right';

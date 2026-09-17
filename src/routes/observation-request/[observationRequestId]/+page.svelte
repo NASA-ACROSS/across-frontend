@@ -13,8 +13,8 @@
 
     export let data: PageData;
 
-    $: obsReq = data.observationRequest.items[0];
-    $: versions = data.observationRequest.items[0].versions;
+    $: obsReq = data.observationRequest;
+    $: versions = data.observationRequest.versions;
 
     $: instrumentId = obsReq.instrument_id;
 
@@ -102,6 +102,7 @@
     <Section>
         <Fieldset title="Status">
             <div>
+                <LabeledValue name="ID" value={obsReq?.id} />
                 <LabeledValue name="Status" value={obsReq?.status} />
                 {#if obsReq?.status_reason}
                     <LabeledValue name="Status Reason" value={obsReq?.status_reason} />

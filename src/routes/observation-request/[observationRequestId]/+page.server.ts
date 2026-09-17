@@ -6,8 +6,11 @@ import type { PageServerLoad, RequestEvent } from './$types';
 import { HTTP_CODES } from '$lib';
 
 export const load: PageServerLoad = async ({ params, fetch }: RequestEvent) => {
-    const observationRequest = await getObservationRequests(fetch, { ids: [params.observationRequestId], include_versions: true });
-    if (!observationRequest?.items?.length) {
+    const { items: observationRequests } = await getObservationRequests(fetch, {
+        ids: [params.observationRequestId],
+        include_versions: true,
+    });
+    if (!observationRequests?.length) {
         error(404, {
             message: 'Observation Request Not Found',
             errorId: crypto.randomUUID(),
@@ -15,8 +18,8 @@ export const load: PageServerLoad = async ({ params, fetch }: RequestEvent) => {
         });
     }
 
-    const instrumentId: string = observationRequest.items[0].instrument_id;
-
+    const observationRequest = observationRequests[0];
+    const instrumentId: string = observationRequest.instrument_id;
     const telescopes: Telescope[] = await getTelescopes(fetch, { instrument_id: instrumentId });
 
     return {

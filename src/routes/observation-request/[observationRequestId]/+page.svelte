@@ -58,11 +58,12 @@
 
     $: isOutdatedRevision = obsReq.id !== newestRevision.id;
 
-    const navigateRevision = async () => {
+    const navigateRevision = async (event: Event & { currentTarget: HTMLSelectElement }) => {
+        console.log(event);
         if (selectedRevision) {
             goto(
                 resolve('/observation-request/[observationRequestId]', {
-                    observationRequestId: selectedRevision!.id,
+                    observationRequestId: event.currentTarget.value,
                 }),
                 {
                     replaceState: true,
@@ -75,7 +76,7 @@
 
 <Page title="Observation Request View" icon="crosshair">
     <div slot="buttons" class="flex flex-row gap-4">
-        <a href={resolve('/observation-request/[observationRequestId]/edit', { observationRequestId: obsReq?.id })}>
+        <a data-sveltekit-reload href={resolve('/observation-request/[observationRequestId]/edit', { observationRequestId: obsReq?.id })}>
             <button class="btn btn-{isOutdatedRevision ? 'warning' : 'info'} text-xl">
                 <div class="bx bx-edit opacity-80" />
                 Edit
@@ -83,13 +84,13 @@
         </a>
         <select
             id="versions-option-input"
-            bind:value={selectedRevision}
+            value={selectedRevision.id}
             on:change={navigateRevision}
             class="select select-bordered text-lg w-full"
         >
             <option value="">Select Revision</option>
             {#each numberedVersions as option}
-                <option value={option}>
+                <option value={option.id}>
                     {`Rev ${option.number} - ${prettyUTC(option.created_on)}`}
                 </option>
             {/each}

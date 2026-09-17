@@ -4,6 +4,10 @@
         id?: string;
         name?: string;
         href?: string | null;
+        /**
+         * Set the button type, "submit" for forms, defaults to "button" for everything else used with client side listeners for scripted behavior.
+         * For more info see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#type
+         */
         type?: 'button' | 'submit' | 'reset' | null | undefined;
         containerClasses?: string;
         textClasses?: string;

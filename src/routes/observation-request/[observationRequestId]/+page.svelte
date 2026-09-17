@@ -1,5 +1,5 @@
 <script lang="ts">
-    import DataItem from '$lib/components/DataItem.svelte';
+    import LabeledValue from '$lib/components/LabeledValue.svelte';
     import Fieldset from '$lib/components/Fieldset.svelte';
     import Page from '$lib/components/Page.svelte';
     import Section from '$lib/components/Section.svelte';
@@ -102,66 +102,66 @@
     <Section>
         <Fieldset title="Status">
             <div>
-                <DataItem name="Status" value={obsReq?.status} />
+                <LabeledValue name="Status" value={obsReq?.status} />
                 {#if obsReq?.status_reason}
-                    <DataItem name="Status Reason" value={obsReq?.status_reason} />
+                    <LabeledValue name="Status Reason" value={obsReq?.status_reason} />
                 {/if}
             </div>
         </Fieldset>
         <Fieldset title="Object Information">
             <div>
-                <DataItem name="Object Name" value={obsReq?.object_name} />
+                <LabeledValue name="Object Name" value={obsReq?.object_name} />
                 <div class="flex flex-row w-full">
-                    <DataItem name="RA" value={obsReq.object_coordinates.ra} />
-                    <DataItem name="DEC" value={obsReq.object_coordinates.dec} />
+                    <LabeledValue name="RA" value={obsReq.object_coordinates.ra} />
+                    <LabeledValue name="DEC" value={obsReq.object_coordinates.dec} />
                 </div>
                 {#if obsReq.object_position_error}
-                    <DataItem name="Position Offset Degrees" value={obsReq.object_position_error} />
+                    <LabeledValue name="Position Offset Degrees" value={obsReq.object_position_error} />
                 {/if}
                 <div class="flex flex-row w-full">
-                    <DataItem name="Brightness" value={obsReq.object_brightness.value} />
-                    <DataItem name="Brightness Unit" value={obsReq.object_brightness.unit} />
+                    <LabeledValue name="Brightness" value={obsReq.object_brightness.value} />
+                    <LabeledValue name="Brightness Unit" value={obsReq.object_brightness.unit} />
                 </div>
             </div>
         </Fieldset>
 
         <Fieldset title="Observation Window">
             <div class="flex flex-row w-full">
-                <DataItem name="Date Range Begin" value={prettyUTC(obsReq.observation_window.begin)} />
+                <LabeledValue name="Date Range Begin" value={prettyUTC(obsReq.observation_window.begin)} />
                 {#if obsReq.observation_window.end}
-                    <DataItem name="Date Range End" value={prettyUTC(obsReq.observation_window.end)} />
+                    <LabeledValue name="Date Range End" value={prettyUTC(obsReq.observation_window.end)} />
                 {/if}
             </div>
         </Fieldset>
 
         <Fieldset title="Instrument Selection">
             <div>
-                <DataItem name="Observatory" value={selectedTelescope.observatory.name} />
-                <DataItem name="Telescope" value={selectedTelescope.name} />
-                <DataItem name="Instrument" value={selectedTelescope.instruments[0].name} />
+                <LabeledValue name="Observatory" value={selectedTelescope.observatory.name} />
+                <LabeledValue name="Telescope" value={selectedTelescope.name} />
+                <LabeledValue name="Instrument" value={selectedTelescope.instruments[0].name} />
             </div>
         </Fieldset>
 
         <Fieldset title="Instrument Configuration">
-            <DataItem name="Exposure Time Seconds" value={obsReq.exposure_time} />
+            <LabeledValue name="Exposure Time Seconds" value={obsReq.exposure_time} />
         </Fieldset>
 
         {#if obsReq.proposal && obsReq.science_justification}
             <Fieldset title="Proposal Information">
                 <div>
-                    <DataItem name="Proposal Code" value={obsReq.proposal?.code} />
-                    <DataItem name="Proposal Name" value={obsReq.proposal?.name} />
+                    <LabeledValue name="Proposal Code" value={obsReq.proposal?.code} />
+                    <LabeledValue name="Proposal Name" value={obsReq.proposal?.name} />
 
-                    <DataItem name="Science Justification" value={obsReq.science_justification} />
+                    <LabeledValue name="Science Justification" value={obsReq.science_justification} />
 
-                    <DataItem name="Anonymized" value={obsReq.anonymize} />
+                    <LabeledValue name="Anonymized" value={obsReq.anonymize} />
                 </div>
             </Fieldset>
 
             <Fieldset title="Submission Information">
                 <div>
-                    <DataItem name="Submitted by" value={obsReq.created_by_id} />
-                    <DataItem name="Submitted at" value={prettyUTC(obsReq.created_on)} />
+                    <LabeledValue name="Submitted by" value={obsReq.created_by_id} />
+                    <LabeledValue name="Submitted at" value={prettyUTC(obsReq.created_on)} />
                 </div>
             </Fieldset>
         {/if}

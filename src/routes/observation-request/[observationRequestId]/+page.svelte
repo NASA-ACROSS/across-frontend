@@ -60,8 +60,7 @@
     }
 
     const navigateRevision = async (event: Event & { currentTarget: HTMLSelectElement }) => {
-        console.log(event);
-        if (selectedRevision) {
+        if (event?.currentTarget?.value) {
             goto(
                 resolve('/observation-request/[observationRequestId]', {
                     observationRequestId: event.currentTarget.value,

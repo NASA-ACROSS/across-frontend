@@ -22,7 +22,7 @@ export type RuntimeEnv = 'local' | 'feat1' | 'dev' | 'staging' | 'prod';
  */
 class PublicConfiguration {
     public BUILD_VERSION: string = PUBLIC_BUILD_VERSION || '';
-    public DOCUMENTATION_URL: string = 'https://science.data.nasa.gov/data-sites/across';
+    public DOCUMENTATION_URL: string = 'https://science.data.nasa.gov/across/app';
 
     public RUNTIME_ENV: RuntimeEnv = (env.PUBLIC_RUNTIME_ENV as RuntimeEnv) || 'local';
 

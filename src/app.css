@@ -26,6 +26,7 @@
     --color-nasa-blue-shade: rgb(11, 61, 145);
     --color-nasa-orange: rgb(234, 111, 36);
     --color-nasa-green: rgb(71, 218, 132);
+    --color-nasa-green-tint: rgb(101, 248, 162);
 }
 
 @plugin "daisyui/theme" {

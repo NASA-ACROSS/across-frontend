@@ -19,12 +19,12 @@
     });
 
     // Make all hrefs reactive to searchParams, currentPage, and totalPages changes
-    $: firstPageHref = buildHref(1, searchParams);
-    $: prevPageHref = buildHref(currentPage - 1, searchParams);
-    $: nextPageHref = buildHref(currentPage + 1, searchParams);
-    $: lastPageHref = buildHref(totalPages, searchParams);
-    $: pagesArray = createPagesArray(currentPage, totalPages, numButtons);
-    $: pageHrefs = pagesArray.map((pageNum) => ({
+    const firstPageHref = buildHref(1, searchParams);
+    const prevPageHref = buildHref(currentPage - 1, searchParams);
+    const nextPageHref = buildHref(currentPage + 1, searchParams);
+    const lastPageHref = buildHref(totalPages, searchParams);
+    const pagesArray = createPagesArray(currentPage, totalPages, numButtons);
+    const pageHrefs = pagesArray.map((pageNum) => ({
         pageNum,
         href: buildHref(pageNum, searchParams),
     }));
@@ -84,7 +84,7 @@
     </a>
 
     {#each pageHrefs as { pageNum, href }}
-        {#if pageNum === currentPage}
+        {#if pageNum == currentPage}
             <span class="btn btn-sm btn-active">
                 {currentPage}
             </span>

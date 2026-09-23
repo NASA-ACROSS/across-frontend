@@ -1,4 +1,5 @@
 <script lang="ts">
+    export let id: string = '';
     export let name: string = '';
     export let href: string | null = null;
     export let containerClasses = '';
@@ -9,6 +10,8 @@
 
 <div class="my-2 {containerClasses}">
     <a
+        data-testid="ArrowButton:{id}"
+        data-sveltekit-preload-code="hover"
         data-sveltekit-preload-data="tap"
         {href}
         target={openInNewTab ? '_blank' : '_self'}

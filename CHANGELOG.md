@@ -1,5 +1,95 @@
 # Changelog
 
+## [1.8.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.7.0...across-frontend-v1.8.0) (2026-08-18)
+
+
+### Features
+
+* **tests:** add initial playwright integration tests ([#360](https://github.com/NASA-ACROSS/across-frontend/issues/360)) ([801b5d6](https://github.com/NASA-ACROSS/across-frontend/commit/801b5d6352a68450a8d90db3c2b88fd823a0f4c3))
+* **tests:** add playwright integration tests ([801b5d6](https://github.com/NASA-ACROSS/across-frontend/commit/801b5d6352a68450a8d90db3c2b88fd823a0f4c3))
+
+
+### Bug Fixes
+
+* all API routing for ACROSS API goes through callApi ([#350](https://github.com/NASA-ACROSS/across-frontend/issues/350)) ([9fc2917](https://github.com/NASA-ACROSS/across-frontend/commit/9fc291759c40311e253a55e358242bbc6e353576))
+* use ACROSS_SERVER_HOST in URL ([#363](https://github.com/NASA-ACROSS/across-frontend/issues/363)) ([13c48d1](https://github.com/NASA-ACROSS/across-frontend/commit/13c48d1192c471339ef48d3f8f11716db822a86d))
+
+## [1.7.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.6.1...across-frontend-v1.7.0) (2026-07-24)
+
+
+### Features
+
+* add page limit to public config ([#358](https://github.com/NASA-ACROSS/across-frontend/issues/358)) ([db6fcc3](https://github.com/NASA-ACROSS/across-frontend/commit/db6fcc3110b10fd78f54f183f57d314f71041b91))
+* add page limit to public config, update observation and schedule pages to use config for page limit, fix various pagination display bugs ([db6fcc3](https://github.com/NASA-ACROSS/across-frontend/commit/db6fcc3110b10fd78f54f183f57d314f71041b91))
+
+## [1.6.1](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.6.0...across-frontend-v1.6.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* handle text error response, rename type for clarity ([#352](https://github.com/NASA-ACROSS/across-frontend/issues/352)) ([ad6fa4d](https://github.com/NASA-ACROSS/across-frontend/commit/ad6fa4d7af256c1ed7a31e2aeee5df7f10dd8cb1))
+
+## [1.6.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.5.0...across-frontend-v1.6.0) (2026-07-20)
+
+
+### Features
+
+* **actions:** standardize form action response interface and parsing form feedback ([#334](https://github.com/NASA-ACROSS/across-frontend/issues/334)) ([1bd7852](https://github.com/NASA-ACROSS/across-frontend/commit/1bd7852f576aab45faf8a61164d9e301884eb065))
+* add `callApi` for consistent error handling ([#324](https://github.com/NASA-ACROSS/across-frontend/issues/324)) ([1a92c6c](https://github.com/NASA-ACROSS/across-frontend/commit/1a92c6c4074d172aef122c9b697b98808f8d21ac))
+
+
+### Bug Fixes
+
+* **docs:** adjust pr template ([#349](https://github.com/NASA-ACROSS/across-frontend/issues/349)) ([a171bb5](https://github.com/NASA-ACROSS/across-frontend/commit/a171bb55ac6541d3789253de0414f1c2a55e2335))
+
+## [1.5.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.4.0...across-frontend-v1.5.0) (2026-06-26)
+
+
+### Features
+
+* **about:** clarify schedule status and fidelity ([#336](https://github.com/NASA-ACROSS/across-frontend/issues/336)) ([379db11](https://github.com/NASA-ACROSS/across-frontend/commit/379db111e17d33d76a3ea77005a04114062b8550))
+
+
+### Bug Fixes
+
+* replace console logs with pino logs ([#326](https://github.com/NASA-ACROSS/across-frontend/issues/326)) ([7aa7d3a](https://github.com/NASA-ACROSS/across-frontend/commit/7aa7d3a0bc29cdcb859ec9121038cf790b61bf6c))
+* use transport option for pino-pretty ([#333](https://github.com/NASA-ACROSS/across-frontend/issues/333)) ([8cc46b4](https://github.com/NASA-ACROSS/across-frontend/commit/8cc46b4c90987d0fd0a9f7bfe6b03701e2545bf1))
+
+## [1.4.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.3.0...across-frontend-v1.4.0) (2026-06-18)
+
+
+### Features
+
+* forward client ip to core server ([#330](https://github.com/NASA-ACROSS/across-frontend/issues/330)) ([90514b6](https://github.com/NASA-ACROSS/across-frontend/commit/90514b6c6cb6e255b894ab6482d8f3ec444e4749))
+
+## [1.3.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.2.0...across-frontend-v1.3.0) (2026-06-15)
+
+
+### Features
+
+* **user:** service account management UI ([#301](https://github.com/NASA-ACROSS/across-frontend/issues/301)) ([7a54504](https://github.com/NASA-ACROSS/across-frontend/commit/7a5450483983c8f2b468c1c8d42e45018ba5da85))
+
+
+### Bug Fixes
+
+* **logs:** pino-pretty set as stream ([#327](https://github.com/NASA-ACROSS/across-frontend/issues/327)) ([d83fcbf](https://github.com/NASA-ACROSS/across-frontend/commit/d83fcbf630bc54c6cacc9940847fb9d05025dd34))
+
+## [1.2.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.1.0...across-frontend-v1.2.0) (2026-06-02)
+
+
+### Features
+
+* add dialog component and examples ([#307](https://github.com/NASA-ACROSS/across-frontend/issues/307)) ([6cfb8e1](https://github.com/NASA-ACROSS/across-frontend/commit/6cfb8e1559dc5b43207b116fba627dce9ad28ae0))
+* add pino logger ([#320](https://github.com/NASA-ACROSS/across-frontend/issues/320)) ([bbf6d44](https://github.com/NASA-ACROSS/across-frontend/commit/bbf6d443edb44a22f148a635dbb8e9b5b9272198))
+* add USGOVAnalytics component for government analytics tracking ([#319](https://github.com/NASA-ACROSS/across-frontend/issues/319)) ([cfc848a](https://github.com/NASA-ACROSS/across-frontend/commit/cfc848ab2a31e1378e3147633d12bd8208b6e0b0))
+
+
+### Bug Fixes
+
+* **nav:** refactor nav and menu headers and links ([#303](https://github.com/NASA-ACROSS/across-frontend/issues/303)) ([70a42cc](https://github.com/NASA-ACROSS/across-frontend/commit/70a42cc3853b10c958d0704873ca423079807725))
+* **observatories:** pull observatory telescopes based off of observatory id ([#316](https://github.com/NASA-ACROSS/across-frontend/issues/316)) ([94fa8c0](https://github.com/NASA-ACROSS/across-frontend/commit/94fa8c0ae0354776856e449fe87043d15e91e844))
+* use buffer for base64, auth tests ([#317](https://github.com/NASA-ACROSS/across-frontend/issues/317)) ([090e80d](https://github.com/NASA-ACROSS/across-frontend/commit/090e80dd57693ac35e54d7289e25a6886cf4af25))
+
 ## [1.1.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.0.0...across-frontend-v1.1.0) (2026-05-11)
 
 

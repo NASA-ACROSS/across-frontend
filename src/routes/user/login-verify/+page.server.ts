@@ -1,13 +1,16 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail, redirect, type ActionFailure } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
-import { CONFIG } from '../../../config/config';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import type { LocalUser } from '$lib/types/User/UserCredentialsCookie';
 import type { User } from '$lib/types/User/User';
 import type { RequestEvent } from './$types';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
 import guards from '$lib/utils/guards';
 import { PUBLIC_CONFIG } from '$config/config.public';
+import logger from '$lib/logger';
+import HTTP_CODES from '$lib/utils/HttpCodes';
+import { callApi } from '$lib/utils/across/callApi';
 
 export function load(event: RequestEvent) {
     guards.localOnlyRoute();
@@ -28,7 +31,7 @@ const limiter = new RetryAfterRateLimiter({
 });
 
 export const actions = {
-    default: async (event: RequestEvent) => {
+    default: async (event: RequestEvent): Promise<FormSubmitResult | ActionFailure<FormSubmitResult>> => {
         const { url, request, cookies, fetch } = event;
         const verificationToken = url.searchParams.get('token');
 
@@ -36,35 +39,50 @@ export const actions = {
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {
-            console.error(
-                `ERROR: rate-limiting at /verify for verificationToken [${verificationToken}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds`
-            );
-            return fail(429, {
-                rateLimit: true,
+            const msg = `Too many login attempts. Please try again in ${rateStatus.retryAfter} seconds.`;
+            logger.error({
+                msg,
+                verificationToken,
+                ip: event.getClientAddress(),
                 retryAfter: rateStatus.retryAfter,
+            });
+
+            return fail(429, {
+                type: 'error',
+                message: msg,
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[429],
             });
         }
 
         if (!verificationToken) {
-            return fail(400, { error: 'Verification token is required' });
+            return fail(400, {
+                type: 'error',
+                message: 'Verification token is required',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[400],
+            });
         }
 
         const data = await request.formData();
         const rememberMe = Boolean(data.get('rememberMe'));
 
-        const userId = await UserCredentialsManager.Verify(verificationToken, cookies, rememberMe);
+        const userId = await UserCredentialsManager.Verify(fetch, verificationToken, cookies, rememberMe);
 
         if (!userId) {
-            console.error(`Login-verify failed to decode user id from access token`, {
+            logger.error({
+                msg: 'Login-verify failed to decode user id from access token',
                 verificationToken,
-                time: Date.now(),
             });
-            return fail(500, { error: 'Failed to decode user information from token' });
+            return fail(500, {
+                type: 'error',
+                message: 'Failed to login user.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
-        const res = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user/${userId}`, { method: 'GET' });
-
-        const user = (await res.json()) as User;
+        const { data: user } = await callApi<User>(fetch, `/user/${userId}`, { method: 'GET' });
 
         const localUser: LocalUser = {
             id: userId,

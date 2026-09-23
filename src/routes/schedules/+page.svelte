@@ -11,6 +11,7 @@
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
     import type { Telescope } from '$lib/types/across/Telescope';
+    import logger from '$lib/logger';
 
     export let data;
 
@@ -22,17 +23,13 @@
 
     // Schedule data and pagination
     $: schedules = data.schedules || [];
-    $: currentPage = data.currentPage || 1;
+    $: currentPage = Number(data.currentPage) || 1;
     $: totalPages = data.totalPages || 1;
     $: telescopes = data.telescopes || [];
     $: totalCount = data.totalCount || 0;
     $: currentSearchParams = new URLSearchParams(page.url.searchParams);
 
     // Observatory/Telescope selector state
-    $: observatories = telescopes
-        .map((telescope) => telescope.observatory)
-        .filter((value, index, self) => self.findIndex((obs) => obs.id === value.id) === index);
-
     let selectedObservatories: TelescopeObservatory[] = [];
     let selectedTelescopes: Telescope[] = [];
 
@@ -79,19 +76,6 @@
                 return { ...col, selected: isDefault };
             });
         }
-
-        // Populate observatory/telescope/instrument selection
-        const telescopeIds = (data.queryParams?.telescope_ids as string[]) || ([] as string[]);
-        if (telescopeIds.length > 0) {
-            selectedTelescopes = telescopes.filter((tel) => telescopeIds.includes(tel.id));
-
-            // Auto-select parent observatories
-            const selectedObservatoryIds = new Set<string>();
-            selectedTelescopes.forEach((tel) => {
-                selectedObservatoryIds.add(tel.observatory.id);
-            });
-            selectedObservatories = observatories.filter((obs) => selectedObservatoryIds.has(obs.id));
-        }
     });
 
     function updateColumnsFromUrlParams(columnIds: string[]) {
@@ -117,8 +101,8 @@
                     return col;
                 });
                 selectedColumns = availableColumns.filter((col) => col.selected);
-            } catch (e) {
-                console.error('Error parsing column cookie', e);
+            } catch (err) {
+                logger.error({ msg: 'Failed to parse column cookie', err });
             }
         }
     }
@@ -292,12 +276,7 @@
                         </div>
                         <div class="collapse-content">
                             <div class="py-4 h-200 md:min-h-80 md:max-h-100">
-                                <ObservatoryTelescopeSelector
-                                    {observatories}
-                                    {telescopes}
-                                    bind:selectedObservatories
-                                    bind:selectedTelescopes
-                                />
+                                <ObservatoryTelescopeSelector {telescopes} bind:selectedObservatories bind:selectedTelescopes />
                             </div>
                         </div>
                     </div>
@@ -410,11 +389,12 @@
         </div>
     </Section>
 
-    <Section title="Schedules (Total: {totalCount})" icon="calendar">
+    <Section id="schedules" title="Schedules (Total: {totalCount})" icon="calendar">
         <!-- Pagination -->
         <div slot="buttons" class="flex space-x-2">
-            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
-
+            {#key currentPage}
+                <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
+            {/key}
             <button class="btn btn-sm btn-outline" on:click={() => (isCustomizeModalOpen = true)}>
                 Customize
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -487,14 +467,14 @@
                 </thead>
                 <tbody>
                     {#if schedules.length === 0}
-                        <tr>
+                        <tr data-testid="no-schedules-row">
                             <td colspan={selectedColumns.length + 1} class="text-center py-4">
                                 No schedules found. Adjust your search criteria and try again.
                             </td>
                         </tr>
                     {:else}
                         {#each schedules as schedule}
-                            <tr>
+                            <tr data-testid="schedule-row:{schedule.id}" class="hover:bg-base-200">
                                 {#each selectedColumns as column}
                                     <td class="">
                                         {#if column.id === 'observatory_telescope'}

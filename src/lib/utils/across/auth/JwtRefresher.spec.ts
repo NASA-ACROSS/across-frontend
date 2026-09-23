@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { JwtRefresher, type Tokens } from './JwtRefresher';
+import { callApi } from '../callApi';
 
 vi.mock('luxon', () => {
     return {
@@ -22,26 +23,32 @@ vi.mock('jwt-decode', () => {
     };
 });
 
+vi.mock('../callApi', () => {
+    return { callApi: vi.fn() };
+});
+
+const mockFetch = vi.fn();
+
 describe('JwtRefresher', () => {
     const fakeTokenRes = {
-        json: () => ({
+        data: {
             access_token: 'new_access_token',
-        }),
-        headers: {
-            get: (header: string) => {
-                if (header === 'set-cookie') {
-                    return 'refresh_token=new_refresh_token; Path=/; HttpOnly';
-                }
-                return null;
+        },
+        response: {
+            headers: {
+                get: (header: string) => {
+                    if (header === 'set-cookie') {
+                        return 'refresh_token=new_refresh_token; Path=/; HttpOnly';
+                    }
+                    return null;
+                },
             },
         },
     };
 
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.spyOn(global, 'fetch').mockResolvedValue(fakeTokenRes as unknown as Response);
+        (callApi as Mock).mockResolvedValue(fakeTokenRes as unknown as Response);
     });
 
     describe('GetTokens', () => {
@@ -51,7 +58,7 @@ describe('JwtRefresher', () => {
                 refresh_token: 'valid',
             };
 
-            const result = await JwtRefresher.GetTokens(tokens);
+            const result = await JwtRefresher.GetTokens(mockFetch, tokens);
 
             expect(result).toEqual({
                 access_token: 'valid',
@@ -66,7 +73,7 @@ describe('JwtRefresher', () => {
                 refresh_token: 'valid',
             };
 
-            const result = await JwtRefresher.GetTokens(tokens);
+            const result = await JwtRefresher.GetTokens(mockFetch, tokens);
 
             expect(result).toEqual({
                 access_token: 'new_access_token',
@@ -81,9 +88,9 @@ describe('JwtRefresher', () => {
                 refresh_token: 'valid',
             };
 
-            await JwtRefresher.GetTokens(tokens);
+            await JwtRefresher.GetTokens(mockFetch, tokens);
 
-            expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('/auth/refresh'), {
+            expect(callApi).toHaveBeenCalledWith(mockFetch, expect.stringContaining('/auth/refresh'), {
                 method: 'POST',
                 headers: {
                     Authorization: 'Bearer valid',
@@ -93,7 +100,7 @@ describe('JwtRefresher', () => {
         });
 
         it('should throw an error when no valid tokens are available', async () => {
-            await expect(JwtRefresher.GetTokens()).rejects.toThrow('No valid tokens available');
+            await expect(JwtRefresher.GetTokens(mockFetch)).rejects.toThrow('No valid tokens available');
         });
     });
 
@@ -106,11 +113,6 @@ describe('JwtRefresher', () => {
         it('should return true for expired access token', () => {
             const result = JwtRefresher.IsExpired('expired');
             expect(result).toBe(true);
-        });
-
-        it('should log a debug message with isExpired result', () => {
-            JwtRefresher.IsExpired('expired');
-            expect(debugSpy).toHaveBeenCalledWith('Checking token expiration', { isExpired: true });
         });
     });
 

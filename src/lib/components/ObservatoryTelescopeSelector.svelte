@@ -2,13 +2,27 @@
     import type { Observatory } from '$lib/types/across/Observatory';
     import type { Telescope } from '$lib/types/across/Telescope';
     import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
+    import { onMount } from 'svelte';
     import MultiSelect, { type Option } from './MultiSelect.svelte';
+    import { page } from '$app/stores';
 
-    export let observatories: TelescopeObservatory[] = [];
     export let telescopes: Telescope[] = [];
 
     export let selectedObservatories: TelescopeObservatory[] = [];
     export let selectedTelescopes: Telescope[] = [];
+
+    $: data = $page.data;
+
+    // Derive observatories from telescope response
+    let seenObservatories = new Set<string>();
+    let observatories: TelescopeObservatory[] = telescopes.reduce((telescopes, telescope) => {
+        const obs = telescope.observatory;
+        if (!seenObservatories.has(obs.id)) {
+            seenObservatories.add(obs.id);
+            telescopes.push(obs);
+        }
+        return telescopes;
+    }, [] as TelescopeObservatory[]);
 
     $: observatoryOptions = observatories.map(mapToOption);
     $: telescopeOptions = telescopes.map(mapToOption);
@@ -88,6 +102,21 @@
         // Update selected observatories and telescopes
         updateSelections(obsSet, telSet);
     }
+
+    onMount(() => {
+        // Populate observatory/telescope/instrument selection
+        const telescopeIds = (data?.queryParams?.telescope_ids as string[]) || ([] as string[]);
+        if (telescopeIds.length > 0) {
+            selectedTelescopes = telescopes.filter((tel) => telescopeIds.includes(tel.id));
+
+            // Auto-select parent observatories
+            const selectedObservatoryIds = new Set<string>();
+            selectedTelescopes.forEach((tel) => {
+                selectedObservatoryIds.add(tel.observatory.id);
+            });
+            selectedObservatories = observatories.filter((obs) => selectedObservatoryIds.has(obs.id));
+        }
+    });
 </script>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full auto-rows-fr">

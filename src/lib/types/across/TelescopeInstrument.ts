@@ -5,6 +5,20 @@ export type TelescopeInstrument = {
     filters: Filter[];
     footprints: unknown[];
     constraints: unknown[];
+    visibility_type: VisibilityType;
+    observation_strategy: ObservationStrategy;
+    is_observation_request_enabled: boolean;
+};
+
+type VisibilityType = {
+    EPHEMERIS: 'ephemeris';
+    VO: 'vo';
+    CUSTOM: 'custom';
+};
+
+type ObservationStrategy = {
+    POINTED: 'pointed';
+    SURVEY: 'survey';
 };
 
 type Filter = {

@@ -4,17 +4,18 @@ import type { TokensCookie as TokensCookie } from '$lib/types/User/UserCredentia
 import type { Cookies } from '@sveltejs/kit';
 import { webserverCredentialsManager } from '$lib/utils/across/auth/WebserverCredentialsManager';
 import { JwtRefresher } from '$lib/utils/across/auth/JwtRefresher';
-import { CONFIG } from '$config/config';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { PUBLIC_CONFIG } from '$config/config.public';
+import logger from '$lib/logger';
+import { callApi } from '../callApi';
 
 export class UserCredentialsManager {
-    public static async GetAccessToken(cookies: Cookies, tokens?: TokensCookie) {
-        const { access_token, refresh_token, refreshed } = await JwtRefresher.GetTokens(tokens);
+    public static async GetAccessToken(fetch: typeof globalThis.fetch, cookies: Cookies, tokens?: TokensCookie) {
+        const { access_token, refresh_token, refreshed } = await JwtRefresher.GetTokens(fetch, tokens);
 
         if (refreshed) {
             // if the tokens were refreshed, update the cookie with the new tokens
-            console.debug('Access token was refreshed; updating cookie with new tokens');
+            logger.debug('Access token was refreshed; updating cookie with new tokens');
             await this.SetCookie(cookies, PUBLIC_CONFIG.USER_TOKENS_COOKIE_NAME, { access_token, refresh_token });
         }
 
@@ -25,7 +26,12 @@ export class UserCredentialsManager {
      * Exchange verification token for access token and refresh token
      * sets the cookie with the retrieved tokens.
      */
-    public static async Verify(token: string, cookies: Cookies, rememberMe: boolean = false): Promise<string> {
+    public static async Verify(
+        fetch: typeof globalThis.fetch,
+        token: string,
+        cookies: Cookies,
+        rememberMe: boolean = false
+    ): Promise<string> {
         const options = {
             method: 'GET',
             headers: {
@@ -34,27 +40,14 @@ export class UserCredentialsManager {
         };
 
         // trade verification token for access token
-        const response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/auth/verify?token=${token}`, options);
+        const {
+            data: { access_token },
+            response,
+        } = await callApi<{ access_token: string }>(fetch, `/auth/verify?token=${token}`, options);
 
-        // short circuit for error status
-        if (response.status != 200) {
-            console.error(`Login-verify failed`, {
-                time: Date.now(),
-                status: response.status,
-                statusText: response.statusText,
-            });
-
-            throw new Error(`Login verification failed with status code ${response.status}`);
-        }
-
-        const { access_token } = (await response?.json()) as { access_token: string };
+        if (!access_token) throw new Error('Login verification failed to retrieve tokens');
 
         const refreshToken = JwtRefresher.ExtractRefreshToken(response.headers);
-
-        if (!access_token) {
-            throw new Error('Login verification failed to retrieve tokens');
-        }
-
         const decodedToken: JwtPayload = jwtDecode(access_token);
 
         if (!decodedToken.sub) {

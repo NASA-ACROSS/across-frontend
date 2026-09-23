@@ -2,7 +2,7 @@
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
     import Section from '$lib/components/Section.svelte';
-    import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
     import EmailInput from '$lib/components/inputs/EmailInput.svelte';
     import type { UserGroup } from '$lib/types/User/UserGroup';
     import type { ActionData, SubmitFunction } from '../$types';
@@ -41,26 +41,10 @@
             value={''}
             autocomplete={false}
             includeButton={true}
-            isLoading={isSubmittingInvite && !form?.successInvite}
+            isLoading={isSubmittingInvite && form?.type !== 'success'}
             placeholder="Enter an email to invite to {group.short_name}"
             btnTxt="Invite"
-        >
-            {#if form?.successInvite}
-                <FormInputFeedback>User Invited!</FormInputFeedback>
-            {/if}
-            {#if form?.userInGroup}
-                <FormInputFeedback type="warning">User is already invited or in group!</FormInputFeedback>
-            {/if}
-            {#if form?.invalidEmail}
-                <FormInputFeedback type="error"
-                    >User not found. Please instruct the user to register to create an account.</FormInputFeedback
-                >
-            {/if}
-            {#if form?.fail}
-                <FormInputFeedback type="error"
-                    >Something went wrong, please try again. If this error persists, contact support.</FormInputFeedback
-                >
-            {/if}
-        </EmailInput>
+        />
+        <FormSubmitFeedback action="inviteUser" />
     </form>
 </Section>

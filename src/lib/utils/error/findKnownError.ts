@@ -1,3 +1,5 @@
+import logger from '$lib/logger';
+
 const DEFAULT_ERROR_MESSAGE =
     'There was an error processing the request. Please contact support with your search parameters to resolve this issue.';
 
@@ -22,7 +24,7 @@ export const findKnownError = (detail: unknown, knownErrors: Record<string, stri
             }
         }
     } catch (err) {
-        console.error('Error processing error detail:', detail, err);
+        logger.error({ msg: 'Error processing error detail', detail, err });
         return DEFAULT_ERROR_MESSAGE;
     }
 

@@ -1,14 +1,26 @@
 import { emailRegex } from '$lib/utils/regex/emailRegex';
 import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
 import { validate } from '$lib/utils/regex/validate';
-import { CONFIG } from '../../../config/config';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail, isHttpError, redirect, type ActionFailure } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
 import { autoLogin } from '$lib/utils/user/autoLogin.js';
 import type { RequestEvent } from './$types';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import guards from '$lib/utils/guards';
+import logger from '$lib/logger';
+import HTTP_CODES from '$lib/utils/HttpCodes';
+import { callApi } from '$lib/utils/across/callApi';
+import type { MagicLinkDTO } from '$lib/types/auth/MagicLinkDTO';
+
+type RegisterResult = FormSubmitResult & {
+    firstname?: string;
+    lastname?: string;
+    username?: string;
+    email?: string;
+    retryAfter?: number;
+};
 
 // rate limit is defined as [number, unit]
 // see documentation for more info
@@ -31,7 +43,7 @@ export function load({ locals }: RequestEvent) {
 }
 
 export const actions = {
-    default: async (event: RequestEvent) => {
+    default: async (event: RequestEvent): Promise<RegisterResult | ActionFailure<FormSubmitResult>> => {
         const { request, fetch } = event;
         const data = await request.formData();
 
@@ -41,7 +53,7 @@ export const actions = {
         const username = validate(data.get('username') as string, backendAlphaNumRegex, 'username');
         const email = validate(data.get('email') as string, emailRegex, 'email');
 
-        const user_post_data = {
+        const user = {
             first_name: firstname,
             last_name: lastname,
             username,
@@ -51,63 +63,81 @@ export const actions = {
 
         // reject if any inputs are null after sanitization, this should never happen
         if (firstname === null || lastname === null || username === null || email === null) {
-            console.error(
-                `ERROR: could not validate user input to register user, something is null.`,
-                JSON.stringify(user_post_data, null, 2)
-            );
-            return fail(500, { failValidation: true });
+            logger.error({
+                msg: `Could not validate user input to register user, something is null.`,
+                user,
+            });
+            return fail(500, {
+                type: 'error',
+                message: 'Form validation failed. Please try again. If this error persists, contact support.',
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[500],
+            });
         }
 
         // Rate limit user registration
         // Every call to isLimited counts as a hit towards the rate limit for the event.
         const rateStatus = await limiter.check(event);
         if (rateStatus.limited) {
-            console.error(
-                `ERROR: rate-limiting at /register for email [${email}] at time [${Date.now()}] with IP [${event.getClientAddress()}] with retryAfter [${rateStatus.retryAfter}] seconds.`,
-                user_post_data
-            );
-            return fail(429, {
-                rateLimit: true,
+            logger.error({
+                msg: 'Rate-limiting at /register',
+                email,
+                ip: event.getClientAddress(),
                 retryAfter: rateStatus.retryAfter,
+            });
+
+            return fail(429, {
+                type: 'error',
+                message: `You are being rate limited, please retry after ${rateStatus.retryAfter} seconds.`,
+                retryAfter: rateStatus.retryAfter,
+                error: `Too many registration attempts. Please try again in ${rateStatus.retryAfter} seconds.`,
+                errorId: crypto.randomUUID(),
+                code: HTTP_CODES[429],
             });
         }
 
         const options = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user_post_data),
+            body: JSON.stringify(user),
         };
 
-        let response;
         try {
-            response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/user`, options);
-        } catch (error: unknown) {
-            const errorLog = `ERROR: registering [${email}] at [${Date.now()}]`;
-            console.error(errorLog, error);
-            return fail(500, { error: errorLog, fail: true });
+            const { data } = await callApi(fetch, `/user`, options);
+            autoLogin(data as MagicLinkDTO);
+        } catch (err: unknown) {
+            if (isHttpError(err)) {
+                if (err.status === 401) {
+                    return fail(err.status, {
+                        type: 'error',
+                        message: 'Something went wrong, please try again. If this error persists, contact support.',
+                        errorId: err.body.errorId,
+                        code: err.body.code,
+                    });
+                } else if (err.status === 409) {
+                    // The user already exists, but we don't want to give away that information on the
+                    // frontend directly due to NASA security requirements. Continue on with a noop
+                    // for a 409 conflict, and let the user know that an email has been sent to them.
+                } else if (err.status === 422) {
+                    return fail(err.status, {
+                        type: 'error',
+                        message: 'Please check your input and try again. If this error persists, contact support.',
+                        errorId: err.body.errorId,
+                        code: err.body.code,
+                    });
+                } else if (err.status === 500) {
+                    return fail(err.status, {
+                        type: 'error',
+                        message: 'Failed to register user. Please try again. If this error persists, contact support.',
+                        errorId: err.body.errorId,
+                        code: err.body.code,
+                    });
+                }
+            } else {
+                throw err;
+            }
         }
 
-        if (response.status == 401) {
-            console.error(`ERROR: Unauthenticated while registering email`, { email, status: response.status });
-            return fail(401, { fail: true });
-        }
-
-        if (response.status == 409) {
-            const errorResponse = (await response.json()) as { detail: string };
-            console.error(`ERROR: user already exists  [${email}, ${username}] at [${Date.now()}] with status code [409]`);
-            return fail(500, {
-                error: errorResponse.detail,
-                userAlreadyExists: true,
-            });
-        }
-
-        if (response.status == 500 || response.status == 422) {
-            console.error(`ERROR: register user with [${email}, ${username}] at [${Date.now()}] with status code [${response.status}]`);
-            return fail(500, { fail: true });
-        }
-
-        await autoLogin(response);
-
-        return { success: true, firstname, lastname, username, email };
+        return { type: 'success', message: `An email has been sent to ${email}`, firstname, lastname, username, email };
     },
 };

@@ -18,7 +18,7 @@
     $: userInitials = user ? user?.first_name?.[0]?.toUpperCase() + user?.last_name?.[0]?.toUpperCase() : '';
 </script>
 
-<div class="navbar bg-primary shadow-sm h-22">
+<div data-testid="navbar" class="navbar bg-primary shadow-sm h-22">
     <div class="navbar-start">
         <div class="dropdown">
             <button
@@ -41,7 +41,7 @@
                 {/each}
             </ul>
         </div>
-        <a href={resolve('/')} role="button" class="text-xl font-bold flex flex-row items-center pl-3">
+        <a data-testid="nav-home-button" href={resolve('/')} role="button" class="text-xl font-bold flex flex-row items-center pl-3">
             <img src={asset('/assets/img/custom/logo-nasa.svg')} width="60" alt="NASA logo" />
             <div class="align-center text-primary-content hidden lg:block text-nowrap">Astrophysics Cross-Observatory Science Support</div>
             <div class="align-center text-primary-content lg:hidden">ACROSS</div>
@@ -82,13 +82,13 @@
 
                 <ul class="menu dropdown-content bg-primary rounded-box z-1 mt-3 w-52 p-2 shadow text-primary-content">
                     {#if user}
-                        <NavLink link={{ label: 'Profile', href: resolve('/user/profile') }} />
+                        <NavLink link={{ id: 'profile', label: 'Profile', href: resolve('/user/profile') }} />
                         <div class="hover:bg-accent hover:text-primary">
-                            <NavLink link={{ label: 'Logout', href: resolve('/user/logout'), reload: true }} />
+                            <NavLink link={{ id: 'logout', label: 'Logout', href: resolve('/user/logout'), reload: true }} />
                         </div>
                     {:else}
-                        <NavLink link={{ label: 'Create Account', href: resolve('/user/register') }} />
-                        <NavLink link={{ label: 'Login', href: resolve('/user/login') }} />
+                        <NavLink link={{ id: 'register', label: 'Create Account', href: resolve('/user/register') }} />
+                        <NavLink link={{ id: 'login', label: 'Login', href: resolve('/user/login') }} />
                     {/if}
                 </ul>
             </div>

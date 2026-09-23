@@ -2,6 +2,7 @@
     import { applyAction, enhance } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
     import Section from '$lib/components/Section.svelte';
+    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
     import type { GroupInvite } from '$lib/types/User/GroupInvite';
     import type { SubmitFunction } from '@sveltejs/kit';
 
@@ -35,6 +36,7 @@
         {:else}
             {#each invitedUsers as userInvite}
                 <form id="{userInvite.id}-invite" method="post" use:enhance={enhancedForm} action="?/deleteInvite">
+                    <FormSubmitFeedback action="deleteInvite" />
                     <div class="input-group-lg flex flex-row gap-3 pb-3">
                         <button
                             class="btn btn-primary"

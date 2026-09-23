@@ -3,13 +3,12 @@ import type { JointVisibilityWindowResponse } from '$lib/types/across/Visibility
 import { getTelescopes } from '$lib/utils/across/getTelescopes';
 import { resolveObject } from '$lib/utils/across/resolveObject';
 import type { RequestEvent } from './$types';
-import { CONFIG } from '../../config/config';
+import { fail, isHttpError, type ActionFailure } from '@sveltejs/kit';
+import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import searchParams from '$lib/utils/searchParams/searchParams';
-import parseErrorResponse from '$lib/utils/error/parseErrorResponse';
-
-type ErrorResponse = {
-    detail: unknown;
-};
+import HTTP_CODES from '$lib/utils/HttpCodes';
+import { callApi } from '$lib/utils/across/callApi';
+import logger from '$lib/logger';
 
 type JointVisibilityQueryParams = {
     instrument_ids?: string[];
@@ -26,6 +25,10 @@ export type VisibilityWindowsData = {
     visibilityWindowInstrumentIds: JointVisibilityWindowResponse['instrument_ids'];
     observatoryVisibilityWindows: JointVisibilityWindowResponse['observatory_visibility_windows'];
     error: string;
+};
+
+export type VisibilityResult = FormSubmitResult & {
+    visibilityWindowsData: VisibilityWindowsData;
 };
 
 export type JointVisibilityPageData = {
@@ -47,46 +50,44 @@ export async function load({ url, fetch }: RequestEvent): Promise<JointVisibilit
 // This line is needed for the object name resolver component.
 export const actions = {
     resolveObject,
-    calculateVisibilityWindows: async (event: RequestEvent): Promise<VisibilityWindowsData> => {
+    calculateVisibilityWindows: async (event: RequestEvent): Promise<VisibilityResult | ActionFailure<FormSubmitResult>> => {
         const form = await event.request.formData();
         const params = searchParams.serialize(form, { instrument_ids: 'array' });
 
-        // Build API URL with parameters
-        const apiUrl = new URL(`${CONFIG.ACROSS_SERVER_URL}/tools/visibility-calculator/windows?${params.toString()}`);
+        const route = `/tools/visibility-calculator/windows?${params.toString()}`;
 
-        let response: Response;
         try {
-            response = await fetch(apiUrl);
-        } catch (error) {
-            console.error('ERROR fetching visibility windows:', error);
+            const { data } = await callApi<JointVisibilityWindowResponse>(event.fetch, route, {
+                method: 'GET',
+            });
 
             return {
-                jointVisibilityWindows: [],
-                visibilityWindowInstrumentIds: [],
-                observatoryVisibilityWindows: {},
-                error: 'An error occurred while fetching visibility windows. Please contact support if it continues.',
+                type: 'success',
+                visibilityWindowsData: {
+                    jointVisibilityWindows: data.visibility_windows,
+                    visibilityWindowInstrumentIds: data.instrument_ids,
+                    observatoryVisibilityWindows: data.observatory_visibility_windows,
+                    error: '',
+                },
             };
+        } catch (err: unknown) {
+            if (isHttpError(err)) {
+                return fail(err.status, {
+                    type: 'error',
+                    message: err.body.message,
+                    errorId: err.body.errorId,
+                    code: err.body.code,
+                });
+            } else {
+                const errorId = crypto.randomUUID();
+                logger.error({ err, errorId });
+                return fail(500, {
+                    type: 'error',
+                    message: 'An unexpected error occurred while calculating visibility windows.',
+                    errorId,
+                    code: HTTP_CODES[500],
+                });
+            }
         }
-
-        if (!response.ok) {
-            const result = (await response.json()) as ErrorResponse;
-            const detailText = parseErrorResponse(result);
-
-            return {
-                jointVisibilityWindows: [],
-                visibilityWindowInstrumentIds: [],
-                observatoryVisibilityWindows: {},
-                error: detailText,
-            };
-        }
-
-        const data = (await response.json()) as JointVisibilityWindowResponse;
-
-        return {
-            jointVisibilityWindows: data.visibility_windows,
-            visibilityWindowInstrumentIds: data.instrument_ids,
-            observatoryVisibilityWindows: data.observatory_visibility_windows,
-            error: '',
-        };
     },
 };

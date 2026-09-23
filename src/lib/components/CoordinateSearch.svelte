@@ -4,16 +4,19 @@
     export let ra: string | number = '';
     export let dec: string | number = '';
     export let radius: string | number = '';
+    export let objectName: string = '';
     export let includeRadius: boolean = false;
+    export let required: boolean = false;
 </script>
 
-<ObjectNameResolver bind:ra bind:dec />
+<ObjectNameResolver bind:ra bind:dec bind:objectName {required} />
 
 <div class="grid grid-cols-1 {includeRadius ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-2 mb-4">
     <label class="input text-lg pe-0 w-full" for="ra-input">
         RA:
         <input
             id="ra-input"
+            {required}
             class="input validator input-bordered text-lg w-full"
             type="number"
             inputmode="decimal"
@@ -30,6 +33,7 @@
         DEC:
         <input
             id="dec-input"
+            {required}
             type="number"
             inputmode="decimal"
             step="any"
@@ -47,6 +51,7 @@
             Radius:
             <input
                 id="radius-input"
+                {required}
                 type="number"
                 inputmode="decimal"
                 step="any"

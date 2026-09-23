@@ -6,7 +6,9 @@
     // components
     import Navigation from '$lib/components/Navigation.svelte';
     import Footer from '$lib/components/Footer.svelte';
+    import USGOVAnalytics from '$lib/components/USGOVAnalytics.svelte';
     import { resolve } from '$app/paths';
+    import { page } from '$app/stores';
 
     import type { PageData } from './$types';
     import type { Header } from '$lib/types/navigation';
@@ -15,30 +17,35 @@
 
     const navItems: Header[] = [
         {
+            id: 'playground',
             label: 'Playground',
             href: resolve('/playground'),
             localOnly: true,
         },
         {
+            id: 'data',
             label: 'Data',
             links: [
-                { label: 'Schedules', href: resolve('/schedules') },
-                { label: 'Observations', href: resolve('/observations') },
-                { label: 'Observatories', href: resolve('/observatories') },
+                { id: 'schedules', label: 'Schedules', href: resolve('/schedules') },
+                { id: 'observations', label: 'Observations', href: resolve('/observations') },
+                { id: 'observatories', label: 'Observatories', href: resolve('/observatories') },
             ],
         },
         {
+            id: 'tools',
             label: 'Tools',
             links: [
-                { label: 'Data Ingestion Status', href: resolve('/ingestion-status') },
-                { label: 'Visibility Calculator', href: resolve('/visibility-calculator') },
+                { id: 'data-ingestion-status', label: 'Data Ingestion Status', href: resolve('/ingestion-status') },
+                { id: 'visibility-calculator', label: 'Visibility Calculator', href: resolve('/visibility-calculator') },
             ],
         },
         {
+            id: 'about',
             label: 'About',
             href: resolve('/about'),
         },
         {
+            id: 'api',
             label: 'API',
             href: data.apiDocsUrl,
             newTab: false,
@@ -62,10 +69,14 @@
     <link href="https://cdn.boxicons.com/3.0.8/fonts/filled/boxicons-filled.min.css" rel="stylesheet" />
 </svelte:head>
 
+{#if !$page.url.pathname.startsWith('/user') && !$page.url.pathname.startsWith('/playground')}
+    <USGOVAnalytics />
+{/if}
+
 <main class="min-h-screen m-0 flex flex-col content-between bg-primary">
     <Navigation {navItems} user={data.user}></Navigation>
 
-    <slot />
+    <slot testid="main-slot" />
 
     <Footer></Footer>
 </main>

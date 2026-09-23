@@ -1,27 +1,10 @@
 import type { GroupInvite } from '$lib/types/User/GroupInvite';
-import { CONFIG } from '../../../config/config';
+import { callApi } from '../across/callApi';
 
-export const getInvitedUsers = async (userGroupId: number, fetch: typeof globalThis.fetch) => {
-    const options = {
+export const getInvitedUsers = async (fetch: typeof globalThis.fetch, groupId: string) => {
+    const { data } = await callApi<GroupInvite[]>(fetch, `/group/${groupId}/invite`, {
         method: 'GET',
-    };
+    });
 
-    let response;
-    try {
-        response = await fetch(`${CONFIG.ACROSS_SERVER_URL}/group/${userGroupId}/invite`, options);
-    } catch (e: unknown) {
-        console.error(`ERROR: catch getting invited users.`, JSON.stringify(e));
-        throw new Error('Unexpected Error while fetching invited users');
-    }
-
-    // catch known errors from api and hide error from user
-    const errorCodes = [500];
-    if (errorCodes.includes(response.status)) {
-        console.error(`ERROR: getting invited users failed `, { userGroupId, status: response.status, time: Date.now() });
-        throw new Error('Unexpected Error while fetching invited users');
-    }
-
-    const invitedUsers = (await response.json()) as GroupInvite[];
-
-    return invitedUsers;
+    return data;
 };

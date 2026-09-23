@@ -57,6 +57,16 @@
             <li>Target coordinates</li>
             <li>A date range for the exposure time</li>
             <li>Bandpass and filter information</li>
+            <li>Status:</li>
+            <ul class="list-disc list-inside space-y-1 ml-2 leading-relaxed marker:text-carbon-40">
+                <li>Planned - Subject to change</li>
+                <li>Scheduled - Unlikely to change, committed to spacecraft.</li>
+                <li>Performed - As flown schedules</li>
+            </ul>
+            <li>
+                Fidelity: (high or low) - denotes confidence of Planned schedules becoming Scheduled. Some teams choose to plan low fidelity
+                schedules and refine later.
+            </li>
             <li>
                 <a href="{data?.apiDocsUrl}#/Observation/get_observation" target="_blank" class="text-blue-600 italic hover:underline">
                     See full observation model response on API docs

@@ -31,6 +31,7 @@ FROM node:24-bookworm-slim AS local
 WORKDIR /app
 
 COPY --from=build /app/node_modules /app/node_modules
+COPY --from=build /app/build /app/build
 COPY --from=build /app/package*.json ./
 
 EXPOSE 3000

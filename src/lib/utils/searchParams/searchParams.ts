@@ -17,12 +17,12 @@ export type ParamTypes<T> = {
  * @example
  * // Basic usage with `URLSearchParams`
  * const params = new URLSearchParams('name=John&age=30');
- * const normalized = normalizeSearchParams(params);
+ * const normalized = serialize(params);
  *
  * @example
  * // With array parameter expansion
  * const params = new URLSearchParams('tags=javascript,typescript,nodejs');
- * const normalized = normalizeSearchParams(params, { tags: 'array' });
+ * const normalized = serialize(params, { tags: 'array' });
  * // Results in: tags=javascript&tags=typescript&tags=nodejs
  */
 const serialize = <T>(source?: ParamSource, keys?: ParamTypes<T>): URLSearchParams => {

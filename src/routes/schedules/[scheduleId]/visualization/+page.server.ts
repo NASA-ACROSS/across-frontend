@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types';
 
 type ObservationWithUnknownFields = Observation & Record<string, unknown>;
 
-const PAGE_LIMIT = 2500;
+const PAGE_LIMIT = 1000;
 
 const emptyResponse = {
     scheduleId: '',

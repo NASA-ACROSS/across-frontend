@@ -10,6 +10,8 @@
     import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles.js';
     import Spinner from '$lib/components/Spinner.svelte';
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
+    import { enhance } from '$app/forms';
+    import { page } from '$app/stores';
 
     interface Props {
         data: PageData;
@@ -17,23 +19,29 @@
 
     let { data }: Props = $props();
 
-    const serviceAccount = $state(data.serviceAccount);
-    const user = data.user;
-    const userGroupRoles = data.userGroupRoles;
+    // using svelte-ignore below because it's reset in $effect
+    // svelte-ignore state_referenced_locally
+    let serviceAccount = $state(data.serviceAccount);
+    const user = $derived(data.user);
+    const userGroupRoles = $derived(data.userGroupRoles);
 
-    // enable diffing for changes
-    const originalServiceAccount = structuredClone(data.serviceAccount);
+    // enable diffing for changes and store POJO for reduce in getGroupsFromRoles
+    // using svelte-ignore below because thats the point of this clone and it's reset in $effect
+    // svelte-ignore state_referenced_locally
+    let originalServiceAccount = structuredClone($state.snapshot(serviceAccount));
 
     // aggregate group roles into groups for display
-    const serviceAccountGroupRoles = getGroupsFromRoles(serviceAccount.group_roles);
+    const serviceAccountGroupRoles = $derived(getGroupsFromRoles($state.snapshot(serviceAccount.group_roles)));
 
     // filter down groups and roles list to only assignable roles for current service account
-    const assignableGroupRoles = userGroupRoles
-        .map((group) => ({
-            ...group,
-            roles: group.roles.filter((groupRole) => !serviceAccount.group_roles.some((saRole) => saRole.id === groupRole.id)),
-        }))
-        .filter((group) => group.roles.length > 0);
+    const assignableGroupRoles = $derived(
+        userGroupRoles
+            .map((group) => ({
+                ...group,
+                roles: group.roles.filter((groupRole) => !serviceAccount.group_roles.some((saRole) => saRole.id === groupRole.id)),
+            }))
+            .filter((group) => group.roles.length > 0)
+    );
 
     // loading spinner display
     let isUpdating = $state(false);
@@ -46,6 +54,16 @@
             originalServiceAccount.description == serviceAccount.description &&
             originalServiceAccount.expiration_duration == serviceAccount.expiration_duration
     );
+
+    // triggers on data reload
+    $effect(() => {
+        const fresh = data.serviceAccount;
+        serviceAccount = fresh;
+        originalServiceAccount = structuredClone(fresh);
+        if ($page.form) {
+            isUpdating = false;
+        }
+    });
 </script>
 
 <Page title="Edit Service Account" icon="edit">
@@ -58,8 +76,7 @@
     {/snippet}
     <Section>
         <Fieldset>
-            <form method="post" action="?/updateServiceAccount">
-                <FormSubmitFeedback action="updateServiceAccount" />
+            <form method="post" use:enhance action="?/updateServiceAccount">
                 <label class="text-lg" for="name">Name</label>
                 <div class="flex nneeds-validation">
                     <div class="input-group mb-3 w-full">
@@ -134,8 +151,11 @@
                             Update {`${isServiceAccountExpired ? ' And Restore' : ''}`}
                         {:else}
                             <Spinner></Spinner>
-                        {/if}</button
-                    >
+                        {/if}
+                    </button>
+                </div>
+                <div class="justify-self-end pt-2">
+                    <FormSubmitFeedback action="updateServiceAccount" />
                 </div>
 
                 <div class="pt-6">
@@ -162,7 +182,7 @@
                         <Collapse open={true} border={true}>
                             {#snippet title()}{`[${group.short_name}] ${group.name} (${group.roles.length})`}{/snippet}
                             {#each serviceAccount.group_roles as groupRole}
-                                <form method="post" action="?/removeGroupRole">
+                                <form method="post" use:enhance action="?/removeGroupRole">
                                     <FormSubmitFeedback action="removeGroupRole" />
                                     <div class="flex pt-2 pb-4">
                                         <div class="flex flex-col basis-5/6">
@@ -196,7 +216,7 @@
                             <Collapse open={true} border={true}>
                                 {#snippet title()}{`[${group.short_name}] ${group.name} (${group.roles.length})`}{/snippet}
                                 {#each group.roles as groupRole}
-                                    <form method="post" action="?/assignGroupRole">
+                                    <form method="post" use:enhance action="?/assignGroupRole">
                                         <FormSubmitFeedback action="assignGroupRole" />
                                         <div class="flex pt-2 pb-4">
                                             <div class="flex flex-col basis-5/6">

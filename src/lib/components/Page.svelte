@@ -1,4 +1,6 @@
 <script lang="ts">
+    import type { Snippet } from 'svelte';
+    import Alert from './Alert.svelte';
     interface Props {
         /**
          * Page component
@@ -17,11 +19,11 @@
         icon?: string | undefined;
         showMenu?: boolean;
         showInfo?: boolean;
-        alert?: import('svelte').Snippet;
-        buttons?: import('svelte').Snippet;
-        menu?: import('svelte').Snippet;
-        children?: import('svelte').Snippet;
-        info?: import('svelte').Snippet;
+        alert?: Snippet<Alert>;
+        buttons?: Snippet;
+        menu?: Snippet;
+        children?: Snippet;
+        info?: Snippet;
     }
 
     let { title = '', icon = undefined, showMenu = false, showInfo = false, alert, buttons, menu, children, info }: Props = $props();

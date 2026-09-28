@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type { Snippet } from 'svelte';
     interface Props {
         title?: string;
         icon?: string | undefined;
@@ -6,8 +7,8 @@
         wrap?: boolean;
         // allow id for linking
         id?: string;
-        buttons?: import('svelte').Snippet;
-        children?: import('svelte').Snippet;
+        buttons?: Snippet;
+        children?: Snippet;
     }
 
     let { title = '', icon = undefined, type = 'col', wrap = false, id = '', buttons, children }: Props = $props();

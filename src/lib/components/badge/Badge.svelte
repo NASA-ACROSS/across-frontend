@@ -1,5 +1,6 @@
 <script lang="ts">
     import { BadgeType } from '$lib/types/BadgeType';
+    import type { Snippet } from 'svelte';
 
     const badgeClasses = {
         [BadgeType.DISABLED]: 'bg-secondary',
@@ -10,7 +11,7 @@
 
     interface Props {
         type?: BadgeType;
-        children?: import('svelte').Snippet;
+        children?: Snippet;
     }
 
     let { type = BadgeType.INFO, children }: Props = $props();

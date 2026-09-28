@@ -1,4 +1,6 @@
 <script lang="ts">
+    import type { Snippet } from 'svelte';
+
     interface Props {
         title?: string | undefined;
         icon: string | undefined;
@@ -11,7 +13,7 @@
         color?: 'info' | 'warning' | 'error' | 'success' | 'neutral';
         onConfirm?: (() => void) | undefined;
         onClose?: (() => void) | undefined;
-        children?: import('svelte').Snippet;
+        children?: Snippet;
     }
 
     let {

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type { Snippet } from 'svelte';
     interface Props {
         id?: string;
         name?: string;
@@ -12,7 +13,7 @@
         // caller currently forwards a click, but a callback prop keeps the capability
         // without depending on the deprecated compatibility layer.
         onclick?: (event: MouseEvent) => void;
-        children?: import('svelte').Snippet;
+        children?: Snippet;
     }
 
     let {

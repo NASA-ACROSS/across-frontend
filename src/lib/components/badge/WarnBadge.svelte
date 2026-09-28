@@ -1,8 +1,10 @@
 <script lang="ts">
     import { BadgeType } from '$lib/types/BadgeType';
     import Badge from './Badge.svelte';
+    import type { Snippet } from 'svelte';
+
     interface Props {
-        children?: import('svelte').Snippet;
+        children?: Snippet;
     }
 
     let { children }: Props = $props();

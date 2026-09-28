@@ -1,12 +1,12 @@
 <script lang="ts">
     import type { CardData } from '$lib/types/Card';
-
+    import type { Snippet } from 'svelte';
     import InfoBadge from '../badge/InfoBadge.svelte';
 
     interface Props {
         data: CardData;
         img?: { url: string; description: string } | undefined;
-        footer?: import('svelte').Snippet;
+        footer?: Snippet;
     }
 
     let { data, img = undefined, footer }: Props = $props();

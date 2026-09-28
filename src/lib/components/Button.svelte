@@ -1,12 +1,13 @@
 <script lang="ts">
     import Spinner from './Spinner.svelte';
+    import type { Snippet } from 'svelte';
 
     interface Props {
         name?: string;
         disabled?: boolean;
         isLoading: boolean;
         classes?: string;
-        children?: import('svelte').Snippet;
+        children?: Snippet;
     }
 
     let { name = '', disabled = false, isLoading, classes = '', children }: Props = $props();

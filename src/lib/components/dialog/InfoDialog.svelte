@@ -1,13 +1,15 @@
 <script lang="ts">
     import Dialog from './Dialog.svelte';
 
+    import type { Snippet } from 'svelte';
+
     interface Props {
         isOpen?: boolean;
         body?: string | undefined;
         title?: string | undefined;
         confirmDelaySeconds?: number | undefined;
         confirmText?: string | undefined;
-        children?: import('svelte').Snippet;
+        children?: Snippet;
     }
 
     let {

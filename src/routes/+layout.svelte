@@ -12,10 +12,11 @@
 
     import type { PageData } from './$types';
     import type { Header } from '$lib/types/navigation';
+    import type { Snippet } from 'svelte';
 
     interface Props {
         data: PageData;
-        children?: import('svelte').Snippet<[any]>;
+        children?: Snippet<[any]>;
     }
 
     let { data, children }: Props = $props();

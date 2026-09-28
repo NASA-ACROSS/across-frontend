@@ -1,5 +1,6 @@
 <script lang="ts">
     import Button from '../Button.svelte';
+    import type { Snippet } from 'svelte';
 
     interface Props {
         name?: string;
@@ -16,7 +17,7 @@
         includeButton?: boolean;
         btnTxt?: string;
         isLoading: any;
-        children?: import('svelte').Snippet;
+        children?: Snippet;
     }
 
     let {

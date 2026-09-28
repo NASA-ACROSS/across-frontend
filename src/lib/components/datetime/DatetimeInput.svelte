@@ -7,7 +7,7 @@
         required?: boolean;
     }
 
-    let { datetimeInput = $bindable(''), label = 'Date/Time', required = false }: Props = $props();
+    let { datetimeInput = $bindable(), label = 'Date/Time', required = false }: Props = $props();
 
     const splitDateTime = (dateStr: string = '') => {
         const dt = DateTime.fromISO(dateStr, { zone: 'utc' });

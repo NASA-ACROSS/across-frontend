@@ -8,7 +8,7 @@
         requiredEnd?: boolean;
     }
 
-    let { dateRangeBegin = $bindable(''), dateRangeEnd = $bindable(''), requiredBegin = false, requiredEnd = false }: Props = $props();
+    let { dateRangeBegin = $bindable(), dateRangeEnd = $bindable(), requiredBegin = false, requiredEnd = false }: Props = $props();
 </script>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">

@@ -24,9 +24,9 @@
 
     let {
         title = 'Resolve Object Name to Coordinates',
-        ra = $bindable(''),
-        dec = $bindable(''),
-        objectName = $bindable(''),
+        ra = $bindable(),
+        dec = $bindable(),
+        objectName = $bindable(),
         required = false,
     }: Props = $props();
 

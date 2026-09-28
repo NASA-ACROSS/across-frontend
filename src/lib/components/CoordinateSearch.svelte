@@ -11,10 +11,10 @@
     }
 
     let {
-        ra = $bindable(''),
-        dec = $bindable(''),
-        radius = $bindable(''),
-        objectName = $bindable(''),
+        ra = $bindable(),
+        dec = $bindable(),
+        radius = $bindable(),
+        objectName = $bindable(),
         includeRadius = false,
         required = false,
     }: Props = $props();

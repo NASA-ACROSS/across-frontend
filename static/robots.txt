@@ -1,0 +1,3 @@
+User-agent: Applebot
+Disallow: /observations
+Disallow: /schedules

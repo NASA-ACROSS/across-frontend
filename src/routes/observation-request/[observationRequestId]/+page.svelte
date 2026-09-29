@@ -10,54 +10,55 @@
     import { goto } from '$app/navigation';
     import { resolve } from '$app/paths';
     import Alert from '$lib/components/Alert.svelte';
+    interface Props {
+        data: PageData;
+    }
 
-    export let data: PageData;
+    let { data }: Props = $props();
 
-    $: obsReq = data.observationRequest;
-    $: versions = data.observationRequest.versions;
+    let obsReq = $derived(data.observationRequest);
+    let versions = $derived(data.observationRequest.versions);
 
-    $: instrumentId = obsReq.instrument_id;
+    let instrumentId = $derived(obsReq.instrument_id);
 
     // remove instruments that were not selected from GET telescope response found by instrument_id
-    $: [selectedTelescope] = data.telescopes.reduce((telescopes: Telescope[], currentTelescope: Telescope) => {
-        currentTelescope.instruments = currentTelescope.instruments.filter((instrument) => instrument.id == instrumentId);
-        telescopes.push(currentTelescope);
+    let [selectedTelescope] = $derived(
+        data.telescopes.reduce((telescopes: Telescope[], currentTelescope: Telescope) => {
+            currentTelescope.instruments = currentTelescope.instruments.filter((instrument) => instrument.id == instrumentId);
+            telescopes.push(currentTelescope);
 
-        return telescopes;
-    }, [] as Telescope[]);
+            return telescopes;
+        }, [] as Telescope[])
+    );
 
-    let versionsById: Version[] | undefined;
-
-    $: {
-        versionsById = versions?.reduce((versions, currentVersion) => {
-            // upcoming change to server will send version objects in this shape, using python snake case to reduce changes downstream later
-            const simpleVersion = { id: currentVersion.id, created_on: currentVersion.created_on };
-            versions.push(simpleVersion);
-            return versions;
-        }, [] as Version[]);
-
-        // add the current version, can be removed when server sends current in versions list
-        versionsById?.push({ id: obsReq.id, created_on: obsReq.created_on });
-
-        // sort by created_on desc, can be removed when server sends versions in descending order
-        versionsById?.sort((a, b) => (a.created_on > b.created_on ? -1 : 1));
-    }
+    let versionsById: Version[] | undefined = $derived(
+        versions
+            ?.reduce((versions: { id: any; created_on: any }[], currentVersion: { id: any; created_on: any }) => {
+                // upcoming change to server will send version objects in this shape, using python snake case to reduce changes downstream later
+                const simpleVersion = { id: currentVersion.id, created_on: currentVersion.created_on };
+                versions.push(simpleVersion);
+                return versions;
+            }, [] as Version[])
+            // add the current version, can be removed when server sends current in versions list
+            .concat({ id: obsReq.id, created_on: obsReq.created_on })
+            // sort by created_on desc, can be removed when server sends versions in descending order
+            .sort((a, b) => (a.created_on > b.created_on ? -1 : 1))
+    );
 
     // fallback for rendering the option list
-    $: currentVersion = { id: obsReq.id, number: 1, created_on: obsReq.created_on };
+    let currentVersion = $derived({ id: obsReq.id, number: 1, created_on: obsReq.created_on });
 
-    $: numberedVersions = versionsById?.map((version, index) => {
-        version.number = versionsById!.length - index;
-        return version;
-    }) || [currentVersion];
+    let numberedVersions = $derived(
+        versionsById?.map((version, index) => {
+            version.number = versionsById!.length - index;
+            return version;
+        }) || [currentVersion]
+    );
 
-    let selectedRevision: Version, newestRevision: Version, isOutdatedRevision: boolean;
     // set selected option to the current version
-    $: {
-        selectedRevision = numberedVersions?.find((rev) => obsReq.id == rev.id) || currentVersion;
-        newestRevision = numberedVersions[0];
-        isOutdatedRevision = obsReq.id !== newestRevision.id;
-    }
+    let selectedRevision: Version = $derived(numberedVersions?.find((rev) => obsReq.id == rev.id) || currentVersion);
+    let newestRevision: Version = $derived(numberedVersions[0]);
+    let isOutdatedRevision: boolean = $derived(obsReq.id !== newestRevision.id);
 
     const navigateRevision = async (event: Event & { currentTarget: HTMLSelectElement }) => {
         if (event?.currentTarget?.value) {
@@ -75,27 +76,33 @@
 </script>
 
 <Page title="Observation Request View" icon="crosshair">
-    <div slot="buttons" class="flex flex-row gap-4">
-        <a data-sveltekit-reload href={resolve('/observation-request/[observationRequestId]/edit', { observationRequestId: obsReq?.id })}>
-            <button class="btn btn-{isOutdatedRevision ? 'warning' : 'info'} text-xl">
-                <div class="bx bx-edit opacity-80" />
-                Edit
-            </button>
-        </a>
-        <select
-            id="versions-option-input"
-            value={selectedRevision.id}
-            on:change={navigateRevision}
-            class="select select-bordered text-lg w-full"
-        >
-            <option value="">Select Revision</option>
-            {#each numberedVersions as option}
-                <option value={option.id}>
-                    {`Rev ${option.number} - ${prettyUTC(option.created_on)}`}
-                </option>
-            {/each}
-        </select>
-    </div>
+    {#snippet buttons()}
+        <div slot="buttons" class="flex flex-row gap-4">
+            <a
+                data-sveltekit-reload
+                href={resolve('/observation-request/[observationRequestId]/edit', { observationRequestId: obsReq?.id })}
+            >
+                <button class="btn btn-{isOutdatedRevision ? 'warning' : 'info'} text-xl">
+                    <div class="bx bx-edit opacity-80"></div>
+                    Edit
+                </button>
+            </a>
+            <select
+                id="versions-option-input"
+                value={selectedRevision.id}
+                onchange={navigateRevision}
+                class="select select-bordered text-lg w-full"
+            >
+                <option value="">Select Revision</option>
+                {#each numberedVersions as option}
+                    <option value={option.id}>
+                        {`Rev ${option.number} - ${prettyUTC(option.created_on)}`}
+                    </option>
+                {/each}
+            </select>
+        </div>
+    {/snippet}
+
     {#if isOutdatedRevision}
         <Alert type="warning">This is an older revision, select an updated revision in the drop down on the right.</Alert>
     {/if}

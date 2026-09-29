@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.9.0...across-frontend-v1.10.0) (2026-09-29)
+
+
+### Features
+
+* add robots.txt to disallow applebot from crawling observations page ([#397](https://github.com/NASA-ACROSS/across-frontend/issues/397)) ([583fd51](https://github.com/NASA-ACROSS/across-frontend/commit/583fd513de1ccf1c172e6bed562a8d501406f27d))
+
 ## [1.9.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.8.0...across-frontend-v1.9.0) (2026-09-11)
 
 

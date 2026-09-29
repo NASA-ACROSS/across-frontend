@@ -62,6 +62,8 @@ export type ObservationRequest = {
     modified_on: null;
     modified_by_id: null;
 
+    submitted_by: string;
+
     object_position_error?: number | null;
     instrument_configuration?: Record<string, unknown> | null;
     proposal?: ProposalInfo;

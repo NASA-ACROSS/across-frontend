@@ -168,7 +168,7 @@
 
             <Fieldset title="Submission Information">
                 <div>
-                    <LabeledValue name="Submitted by" value={obsReq.created_by_id} />
+                    <LabeledValue name="Submitted by" value={obsReq?.submitted_by} />
                     <LabeledValue name="Submitted at" value={prettyUTC(obsReq.created_on)} />
                 </div>
             </Fieldset>

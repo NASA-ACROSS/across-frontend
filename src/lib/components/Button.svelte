@@ -1,10 +1,16 @@
 <script lang="ts">
     import Spinner from './Spinner.svelte';
+    import type { Snippet } from 'svelte';
 
-    export let name: string = '';
-    export let disabled = false;
-    export let isLoading: boolean;
-    export let classes = '';
+    interface Props {
+        name?: string;
+        disabled?: boolean;
+        isLoading: boolean;
+        classes?: string;
+        children?: Snippet;
+    }
+
+    let { name = '', disabled = false, isLoading, classes = '', children }: Props = $props();
 </script>
 
 <button class="btn {classes}" {disabled}>
@@ -13,6 +19,6 @@
     {:else if name}
         {name}
     {:else}
-        <slot></slot>
+        {@render children?.()}
     {/if}
 </button>

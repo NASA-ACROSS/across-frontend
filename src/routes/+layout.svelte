@@ -12,8 +12,14 @@
 
     import type { PageData } from './$types';
     import type { Header } from '$lib/types/navigation';
+    import type { Snippet } from 'svelte';
 
-    export let data: PageData;
+    interface Props {
+        data: PageData;
+        children?: Snippet<[any]>;
+    }
+
+    let { data, children }: Props = $props();
 
     const navItems: Header[] = [
         {
@@ -76,7 +82,7 @@
 <main class="min-h-screen m-0 flex flex-col content-between bg-primary">
     <Navigation {navItems} user={data.user}></Navigation>
 
-    <slot testid="main-slot" />
+    {@render children?.({ testid: 'main-slot' })}
 
     <Footer></Footer>
 </main>

@@ -1,15 +1,17 @@
 <script lang="ts">
-    export let type: 'error' | 'warning' | 'success' = 'success';
-
-    let styleClass = 'text-info';
-
-    $: if (type === 'error') {
-        styleClass = 'text-error';
-    } else if (type === 'warning') {
-        styleClass = 'text-warning';
+    import type { Snippet } from 'svelte';
+    interface Props {
+        type?: 'error' | 'warning' | 'success';
+        children?: Snippet;
     }
+
+    let { type = 'success', children }: Props = $props();
+
+    // Svelte 5 migration: was a `run()` shim from 'svelte/legacy' assigning into
+    // `$state`. It is a pure function of `type`, so it is a textbook $derived.
+    let styleClass = $derived(type === 'error' ? 'text-error' : type === 'warning' ? 'text-warning' : 'text-info');
 </script>
 
 <div class={styleClass}>
-    <slot />
+    {@render children?.()}
 </div>

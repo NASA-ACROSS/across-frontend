@@ -7,12 +7,17 @@
     import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
     import OpenDataPolicyBanner from '$lib/components/OpenDataPolicyBanner.svelte';
 
-    /** @type {import('./$types').ActionData} */
-    export let form;
+    interface Props {
+        form: import('./$types').ActionData;
+    }
+
+    let { form }: Props = $props();
 </script>
 
 <Page title="Create Account" icon="user">
-    <OpenDataPolicyBanner slot="alert" />
+    {#snippet alert()}
+        <OpenDataPolicyBanner />
+    {/snippet}
     <Section>
         <Fieldset title="User Information">
             <form method="post">

@@ -2,7 +2,11 @@
     import type { Header } from '$lib/types/navigation';
     import NavLink from './NavLink.svelte';
 
-    export let header: Header;
+    interface Props {
+        header: Header;
+    }
+
+    let { header }: Props = $props();
 
     const borderClasses = 'border-3 border-transparent hover:border-3 hover:border-nasa-blue-tint';
 </script>

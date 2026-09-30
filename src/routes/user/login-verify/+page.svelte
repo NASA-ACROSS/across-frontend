@@ -5,7 +5,7 @@
     import Page from '$lib/components/Page.svelte';
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
 
-    export let form;
+    let { form } = $props();
 </script>
 
 <Page>

@@ -2,10 +2,14 @@
     import { page } from '$app/stores';
     import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 
-    export let action: string | undefined = undefined;
+    interface Props {
+        action?: string | undefined;
+    }
 
-    $: formData = $page.form as FormSubmitResult | null;
-    $: isMatch = action ? formData?._action === action : true;
+    let { action = undefined }: Props = $props();
+
+    let formData = $derived($page.form as FormSubmitResult | null);
+    let isMatch = $derived(action ? formData?._action === action : true);
 </script>
 
 {#if isMatch && formData?.message}

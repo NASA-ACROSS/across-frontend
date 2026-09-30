@@ -4,7 +4,11 @@
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
     import type { UserInvite } from '$lib/types/User/UserInvite';
 
-    export let invitations: UserInvite[];
+    interface Props {
+        invitations: UserInvite[];
+    }
+
+    let { invitations }: Props = $props();
 </script>
 
 {#if invitations && invitations?.length}

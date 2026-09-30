@@ -2,8 +2,12 @@
     import type { ServiceAccountSecret } from '$lib/types/User/ServiceAccountSecret';
     import { downloadJSON } from '$lib/utils/download/downloadJSON';
 
-    export let isOpen = true;
-    export let serviceAccountSecret: ServiceAccountSecret | undefined;
+    interface Props {
+        isOpen?: boolean;
+        serviceAccountSecret: ServiceAccountSecret | undefined;
+    }
+
+    let { isOpen = $bindable(true), serviceAccountSecret = $bindable() }: Props = $props();
 
     function closeModal() {
         isOpen = false;
@@ -42,7 +46,7 @@
                         class="btn btn-sm btn-info"
                         type="submit"
                         title="Download service account credentials"
-                        on:click={() => {
+                        onclick={() => {
                             downloadJSON(serviceAccountSecret, 'across_client_credentials.json');
                         }}
                     >
@@ -50,7 +54,7 @@
                     </button>
                 </div>
                 <div>
-                    <button class="btn btn-sm btn-primary" type="button" title="Close" on:click={closeModal}> Close </button>
+                    <button class="btn btn-sm btn-primary" type="button" title="Close" onclick={closeModal}> Close </button>
                 </div>
             </div>
         </div>

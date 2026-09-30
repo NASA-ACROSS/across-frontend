@@ -1,7 +1,11 @@
 <script lang="ts">
     import type { Link } from '$lib/types/navigation';
 
-    export let link: Link;
+    interface Props {
+        link: Link;
+    }
+
+    let { link }: Props = $props();
 </script>
 
 <li class="hover:underline decoration-dashed underline-offset-4">

@@ -61,12 +61,19 @@ export const actions = {
             anonymize: (form.get('anonymize') as string) === 'true' || false,
             is_too: true,
             instrument_id: form.get('instrumentId') as string,
-            proposal: {
-                name: form.get('proposalName') as string,
-                code: form.get('proposalCode') as string,
-            },
             science_justification: form.get('justification') as string,
         };
+
+        const proposalName = form.get('proposalName') as string;
+        const proposalCode = form.get('proposalCode') as string;
+        const hasProposal = proposalName && proposalCode;
+
+        if (hasProposal) {
+            observationRequestPayload.proposal = {
+                name: proposalName,
+                code: proposalCode,
+            };
+        }
 
         try {
             const apiPath = `/observation-request/`;

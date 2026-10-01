@@ -89,11 +89,12 @@
             </a>
             <select
                 id="versions-option-input"
-                value={selectedRevision.id}
+                value={numberedVersions.length > 1 ? selectedRevision.id : ''}
+                disabled={numberedVersions.length === 1}
                 onchange={navigateRevision}
                 class="select select-bordered text-lg w-full"
             >
-                <option value="">Select Revision</option>
+                <option value="" selected disabled hidden>No Revisions</option>
                 {#each numberedVersions as option}
                     <option value={option.id}>
                         {`Rev ${option.number} - ${prettyUTC(option.created_on)}`}

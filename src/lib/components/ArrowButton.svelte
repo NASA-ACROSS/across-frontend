@@ -4,6 +4,11 @@
         id?: string;
         name?: string;
         href?: string | null;
+        /**
+         * Set the button type, "submit" for forms, defaults to "button" for everything else used with client side listeners for scripted behavior.
+         * For more info see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#type
+         */
+        type?: 'button' | 'submit' | 'reset' | null | undefined;
         containerClasses?: string;
         textClasses?: string;
         direction?: 'right' | 'left';
@@ -20,6 +25,7 @@
         id = '',
         name = '',
         href = null,
+        type = 'button',
         containerClasses = '',
         textClasses = '',
         direction = 'right',
@@ -38,7 +44,7 @@
         target={openInNewTab ? '_blank' : '_self'}
         class="text-lg h-auto no-underline hover:underline decoration-dashed underline-offset-4 {textClasses}"
     >
-        <button class="flex me-0 cursor-pointer gap-1" {onclick}>
+        <button {type} class="flex me-0 cursor-pointer gap-1" {onclick}>
             <span class="color-primary-content self-center pb-1">
                 {#if name}
                     {name}

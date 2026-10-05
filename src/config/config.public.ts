@@ -27,6 +27,8 @@ class PublicConfiguration {
     public RUNTIME_ENV: RuntimeEnv = (env.PUBLIC_RUNTIME_ENV as RuntimeEnv) || 'local';
 
     public IS_LOCAL: boolean = this.RUNTIME_ENV === 'local';
+    /** Unlike IS_LOCAL, false when PUBLIC_RUNTIME_ENV is unset. */
+    public IS_EXPLICITLY_LOCAL: boolean = env.PUBLIC_RUNTIME_ENV === 'local';
     public IS_PROD: boolean = this.RUNTIME_ENV === 'prod';
 
     public USER_TOKENS_COOKIE_NAME: string = 'user-tokens';

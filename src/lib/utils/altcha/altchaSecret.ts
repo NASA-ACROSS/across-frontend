@@ -10,38 +10,21 @@ class AltchaSecretManager {
 
     public async initialize(): Promise<void> {
         if (this.key) return;
-
-        if (CONFIG.ALTCHA_HMAC_KEY) {
-            this.key = CONFIG.ALTCHA_HMAC_KEY;
-            return;
-        }
-
-        // No SSM access locally or at build time.
-        if (CONFIG.IS_BUILD || PUBLIC_CONFIG.IS_LOCAL) {
-            this.key = LOCAL_DEV_HMAC_KEY;
-            return;
-        }
-
-        const name = `/${CONFIG.APP_ENV}/${CONFIG.ALTCHA_HMAC_KEY_PATH}`;
-        const { Value } = await ssm.getParameter(name);
-        this.key = Value;
+        this.key = this.getEnvKey() ?? (await ssm.getParameter(`/${CONFIG.APP_ENV}/${CONFIG.ALTCHA_HMAC_KEY_PATH}`)).Value;
     }
 
     public getKey(): string {
-        if (this.key) return this.key;
-
         // Sync fallback for when `initialize()` hasn't run (e.g. build-time module analysis).
-        if (CONFIG.ALTCHA_HMAC_KEY) {
-            this.key = CONFIG.ALTCHA_HMAC_KEY;
-            return this.key;
-        }
+        this.key ??= this.getEnvKey();
+        if (!this.key) throw new Error('AltchaSecretManager has not been initialized. Call initialize() before getKey().');
+        return this.key;
+    }
 
-        if (CONFIG.IS_BUILD || PUBLIC_CONFIG.IS_LOCAL) {
-            this.key = LOCAL_DEV_HMAC_KEY;
-            return this.key;
-        }
-
-        throw new Error('AltchaSecretManager has not been initialized. Call initialize() before getKey().');
+    /** The configured key, else the dev key when explicitly local or building; undefined means SSM. */
+    private getEnvKey(): string | undefined {
+        if (CONFIG.ALTCHA_HMAC_KEY) return CONFIG.ALTCHA_HMAC_KEY;
+        if (CONFIG.IS_BUILD || PUBLIC_CONFIG.IS_EXPLICITLY_LOCAL) return LOCAL_DEV_HMAC_KEY;
+        return undefined;
     }
 }
 

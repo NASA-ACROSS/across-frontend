@@ -25,7 +25,7 @@ essential for operation, you can find an example in `.env.example`. Copy the fil
 | Variable                   | Use                                                                                 |
 | -------------------------- | ----------------------------------------------------------------------------------- |
 | `API_URL`                  | Base hostname and port for the API                                                  |
-| `RUNTIME_ENV`              | Runtime mode (`local`, `test`, etc.) used by server-side auth initialization        |
+| `PUBLIC_RUNTIME_ENV`       | Runtime mode (`local`, `dev`, etc.); `local` enables the built-in ALTCHA dev key    |
 | `ACROSS_SERVER_SECRET`     | client_secret used webserver credentials manager (defaults to current local secret) |
 | `ACROSS_SERVER_ID`         | client_id used by webserver credentials manager (defaults to current local ID)      |
 | `ACROSS_TEST_ACCESS_TOKEN` | dummy test access token                                                             |
@@ -35,7 +35,7 @@ essential for operation, you can find an example in `.env.example`. Copy the fil
 
 **IMPORTANT:** For local development the `ACROSS_SERVER_SECRET` will be the default service account secret `'local-service-account-key'`. For any other environments, the key will be stored in the SSM param store.
 
-**ALTCHA captcha:** Register and login-verify use a self-hosted [ALTCHA](https://altcha.org) proof-of-work captcha. Deployed environments must have the HMAC secret in SSM at `/${APP_ENV}/${ALTCHA_HMAC_KEY_PATH}` (server init fails without it); locally a built-in dev key is used.
+**ALTCHA captcha:** Register and login-verify use a self-hosted [ALTCHA](https://altcha.org) proof-of-work captcha. Deployed environments must have the HMAC secret in SSM at `/${APP_ENV}/${ALTCHA_HMAC_KEY_PATH}` (server init fails without it); with `PUBLIC_RUNTIME_ENV=local` a built-in dev key is used.
 
 ## Building
 

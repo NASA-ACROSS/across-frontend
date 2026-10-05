@@ -13,6 +13,8 @@
     }
 
     let { form }: Props = $props();
+    let isCaptchaVerified = $state(false);
+    let isButtonDisabled = $derived(form?.type === 'success' || !isCaptchaVerified);
 </script>
 
 <Page title="Create Account" icon="user">
@@ -93,9 +95,9 @@
 
                 <div class="flex justify-end gap-3 text-lg items-center">
                     <FormSubmitFeedback />
-                    <button class="btn btn-lg btn-info" type="submit" disabled={form?.type === 'success'}>Register</button>
+                    <button class="btn btn-lg btn-info" type="submit" disabled={isButtonDisabled}>Register</button>
                 </div>
-                <Altcha />
+                <Altcha bind:isVerified={isCaptchaVerified} />
             </form>
         </Fieldset>
         <NasaSecurityBanner></NasaSecurityBanner>

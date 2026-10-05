@@ -22,3 +22,34 @@ for (const route of ['/user/register', '/user/login-verify']) {
         expect(result.data).toContain(CAPTCHA_ERROR);
     });
 }
+
+// The pages themselves render on the local-mode server from playwright.config.ts.
+const LOCAL = 'http://localhost:4174';
+
+for (const [path, name] of [
+    ['/user/register', 'Register'],
+    ['/user/login-verify?token=test-token', 'Login'],
+]) {
+    test.describe(`${path} submit`, () => {
+        test.describe('without JavaScript', () => {
+            test.use({ javaScriptEnabled: false });
+
+            test('is disabled in the server-rendered page', async ({ page }) => {
+                await page.goto(LOCAL + path);
+                await expect(page.locator('form').getByRole('button', { name, exact: true })).toBeDisabled();
+            });
+        });
+
+        test('unlocks once the captcha is solved', async ({ page }) => {
+            await page.goto(LOCAL + path);
+            await expect(page.locator('form').getByRole('button', { name, exact: true })).toBeEnabled({ timeout: 15_000 });
+        });
+
+        test('stays disabled and shows an error when the challenge cannot be fetched', async ({ page }) => {
+            await page.route('**/api/altcha/challenge', (route) => route.abort());
+            await page.goto(LOCAL + path);
+            await expect(page.getByText(CAPTCHA_ERROR)).toBeVisible();
+            await expect(page.locator('form').getByRole('button', { name, exact: true })).toBeDisabled();
+        });
+    });
+}

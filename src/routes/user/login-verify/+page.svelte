@@ -7,6 +7,7 @@
     import Altcha from '$lib/components/Altcha.svelte';
 
     let { form } = $props();
+    let isCaptchaVerified = $state(false);
 </script>
 
 <Page>
@@ -21,8 +22,8 @@
                         >
                     </div>
                     <FormSubmitFeedback />
-                    <ArrowButton>Login</ArrowButton>
-                    <Altcha auto="onload" />
+                    <ArrowButton disabled={!isCaptchaVerified}>Login</ArrowButton>
+                    <Altcha bind:isVerified={isCaptchaVerified} />
                 </form>
             {:else if form?.type === 'error'}
                 <FormSubmitFeedback />

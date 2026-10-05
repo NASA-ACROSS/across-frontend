@@ -1,18 +1,32 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { resolve } from '$app/paths';
+    import type { AltchaWidgetElement } from 'altcha';
     import type { Configuration } from 'altcha/types';
+    import FormInputFeedback from '$lib/components/FormInputFeedback.svelte';
 
     interface Props {
-        /** When the proof-of-work starts: `onfocus` for forms with inputs, `onload` for button-only forms. */
-        auto?: Configuration['auto'];
+        /** True while solved; false again once it expires. Bind it to disable submit, which also covers clicks before hydration. */
+        isVerified?: boolean;
         /** `invisible` renders no UI. */
         display?: Configuration['display'];
     }
 
-    let { auto = 'onfocus', display = 'invisible' }: Props = $props();
+    let { isVerified = $bindable(false), display = 'invisible' }: Props = $props();
+    let hasFailed = $state(false);
 
     const challengeUrl = resolve('/api/altcha/challenge');
+
+    function onStateChange(event: CustomEvent<{ state: string }>) {
+        const widget = event.currentTarget as AltchaWidgetElement;
+        const { state } = event.detail;
+        const wasVerified = isVerified;
+        isVerified = state === 'verified';
+        hasFailed = state === 'error';
+        // Re-solve after a reset (e.g. bfcache restore) or once a solved challenge expires. An 'expired' mid-solve
+        // only means a fast client clock (the server checks expiry itself), and re-solving then would loop.
+        if (widget.isConnected && (state === 'unverified' || (state === 'expired' && wasVerified))) void widget.verify();
+    }
 
     // Browser-only: the widget needs SubtleCrypto and custom elements.
     onMount(async () => {
@@ -20,4 +34,10 @@
     });
 </script>
 
-<altcha-widget challenge={challengeUrl} {auto} {display}></altcha-widget>
+<!-- `onload` so a bound submit unlocks without any interaction. -->
+<altcha-widget challenge={challengeUrl} auto="onload" {display} onstatechange={onStateChange}></altcha-widget>
+<div role="alert">
+    {#if hasFailed}
+        <FormInputFeedback type="error">Could not verify that you are human. Please reload the page and try again.</FormInputFeedback>
+    {/if}
+</div>

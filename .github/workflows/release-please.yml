@@ -39,7 +39,10 @@ jobs:
       organization: '${{ github.event.repository.owner.login }}'
       repository: '${{ github.event.repository.name }}'
       image-name: frontend
-      build-args: 'BUILD_ENV=deploy,BUILD_VERSION=${{ needs.release-please.outputs.version }}'
+      # Set the base path for the release build which is proxied from the prod rev proxy from science.data.nasa.gov
+      build-args: |
+        BASE_PATH=/across/app
+        BUILD_VERSION=${{ needs.release-please.outputs.version }}
     secrets:
       ecr-region: '${{ secrets.ECR_REGION }}'
       ecr-iam-role: '${{ secrets.ECR_IAM_ROLE }}'

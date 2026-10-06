@@ -27,11 +27,6 @@ export class PrivateConfiguration {
     public AWS_REGION: string = env.AWS_REGION || 'us-east-2';
     public AWS_PROFILE?: string = env.AWS_PROFILE;
 
-    /**  build will always be `deploy` when running the `npm run build` command.
-     * `BUILD_ENV` is also hardcoded in CICD pipelines to `deploy` when building and running CI checks.
-     */
-    public IS_BUILD: boolean = env.BUILD_ENV === 'deploy';
-
     constructor(private publicConfig: typeof PUBLIC_CONFIG) {}
 
     /** Returns the public facing URL to the ACROSS API Docs */

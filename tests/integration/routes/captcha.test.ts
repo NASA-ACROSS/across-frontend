@@ -1,4 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/mockserver.fixture';
+
+// One at a time: concurrent proof-of-work solves starve other test files of CPU.
+test.describe.configure({ mode: 'default' });
 
 const CAPTCHA_ERROR = 'Could not verify that you are human. Please reload the page and try again.';
 
@@ -10,7 +13,7 @@ test('challenge endpoint returns a signed challenge', async ({ request }) => {
 });
 
 // These pages are local-only (404 in this env), so post to their actions directly, the way `use:enhance` does.
-for (const route of ['/user/register', '/user/login-verify']) {
+for (const route of ['/user/register', '/user/login']) {
     test(`${route} rejects a submission without a solved captcha`, async ({ request, baseURL }) => {
         const res = await request.post(route, {
             headers: { accept: 'application/json', origin: new URL(route, baseURL).origin },
@@ -28,7 +31,7 @@ const LOCAL = 'http://localhost:4174';
 
 for (const [path, name] of [
     ['/user/register', 'Register'],
-    ['/user/login-verify?token=test-token', 'Login'],
+    ['/user/login', 'Send Link'],
 ]) {
     test.describe(`${path} submit`, () => {
         test.describe('without JavaScript', () => {
@@ -53,3 +56,32 @@ for (const [path, name] of [
         });
     });
 }
+
+test('/user/login solves a new captcha after a failed attempt, since the form does not reload', async ({ page }) => {
+    await page.goto(`${LOCAL}/user/login`);
+    const email = page.locator('form').getByRole('textbox');
+    const sendLink = page.locator('form').getByRole('button', { name: 'Send Link', exact: true });
+
+    // An invalid email still uses up the captcha (it's checked first).
+    await email.fill('not-an-email');
+    await sendLink.click({ timeout: 15_000 });
+    await expect(page.getByText('Please provide a valid email.')).toBeVisible();
+
+    await email.fill('sandy@example.com');
+    await sendLink.click({ timeout: 15_000 });
+    await expect(page.getByText('An email has been sent to sandy@example.com')).toBeVisible();
+});
+
+test('/user/register submits once the captcha is solved', async ({ page, mockServer }) => {
+    // The action reports a 409 (already registered) as success, so the result doesn't leak existing accounts.
+    await mockServer.mockJson('/v1/user', {}, { method: 'POST', status: 409 });
+    await page.goto(`${LOCAL}/user/register`);
+
+    await page.fill('input[name="firstname"]', 'Sandy');
+    await page.fill('input[name="lastname"]', 'Cheeks');
+    await page.fill('input[name="username"]', 'sandycheeks');
+    await page.fill('input[name="email"]', 'sandy@example.com');
+    await page.locator('form').getByRole('button', { name: 'Register', exact: true }).click({ timeout: 15_000 });
+
+    await expect(page.getByText('An email has been sent to sandy@example.com')).toBeVisible();
+});

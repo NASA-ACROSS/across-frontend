@@ -10,7 +10,7 @@ class AltchaSecretManager {
 
     public async initialize(): Promise<void> {
         if (this.key) return;
-        this.key = this.getEnvKey() ?? (await ssm.getParameter(`/${CONFIG.APP_ENV}/${CONFIG.ALTCHA_HMAC_KEY_PATH}`)).Value;
+        this.key = this.getEnvKey() ?? (await this.getSsmKey());
     }
 
     public getKey(): string {
@@ -25,6 +25,16 @@ class AltchaSecretManager {
         if (CONFIG.ALTCHA_HMAC_KEY) return CONFIG.ALTCHA_HMAC_KEY;
         if (CONFIG.IS_BUILD || PUBLIC_CONFIG.IS_LOCAL) return LOCAL_DEV_HMAC_KEY;
         return undefined;
+    }
+
+    /** Refuses short or known values (e.g. the infra's seeded placeholder), since a guessable key makes the captcha forgeable. */
+    private async getSsmKey(): Promise<string> {
+        const name = `/${CONFIG.APP_ENV}/${CONFIG.ALTCHA_HMAC_KEY_PATH}`;
+        const { Value } = await ssm.getParameter(name);
+        if (Value.length < 32 || Value === LOCAL_DEV_HMAC_KEY) {
+            throw new Error(`ALTCHA HMAC key at ${name} is a placeholder or too short; set a random value of 32+ characters.`);
+        }
+        return Value;
     }
 }
 

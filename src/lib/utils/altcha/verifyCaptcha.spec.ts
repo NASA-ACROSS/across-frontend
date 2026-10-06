@@ -81,7 +81,7 @@ describe('verifyCaptcha', () => {
     });
 
     it('fails with a 400 when the altcha payload is malformed', async () => {
-        const result = await verifyCaptcha(makeEvent('not-a-valid-payload'), '/login-verify');
+        const result = await verifyCaptcha(makeEvent('not-a-valid-payload'), '/login');
 
         expect(result).not.toBeNull();
         expect(result?.status).toBe(400);

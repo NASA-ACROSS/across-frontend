@@ -13,7 +13,6 @@
         textClasses?: string;
         direction?: 'right' | 'left';
         openInNewTab?: boolean;
-        disabled?: boolean;
         // Svelte 5 migration: replaces the `createBubbler()` shim that `sv migrate`
         // injected from 'svelte/legacy' to emulate Svelte 4 `on:click` forwarding. No
         // caller currently forwards a click, but a callback prop keeps the capability
@@ -31,7 +30,6 @@
         textClasses = '',
         direction = 'right',
         openInNewTab = false,
-        disabled = false,
         onclick,
         children,
     }: Props = $props();
@@ -46,7 +44,7 @@
         target={openInNewTab ? '_blank' : '_self'}
         class="text-lg h-auto no-underline hover:underline decoration-dashed underline-offset-4 {textClasses}"
     >
-        <button class="flex me-0 cursor-pointer gap-1 disabled:cursor-not-allowed disabled:opacity-50" {disabled} {onclick}>
+        <button class="flex me-0 cursor-pointer gap-1" {onclick}>
             <span class="color-primary-content self-center pb-1">
                 {#if name}
                     {name}

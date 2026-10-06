@@ -4,10 +4,8 @@
     import Section from '$lib/components/Section.svelte';
     import Page from '$lib/components/Page.svelte';
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
-    import Altcha from '$lib/components/Altcha.svelte';
 
     let { form } = $props();
-    let isCaptchaVerified = $state(false);
 </script>
 
 <Page>
@@ -22,8 +20,7 @@
                         >
                     </div>
                     <FormSubmitFeedback />
-                    <ArrowButton disabled={!isCaptchaVerified}>Login</ArrowButton>
-                    <Altcha bind:isVerified={isCaptchaVerified} />
+                    <ArrowButton>Login</ArrowButton>
                 </form>
             {:else if form?.type === 'error'}
                 <FormSubmitFeedback />

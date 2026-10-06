@@ -27,6 +27,9 @@ jobs:
       image-name: frontend
       app: frontend
       output-web-url: false
+      # Set the base path for feature envs which are proxied from science-dev.data.nasa.gov
+      build-args: |
+        BASE_PATH=/across/app
 
     secrets:
       github-private-actions-pat: ${{ secrets.PRIVATE_CONFIG_READ_ACCESS }}

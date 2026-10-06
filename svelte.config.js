@@ -13,6 +13,7 @@ const config = {
         },
         paths: {
             relative: false,
+            base: process.env.BASE_PATH || '',
         },
 
         // adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.

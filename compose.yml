@@ -6,8 +6,6 @@ services:
       context: .
       dockerfile: Dockerfile
       target: local
-      args:
-        RUNTIME_ENV: local
     environment:
       BUILD_VERSION: local
       PUBLIC_RUNTIME_ENV: local

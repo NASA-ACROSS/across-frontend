@@ -20,10 +20,10 @@ class AltchaSecretManager {
         return this.key;
     }
 
-    /** The configured key, else the dev key when explicitly local or building; undefined means SSM. */
+    /** The configured key, else the dev key when local or building; undefined means SSM. */
     private getEnvKey(): string | undefined {
         if (CONFIG.ALTCHA_HMAC_KEY) return CONFIG.ALTCHA_HMAC_KEY;
-        if (CONFIG.IS_BUILD || PUBLIC_CONFIG.IS_EXPLICITLY_LOCAL) return LOCAL_DEV_HMAC_KEY;
+        if (CONFIG.IS_BUILD || PUBLIC_CONFIG.IS_LOCAL) return LOCAL_DEV_HMAC_KEY;
         return undefined;
     }
 }

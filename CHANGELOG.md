@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.10.0...across-frontend-v1.11.0) (2026-10-08)
+
+
+### Features
+
+* observation request view page ([#390](https://github.com/NASA-ACROSS/across-frontend/issues/390)) ([8ff597d](https://github.com/NASA-ACROSS/across-frontend/commit/8ff597d3569cc0b4ce7c37e13585d1ee19ed8175))
+
 ## [1.10.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.9.0...across-frontend-v1.10.0) (2026-09-29)
 
 

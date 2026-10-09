@@ -1,5 +1,5 @@
 {
-    "cSpell.words": ["ciphertext", "ciphertexts", "commitlint", "falsey", "luxon", "MOCKSERVER", "Multimessenger", "TDAMM"],
+    "cSpell.words": ["ciphertext", "ciphertexts", "commitlint", "falsey", "luxon", "MOCKSERVER", "Multimessenger", "TDAMM", "altcha"],
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
     "[svelte]": {

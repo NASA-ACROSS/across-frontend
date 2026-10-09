@@ -5,7 +5,7 @@
     import Page from '$lib/components/Page.svelte';
     import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
 
-    export let form;
+    let { form } = $props();
 </script>
 
 <Page>
@@ -20,7 +20,7 @@
                         >
                     </div>
                     <FormSubmitFeedback />
-                    <ArrowButton>Login</ArrowButton>
+                    <ArrowButton type="submit">Login</ArrowButton>
                 </form>
             {:else if form?.type === 'error'}
                 <FormSubmitFeedback />

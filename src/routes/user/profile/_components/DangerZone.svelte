@@ -5,9 +5,9 @@
 
     const COUNTDOWN_LENGTH = 3;
 
-    let countdownRemaining = 0;
-    let isDeleteModalOpen = false;
-    let isDeleteButtonEnabled = false;
+    let countdownRemaining = $state(0);
+    let isDeleteModalOpen = $state(false);
+    let isDeleteButtonEnabled = $state(false);
 
     let countdown = (countdownRemaining: number) => {
         countdownRemaining = countdownRemaining - 1;
@@ -30,24 +30,32 @@
                 <div class="bg-base-100 p-6 w-full max-w-xl shadow-2xl border-3 border-accent">
                     <div class="text-lg font-bold mb-4 flex flex-row justify-between">
                         <h3 class="flex">Confirm User Delete</h3>
-                        <button
-                            class="justify-end btn btn-sm btn-primary max-h-8"
-                            title="Close"
-                            on:click={() => (isDeleteModalOpen = false)}>X</button
+                        <button class="justify-end btn btn-sm btn-primary max-h-8" title="Close" onclick={() => (isDeleteModalOpen = false)}
+                            >X</button
                         >
                     </div>
-                    <p class="bold text-accent">I understand that I am about to delete my user account.</p>
-                    <p class="bold text-accent">This action will expire my service accounts.</p>
-                    <p class="bold text-accent">This action will remove me from all groups and remove my group roles.</p>
-                    <p class="bold text-accent">I will not be able to register a new account with the same email.</p>
-                    <p class="bold text-accent pb-6">I will have to contact support to re-activate my account.</p>
+                    <div class="pb-2 text-error">
+                        <p class="font-bold text-error">
+                            I understand that I am about to delete my user account. This action will result in the following:
+                        </p>
+                        <ol class="list-decimal pl-6">
+                            <li class="text-error">Expire all of my service accounts.</li>
+                            <li class="text-error">Remove me from all groups and remove my group roles.</li>
+                            <li class="text-error">Prevent registration with the same email.</li>
+                        </ol>
+
+                        <p class="font-bold">
+                            If I want to re-active this email, I will need to contact
+                            <a class="link" href="mailto:gsfc-across-support@mail.nasa.gov">ACROSS Support</a>.
+                        </p>
+                    </div>
 
                     <div class="flex justify-between">
                         <div>
                             <button
                                 data-sveltekit-preload-data="off"
                                 data-sveltekit-preload-code="off"
-                                class="btn btn-sm btn-accent w-xs max-w-md"
+                                class="btn btn-sm btn-error w-xs max-w-md"
                                 disabled={!isDeleteButtonEnabled}
                                 type="submit"
                                 title="Delete my User Account"
@@ -60,12 +68,7 @@
                             </button>
                         </div>
                         <div>
-                            <button
-                                class="btn btn-sm btn-primary"
-                                type="button"
-                                title="Cancel"
-                                on:click={() => (isDeleteModalOpen = false)}
-                            >
+                            <button class="btn btn-sm btn-primary" type="button" title="Cancel" onclick={() => (isDeleteModalOpen = false)}>
                                 Cancel
                             </button>
                         </div>
@@ -84,7 +87,7 @@
                 <button
                     class={`btn btn-accent text-lg`}
                     type="button"
-                    on:click={() => {
+                    onclick={() => {
                         isDeleteModalOpen = true;
                         isDeleteButtonEnabled = false;
                         countdownRemaining = COUNTDOWN_LENGTH;

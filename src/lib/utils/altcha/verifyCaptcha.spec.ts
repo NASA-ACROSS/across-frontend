@@ -1,17 +1,17 @@
 import { afterEach, describe, it, expect, vi } from 'vitest';
 
-vi.mock('$lib/logger', () => ({
-    default: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() },
-}));
-
 import type { RequestEvent } from '@sveltejs/kit';
 import { createChallenge, solveChallenge } from 'altcha-lib';
 import { deriveHmacKeySecret, type AltchaResult } from 'altcha-lib/frameworks/sveltekit';
 import { deriveKey } from 'altcha-lib/algorithms/pbkdf2';
 import { verifyCaptcha } from './verifyCaptcha';
-import { altcha, CHALLENGE_TTL_MS } from './altcha';
-import { altchaSecretManager } from './altchaSecret';
+import altcha, { CHALLENGE_TTL_MS } from './altcha';
+import { altchaSecretManager } from './AltchaSecretManager';
 import HTTP_CODES from '$lib/utils/HttpCodes';
+
+vi.mock('$lib/logger', () => ({
+    default: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() },
+}));
 
 /** Minimal RequestEvent: the `altcha` cookie (read, then deleted) and a client IP for the log. */
 function makeEvent(cookieValue?: string): RequestEvent {

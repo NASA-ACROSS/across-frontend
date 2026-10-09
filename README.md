@@ -29,7 +29,6 @@ essential for operation, you can find an example in `.env.example`. Copy the fil
 | `ACROSS_SERVER_SECRET`     | client_secret used webserver credentials manager (defaults to current local secret) |
 | `ACROSS_SERVER_ID`         | client_id used by webserver credentials manager (defaults to current local ID)      |
 | `ACROSS_TEST_ACCESS_TOKEN` | dummy test access token                                                             |
-| `ALTCHA_HMAC_KEY`          | ALTCHA captcha HMAC secret; overrides the SSM lookup when set (local/test)          |
 | `ALTCHA_HMAC_KEY_PATH`     | SSM path of the ALTCHA HMAC secret (defaults to `frontend/altcha/hmac_key`)         |
 | `PUBLIC_BUILD_VERSION`     | Sets version in header meta tag "build-version". **REQUIRED** for `npm run build`   |
 

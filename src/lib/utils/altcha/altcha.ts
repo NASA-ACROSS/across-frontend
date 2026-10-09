@@ -1,13 +1,14 @@
 import { create, deriveHmacKeySecret, randomInt } from 'altcha-lib/frameworks/sveltekit';
 import { deriveKey } from 'altcha-lib/algorithms/pbkdf2';
-import { altchaSecretManager } from '$lib/utils/altcha/altchaSecret';
+import { altchaSecretManager } from '$lib/utils/altcha/AltchaSecretManager';
+import { CONFIG } from '$config/config';
 
 const HMAC_SECRET = altchaSecretManager.getKey();
 
-export const CHALLENGE_TTL_MS = 10 * 60 * 1000;
+export const CHALLENGE_TTL_MS = CONFIG.CHALLENGE_TTL_MINS * 60 * 1000;
 
 /** Self-hosted ALTCHA instance. The solved payload travels in a cookie, so verifying never consumes the form body. */
-export const altcha = create({
+export default create({
     hmacSignatureSecret: HMAC_SECRET,
     hmacKeySignatureSecret: await deriveHmacKeySecret(HMAC_SECRET),
     createChallengeParameters: () => ({

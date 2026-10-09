@@ -1,8 +1,9 @@
 import { CONFIG } from '$config/config';
 import { PUBLIC_CONFIG } from '$config/config.public';
 import { ssm } from '$lib/utils/aws/ssm';
+import { building } from '$app/environment';
 
-const LOCAL_DEV_HMAC_KEY = 'altcha-local-dev-hmac-key-do-not-use-in-production';
+const LOCAL_HMAC_KEY = 'altcha-local-dev-hmac-key-do-not-use-in-production';
 
 /** Loads and caches the ALTCHA HMAC secret (SSM-backed, like `WebserverCredentialsManager`). */
 class AltchaSecretManager {
@@ -22,8 +23,7 @@ class AltchaSecretManager {
 
     /** The configured key, else the dev key when local or building; undefined means SSM. */
     private getEnvKey(): string | undefined {
-        if (CONFIG.ALTCHA_HMAC_KEY) return CONFIG.ALTCHA_HMAC_KEY;
-        if (CONFIG.IS_BUILD || PUBLIC_CONFIG.IS_LOCAL) return LOCAL_DEV_HMAC_KEY;
+        if (building || PUBLIC_CONFIG.IS_LOCAL || CONFIG.ACROSS_TEST_ACCESS_TOKEN) return LOCAL_HMAC_KEY;
         return undefined;
     }
 
@@ -31,7 +31,7 @@ class AltchaSecretManager {
     private async getSsmKey(): Promise<string> {
         const name = `/${CONFIG.APP_ENV}/${CONFIG.ALTCHA_HMAC_KEY_PATH}`;
         const { Value } = await ssm.getParameter(name);
-        if (Value.length < 32 || Value === LOCAL_DEV_HMAC_KEY) {
+        if (Value.length < 32 || Value === LOCAL_HMAC_KEY) {
             throw new Error(`ALTCHA HMAC key at ${name} is a placeholder or too short; set a random value of 32+ characters.`);
         }
         return Value;

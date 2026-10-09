@@ -1,7 +1,7 @@
 import { fail, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import type { AltchaResult } from 'altcha-lib/frameworks/sveltekit';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import { altcha } from './altcha';
+import altcha from './altcha';
 import logger from '$lib/logger';
 import HTTP_CODES from '$lib/utils/HttpCodes';
 
@@ -11,8 +11,15 @@ const usedNonces = new Map<string, number>();
 /** Verifies the ALTCHA payload cookie. Doesn't read the request body, so it can run before `request.formData()`. */
 export async function verifyCaptcha(event: RequestEvent, route: string): Promise<ActionFailure<FormSubmitResult> | null> {
     const { error, payload } = await altcha.verifyEvent(event);
-    const reason = error ?? consumeNonce(payload);
-    if (!reason) return null;
+    let reason = error;
+    if (!reason) {
+        try {
+            consumeNonce(payload);
+            return null;
+        } catch (err) {
+            reason = err instanceof Error ? err.message : String(err);
+        }
+    }
 
     const errorId = crypto.randomUUID();
     logger.error({
@@ -29,18 +36,17 @@ export async function verifyCaptcha(event: RequestEvent, route: string): Promise
     });
 }
 
-/** Marks a verified challenge as used; returns why the payload is rejected, or null. */
-function consumeNonce(payload: AltchaResult['payload']): string | null {
+/** Marks a verified challenge as used; throws with the reason if the payload is rejected. */
+function consumeNonce(payload: AltchaResult['payload']): void {
     // Same type check as the library: only proof-of-work challenges are issued here, never server signatures.
-    if (!payload || 'verificationData' in payload) return 'Unexpected ALTCHA payload type.';
+    if (!payload || 'verificationData' in payload) throw new Error('Unexpected ALTCHA payload type.');
 
     const now = Date.now();
     for (const [usedNonce, expiry] of usedNonces) if (expiry <= now) usedNonces.delete(usedNonce);
 
     const { nonce, expiresAt = Infinity } = payload.challenge.parameters;
     // The library checked expiry on an earlier clock read (allowing now == expiry), so the sweep may have just freed this nonce.
-    if (expiresAt * 1000 <= now) return 'ALTCHA payload has expired.';
-    if (usedNonces.has(nonce)) return 'ALTCHA payload has already been used.';
+    if (expiresAt * 1000 <= now) throw new Error('ALTCHA payload has expired.');
+    if (usedNonces.has(nonce)) throw new Error('ALTCHA payload has already been used.');
     usedNonces.set(nonce, expiresAt * 1000);
-    return null;
 }

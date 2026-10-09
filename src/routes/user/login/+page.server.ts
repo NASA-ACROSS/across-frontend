@@ -6,7 +6,6 @@ import { emailRegex } from '$lib/utils/regex/emailRegex';
 import type { Actions } from './$types';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
 import { clearAuth } from '$lib/handles/clearAuth';
-import guards from '$lib/utils/guards';
 import logger from '$lib/logger';
 import { callApi } from '$lib/utils/across/callApi';
 import HTTP_CODES from '$lib/utils/HttpCodes';
@@ -18,8 +17,6 @@ type LoginResult = FormSubmitResult & {
 };
 
 export function load({ locals }: RequestEvent) {
-    guards.localOnlyRoute();
-
     const userCookie = locals?.user;
     // Redirect to profile page when user is logged in
     if (userCookie) {

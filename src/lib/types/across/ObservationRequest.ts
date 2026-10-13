@@ -23,6 +23,7 @@ export interface Version {
     number?: number;
     id: string;
     created_on: string;
+    modified_on: string;
 }
 
 export type ObservationRequestCreate = {
@@ -55,7 +56,7 @@ export type ObservationRequest = {
     parent_id: string;
     status: string;
     status_reason: string;
-    versions: ObservationRequest[] | Version[] | null;
+    versions: Version[] | null;
 
     created_on: string;
     created_by_id: string;

@@ -19,10 +19,16 @@ export class PrivateConfiguration {
     public ACROSS_SERVER_ID: string = env.ACROSS_SERVER_ID || '';
     public ACROSS_SERVER_SECRET: string = env.ACROSS_SERVER_SECRET || '';
 
+    /** SSM path of the ALTCHA HMAC secret, relative to APP_ENV */
+    public ALTCHA_HMAC_KEY_PATH: string = env.ALTCHA_HMAC_KEY_PATH || 'frontend/altcha/hmac_key';
+
     /** Only used in test environment */
     public ACROSS_TEST_ACCESS_TOKEN: string = env.ACROSS_TEST_ACCESS_TOKEN || '';
     /** Only used in playwright integration testing */
     public MOCKSERVER_NAMESPACE_HEADER: string = env.MOCKSERVER_NAMESPACE_HEADER || 'X-Mockserver-Namespace';
+
+    /** Altcha challenge time-to-live in minutes */
+    public CHALLENGE_TTL_MINS: number = Number(env.CHALLENGE_TTL_MINS) || 10;
 
     public AWS_REGION: string = env.AWS_REGION || 'us-east-2';
     public AWS_PROFILE?: string = env.AWS_PROFILE;

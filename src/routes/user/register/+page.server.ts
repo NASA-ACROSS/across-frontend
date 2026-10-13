@@ -5,6 +5,7 @@ import { fail, isHttpError, redirect, type ActionFailure } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
 import { autoLogin } from '$lib/utils/user/autoLogin.js';
+import { verifyCaptcha } from '$lib/utils/altcha/verifyCaptcha';
 import type { RequestEvent } from './$types';
 import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
 import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
@@ -45,6 +46,11 @@ export function load({ locals }: RequestEvent) {
 export const actions = {
     default: async (event: RequestEvent): Promise<RegisterResult | ActionFailure<FormSubmitResult>> => {
         const { request, fetch } = event;
+
+        // Check the captcha before any other work.
+        const captchaFailure = await verifyCaptcha(event, '/register');
+        if (captchaFailure) return captchaFailure;
+
         const data = await request.formData();
 
         // validate and sanitize input

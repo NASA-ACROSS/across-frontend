@@ -11,6 +11,7 @@
     import { resolve } from '$app/paths';
     import ArrowButton from '$lib/components/ArrowButton.svelte';
     import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
+    import Altcha from '$lib/components/Altcha.svelte';
 
     interface Props {
         form: ActionData;
@@ -19,6 +20,8 @@
     let { form }: Props = $props();
 
     let isLoggingIn = $state(false);
+    let isCaptchaVerified = $state(false);
+    let altcha: ReturnType<typeof Altcha> | undefined = $state();
 
     let isButtonDisabled = $derived(isLoggingIn || form?.type === 'success');
 
@@ -26,9 +29,11 @@
     const enhancedLogin: SubmitFunction = () => {
         isLoggingIn = true;
 
-        return async ({ update }) => {
+        return async ({ result, update }) => {
             await update();
             isLoggingIn = false;
+            // The page didn't reload and the submit used up the captcha, so solve a new one for the retry.
+            if (result.type === 'failure' || result.type === 'error') altcha?.refresh();
         };
     };
 </script>
@@ -44,9 +49,11 @@
                 disabled={isLoggingIn || form?.type === 'success' || isButtonDisabled}
                 autocomplete={false}
                 includeButton={true}
+                buttonDisabled={!isCaptchaVerified}
                 isLoading={isLoggingIn && form?.type !== 'success'}
             />
             <FormSubmitFeedback />
+            <Altcha bind:this={altcha} bind:isVerified={isCaptchaVerified} />
         </form>
         <ArrowButton
             href={resolve('/user/register')}

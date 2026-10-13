@@ -15,6 +15,8 @@
          * Customize text with `btnText`
          */
         includeButton?: boolean;
+        /** Disables only the button, e.g. until a captcha is solved. */
+        buttonDisabled?: boolean;
         btnTxt?: string;
         isLoading: any;
         children?: Snippet;
@@ -28,6 +30,7 @@
         autocomplete = true,
         required = true,
         includeButton = false,
+        buttonDisabled = false,
         btnTxt = 'Send Link',
         isLoading,
         children,
@@ -59,7 +62,7 @@
             />
         </label>
         {#if includeButton}
-            <Button classes="btn-primary join-item" {isLoading} {disabled}>{btnTxt}</Button>
+            <Button classes="btn-primary join-item" {isLoading} disabled={disabled || buttonDisabled}>{btnTxt}</Button>
         {/if}
         <div class="validator-hint hidden text-left absolute mt-13">Enter valid email address</div>
     </div>

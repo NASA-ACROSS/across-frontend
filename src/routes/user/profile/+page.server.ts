@@ -1,16 +1,16 @@
 import { redirect, fail, type ActionFailure, isHttpError } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
-import { validate } from '$lib/utils/regex/validate';
-import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
+import { validate } from '#lib/utils/regex/validate.js';
+import { backendAlphaNumRegex } from '#lib/utils/regex/internationalAlphanumericRegex.js';
 import type { RequestEvent } from './$types';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import { getUserInfo } from '$lib/utils/user/getUserInfo';
-import guards from '$lib/utils/guards';
-import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
-import { PUBLIC_CONFIG } from '$config/config.public';
-import logger from '$lib/logger';
-import HTTP_CODES from '$lib/utils/HttpCodes';
-import { callApi } from '$lib/utils/across/callApi';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import { getUserInfo } from '#lib/utils/user/getUserInfo.js';
+import guards from '#lib/utils/guards/index.js';
+import { UserCredentialsManager } from '#lib/utils/across/auth/UserCredentialsManager.js';
+import { PUBLIC_CONFIG } from '#config/config.public.js';
+import logger from '#lib/logger/index.js';
+import HTTP_CODES from '#lib/utils/HttpCodes.js';
+import { callApi } from '#lib/utils/across/callApi.js';
 
 type UpdateUserInformationResult = FormSubmitResult & {
     first_name: string;
@@ -245,6 +245,6 @@ export const actions = {
             throw err;
         }
 
-        redirect(302, resolve('/user/logout'));
+        redirect(302, resolve('user/logout'));
     },
 };

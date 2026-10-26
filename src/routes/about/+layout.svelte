@@ -1,7 +1,7 @@
 <script lang="ts">
     import { afterNavigate } from '$app/navigation';
     import { page } from '$app/state';
-    import Page from '$lib/components/Page.svelte';
+    import Page from '#lib/components/Page.svelte';
     import type { Snippet } from 'svelte';
 
     interface Props {
@@ -38,11 +38,13 @@
         { href: '/about/contributing', label: 'Contributing' },
     ];
 
-    const normalizePath = (path: string) => (path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path);
+    const normalizePath = (path: string) => path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
 
     let currentPath = $state(normalizePath(page.url.pathname));
 
-    afterNavigate(() => {
+    afterNavigate(({ shallow, type }) => {
+        if (shallow && type === 'goto') return;
+
         currentPath = normalizePath(page.url.pathname);
     });
 </script>

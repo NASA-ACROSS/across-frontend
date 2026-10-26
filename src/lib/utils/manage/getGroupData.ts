@@ -1,4 +1,4 @@
-import type { Group } from '$lib/types/User/Group';
+import type { Group } from '#lib/types/User/Group.js';
 import { callApi } from '../across/callApi';
 
 export const getGroupData = async (fetch: typeof globalThis.fetch, groupId: string): Promise<Group> => {

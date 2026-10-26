@@ -1,9 +1,9 @@
 import { building } from '$app/env';
-import { CONFIG } from '$config/config';
+import { CONFIG } from '#config';
 import * as luxon from 'luxon';
 import { ssm } from '../../aws/ssm';
 import { JwtRefresher } from './JwtRefresher';
-import logger from '$lib/logger';
+import logger from '#lib/logger/index.js';
 import { callApi } from '../callApi';
 import { isHttpError } from '@sveltejs/kit';
 

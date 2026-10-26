@@ -1,12 +1,12 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
     import { resolve } from '$app/paths';
-    import Section from '$lib/components/Section.svelte';
-    import Spinner from '$lib/components/Spinner.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
-    import type { User } from '$lib/types/User/User';
-    import type { UserGroup } from '$lib/types/User/UserGroup';
-    import { isAdmin } from '$lib/utils/user/isAdmin';
+    import Section from '#lib/components/Section.svelte';
+    import Spinner from '#lib/components/Spinner.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
+    import type { User } from '#lib/types/User/User.js';
+    import type { UserGroup } from '#lib/types/User/UserGroup.js';
+    import { isAdmin } from '#lib/utils/user/isAdmin.js';
 
     interface Props {
         user: User;

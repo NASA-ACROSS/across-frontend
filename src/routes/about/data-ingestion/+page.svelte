@@ -1,6 +1,6 @@
 <script>
-    import ArrowButton from '$lib/components/ArrowButton.svelte';
-    import Section from '$lib/components/Section.svelte';
+    import ArrowButton from '#lib/components/ArrowButton.svelte';
+    import Section from '#lib/components/Section.svelte';
 </script>
 
 <Section title="How Data Is Obtained">

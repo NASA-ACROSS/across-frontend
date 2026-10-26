@@ -1,12 +1,12 @@
-import type { CookieSerializeOptions } from 'cookie';
-import { aesGcmEncrypt } from '$lib/utils/crypto/crypto-aes-gcm';
-import type { TokensCookie as TokensCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { SerializeOptions } from 'cookie';
+import { aesGcmEncrypt } from '#lib/utils/crypto/crypto-aes-gcm.js';
+import type { TokensCookie as TokensCookie } from '#lib/types/User/UserCredentialsCookie.js';
 import type { Cookies } from '@sveltejs/kit';
-import { webserverCredentialsManager } from '$lib/utils/across/auth/WebserverCredentialsManager';
-import { JwtRefresher } from '$lib/utils/across/auth/JwtRefresher';
+import { webserverCredentialsManager } from '#lib/utils/across/auth/WebserverCredentialsManager.js';
+import { JwtRefresher } from '#lib/utils/across/auth/JwtRefresher.js';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
-import { PUBLIC_CONFIG } from '$config/config.public';
-import logger from '$lib/logger';
+import { PUBLIC_CONFIG } from '#config/config.public.js';
+import logger from '#lib/logger/index.js';
 import { callApi } from '../callApi';
 
 export class UserCredentialsManager {
@@ -71,7 +71,7 @@ export class UserCredentialsManager {
     public static async SetCookie<T>(cookies: Cookies, cookieName: string, cookie: T, rememberMe?: boolean) {
         const encrypted = await aesGcmEncrypt(JSON.stringify(cookie), webserverCredentialsManager.secret);
 
-        const cookieOptions: CookieSerializeOptions & { path: string } = {
+        const cookieOptions: SerializeOptions & { path: string } = {
             path: '/',
             sameSite: true,
             secure: true,

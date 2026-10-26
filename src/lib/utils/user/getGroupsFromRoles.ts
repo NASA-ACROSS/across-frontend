@@ -1,5 +1,5 @@
-import type { GroupRole } from '$lib/types/User/GroupRole';
-import type { UserGroup } from '$lib/types/User/UserGroup';
+import type { GroupRole } from '#lib/types/User/GroupRole.js';
+import type { UserGroup } from '#lib/types/User/UserGroup.js';
 
 export const getGroupsFromRoles = (groupRoles: GroupRole[]) => {
     return Object.values(

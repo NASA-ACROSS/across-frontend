@@ -1,14 +1,14 @@
-import type { Telescope } from '$lib/types/across/Telescope';
-import type { JointVisibilityWindowResponse } from '$lib/types/across/VisibilityWindow';
-import { getTelescopes } from '$lib/utils/across/getTelescopes';
-import { resolveObject } from '$lib/utils/across/resolveObject';
+import type { Telescope } from '#lib/types/across/Telescope.js';
+import type { JointVisibilityWindowResponse } from '#lib/types/across/VisibilityWindow.js';
+import { getTelescopes } from '#lib/utils/across/getTelescopes.js';
+import { resolveObject } from '#lib/utils/across/resolveObject.js';
 import type { RequestEvent } from './$types';
 import { fail, isHttpError, type ActionFailure } from '@sveltejs/kit';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import searchParams from '$lib/utils/searchParams/searchParams';
-import HTTP_CODES from '$lib/utils/HttpCodes';
-import { callApi } from '$lib/utils/across/callApi';
-import logger from '$lib/logger';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import searchParams from '#lib/utils/searchParams/searchParams.js';
+import HTTP_CODES from '#lib/utils/HttpCodes.js';
+import { callApi } from '#lib/utils/across/callApi.js';
+import logger from '#lib/logger/index.js';
 
 type JointVisibilityQueryParams = {
     instrument_ids?: string[];

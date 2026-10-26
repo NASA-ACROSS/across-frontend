@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { BadgeType } from '$lib/types/BadgeType';
+    import { BadgeType } from '#lib/types/BadgeType.js';
     import Badge from './Badge.svelte';
     import type { Snippet } from 'svelte';
 

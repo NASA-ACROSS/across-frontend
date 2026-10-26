@@ -1,7 +1,7 @@
 <script>
     import { page } from '$app/state';
-    import Section from '$lib/components/Section.svelte';
-    import Page from '$lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import Page from '#lib/components/Page.svelte';
 </script>
 
 <Page>

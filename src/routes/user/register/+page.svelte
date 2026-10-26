@@ -1,11 +1,11 @@
 <script lang="ts">
-    import Section from '$lib/components/Section.svelte';
-    import Fieldset from '$lib/components/Fieldset.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
-    import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
-    import Page from '$lib/components/Page.svelte';
-    import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
-    import OpenDataPolicyBanner from '$lib/components/OpenDataPolicyBanner.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import Fieldset from '#lib/components/Fieldset.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
+    import NasaSecurityBanner from '#lib/components/NasaSecurityBanner.svelte';
+    import Page from '#lib/components/Page.svelte';
+    import { frontendAlphaNumRegex } from '#lib/utils/regex/internationalAlphanumericRegex.js';
+    import OpenDataPolicyBanner from '#lib/components/OpenDataPolicyBanner.svelte';
 
     interface Props {
         form: import('./$types').ActionData;

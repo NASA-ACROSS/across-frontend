@@ -1,4 +1,4 @@
-import logger from '$lib/logger';
+import logger from '#lib/logger/index.js';
 
 export const validate = (input: string, regex: RegExp, inputName: string) => {
     const match = input.match(regex);

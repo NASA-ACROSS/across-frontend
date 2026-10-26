@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { PUBLIC_CONFIG } from '$config/config.public';
+    import { PUBLIC_CONFIG } from '#config/config.public.js';
     import type { Snippet } from 'svelte';
     interface Props {
         children?: Snippet;

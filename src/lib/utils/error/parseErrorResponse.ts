@@ -1,4 +1,4 @@
-import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
+import type { AcrossApiErrorResponseBody } from '#lib/types/error/AcrossApiErrorResponseBody.js';
 
 const DEFAULT_ERROR_MESSAGE = 'There was an unknown error processing the request.';
 

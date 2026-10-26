@@ -1,7 +1,7 @@
 import { fail, isHttpError, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
-import type { NameResolver } from '$lib/types/across/NameResolver';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import HTTP_CODES from '$lib/utils/HttpCodes';
+import type { NameResolver } from '#lib/types/across/NameResolver.js';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import HTTP_CODES from '#lib/utils/HttpCodes.js';
 import searchParams from '../searchParams/searchParams';
 import { callApi } from './callApi';
 

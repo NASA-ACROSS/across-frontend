@@ -1,6 +1,6 @@
-import { aesGcmDecrypt } from '$lib/utils/crypto/crypto-aes-gcm';
+import { aesGcmDecrypt } from '#lib/utils/crypto/crypto-aes-gcm.js';
 import { type Cookies } from '@sveltejs/kit';
-import { webserverCredentialsManager } from '$lib/utils/across/auth/WebserverCredentialsManager';
+import { webserverCredentialsManager } from '#lib/utils/across/auth/WebserverCredentialsManager.js';
 
 // propagate user cookie data into event response to be consumed by client application
 export async function decryptCookie<T>(cookies: Cookies, cookieName: string): Promise<T | undefined> {

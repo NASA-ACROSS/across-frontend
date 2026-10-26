@@ -1,21 +1,19 @@
 <script lang="ts">
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
-    import CoordinateSearch from '$lib/components/CoordinateSearch.svelte';
-    import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
-    import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
-    import { enhance } from '$app/forms';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import CoordinateSearch from '#lib/components/CoordinateSearch.svelte';
+    import DateRangeInput from '#lib/components/datetime/DateRangeInput.svelte';
+    import ObservatoryTelescopeInstrumentSelector from '#lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
+    import { enhance, type SubmitFunction } from '$app/forms';
     import { goto } from '$app/navigation';
-    import { onMount } from 'svelte';
-    import { prettyUTC } from '$lib/utils/datetime/prettyUTC';
-    import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
-    import type { Telescope } from '$lib/types/across/Telescope';
-    import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
+    import { prettyUTC } from '#lib/utils/datetime/prettyUTC.js';
+    import type { TelescopeObservatory } from '#lib/types/across/TelescopeObservatory.js';
+    import type { Telescope } from '#lib/types/across/Telescope.js';
+    import type { TelescopeInstrument } from '#lib/types/across/TelescopeInstrument.js';
     import type { JointVisibilityPageData, VisibilityWindowsData } from './+page.server';
-    import type { SubmitFunction } from '@sveltejs/kit';
-    import searchParams from '$lib/utils/searchParams/searchParams';
-    import { type VisibilityWindow } from '$lib/types/across/VisibilityWindow';
-    import Alert from '$lib/components/Alert.svelte';
+    import Alert from '#lib/components/Alert.svelte';
+    import searchParams from '#lib/utils/searchParams/searchParams.js';
+    import { type VisibilityWindow } from '#lib/types/across/VisibilityWindow.js';
 
     interface Props {
         data: JointVisibilityPageData;
@@ -23,7 +21,7 @@
 
     let { data }: Props = $props();
 
-    let telescopes = data?.telescopes;
+    let telescopes = $derived(data?.telescopes);
     let visibilityWindowsData: VisibilityWindowsData | undefined = $state(undefined);
 
     let isLoading = $state(false);
@@ -46,6 +44,7 @@
     let minVisibilityDuration = $state(String(data.queryParams?.min_visibility_duration || ''));
 
     let qps = $derived([ra, dec, dateRangeBegin, dateRangeEnd, selectedInstruments, hiRes, minVisibilityDuration]);
+
     let isQueryEmpty = $derived(qps.every((value) => !Boolean(value) || (Array.isArray(value) && value.length === 0)));
 
     // Create observatory short names dictionary for efficient lookups

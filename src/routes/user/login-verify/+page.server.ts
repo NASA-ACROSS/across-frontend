@@ -1,23 +1,23 @@
 import { fail, redirect, type ActionFailure } from '@sveltejs/kit';
 import { resolve } from '$app/paths';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
-import type { LocalUser } from '$lib/types/User/UserCredentialsCookie';
-import type { User } from '$lib/types/User/User';
+import type { LocalUser } from '#lib/types/User/UserCredentialsCookie.js';
+import type { User } from '#lib/types/User/User.js';
 import type { RequestEvent } from './$types';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
-import guards from '$lib/utils/guards';
-import { PUBLIC_CONFIG } from '$config/config.public';
-import logger from '$lib/logger';
-import HTTP_CODES from '$lib/utils/HttpCodes';
-import { callApi } from '$lib/utils/across/callApi';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import { UserCredentialsManager } from '#lib/utils/across/auth/UserCredentialsManager.js';
+import guards from '#lib/utils/guards/index.js';
+import { PUBLIC_CONFIG } from '#config/config.public.js';
+import logger from '#lib/logger/index.js';
+import HTTP_CODES from '#lib/utils/HttpCodes.js';
+import { callApi } from '#lib/utils/across/callApi.js';
 
 export function load(event: RequestEvent) {
     guards.localOnlyRoute();
 
     const user = event.locals.user;
     // Redirect to profile page when user is logged in
-    if (user) redirect(302, resolve('/user/profile'));
+    if (user) redirect(302, resolve('user/profile'));
 }
 
 // rate limit is defined as [number, unit]
@@ -95,6 +95,6 @@ export const actions = {
 
         await UserCredentialsManager.SetCookie(cookies, PUBLIC_CONFIG.USER_INFO_COOKIE_NAME, localUser, rememberMe);
 
-        redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('user/profile'));
     },
 };

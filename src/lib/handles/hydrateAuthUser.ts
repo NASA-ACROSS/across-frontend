@@ -1,9 +1,9 @@
 import type { RequestEvent } from '@sveltejs/kit';
-import type { TokensCookie, UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { TokensCookie, UserCredentialsCookie } from '#lib/types/User/UserCredentialsCookie.js';
 import { decryptCookie } from './decryptCookie';
 import { clearAuth } from './clearAuth';
-import { PUBLIC_CONFIG } from '$config/config.public';
-import logger from '$lib/logger';
+import { PUBLIC_CONFIG } from '#config/config.public.js';
+import logger from '#lib/logger/index.js';
 
 export async function hydrateAuthUser(event: RequestEvent) {
     // clear defaults every request

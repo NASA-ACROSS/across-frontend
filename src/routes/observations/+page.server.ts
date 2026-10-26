@@ -1,14 +1,14 @@
-import type { Paginate, PaginateParams } from '$lib/types/Paginate';
+import type { Paginate, PaginateParams } from '#lib/types/Paginate.js';
 
-import type { Telescope } from '$lib/types/across/Telescope';
-import { getTelescopes } from '$lib/utils/across/getTelescopes';
-import { resolveObject } from '$lib/utils/across/resolveObject';
+import type { Telescope } from '#lib/types/across/Telescope.js';
+import { getTelescopes } from '#lib/utils/across/getTelescopes.js';
+import { resolveObject } from '#lib/utils/across/resolveObject.js';
 import type { RequestEvent } from './$types';
-import type { Observation } from '$lib/types/across/Observation';
-import searchParams, { type ParamTypes } from '$lib/utils/searchParams/searchParams';
-import { callApi } from '$lib/utils/across/callApi';
+import type { Observation } from '#lib/types/across/Observation.js';
+import searchParams, { type ParamTypes } from '#lib/utils/searchParams/searchParams.js';
+import { callApi } from '#lib/utils/across/callApi.js';
 import { isHttpError } from '@sveltejs/kit';
-import { PUBLIC_CONFIG } from '$config/config.public';
+import { PUBLIC_CONFIG } from '#config/config.public.js';
 
 type ObservationQueryParams = {
     /** table columns */

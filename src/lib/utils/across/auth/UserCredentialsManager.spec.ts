@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { UserCredentialsManager } from './UserCredentialsManager';
 import { type Cookies } from '@sveltejs/kit';
 import { JwtRefresher } from './JwtRefresher';
-import { PUBLIC_CONFIG } from '$config/config.public';
+import { PUBLIC_CONFIG } from '#config/config.public.js';
 import { jwtDecode } from 'jwt-decode';
 import { callApi } from '../callApi';
 

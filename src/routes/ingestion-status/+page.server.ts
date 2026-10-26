@@ -1,11 +1,11 @@
 import type { RequestEvent } from './$types';
-import { getTelescopes } from '$lib/utils/across/getTelescopes';
-import { getObservatories } from '$lib/utils/across/getObservatories';
-import { getSchedules } from '$lib/utils/across/getSchedules';
-import type { Telescope } from '$lib/types/across/Telescope';
-import type { Observatory } from '$lib/types/across/Observatory';
-import type { Schedule } from '$lib/types/across/Schedule';
-import type { Paginate } from '$lib/types/Paginate';
+import { getTelescopes } from '#lib/utils/across/getTelescopes.js';
+import { getObservatories } from '#lib/utils/across/getObservatories.js';
+import { getSchedules } from '#lib/utils/across/getSchedules.js';
+import type { Telescope } from '#lib/types/across/Telescope.js';
+import type { Observatory } from '#lib/types/across/Observatory.js';
+import type { Schedule } from '#lib/types/across/Schedule.js';
+import type { Paginate } from '#lib/types/Paginate.js';
 import { DateTime } from 'luxon';
 
 export async function load({ fetch }: RequestEvent) {

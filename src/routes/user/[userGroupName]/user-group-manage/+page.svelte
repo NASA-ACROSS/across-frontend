@@ -1,15 +1,15 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
-    import type { GroupInvite } from '$lib/types/User/GroupInvite';
+    import type { GroupInvite } from '#lib/types/User/GroupInvite.js';
     import InvitedUsers from './_components/InvitedUsers.svelte';
     import InviteUser from './_components/InviteUser.svelte';
     import type { ActionData, PageData } from './$types.js';
     import GroupUsers from './_components/GroupUsers.svelte';
     import AssignRole from './_components/AssignRole.svelte';
     import UserDetailCard from './_components/UserDetailCard.svelte';
-    import type { GroupUser } from '$lib/types/User/GroupUser';
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
+    import type { GroupUser } from '#lib/types/User/GroupUser.js';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
 
     interface Props {
         form: ActionData;
@@ -42,20 +42,23 @@
     -->
     {#snippet buttons()}
         <div>
-            <a class="btn btn-info text-lg" href={resolve('/user/profile')}>← <i class="bx bx-user mx-2"></i>Profile</a>
+            <a
+                class="btn btn-info text-lg"
+                href={resolve('user/profile')}
+            >← <i class="bx bx-user mx-2"></i>Profile</a>
         </div>
     {/snippet}
 
-    <InviteUser {group} {form}></InviteUser>
-    <InvitedUsers {invitedUsers}></InvitedUsers>
+    <InviteUser group={group} form={form} />
+    <InvitedUsers invitedUsers={invitedUsers} />
 
     <Section title="User Role Management" icon="shield-quarter">
         <div class="flex gap-5">
-            <GroupUsers {users} bind:selectedUserId></GroupUsers>
+            <GroupUsers users={users} bind:selectedUserId />
 
-            <UserDetailCard {selectedUser} {group}></UserDetailCard>
+            <UserDetailCard selectedUser={selectedUser} group={group} />
 
-            <AssignRole user={selectedUser} {group}></AssignRole>
+            <AssignRole user={selectedUser} group={group} />
         </div>
     </Section>
 </Page>

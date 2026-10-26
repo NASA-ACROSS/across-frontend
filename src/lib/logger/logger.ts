@@ -1,5 +1,5 @@
-import { browser } from '$app/environment';
-import { type RuntimeEnv, PUBLIC_CONFIG } from '$config/config.public';
+import { browser } from '$app/env';
+import { type RuntimeEnv, PUBLIC_CONFIG } from '#config/config.public.js';
 import pino, { type Logger, type LoggerOptions } from 'pino';
 
 const logger: Logger = (() => {

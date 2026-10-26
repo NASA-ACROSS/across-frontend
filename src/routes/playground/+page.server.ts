@@ -1,9 +1,9 @@
-import guards from '$lib/utils/guards';
-import logger from '$lib/logger';
+import guards from '#lib/utils/guards/index.js';
+import logger from '#lib/logger/index.js';
 import { fail, type ActionFailure, type RequestEvent, isHttpError } from '@sveltejs/kit';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import searchParams from '$lib/utils/searchParams/searchParams';
-import HTTP_CODES from '$lib/utils/HttpCodes';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import searchParams from '#lib/utils/searchParams/searchParams.js';
+import HTTP_CODES from '#lib/utils/HttpCodes.js';
 import { getKrabbyPattySecretFormula } from './util/getKrabbyPattySecretFormula';
 
 const userFriendlyErrors: Record<number, string> = {
@@ -102,6 +102,7 @@ export const actions = {
                 return fail(err.status, {
                     type: 'error',
                     errorId: err.body.errorId,
+                    status: Number(err.body.code),
                     code: err.body.code,
                     message: userFriendlyErrors[err.status] || err.body.message,
                 });

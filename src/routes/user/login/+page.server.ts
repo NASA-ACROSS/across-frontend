@@ -1,16 +1,16 @@
 import { fail, isHttpError, redirect, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
-import { autoLogin } from '$lib/utils/user/autoLogin.js';
-import { emailRegex } from '$lib/utils/regex/emailRegex';
+import { autoLogin } from '#lib/utils/user/autoLogin.js';
+import { emailRegex } from '#lib/utils/regex/emailRegex.js';
 import type { Actions } from './$types';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import { clearAuth } from '$lib/handles/clearAuth';
-import guards from '$lib/utils/guards';
-import logger from '$lib/logger';
-import { callApi } from '$lib/utils/across/callApi';
-import HTTP_CODES from '$lib/utils/HttpCodes';
-import { type MagicLinkDTO } from '$lib/types/auth/MagicLinkDTO';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import { clearAuth } from '#lib/handles/clearAuth.js';
+import guards from '#lib/utils/guards/index.js';
+import logger from '#lib/logger/index.js';
+import { callApi } from '#lib/utils/across/callApi.js';
+import HTTP_CODES from '#lib/utils/HttpCodes.js';
+import { type MagicLinkDTO } from '#lib/types/auth/MagicLinkDTO.js';
 
 type LoginResult = FormSubmitResult & {
     email?: string;
@@ -23,7 +23,7 @@ export function load({ locals }: RequestEvent) {
     const userCookie = locals?.user;
     // Redirect to profile page when user is logged in
     if (userCookie) {
-        redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('user/profile'));
     }
 }
 

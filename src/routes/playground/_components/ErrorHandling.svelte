@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { enhance, applyAction } from '$app/forms';
-    import type { SubmitFunction } from '@sveltejs/kit';
+    import { enhance, applyAction, type SubmitFunction } from '$app/forms';
     import type { ActionData } from '../$types';
-    import Spinner from '$lib/components/Spinner.svelte';
+    import Spinner from '#lib/components/Spinner.svelte';
 
     interface Props {
         form: ActionData;

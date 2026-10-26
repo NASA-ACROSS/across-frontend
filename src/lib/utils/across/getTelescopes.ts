@@ -1,4 +1,4 @@
-import type { Telescope } from '$lib/types/across/Telescope';
+import type { Telescope } from '#lib/types/across/Telescope.js';
 import searchParams from '../searchParams/searchParams';
 import { callApi } from './callApi';
 

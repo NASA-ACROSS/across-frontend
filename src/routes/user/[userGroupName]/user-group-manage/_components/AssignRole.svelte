@@ -1,12 +1,11 @@
 <script lang="ts">
-    import { applyAction, enhance } from '$app/forms';
+    import { applyAction, enhance, type SubmitFunction } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import type { GroupUser } from '$lib/types/User/GroupUser';
-    import type { GroupRole } from '$lib/types/User/GroupRole';
-    import type { SubmitFunction } from '@sveltejs/kit';
-    import type { UserGroup } from '$lib/types/User/UserGroup';
-    import Spinner from '$lib/components/Spinner.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
+    import type { GroupUser } from '#lib/types/User/GroupUser.js';
+    import type { GroupRole } from '#lib/types/User/GroupRole.js';
+    import type { UserGroup } from '#lib/types/User/UserGroup.js';
+    import Spinner from '#lib/components/Spinner.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
 
     interface Props {
         user: GroupUser | undefined;

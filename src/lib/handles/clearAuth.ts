@@ -1,4 +1,4 @@
-import { PUBLIC_CONFIG } from '$config/config.public';
+import { PUBLIC_CONFIG } from '#config/config.public.js';
 import type { RequestEvent } from '@sveltejs/kit';
 
 export function clearAuth(event: RequestEvent): void {

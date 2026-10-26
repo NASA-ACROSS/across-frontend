@@ -1,13 +1,13 @@
-import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
-import type { ServiceAccountSecret } from '$lib/types/User/ServiceAccountSecret';
-import guards from '$lib/utils/guards';
-import { getServiceAccounts } from '$lib/utils/user/getServiceAccounts';
-import { getUserInfo } from '$lib/utils/user/getUserInfo';
+import type { ServiceAccountDetail } from '#lib/types/User/ServiceAccountDetail.js';
+import type { ServiceAccountSecret } from '#lib/types/User/ServiceAccountSecret.js';
+import guards from '#lib/utils/guards/index.js';
+import { getServiceAccounts } from '#lib/utils/user/getServiceAccounts.js';
+import { getUserInfo } from '#lib/utils/user/getUserInfo.js';
 import { fail, isHttpError, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import { callApi } from '$lib/utils/across/callApi';
-import logger from '$lib/logger';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import { callApi } from '#lib/utils/across/callApi.js';
+import logger from '#lib/logger/index.js';
 
 export const load: PageServerLoad = async ({ fetch, locals }: RequestEvent) => {
     guards.localOnlyRoute();

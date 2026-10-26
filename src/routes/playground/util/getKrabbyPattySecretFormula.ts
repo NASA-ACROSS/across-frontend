@@ -1,5 +1,5 @@
-import { callApi } from '$lib/utils/across/callApi';
-import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
+import { callApi } from '#lib/utils/across/callApi.js';
+import type { AcrossApiErrorResponseBody } from '#lib/types/error/AcrossApiErrorResponseBody.js';
 
 const mappedErrors: Record<number, string> = {
     401: "You're definitely not Mr. Krabs.",

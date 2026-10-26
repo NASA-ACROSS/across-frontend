@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { PUBLIC_CONFIG } from '$config/config.public';
+    import { PUBLIC_CONFIG } from '#config/config.public.js';
 </script>
 
 <svelte:head>

@@ -1,6 +1,6 @@
-import type { User } from '$lib/types/User/User';
-import type { UserGroup } from '$lib/types/User/UserGroup';
-import type { GroupRole } from '$lib/types/User/GroupRole';
+import type { User } from '#lib/types/User/User.js';
+import type { UserGroup } from '#lib/types/User/UserGroup.js';
+import type { GroupRole } from '#lib/types/User/GroupRole.js';
 
 /**
  * Returns True if the `user` object contains a `group_role` that belongs to the `group`

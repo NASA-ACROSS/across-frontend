@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Link } from '$lib/types/navigation';
+    import type { Link } from '#lib/types/navigation.js';
 
     interface Props {
         link: Link;

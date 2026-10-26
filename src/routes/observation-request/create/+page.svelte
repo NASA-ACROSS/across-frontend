@@ -1,21 +1,21 @@
 <script lang="ts">
-    import CoordinateSearch from '$lib/components/CoordinateSearch.svelte';
-    import Fieldset from '$lib/components/Fieldset.svelte';
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
+    import CoordinateSearch from '#lib/components/CoordinateSearch.svelte';
+    import Fieldset from '#lib/components/Fieldset.svelte';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
     import { enhance } from '$app/forms';
     import type { ActionData, PageData } from './$types';
-    import Alert from '$lib/components/Alert.svelte';
-    import ObservatoryTelescopeInstrumentSelector from '$lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
-    import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
-    import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
-    import type { Telescope } from '$lib/types/across/Telescope';
-    import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
+    import Alert from '#lib/components/Alert.svelte';
+    import ObservatoryTelescopeInstrumentSelector from '#lib/components/ObservatoryTelescopeInstrumentSelector.svelte';
+    import type { TelescopeObservatory } from '#lib/types/across/TelescopeObservatory.js';
+    import type { TelescopeInstrument } from '#lib/types/across/TelescopeInstrument.js';
+    import type { Telescope } from '#lib/types/across/Telescope.js';
+    import DateRangeInput from '#lib/components/datetime/DateRangeInput.svelte';
     import ProposalInfoInput from '../_components/ProposalInfoInput.svelte';
-    import UnitValueInput from '$lib/components/inputs/UnitValueInput.svelte';
+    import UnitValueInput from '#lib/components/inputs/UnitValueInput.svelte';
     import { resolve } from '$app/paths';
-    import ArrowButton from '$lib/components/ArrowButton.svelte';
+    import ArrowButton from '#lib/components/ArrowButton.svelte';
 
     interface Props {
         form: ActionData;

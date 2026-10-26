@@ -1,4 +1,4 @@
-import type { Observatory } from '$lib/types/across/Observatory';
+import type { Observatory } from '#lib/types/across/Observatory.js';
 import searchParams from '../searchParams/searchParams';
 import { callApi } from './callApi';
 

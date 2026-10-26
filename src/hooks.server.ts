@@ -1,13 +1,13 @@
-import type { Handle, HandleFetch, HandleServerError, ServerInit } from '@sveltejs/kit';
-import { handleLogout } from '$lib/handles/handleLogout';
-import { handleRedirect } from '$lib/handles/handleRedirect';
-import { getErrorCause } from '$lib/utils/error/getErrorCause';
-import { CONFIG } from '$config/config';
-import { webserverCredentialsManager } from '$lib/utils/across/auth/WebserverCredentialsManager';
-import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
-import { hydrateAuthUser } from '$lib/handles/hydrateAuthUser';
-import logger, { setLogLevel } from '$lib/logger';
-import { PUBLIC_CONFIG } from '$config/config.public';
+import type { Handle, HandleFetch, HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
+import { handleLogout } from '#lib/handles/handleLogout.js';
+import { handleRedirect } from '#lib/handles/handleRedirect.js';
+import { getErrorCause } from '#lib/utils/error/getErrorCause.js';
+import { CONFIG } from '#config';
+import { webserverCredentialsManager } from '#lib/utils/across/auth/WebserverCredentialsManager.js';
+import { UserCredentialsManager } from '#lib/utils/across/auth/UserCredentialsManager.js';
+import { hydrateAuthUser } from '#lib/handles/hydrateAuthUser.js';
+import logger, { setLogLevel } from '#lib/logger/index.js';
+import { PUBLIC_CONFIG } from '#config/config.public.js';
 
 export const init: ServerInit = async () => {
     setLogLevel(PUBLIC_CONFIG.RUNTIME_ENV);

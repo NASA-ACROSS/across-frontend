@@ -1,5 +1,5 @@
 <script lang="ts">
-    import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
+    import DateRangeInput from '#lib/components/datetime/DateRangeInput.svelte';
 
     let dateRangeBegin = $state('');
     let dateRangeEnd = $state('');

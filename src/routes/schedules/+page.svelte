@@ -1,17 +1,17 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { browser } from '$app/environment';
+    import { browser } from '$app/env';
     import { page } from '$app/state';
     import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
-    import ObservatoryTelescopeSelector from '$lib/components/ObservatoryTelescopeSelector.svelte';
-    import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
-    import Pagination from '$lib/components/Pagination.svelte';
-    import ArrowButton from '$lib/components/ArrowButton.svelte';
-    import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
-    import type { Telescope } from '$lib/types/across/Telescope';
-    import logger from '$lib/logger';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import ObservatoryTelescopeSelector from '#lib/components/ObservatoryTelescopeSelector.svelte';
+    import DateRangeInput from '#lib/components/datetime/DateRangeInput.svelte';
+    import Pagination from '#lib/components/Pagination.svelte';
+    import ArrowButton from '#lib/components/ArrowButton.svelte';
+    import type { TelescopeObservatory } from '#lib/types/across/TelescopeObservatory.js';
+    import type { Telescope } from '#lib/types/across/Telescope.js';
+    import logger from '#lib/logger/index.js';
 
     let { data } = $props();
 
@@ -58,9 +58,15 @@
     let isCustomizeModalOpen = $state(false);
 
     // Status options
-    const statusOptions = ['planned', 'scheduled', 'unscheduled', 'performed', 'aborted'];
-    const fidelityOptions = ['low', 'high'];
+    const statusOptions = [
+        'planned',
+        'scheduled',
+        'unscheduled',
+        'performed',
+        'aborted'
+    ];
 
+    const fidelityOptions = ['low', 'high'];
     let selectedFilter = $state('');
 
     onMount(() => {
@@ -126,9 +132,9 @@
     }
 
     let dateBeginDisplay = $derived(dateRangeBegin ? dateRangeBegin.split('T')[0] : '');
-    let timeBeginDisplay = $derived(dateRangeBegin ? (dateRangeBegin.split('T')[1] ?? '') : '');
+    let timeBeginDisplay = $derived(dateRangeBegin ? dateRangeBegin.split('T')[1] ?? '' : '');
     let dateEndDisplay = $derived(dateRangeEnd ? dateRangeEnd.split('T')[0] : '');
-    let timeEndDisplay = $derived(dateRangeEnd ? (dateRangeEnd.split('T')[1] ?? '') : '');
+    let timeEndDisplay = $derived(dateRangeEnd ? dateRangeEnd.split('T')[1] ?? '' : '');
 
     async function handleSearch() {
         const params = new URLSearchParams();
@@ -215,11 +221,15 @@
 
     let isLoading = false;
 
-    beforeNavigate(() => {
+    beforeNavigate(({ shallow, type }) => {
+        if (shallow && type === 'goto') return;
+
         isLoading = true;
     });
 
-    afterNavigate(() => {
+    afterNavigate(({ shallow, type }) => {
+        if (shallow && type === 'goto') return;
+
         isLoading = false;
     });
 </script>
@@ -276,7 +286,11 @@
                         </div>
                         <div class="collapse-content">
                             <div class="py-4 h-200 md:min-h-80 md:max-h-100">
-                                <ObservatoryTelescopeSelector {telescopes} bind:selectedObservatories bind:selectedTelescopes />
+                                <ObservatoryTelescopeSelector
+                                    telescopes={telescopes}
+                                    bind:selectedObservatories
+                                    bind:selectedTelescopes
+                                />
                             </div>
                         </div>
                     </div>
@@ -394,16 +408,25 @@
         {#snippet buttons()}
             <div class="flex space-x-2">
                 {#key currentPage}
-                    <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        searchParams={currentSearchParams}
+                        numButtons={PAGINATION_BUTTONS}
+                    />
                 {/key}
-                <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
-                    Customize
+
+                <button
+                    class="btn btn-sm btn-outline"
+                    onclick={() => isCustomizeModalOpen = true}
+                >
+                    Customize 
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path
                             fill-rule="evenodd"
                             d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
                             clip-rule="evenodd"
-                        />
+                        ></path>
                     </svg>
                 </button>
             </div>
@@ -418,8 +441,8 @@
                         <button
                             class="justify-end btn btn-sm btn-primary max-h-8"
                             title="Close without saving selections to cookie"
-                            onclick={() => (isCustomizeModalOpen = false)}>X</button
-                        >
+                            onclick={() => isCustomizeModalOpen = false}
+                        >X</button>
                     </div>
                     <p class="italic">Changes apply on selection</p>
                     <div class="max-h-80 overflow-y-auto mb-4">
@@ -521,16 +544,24 @@
             </table>
         </div>
         <div class="flex ml-auto w-fit space-x-2 pt-4">
-            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                searchParams={currentSearchParams}
+                numButtons={PAGINATION_BUTTONS}
+            />
 
-            <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
-                Customize
+            <button
+                class="btn btn-sm btn-outline"
+                onclick={() => isCustomizeModalOpen = true}
+            >
+                Customize 
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path
                         fill-rule="evenodd"
                         d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
                         clip-rule="evenodd"
-                    />
+                    ></path>
                 </svg>
             </button>
         </div>

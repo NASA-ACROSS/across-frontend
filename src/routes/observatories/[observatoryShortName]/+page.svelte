@@ -1,11 +1,11 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
-    import { PUBLIC_CONFIG } from '$config/config.public';
-    import Alert from '$lib/components/Alert.svelte';
-    import ArrowButton from '$lib/components/ArrowButton.svelte';
-    import Collapse from '$lib/components/Collapse.svelte';
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
+    import { PUBLIC_CONFIG } from '#config/config.public.js';
+    import Alert from '#lib/components/Alert.svelte';
+    import ArrowButton from '#lib/components/ArrowButton.svelte';
+    import Collapse from '#lib/components/Collapse.svelte';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
 
     let { data } = $props();
 
@@ -30,8 +30,10 @@
 
     {#snippet buttons()}
         <div class="">
-            <a data-sveltekit-preload-data="false" href={resolve('/observatories/')} class="btn btn-info text-xl">
-                <i class="bx bx-arrow-out-left-square-half opacity-70 me-2"></i>Back to Index
+            <a data-sveltekit-preload-data="false" href={resolve('observatories/')} class="btn btn-info text-xl">
+                <i class="bx bx-arrow-out-left-square-half opacity-70 me-2"></i>
+
+                Back to Index
             </a>
         </div>
     {/snippet}

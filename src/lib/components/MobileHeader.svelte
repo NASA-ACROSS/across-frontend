@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Header } from '$lib/types/navigation';
+    import type { Header } from '#lib/types/navigation.js';
     import MobileLink from './MobileLink.svelte';
 
     interface Props {

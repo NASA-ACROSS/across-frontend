@@ -1,4 +1,19 @@
-import { env } from '$env/dynamic/private';
+import {
+    ACROSS_SERVER_HOST,
+    ACROSS_SERVER_ROOT_PATH,
+    ACROSS_SERVER_VERSION,
+    ACROSS_SERVER_PORT,
+    APP_ENV,
+    ACROSS_SERVER_ID_PATH,
+    ACROSS_SERVER_SECRET_PATH,
+    ACROSS_SERVER_ID,
+    ACROSS_SERVER_SECRET,
+    ACROSS_TEST_ACCESS_TOKEN,
+    MOCKSERVER_NAMESPACE_HEADER,
+    AWS_REGION,
+    AWS_PROFILE,
+} from '$app/env/private';
+
 import { PUBLIC_CONFIG } from './config.public';
 
 /**
@@ -6,26 +21,24 @@ import { PUBLIC_CONFIG } from './config.public';
  */
 export class PrivateConfiguration {
     /** Webserver <-> ACROSS Server host (will be the service-connect alias in deployed envs). */
-    public ACROSS_SERVER_HOST: string = env.ACROSS_SERVER_HOST || 'localhost';
-    public ACROSS_SERVER_ROOT_PATH: string = env.ACROSS_SERVER_ROOT_PATH || '';
-    public ACROSS_SERVER_VERSION: string = env.ACROSS_SERVER_VERSION || '/v1';
-    public ACROSS_SERVER_PORT: string = env.ACROSS_SERVER_PORT || '8000';
+    public ACROSS_SERVER_HOST: string = ACROSS_SERVER_HOST || 'localhost';
 
-    public APP_ENV: string = env.APP_ENV || 'across-plat-lcl-local';
-
-    public ACROSS_SERVER_ID_PATH: string = env.ACROSS_SERVER_ID_PATH || 'frontend/core-server/client_id';
-    public ACROSS_SERVER_SECRET_PATH: string = env.ACROSS_SERVER_SECRET_PATH || 'frontend/core-server/client_secret';
-
-    public ACROSS_SERVER_ID: string = env.ACROSS_SERVER_ID || '';
-    public ACROSS_SERVER_SECRET: string = env.ACROSS_SERVER_SECRET || '';
+    public ACROSS_SERVER_ROOT_PATH: string = ACROSS_SERVER_ROOT_PATH || '';
+    public ACROSS_SERVER_VERSION: string = ACROSS_SERVER_VERSION || '/v1';
+    public ACROSS_SERVER_PORT: string = ACROSS_SERVER_PORT || '8000';
+    public APP_ENV: string = APP_ENV || 'across-plat-lcl-local';
+    public ACROSS_SERVER_ID_PATH: string = ACROSS_SERVER_ID_PATH || 'frontend/core-server/client_id';
+    public ACROSS_SERVER_SECRET_PATH: string = ACROSS_SERVER_SECRET_PATH || 'frontend/core-server/client_secret';
+    public ACROSS_SERVER_ID: string = ACROSS_SERVER_ID || '';
+    public ACROSS_SERVER_SECRET: string = ACROSS_SERVER_SECRET || '';
 
     /** Only used in test environment */
-    public ACROSS_TEST_ACCESS_TOKEN: string = env.ACROSS_TEST_ACCESS_TOKEN || '';
+    public ACROSS_TEST_ACCESS_TOKEN: string = ACROSS_TEST_ACCESS_TOKEN || '';
     /** Only used in playwright integration testing */
-    public MOCKSERVER_NAMESPACE_HEADER: string = env.MOCKSERVER_NAMESPACE_HEADER || 'X-Mockserver-Namespace';
+    public MOCKSERVER_NAMESPACE_HEADER: string = MOCKSERVER_NAMESPACE_HEADER || 'X-Mockserver-Namespace';
 
-    public AWS_REGION: string = env.AWS_REGION || 'us-east-2';
-    public AWS_PROFILE?: string = env.AWS_PROFILE;
+    public AWS_REGION: string = AWS_REGION || 'us-east-2';
+    public AWS_PROFILE?: string = AWS_PROFILE;
 
     constructor(private publicConfig: typeof PUBLIC_CONFIG) {}
 

@@ -1,17 +1,17 @@
 import type { PageServerLoad, RequestEvent } from './$types';
 
 import { error, fail, isHttpError, type ActionFailure } from '@sveltejs/kit';
-import { getUserInfo } from '$lib/utils/user/getUserInfo';
+import { getUserInfo } from '#lib/utils/user/getUserInfo.js';
 
-import { getServiceAccounts } from '$lib/utils/user/getServiceAccounts';
-import guards from '$lib/utils/guards';
-import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles';
+import { getServiceAccounts } from '#lib/utils/user/getServiceAccounts.js';
+import guards from '#lib/utils/guards/index.js';
+import { getGroupsFromRoles } from '#lib/utils/user/getGroupsFromRoles.js';
 
-import { type FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import { validate } from '$lib/utils/regex/validate';
-import { uuidRegex } from '$lib/utils/regex/uuidRegex';
-import { HTTP_CODES } from '$lib';
-import { callApi } from '$lib/utils/across/callApi';
+import { type FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import { validate } from '#lib/utils/regex/validate.js';
+import { uuidRegex } from '#lib/utils/regex/uuidRegex.js';
+import { HTTP_CODES } from '#lib';
+import { callApi } from '#lib/utils/across/callApi.js';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();

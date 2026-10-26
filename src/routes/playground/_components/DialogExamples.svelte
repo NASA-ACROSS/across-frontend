@@ -1,9 +1,9 @@
 <script lang="ts">
-    import Dialog from '$lib/components/dialog/Dialog.svelte';
-    import InfoDialog from '$lib/components/dialog/InfoDialog.svelte';
-    import AlertDialog from '$lib/components/dialog/AlertDialog.svelte';
-    import ErrorDialog from '$lib/components/dialog/ErrorDialog.svelte';
-    import SuccessDialog from '$lib/components/dialog/SuccessDialog.svelte';
+    import Dialog from '#lib/components/dialog/Dialog.svelte';
+    import InfoDialog from '#lib/components/dialog/InfoDialog.svelte';
+    import AlertDialog from '#lib/components/dialog/AlertDialog.svelte';
+    import ErrorDialog from '#lib/components/dialog/ErrorDialog.svelte';
+    import SuccessDialog from '#lib/components/dialog/SuccessDialog.svelte';
 
     let isCustomOpen = $state(false);
     let isInfoOpen = $state(false);

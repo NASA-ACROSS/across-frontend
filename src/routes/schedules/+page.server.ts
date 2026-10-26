@@ -1,10 +1,10 @@
-import type { Paginate } from '$lib/types/Paginate';
-import type { Telescope } from '$lib/types/across/Telescope';
-import { getTelescopes } from '$lib/utils/across/getTelescopes';
+import type { Paginate } from '#lib/types/Paginate.js';
+import type { Telescope } from '#lib/types/across/Telescope.js';
+import { getTelescopes } from '#lib/utils/across/getTelescopes.js';
 import type { RequestEvent } from './$types';
-import type { Schedule } from '$lib/types/across/Schedule';
-import { PUBLIC_CONFIG } from '$config/config.public';
-import { callApi } from '$lib/utils/across/callApi';
+import type { Schedule } from '#lib/types/across/Schedule.js';
+import { PUBLIC_CONFIG } from '#config/config.public.js';
+import { callApi } from '#lib/utils/across/callApi.js';
 import { isHttpError } from '@sveltejs/kit';
 
 type ScheduleQueryParams = {

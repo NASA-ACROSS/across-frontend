@@ -1,16 +1,15 @@
 <script lang="ts">
-    import { type SubmitFunction } from '@sveltejs/kit';
     import type { ActionData } from './$types';
-    import OpenDataPolicyBanner from '$lib/components/OpenDataPolicyBanner.svelte';
+    import OpenDataPolicyBanner from '#lib/components/OpenDataPolicyBanner.svelte';
 
-    import { enhance } from '$app/forms';
-    import Section from '$lib/components/Section.svelte';
-    import EmailInput from '$lib/components/inputs/EmailInput.svelte';
-    import Page from '$lib/components/Page.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
+    import { enhance, type SubmitFunction } from '$app/forms';
+    import Section from '#lib/components/Section.svelte';
+    import EmailInput from '#lib/components/inputs/EmailInput.svelte';
+    import Page from '#lib/components/Page.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
     import { resolve } from '$app/paths';
-    import ArrowButton from '$lib/components/ArrowButton.svelte';
-    import NasaSecurityBanner from '$lib/components/NasaSecurityBanner.svelte';
+    import ArrowButton from '#lib/components/ArrowButton.svelte';
+    import NasaSecurityBanner from '#lib/components/NasaSecurityBanner.svelte';
 
     interface Props {
         form: ActionData;
@@ -49,12 +48,11 @@
             <FormSubmitFeedback />
         </form>
         <ArrowButton
-            href={resolve('/user/register')}
+            href={resolve('user/register')}
             containerClasses="mt-6 text-right justify-self-end mb-10"
             textClasses="text-sm text-right"
-        >
-            Don't have an account? Register here
-        </ArrowButton>
-        <NasaSecurityBanner></NasaSecurityBanner>
+        >Don't have an account? Register here</ArrowButton>
+
+        <NasaSecurityBanner />
     </Section>
 </Page>

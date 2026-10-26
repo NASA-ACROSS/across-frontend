@@ -20,8 +20,16 @@
                 of NASA observatory state and status information to facilitate science situational awareness.
             </p>
             <div class="flex flex-col md:flex-row md:gap-4">
-                <ArrowButton id="data-ingestion-status" href={resolve('/ingestion-status')}>Data Ingestion Status</ArrowButton>
-                <ArrowButton id="browse-observations" href={resolve('/observations')}>Browse Observations</ArrowButton>
+                <ArrowButton
+                    id="data-ingestion-status"
+                    href={resolve('ingestion-status')}
+                >Data Ingestion Status</ArrowButton>
+
+                <ArrowButton
+                    id="browse-observations"
+                    href={resolve('observations')}
+                >Browse Observations</ArrowButton>
+
                 <ArrowButton id="explore-api" href={apiDocsUrl}>Explore API</ArrowButton>
             </div>
         </div>

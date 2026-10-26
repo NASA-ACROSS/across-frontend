@@ -1,4 +1,4 @@
-import logger from '$lib/logger';
+import logger from '#lib/logger/index.js';
 import { jwtDecode } from 'jwt-decode';
 import * as luxon from 'luxon';
 import { callApi } from '../callApi';

@@ -1,9 +1,9 @@
-import type { Telescope } from '$lib/types/across/Telescope';
-import { getObservationRequests } from '$lib/utils/across/getObservationRequests';
-import { getTelescopes } from '$lib/utils/across/getTelescopes';
+import type { Telescope } from '#lib/types/across/Telescope.js';
+import { getObservationRequests } from '#lib/utils/across/getObservationRequests.js';
+import { getTelescopes } from '#lib/utils/across/getTelescopes.js';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad, RequestEvent } from './$types';
-import { HTTP_CODES } from '$lib';
+import { HTTP_CODES } from '#lib';
 
 export const load: PageServerLoad = async ({ params, fetch }: RequestEvent) => {
     const { items: observationRequests } = await getObservationRequests(fetch, {

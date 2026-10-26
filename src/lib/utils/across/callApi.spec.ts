@@ -1,12 +1,12 @@
-import logger from '$lib/logger';
+import logger from '#lib/logger/index.js';
 import { error } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { callApi } from './callApi';
-import { HTTP_CODES } from '$lib';
+import { HTTP_CODES } from '#lib';
 
 const mockFetch = vi.fn();
 
-vi.mock('$lib/logger', () => {
+vi.mock('#lib/logger/index.js', () => {
     return {
         default: {
             warn: vi.fn(),
@@ -24,7 +24,7 @@ vi.mock('@sveltejs/kit', () => {
     };
 });
 
-vi.mock('$config/config', () => {
+vi.mock('#config', () => {
     return {
         CONFIG: {
             ACROSS_SERVER_URL: 'http://across-server.test',

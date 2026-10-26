@@ -1,10 +1,9 @@
 <script lang="ts">
-    import { applyAction, enhance } from '$app/forms';
+    import { applyAction, enhance, type SubmitFunction } from '$app/forms';
     import { goto, invalidateAll } from '$app/navigation';
-    import Section from '$lib/components/Section.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
-    import type { GroupInvite } from '$lib/types/User/GroupInvite';
-    import type { SubmitFunction } from '@sveltejs/kit';
+    import Section from '#lib/components/Section.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
+    import type { GroupInvite } from '#lib/types/User/GroupInvite.js';
 
     interface Props {
         invitedUsers: GroupInvite[];

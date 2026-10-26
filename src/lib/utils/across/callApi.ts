@@ -1,9 +1,9 @@
-import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
+import type { AcrossApiErrorResponseBody } from '#lib/types/error/AcrossApiErrorResponseBody.js';
 import { error } from '@sveltejs/kit';
 import HTTP_CODES from '../HttpCodes';
-import logger from '$lib/logger';
+import logger from '#lib/logger/index.js';
 import parseErrorResponse from '../error/parseErrorResponse';
-import { CONFIG } from '$config/config';
+import { CONFIG } from '#config';
 
 type CallApiOptions = RequestInit & {
     responseType?: 'json' | 'text' | 'empty';
@@ -22,6 +22,7 @@ const getAppError = async (status: number, response: Response): Promise<App.Erro
         message: 'Unknown API error',
         code: HTTP_CODES[status] || HTTP_CODES[0],
         errorId: crypto.randomUUID(),
+        status,
     };
 
     const responseText = await response.text();

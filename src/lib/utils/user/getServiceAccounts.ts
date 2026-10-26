@@ -1,5 +1,5 @@
-import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { ServiceAccountDetail } from '#lib/types/User/ServiceAccountDetail.js';
+import type { UserCredentialsCookie } from '#lib/types/User/UserCredentialsCookie.js';
 import { uuidRegex } from '../regex/uuidRegex';
 import { validate } from '../regex/validate';
 import { callApi } from '../across/callApi';

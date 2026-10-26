@@ -1,4 +1,4 @@
-import { PUBLIC_CONFIG } from '$config/config.public';
+import { PUBLIC_CONFIG } from '#config/config.public.js';
 import { error } from '@sveltejs/kit';
 import HTTP_CODES from '../../HttpCodes';
 

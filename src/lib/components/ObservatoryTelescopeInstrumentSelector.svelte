@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type { Telescope } from '$lib/types/across/Telescope';
-    import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument';
-    import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
+    import type { Telescope } from '#lib/types/across/Telescope.js';
+    import type { TelescopeInstrument } from '#lib/types/across/TelescopeInstrument.js';
+    import type { TelescopeObservatory } from '#lib/types/across/TelescopeObservatory.js';
     import MultiSelect, { type Option } from './MultiSelect.svelte';
     import { onMount } from 'svelte';
-    import { page } from '$app/stores';
+    import { page } from '$app/state';
 
     interface Props {
         telescopes?: Telescope[];
@@ -20,17 +20,17 @@
         selectedInstruments = $bindable([]),
     }: Props = $props();
 
-    let data = $derived($page.data);
+    let data = $derived(page.data);
 
     // Derive observatories and instruments from telescope response
     let seenObservatories = new Set<string>();
     let observatories: TelescopeObservatory[] = telescopes.reduce((telescopes, telescope) => {
-        const obs = telescope.observatory;
-        if (!seenObservatories.has(obs.id)) {
-            seenObservatories.add(obs.id);
-            telescopes.push(obs);
-        }
-        return telescopes;
+            const obs = telescope.observatory;
+            if (!seenObservatories.has(obs.id)) {
+                seenObservatories.add(obs.id);
+                telescopes.push(obs);
+            }
+            return telescopes;
     }, [] as TelescopeObservatory[]);
 
     let instruments: TelescopeInstrument[] = telescopes.flatMap((telescope) => telescope.instruments || []);

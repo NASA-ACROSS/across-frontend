@@ -1,8 +1,8 @@
 <script lang="ts">
-    import Section from '$lib/components/Section.svelte';
-    import Page from '$lib/components/Page.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
-    import type { UserInvite } from '$lib/types/User/UserInvite';
+    import Section from '#lib/components/Section.svelte';
+    import Page from '#lib/components/Page.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
+    import type { UserInvite } from '#lib/types/User/UserInvite.js';
 
     interface Props {
         invitations: UserInvite[];

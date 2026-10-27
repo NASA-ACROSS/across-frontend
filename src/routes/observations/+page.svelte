@@ -51,7 +51,17 @@
     let telescopes = $derived(data.telescopes || []);
     let totalCount = $derived(data.totalCount || 0);
     // reassigned by handleSearch(); $derived is reassignable as of Svelte 5.25
-    let currentSearchParams = $derived(new URLSearchParams(page.url.searchParams));
+    // sveltekit3 migration made searchParams readonly so this must be done for URLSearchParams instantiation
+    let paramsObj = $derived(
+        page.url.searchParams.entries().reduce(
+            (acc, [key, value]) => {
+                acc[key] = value;
+                return acc;
+            },
+            {} as Record<string, string>
+        )
+    );
+    let currentSearchParams = $derived(new URLSearchParams(paramsObj));
 
     // Observatory/Telescope/Instrument selector state
     let selectedObservatories: TelescopeObservatory[] = $state([]);
@@ -66,7 +76,7 @@
     // resyncing would be wrong, since it would overwrite a field mid-edit.
     let externalId = $state(data.queryParams?.external_id || '');
     let scheduleId = $state('');
-    let scheduleIds = $state(data.queryParams?.schedule_ids as string[] || [] as string[]);
+    let scheduleIds = $state((data.queryParams?.schedule_ids as string[]) || ([] as string[]));
     let status = $state(data.queryParams?.status || '');
     let proposal = $state(data.queryParams?.proposal || '');
     let objectName = $state(data.queryParams?.object_name || '');
@@ -199,9 +209,9 @@
     }
 
     let dateBeginDisplay = $derived(dateRangeBegin ? dateRangeBegin.split('T')[0] : '');
-    let timeBeginDisplay = $derived(dateRangeBegin ? dateRangeBegin.split('T')[1] ?? '' : '');
+    let timeBeginDisplay = $derived(dateRangeBegin ? (dateRangeBegin.split('T')[1] ?? '') : '');
     let dateEndDisplay = $derived(dateRangeEnd ? dateRangeEnd.split('T')[0] : '');
-    let timeEndDisplay = $derived(dateRangeEnd ? dateRangeEnd.split('T')[1] ?? '' : '');
+    let timeEndDisplay = $derived(dateRangeEnd ? (dateRangeEnd.split('T')[1] ?? '') : '');
 
     async function handleSearch() {
         const params = new URLSearchParams();
@@ -241,7 +251,7 @@
         // }
 
         currentSearchParams = params;
-        await goto(`?${params.toString()}`, { noScroll: true, invalidateAll: true });
+        await goto(`?${params.toString()}`, { refreshAll: true, reset: false });
     }
 
     function isValidUUID(uuidString: string) {
@@ -433,7 +443,7 @@
                         <div class="collapse-content">
                             <div class="py-4 h-200 md:min-h-80 md:max-h-100">
                                 <ObservatoryTelescopeInstrumentSelector
-                                    telescopes={telescopes}
+                                    {telescopes}
                                     bind:selectedObservatories
                                     bind:selectedTelescopes
                                     bind:selectedInstruments
@@ -614,7 +624,7 @@
                                     <select
                                         id="bandpass-type-input"
                                         bind:value={bandpassRegime}
-                                        onchange={() => bandpassType = ''}
+                                        onchange={() => (bandpassType = '')}
                                         class="select select-bordered text-lg w-full"
                                     >
                                         <option value="">Select Regime</option>
@@ -818,19 +828,11 @@
         {#snippet buttons()}
             <div class="flex space-x-2">
                 {#key currentPage}
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        searchParams={currentSearchParams}
-                        numButtons={PAGINATION_BUTTONS}
-                    />
+                    <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
                 {/key}
 
-                <button
-                    class="btn btn-sm btn-outline"
-                    onclick={() => isCustomizeModalOpen = true}
-                >
-                    Customize 
+                <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
+                    Customize
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path
                             fill-rule="evenodd"
@@ -851,8 +853,8 @@
                         <button
                             class="justify-end btn btn-sm btn-primary max-h-8"
                             title="Close without saving selections to cookie"
-                            onclick={() => isCustomizeModalOpen = false}
-                        >X</button>
+                            onclick={() => (isCustomizeModalOpen = false)}>X</button
+                        >
                     </div>
                     <p class="italic">Changes apply on selection</p>
                     <div class="max-h-80 overflow-y-auto mb-4">
@@ -974,18 +976,10 @@
             </table>
         </div>
         <div class="flex ml-auto w-fit space-x-2 pt-4">
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                searchParams={currentSearchParams}
-                numButtons={PAGINATION_BUTTONS}
-            />
+            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
 
-            <button
-                class="btn btn-sm btn-outline"
-                onclick={() => isCustomizeModalOpen = true}
-            >
-                Customize 
+            <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
+                Customize
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path
                         fill-rule="evenodd"
@@ -1000,9 +994,9 @@
 
 <style>
     /* remove ugly up/down arrows */
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"] {
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button,
+    input[type='number'] {
         appearance: textfield;
         -moz-appearance: textfield;
         -webkit-appearance: none;

@@ -27,7 +27,17 @@
     let totalPages = $derived(data.totalPages || 1);
     let telescopes = $derived(data.telescopes || []);
     let totalCount = $derived(data.totalCount || 0);
-    let currentSearchParams = $derived(new URLSearchParams(page.url.searchParams));
+    // sveltekit3 migration made searchParams readonly so this must be done for URLSearchParams instantiation
+    let paramsObj = $derived(
+        page.url.searchParams.entries().reduce(
+            (acc, [key, value]) => {
+                acc[key] = value;
+                return acc;
+            },
+            {} as Record<string, string>
+        )
+    );
+    let currentSearchParams = $derived(new URLSearchParams(paramsObj));
 
     // Observatory/Telescope selector state
     let selectedObservatories: TelescopeObservatory[] = $state([]);
@@ -58,13 +68,7 @@
     let isCustomizeModalOpen = $state(false);
 
     // Status options
-    const statusOptions = [
-        'planned',
-        'scheduled',
-        'unscheduled',
-        'performed',
-        'aborted'
-    ];
+    const statusOptions = ['planned', 'scheduled', 'unscheduled', 'performed', 'aborted'];
 
     const fidelityOptions = ['low', 'high'];
     let selectedFilter = $state('');
@@ -132,9 +136,9 @@
     }
 
     let dateBeginDisplay = $derived(dateRangeBegin ? dateRangeBegin.split('T')[0] : '');
-    let timeBeginDisplay = $derived(dateRangeBegin ? dateRangeBegin.split('T')[1] ?? '' : '');
+    let timeBeginDisplay = $derived(dateRangeBegin ? (dateRangeBegin.split('T')[1] ?? '') : '');
     let dateEndDisplay = $derived(dateRangeEnd ? dateRangeEnd.split('T')[0] : '');
-    let timeEndDisplay = $derived(dateRangeEnd ? dateRangeEnd.split('T')[1] ?? '' : '');
+    let timeEndDisplay = $derived(dateRangeEnd ? (dateRangeEnd.split('T')[1] ?? '') : '');
 
     async function handleSearch() {
         const params = new URLSearchParams();
@@ -157,7 +161,7 @@
         // Reset to first page on new search
         params.append('page', '1');
         currentSearchParams = params;
-        await goto(`?${params.toString()}`, { noScroll: true, invalidateAll: true });
+        await goto(`?${params.toString()}`, { reset: false, refreshAll: true });
     }
 
     async function saveColumnSelection() {
@@ -286,11 +290,7 @@
                         </div>
                         <div class="collapse-content">
                             <div class="py-4 h-200 md:min-h-80 md:max-h-100">
-                                <ObservatoryTelescopeSelector
-                                    telescopes={telescopes}
-                                    bind:selectedObservatories
-                                    bind:selectedTelescopes
-                                />
+                                <ObservatoryTelescopeSelector {telescopes} bind:selectedObservatories bind:selectedTelescopes />
                             </div>
                         </div>
                     </div>
@@ -408,19 +408,11 @@
         {#snippet buttons()}
             <div class="flex space-x-2">
                 {#key currentPage}
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        searchParams={currentSearchParams}
-                        numButtons={PAGINATION_BUTTONS}
-                    />
+                    <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
                 {/key}
 
-                <button
-                    class="btn btn-sm btn-outline"
-                    onclick={() => isCustomizeModalOpen = true}
-                >
-                    Customize 
+                <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
+                    Customize
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path
                             fill-rule="evenodd"
@@ -441,8 +433,8 @@
                         <button
                             class="justify-end btn btn-sm btn-primary max-h-8"
                             title="Close without saving selections to cookie"
-                            onclick={() => isCustomizeModalOpen = false}
-                        >X</button>
+                            onclick={() => (isCustomizeModalOpen = false)}>X</button
+                        >
                     </div>
                     <p class="italic">Changes apply on selection</p>
                     <div class="max-h-80 overflow-y-auto mb-4">
@@ -544,18 +536,10 @@
             </table>
         </div>
         <div class="flex ml-auto w-fit space-x-2 pt-4">
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                searchParams={currentSearchParams}
-                numButtons={PAGINATION_BUTTONS}
-            />
+            <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
 
-            <button
-                class="btn btn-sm btn-outline"
-                onclick={() => isCustomizeModalOpen = true}
-            >
-                Customize 
+            <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
+                Customize
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path
                         fill-rule="evenodd"

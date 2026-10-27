@@ -12,6 +12,7 @@ import { validate } from '#lib/utils/regex/validate.js';
 import { uuidRegex } from '#lib/utils/regex/uuidRegex.js';
 import { HTTP_CODES } from '#lib';
 import { callApi } from '#lib/utils/across/callApi.js';
+import logger from '#lib/logger/index.ts';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();
@@ -19,11 +20,9 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
 
     // validate that the slug id is a uuid
     if (params.serviceAccountId && !validate(params.serviceAccountId, uuidRegex, 'serviceAccountId')) {
-        console.error('ERROR: fetching service account, service account id is not a UUID');
-        error(404, {
-            message: 'Not Found',
+        error(422, 'Service Account URL param must be a UUID.', {
             errorId: crypto.randomUUID(),
-            code: HTTP_CODES[404],
+            code: HTTP_CODES[422],
         });
     }
 
@@ -34,8 +33,7 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
 
     // 404 if we don't have the service account by id
     if (!serviceAccount) {
-        error(404, {
-            message: 'Not Found',
+        error(404, 'Service Account not found', {
             errorId: crypto.randomUUID(),
             code: HTTP_CODES[404],
         });
@@ -57,7 +55,7 @@ export const actions = {
         const groupRoleId = data.get('groupRoleId') as string;
         const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log({ msg: 'assigning group role for serviceAccount', userId, serviceAccountId, groupRoleId });
+        logger.debug({ msg: 'assigning group role for serviceAccount', userId, serviceAccountId, groupRoleId });
 
         const options = {
             method: 'POST',
@@ -76,6 +74,7 @@ export const actions = {
                     _action: 'assignGroupRole',
                     errorId: error.body.errorId,
                     code: error.body.code,
+                    status: error.status,
                 });
             }
 
@@ -91,7 +90,7 @@ export const actions = {
         const groupRoleId = data.get('groupRoleId') as string;
         const serviceAccountId = data.get('serviceAccountId') as string;
 
-        console.log({ msg: 'removing group role for serviceAccount', userId, serviceAccountId, groupRoleId });
+        logger.debug({ msg: 'removing group role for serviceAccount', userId, serviceAccountId, groupRoleId });
 
         const options = {
             method: 'DELETE',
@@ -110,6 +109,7 @@ export const actions = {
                     _action: 'removeGroupRole',
                     errorId: error.body.errorId,
                     code: error.body.code,
+                    status: error.status,
                 });
             }
 
@@ -134,7 +134,7 @@ export const actions = {
             expiration_duration,
         };
 
-        console.log({ msg: 'updating properties for serviceAccount', userId, serviceAccountId, serviceAccountUpdate });
+        logger.debug({ msg: 'updating properties for serviceAccount', userId, serviceAccountId, serviceAccountUpdate });
 
         const options = {
             method: 'PATCH',
@@ -154,6 +154,7 @@ export const actions = {
                     _action: 'updateServiceAccount',
                     errorId: error.body.errorId,
                     code: error.body.code,
+                    status: error.status,
                 });
             }
 

@@ -5,7 +5,7 @@
     import { browser } from '$app/env';
     import { frontendAlphaNumRegex } from '#lib/utils/regex/internationalAlphanumericRegex.js';
     import { applyAction, enhance, type SubmitFunction } from '$app/forms';
-    import { goto, invalidateAll } from '$app/navigation';
+    import { goto, refreshAll } from '$app/navigation';
     import UserGroups from './_components/UserGroups.svelte';
     import UserGroupInvites from './_components/UserGroupInvites.svelte';
     import type { UserGroup } from '#lib/types/User/UserGroup.js';
@@ -80,10 +80,10 @@
         return async ({ result }) => {
             if (result.type === 'success') {
                 // rerun all `load` functions, following the successful update
-                await invalidateAll();
+                await refreshAll();
                 await applyAction(result);
             } else if (result.type === 'redirect') {
-                goto(result.location, { invalidateAll: true });
+                goto(result.location, { refreshAll: true, reset: false });
             } else {
                 await applyAction(result);
             }
@@ -91,7 +91,7 @@
     };
 
     // Re-seed the editable copy whenever `load` hands us fresh user data (e.g. after a
-    // successful update calls invalidateAll). This replaces the old afterUpdate(), which
+    // successful update calls refreshAll). This replaces the old afterUpdate(), which
     // for `user` was effectively a self-assignment because `user` aliased `data.user`.
     // An $effect is warranted here specifically because we are syncing *editable local
     // state* from an external source; the purely-derived values above use $derived.

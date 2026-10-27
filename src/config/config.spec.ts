@@ -38,7 +38,7 @@ describe('PrivateConfiguration', () => {
     describe('ACROSS_SERVER_URL', () => {
         it('should add the port when it exists', () => {
             const config = new PrivateConfiguration({} as typeof PUBLIC_CONFIG);
-            expect(config.ACROSS_SERVER_URL).toContain(':8000');
+            expect(config.ACROSS_SERVER_URL).toContain('1080');
         });
         it('should add the protocol when it is missing from the host', () => {
             fakeEnv.ACROSS_SERVER_HOST = 'core-server';

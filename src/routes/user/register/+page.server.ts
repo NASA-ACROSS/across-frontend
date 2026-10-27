@@ -72,6 +72,7 @@ export const actions = {
                 message: 'Form validation failed. Please try again. If this error persists, contact support.',
                 errorId: crypto.randomUUID(),
                 code: HTTP_CODES[500],
+                status: 500,
             });
         }
 
@@ -93,6 +94,7 @@ export const actions = {
                 error: `Too many registration attempts. Please try again in ${rateStatus.retryAfter} seconds.`,
                 errorId: crypto.randomUUID(),
                 code: HTTP_CODES[429],
+                status: 429,
             });
         }
 
@@ -113,6 +115,7 @@ export const actions = {
                         message: 'Something went wrong, please try again. If this error persists, contact support.',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 } else if (err.status === 409) {
                     // The user already exists, but we don't want to give away that information on the
@@ -124,6 +127,7 @@ export const actions = {
                         message: 'Please check your input and try again. If this error persists, contact support.',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 } else if (err.status === 500) {
                     return fail(err.status, {
@@ -131,6 +135,7 @@ export const actions = {
                         message: 'Failed to register user. Please try again. If this error persists, contact support.',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 }
             } else {

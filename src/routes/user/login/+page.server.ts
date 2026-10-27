@@ -52,6 +52,7 @@ export const actions = {
                 message: 'Please provide a valid email.',
                 errorId: crypto.randomUUID(),
                 code: HTTP_CODES[422],
+                status: 422,
             });
         }
 
@@ -68,6 +69,7 @@ export const actions = {
                 error: `Too many login attempts. Please try again in ${rateStatus.retryAfter} seconds.`,
                 errorId: crypto.randomUUID(),
                 code: HTTP_CODES[429],
+                status: 429,
             });
         }
 
@@ -92,6 +94,7 @@ export const actions = {
                         message: 'An unexpected error occurred. Please try again later. If this issue persists, please contact support.',
                         errorId: err.body?.errorId ?? crypto.randomUUID(),
                         code: err.body?.code ?? HTTP_CODES[err.status] ?? HTTP_CODES[500],
+                        status: err.status,
                     });
                 }
             } else {

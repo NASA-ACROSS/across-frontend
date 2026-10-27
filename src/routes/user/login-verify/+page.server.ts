@@ -52,6 +52,7 @@ export const actions = {
                 message: msg,
                 errorId: crypto.randomUUID(),
                 code: HTTP_CODES[429],
+                status: 429,
             });
         }
 
@@ -61,6 +62,7 @@ export const actions = {
                 message: 'Verification token is required',
                 errorId: crypto.randomUUID(),
                 code: HTTP_CODES[400],
+                status: 400,
             });
         }
 
@@ -79,6 +81,7 @@ export const actions = {
                 message: 'Failed to login user.',
                 errorId: crypto.randomUUID(),
                 code: HTTP_CODES[500],
+                status: 500,
             });
         }
 

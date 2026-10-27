@@ -11,8 +11,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     });
 
     if (!observatories.length) {
-        error(404, {
-            message: params?.observatoryShortName + ' Not Found',
+        error(404, params?.observatoryShortName + ' Not Found', {
             errorId: crypto.randomUUID(),
             code: HTTP_CODES[404],
         });

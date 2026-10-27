@@ -11,8 +11,7 @@ export const load: PageServerLoad = async ({ params, fetch }: RequestEvent) => {
         include_versions: true,
     });
     if (!observationRequests?.length) {
-        error(404, {
-            message: 'Observation Request Not Found',
+        error(404, 'Observation Request Not Found', {
             errorId: crypto.randomUUID(),
             code: HTTP_CODES[404],
         });

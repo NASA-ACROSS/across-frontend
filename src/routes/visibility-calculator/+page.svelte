@@ -43,28 +43,20 @@
     let hiRes = $state(data.queryParams?.hi_res || false);
     let minVisibilityDuration = $state(String(data.queryParams?.min_visibility_duration || ''));
 
-    let qps = $derived([
-        ra,
-        dec,
-        dateRangeBegin,
-        dateRangeEnd,
-        selectedInstruments,
-        hiRes,
-        minVisibilityDuration
-    ]);
+    let qps = $derived([ra, dec, dateRangeBegin, dateRangeEnd, selectedInstruments, hiRes, minVisibilityDuration]);
 
-    let isQueryEmpty = $derived(qps.every((value) => !Boolean(value) || Array.isArray(value) && value.length === 0));
+    let isQueryEmpty = $derived(qps.every((value) => !Boolean(value) || (Array.isArray(value) && value.length === 0)));
 
     // Create observatory short names dictionary for efficient lookups
     let observatoryShortNames = $derived(
         telescopes.reduce(
-        (acc, telescope) => {
-            if (!acc[telescope.observatory.id]) {
-                acc[telescope.observatory.id] = telescope.observatory.short_name;
-            }
-            return acc;
-        },
-        {} as Record<string, string>
+            (acc, telescope) => {
+                if (!acc[telescope.observatory.id]) {
+                    acc[telescope.observatory.id] = telescope.observatory.short_name;
+                }
+                return acc;
+            },
+            {} as Record<string, string>
         )
     );
 
@@ -90,7 +82,7 @@
         const url = `${window.location.pathname}?${params.toString()}`;
 
         // Set the browser's URL with the new params without reloading the page
-        goto(url, { noScroll: true, invalidateAll: false, replaceState: true });
+        goto(url, { refreshAll: false, replaceState: true, reset: false });
 
         return async ({ result }) => {
             if (result.type === 'success' && result.data) {
@@ -150,7 +142,7 @@
                         <h3 class="text-lg font-semibold mb-4">Observatory / Telescope / Instrument</h3>
                         <div class="py-4 h-200 md:min-h-80 md:max-h-100">
                             <ObservatoryTelescopeInstrumentSelector
-                                telescopes={telescopes}
+                                {telescopes}
                                 bind:selectedObservatories
                                 bind:selectedTelescopes
                                 bind:selectedInstruments

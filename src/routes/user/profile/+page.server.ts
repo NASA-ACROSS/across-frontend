@@ -62,6 +62,7 @@ export const actions = {
                 _action: 'updateUserInformation',
                 errorId: errId,
                 code: HTTP_CODES[500],
+                status: 500,
             });
         }
 
@@ -84,6 +85,7 @@ export const actions = {
                         _action: 'updateUserInformation',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 } else {
                     return fail(err.status, {
@@ -92,6 +94,7 @@ export const actions = {
                         _action: 'updateUserInformation',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 }
             }
@@ -139,6 +142,7 @@ export const actions = {
                     _action: 'acceptInvite',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
 
@@ -174,6 +178,7 @@ export const actions = {
                     _action: 'rejectInvite',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
 
@@ -209,6 +214,7 @@ export const actions = {
                     _action: 'leaveGroup',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
             throw err;
@@ -239,6 +245,7 @@ export const actions = {
                     _action: 'deleteUser',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
 

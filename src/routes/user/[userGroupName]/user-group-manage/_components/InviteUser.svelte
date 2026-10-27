@@ -1,6 +1,6 @@
 <script lang="ts">
     import { applyAction, enhance } from '$app/forms';
-    import { goto, invalidateAll } from '$app/navigation';
+    import { goto, refreshAll } from '$app/navigation';
     import Section from '#lib/components/Section.svelte';
     import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
     import EmailInput from '#lib/components/inputs/EmailInput.svelte';
@@ -28,10 +28,10 @@
 
             if (result.status === 200) {
                 // rerun all `load` functions, following the successful update
-                await invalidateAll();
+                await refreshAll();
                 await applyAction(result);
             } else if (result.type === 'redirect') {
-                goto(result.location, { invalidateAll: true, noScroll: true });
+                goto(result.location, { refreshAll: true, reset: false });
             } else {
                 await applyAction(result);
             }

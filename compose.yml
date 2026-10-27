@@ -2,14 +2,15 @@ name: frontend
 
 services:
   app:
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile
       target: local
       args:
-        RUNTIME_ENV: local
+        BUILD_VERSION: local
     environment:
-      BUILD_VERSION: local
+      RUNTIME_ENV: local
       ACROSS_SERVER_ID: a13bbcdd-798d-43cd-bb2a-6b10347db2a3
       ACROSS_SERVER_SECRET: local-service-account-key
     command: node build

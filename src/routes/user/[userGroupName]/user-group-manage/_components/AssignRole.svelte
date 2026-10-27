@@ -1,6 +1,6 @@
 <script lang="ts">
     import { applyAction, enhance, type SubmitFunction } from '$app/forms';
-    import { goto, invalidateAll } from '$app/navigation';
+    import { goto, refreshAll } from '$app/navigation';
     import type { GroupUser } from '#lib/types/User/GroupUser.js';
     import type { GroupRole } from '#lib/types/User/GroupRole.js';
     import type { UserGroup } from '#lib/types/User/UserGroup.js';
@@ -48,10 +48,10 @@
             isAssigningRole = false;
             if (result.status === 200) {
                 // rerun all `load` functions, following the successful update
-                await invalidateAll();
+                await refreshAll();
                 await applyAction(result);
             } else if (result.type === 'redirect') {
-                goto(result.location, { invalidateAll: true, noScroll: true });
+                goto(result.location, { refreshAll: true, reset: false });
             } else {
                 await applyAction(result);
             }

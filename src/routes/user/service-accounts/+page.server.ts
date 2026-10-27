@@ -71,6 +71,7 @@ export const actions = {
                     _action: 'createServiceAccount',
                     errorId: error.body.errorId,
                     code: error.body.code,
+                    status: error.status,
                 });
             }
 
@@ -110,6 +111,7 @@ export const actions = {
                     _action: 'deleteServiceAccount',
                     errorId: error.body.errorId,
                     code: error.body.code,
+                    status: error.status,
                 });
             }
 
@@ -158,6 +160,7 @@ export const actions = {
                     _action: 'restoreServiceAccount',
                     errorId: error.body.errorId,
                     code: error.body.code,
+                    status: error.status,
                 });
             }
 

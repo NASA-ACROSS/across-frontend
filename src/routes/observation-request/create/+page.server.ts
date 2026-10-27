@@ -98,6 +98,7 @@ export const actions = {
                     errorId: err.body.errorId,
                     code: err.body.code,
                     message: err.body.message,
+                    status: err.status,
                 });
             }
 

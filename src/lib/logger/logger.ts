@@ -24,7 +24,7 @@ const logger: Logger = (() => {
 
         if (PUBLIC_CONFIG.PRETTY_LOGS === 1) {
             options.transport = {
-                target: 'pino-pretty',
+                target: import.meta.resolve('pino-pretty'),
                 options: {
                     colorize: true, // show colors in log
                     levelFirst: true, // show levels first in log

@@ -6,7 +6,6 @@ import type { TokensCookie, UserCredentialsCookie } from '#lib/types/User/UserCr
 declare global {
     namespace App {
         interface Error {
-            message: string;
             errorId: string;
             /** Error Code matched to HTTP_CODES using HTTP status */
             code: string;

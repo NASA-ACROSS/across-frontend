@@ -25,6 +25,7 @@ export const resolveObject = async ({ request, fetch }: RequestEvent): Promise<R
             message: 'Object name is required',
             errorId: crypto.randomUUID(),
             code: HTTP_CODES[400],
+            status: 400,
         });
     }
 
@@ -44,6 +45,7 @@ export const resolveObject = async ({ request, fetch }: RequestEvent): Promise<R
                 message: 'Failed to resolve object name.',
                 errorId: error.body.errorId,
                 code: error.body.code,
+                status: error.status,
             });
         }
 

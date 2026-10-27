@@ -10,7 +10,7 @@
 </script>
 
 <!-- Hero -->
-<div data-testid="hero" class="hero min-h-[50vh] flex-grow" style="background-image: url({asset('/assets/img/custom/bli_grc_sm.jpg')});">
+<div data-testid="hero" class="hero min-h-[50vh] grow" style="background-image: url({asset('assets/img/custom/bli_grc_sm.jpg')});">
     <div class="hero-overlay"></div>
     <div class="hero-content text-neutral-content text-center">
         <div class="max-w-xl">
@@ -20,15 +20,9 @@
                 of NASA observatory state and status information to facilitate science situational awareness.
             </p>
             <div class="flex flex-col md:flex-row md:gap-4">
-                <ArrowButton
-                    id="data-ingestion-status"
-                    href={resolve('ingestion-status')}
-                >Data Ingestion Status</ArrowButton>
+                <ArrowButton id="data-ingestion-status" href={resolve('ingestion-status')}>Data Ingestion Status</ArrowButton>
 
-                <ArrowButton
-                    id="browse-observations"
-                    href={resolve('observations')}
-                >Browse Observations</ArrowButton>
+                <ArrowButton id="browse-observations" href={resolve('observations')}>Browse Observations</ArrowButton>
 
                 <ArrowButton id="explore-api" href={apiDocsUrl}>Explore API</ArrowButton>
             </div>

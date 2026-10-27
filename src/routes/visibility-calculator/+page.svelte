@@ -82,7 +82,7 @@
         const url = `${window.location.pathname}?${params.toString()}`;
 
         // Set the browser's URL with the new params without reloading the page
-        goto(url, { noScroll: true, invalidateAll: false, replaceState: true });
+        goto(url, { refreshAll: false, replaceState: true, reset: false });
 
         return async ({ result }) => {
             if (result.type === 'success' && result.data) {

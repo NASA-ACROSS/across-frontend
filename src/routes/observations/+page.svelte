@@ -51,7 +51,17 @@
     let telescopes = $derived(data.telescopes || []);
     let totalCount = $derived(data.totalCount || 0);
     // reassigned by handleSearch(); $derived is reassignable as of Svelte 5.25
-    let currentSearchParams = $derived(new URLSearchParams(page.url.searchParams));
+    // sveltekit3 migration made searchParams readonly so this must be done for URLSearchParams instantiation
+    let paramsObj = $derived(
+        page.url.searchParams.entries().reduce(
+            (acc, [key, value]) => {
+                acc[key] = value;
+                return acc;
+            },
+            {} as Record<string, string>
+        )
+    );
+    let currentSearchParams = $derived(new URLSearchParams(paramsObj));
 
     // Observatory/Telescope/Instrument selector state
     let selectedObservatories: TelescopeObservatory[] = $state([]);
@@ -241,7 +251,7 @@
         // }
 
         currentSearchParams = params;
-        await goto(`?${params.toString()}`, { noScroll: true, invalidateAll: true });
+        await goto(`?${params.toString()}`, { refreshAll: true, reset: false });
     }
 
     function isValidUUID(uuidString: string) {

@@ -79,6 +79,7 @@ export async function callApi<T>(
     options: CallApiOptions = { method: 'GET', responseType: 'json' }
 ): Promise<Result<T>> {
     const responseType = options.responseType || 'json';
+    options.method = options.method || 'GET';
 
     const url = new URL(`${CONFIG.ACROSS_SERVER_URL}${route}`);
 
@@ -88,14 +89,15 @@ export async function callApi<T>(
         const errorBody = await getAppError(response.status, response);
 
         logger.error({
-            msg: 'ACROSS API request failed',
-            url,
-            options,
-            status: response.status,
-            errorBody,
+            msg: errorBody.message,
+            error: errorBody,
+            request: { url, method: options.method },
         });
 
-        error(response.status, errorBody);
+        error(response.status, errorBody.message, {
+            errorId: errorBody.errorId,
+            code: errorBody.code,
+        });
     }
 
     if (responseType === 'empty' || response.status === 204) {

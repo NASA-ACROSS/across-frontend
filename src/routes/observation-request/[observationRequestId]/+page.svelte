@@ -59,7 +59,7 @@
                 }),
                 {
                     replaceState: true,
-                    noScroll: true,
+                    reset: false,
                 }
             );
         }

@@ -77,6 +77,7 @@ export const actions = {
                     message: err.body.message,
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             } else {
                 const errorId = crypto.randomUUID();
@@ -86,6 +87,7 @@ export const actions = {
                     message: 'An unexpected error occurred while calculating visibility windows.',
                     errorId,
                     code: HTTP_CODES[500],
+                    status: 500,
                 });
             }
         }

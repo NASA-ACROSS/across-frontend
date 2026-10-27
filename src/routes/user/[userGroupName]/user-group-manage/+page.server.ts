@@ -74,6 +74,7 @@ export const actions = {
                         _action: 'inviteUser',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 } else {
                     return fail(err.status, {
@@ -82,6 +83,7 @@ export const actions = {
                         _action: 'inviteUser',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 }
             }
@@ -115,6 +117,7 @@ export const actions = {
                     _action: 'deleteInvite',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
 
@@ -147,6 +150,7 @@ export const actions = {
                     _action: 'removeUser',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
 
@@ -180,6 +184,7 @@ export const actions = {
                     _action: 'assignRole',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
 
@@ -213,6 +218,7 @@ export const actions = {
                     _action: 'removeRole',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
 

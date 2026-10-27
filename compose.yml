@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
       target: local
       args:
-        RUNTIME_ENV: local
+        BUILD_VERSION: local
     environment:
       BUILD_VERSION: local
       # host.docker.internal resolves to the Mac host, since the backend runs outside this container

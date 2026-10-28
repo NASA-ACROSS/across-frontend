@@ -10,7 +10,6 @@ import { callApi } from '$lib/utils/across/callApi';
 import logger from '$lib/logger';
 
 export const load: PageServerLoad = async ({ fetch, locals }: RequestEvent) => {
-    guards.localOnlyRoute();
     const localUser = guards.requireUser(locals);
 
     const user = await getUserInfo(fetch, localUser.id);

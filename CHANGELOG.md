@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.11.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.10.0...across-frontend-v1.11.0) (2026-10-28)
+
+
+### Features
+
+* observation request view page ([#390](https://github.com/NASA-ACROSS/across-frontend/issues/390)) ([8ff597d](https://github.com/NASA-ACROSS/across-frontend/commit/8ff597d3569cc0b4ce7c37e13585d1ee19ed8175))
+
+
+### Bug Fixes
+
+* **env:** correct across-server port in example env file ([#407](https://github.com/NASA-ACROSS/across-frontend/issues/407)) ([4501c47](https://github.com/NASA-ACROSS/across-frontend/commit/4501c472fea8f319deedce77d94348598b1dc742))
+* set base path for rev proxy ([#395](https://github.com/NASA-ACROSS/across-frontend/issues/395)) ([42dec03](https://github.com/NASA-ACROSS/across-frontend/commit/42dec03d8e7f34bc20dc68df40e77ac7fe2359ad))
+
 ## [1.10.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.9.0...across-frontend-v1.10.0) (2026-09-29)
 
 

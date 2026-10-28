@@ -2,6 +2,7 @@ FROM node:24-bookworm-slim AS build
 
 # set the build version to local environment by default, can be overridden by passing a different value during build time
 ARG BUILD_VERSION=docker
+ARG BASE_PATH
 
 # set svelte public env vars
 ENV PUBLIC_BUILD_VERSION=$BUILD_VERSION
@@ -23,7 +24,7 @@ RUN npm ci --include=dev
 COPY . .
 
 # Build the app
-RUN npm run build
+RUN BASE_PATH=$BASE_PATH npm run build
 
 
 FROM node:24-bookworm-slim AS local

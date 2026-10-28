@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "vite dev",
-        "build": "BUILD_ENV=deploy vite build",
+        "build": "vite build",
         "build:docker": "docker build --target local -t across-frontend:latest --no-cache --platform linux/amd64 .",
         "compose": "docker compose down && docker compose build && docker compose up -d",
         "preview": "vite preview",

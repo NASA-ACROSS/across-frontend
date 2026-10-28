@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { resolve } from '$app/paths';
+    import { resolve, asset } from '$app/paths';
     import ArrowButton from './ArrowButton.svelte';
 
     interface Props {
@@ -10,7 +10,7 @@
 </script>
 
 <!-- Hero -->
-<div data-testid="hero" class="hero min-h-[50vh] flex-grow" style="background-image: url(/assets/img/custom/bli_grc_sm.jpg);">
+<div data-testid="hero" class="hero min-h-[50vh] flex-grow" style="background-image: url({asset('/assets/img/custom/bli_grc_sm.jpg')});">
     <div class="hero-overlay"></div>
     <div class="hero-content text-neutral-content text-center">
         <div class="max-w-xl">

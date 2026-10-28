@@ -21,6 +21,9 @@ jobs:
       repository: '${{ github.event.repository.name }}'
       image-name: frontend
       app: frontend
+      # Set the base path for the dev env which is proxied from the prod rev proxy from science.data.nasa.gov
+      build-args: |
+        BASE_PATH=/across-sandbox/app
     secrets:
       github-private-actions-pat: ${{ secrets.PRIVATE_CONFIG_READ_ACCESS }}
       registry: ${{ secrets.ECR_REGISTRY }}

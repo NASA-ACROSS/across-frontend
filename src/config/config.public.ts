@@ -22,11 +22,13 @@ export type RuntimeEnv = 'local' | 'feat1' | 'dev' | 'staging' | 'prod';
  */
 class PublicConfiguration {
     public BUILD_VERSION: string = PUBLIC_BUILD_VERSION || '';
-    public DOCUMENTATION_URL: string = 'https://science.data.nasa.gov/data-sites/across';
+    public DOCUMENTATION_URL: string = 'https://science.data.nasa.gov/across/app/about';
 
     public RUNTIME_ENV: RuntimeEnv = (env.PUBLIC_RUNTIME_ENV as RuntimeEnv) || 'local';
 
     public IS_LOCAL: boolean = this.RUNTIME_ENV === 'local';
+    // Indicates if the current environment is the development (sandbox) environment
+    public IS_DEV: boolean = this.RUNTIME_ENV === 'dev';
     public IS_PROD: boolean = this.RUNTIME_ENV === 'prod';
 
     public USER_TOKENS_COOKIE_NAME: string = 'user-tokens';

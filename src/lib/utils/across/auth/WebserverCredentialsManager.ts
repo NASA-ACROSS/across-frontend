@@ -1,3 +1,4 @@
+import { building } from '$app/env';
 import { CONFIG } from '$config/config';
 import * as luxon from 'luxon';
 import { ssm } from '../../aws/ssm';
@@ -27,7 +28,7 @@ export class WebserverCredentialsManager {
     }
 
     public async getAccessToken(fetch: typeof globalThis.fetch, options: { retry?: boolean } = {}): Promise<string | undefined> {
-        if (CONFIG.IS_BUILD || CONFIG.ACROSS_TEST_ACCESS_TOKEN) {
+        if (building || CONFIG.ACROSS_TEST_ACCESS_TOKEN) {
             logger.debug('Building or running in test environment, using dummy access token for WebserverCredentialsManager');
             return CONFIG.ACROSS_TEST_ACCESS_TOKEN;
         }
@@ -145,7 +146,7 @@ export class WebserverCredentialsManager {
     }
 
     private async setCredentials(): Promise<void> {
-        if (CONFIG.IS_BUILD || (CONFIG.ACROSS_SERVER_ID && CONFIG.ACROSS_SERVER_SECRET)) {
+        if (building || (CONFIG.ACROSS_SERVER_ID && CONFIG.ACROSS_SERVER_SECRET)) {
             this.id = CONFIG.ACROSS_SERVER_ID;
             this.secret = CONFIG.ACROSS_SERVER_SECRET;
         } else {

@@ -46,7 +46,7 @@ export class PrivateConfiguration {
         // through service connect. All other traffic is routed through the ALB
         const domain = `http://${this.ACROSS_SERVER_HOST}`;
         const port = this.ACROSS_SERVER_PORT ? `:${this.ACROSS_SERVER_PORT}` : '';
-        const basePath = `${this.ACROSS_SERVER_ROOT_PATH}${this.ACROSS_SERVER_VERSION}`;
+        const basePath = `${this.ACROSS_SERVER_VERSION}`;
 
         return `${domain}${port}${basePath}`;
     }

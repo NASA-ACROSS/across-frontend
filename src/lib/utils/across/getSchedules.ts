@@ -9,7 +9,7 @@ type GetSchedulesParams = {
 };
 
 export const getSchedules = async (fetch: typeof globalThis.fetch, params?: GetSchedulesParams) => {
-    const path = '/schedule/';
+    const path = '/schedule';
     const qp = searchParams.serialize(params);
     const route = `${qp.toString() ? `${path}?${qp}` : path}`;
 

@@ -25,6 +25,7 @@ const config = {
         version: {
             pollInterval: 60000,
         },
+        csrf: { trustedOrigins: ['https://science-dev.data.nasa.gov', 'https://science.data.nasa.gov'] },
     },
 };
 

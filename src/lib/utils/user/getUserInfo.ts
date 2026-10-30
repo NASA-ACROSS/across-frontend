@@ -1,4 +1,4 @@
-import type { User } from '$lib/types/User/User';
+import type { User } from '#lib/types/User/User.js';
 import { callApi } from '../across/callApi';
 
 export const getUserInfo = async (fetch: typeof globalThis.fetch, id: string) => {

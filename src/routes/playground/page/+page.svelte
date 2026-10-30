@@ -1,9 +1,9 @@
 <script>
     import { resolve } from '$app/paths';
-    import Alert from '$lib/components/Alert.svelte';
-    import ArrowButton from '$lib/components/ArrowButton.svelte';
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
+    import Alert from '#lib/components/Alert.svelte';
+    import ArrowButton from '#lib/components/ArrowButton.svelte';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
 
     let showMenu = $state(false);
     let showInfo = $state(false);
@@ -57,7 +57,7 @@
 
     <Section icon="user" title="Column Section Title">
         {#snippet buttons()}
-            <ArrowButton href={resolve('/playground')}>Playground</ArrowButton>
+            <ArrowButton href={resolve('playground')}>Playground</ArrowButton>
         {/snippet}
         {#each Array(10) as _, i}
             <div>Section Content {i + 1}</div>

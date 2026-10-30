@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { CardData } from '$lib/types/Card';
+    import type { CardData } from '#lib/types/Card.js';
     import type { Snippet } from 'svelte';
     import InfoBadge from '../badge/InfoBadge.svelte';
 

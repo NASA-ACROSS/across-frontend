@@ -1,18 +1,18 @@
-import { emailRegex } from '$lib/utils/regex/emailRegex';
-import { backendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
-import { validate } from '$lib/utils/regex/validate';
+import { emailRegex } from '#lib/utils/regex/emailRegex.js';
+import { backendAlphaNumRegex } from '#lib/utils/regex/internationalAlphanumericRegex.js';
+import { validate } from '#lib/utils/regex/validate.js';
 import { fail, isHttpError, redirect, type ActionFailure } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
-import { autoLogin } from '$lib/utils/user/autoLogin.js';
+import { autoLogin } from '#lib/utils/user/autoLogin.js';
 import type { RequestEvent } from './$types';
-import type { UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import guards from '$lib/utils/guards';
-import logger from '$lib/logger';
-import HTTP_CODES from '$lib/utils/HttpCodes';
-import { callApi } from '$lib/utils/across/callApi';
-import type { MagicLinkDTO } from '$lib/types/auth/MagicLinkDTO';
+import type { UserCredentialsCookie } from '#lib/types/User/UserCredentialsCookie.js';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import guards from '#lib/utils/guards/index.js';
+import logger from '#lib/logger/index.js';
+import HTTP_CODES from '#lib/utils/HttpCodes.js';
+import { callApi } from '#lib/utils/across/callApi.js';
+import type { MagicLinkDTO } from '#lib/types/auth/MagicLinkDTO.js';
 
 type RegisterResult = FormSubmitResult & {
     firstname?: string;
@@ -38,7 +38,7 @@ export function load({ locals }: RequestEvent) {
     const userCookie = locals?.user as UserCredentialsCookie;
     // Redirect to profile page when user is logged in
     if (userCookie) {
-        redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('user/profile'));
     }
 }
 
@@ -72,6 +72,7 @@ export const actions = {
                 message: 'Form validation failed. Please try again. If this error persists, contact support.',
                 errorId: crypto.randomUUID(),
                 code: HTTP_CODES[500],
+                status: 500,
             });
         }
 
@@ -93,6 +94,7 @@ export const actions = {
                 error: `Too many registration attempts. Please try again in ${rateStatus.retryAfter} seconds.`,
                 errorId: crypto.randomUUID(),
                 code: HTTP_CODES[429],
+                status: 429,
             });
         }
 
@@ -113,6 +115,7 @@ export const actions = {
                         message: 'Something went wrong, please try again. If this error persists, contact support.',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 } else if (err.status === 409) {
                     // The user already exists, but we don't want to give away that information on the
@@ -124,6 +127,7 @@ export const actions = {
                         message: 'Please check your input and try again. If this error persists, contact support.',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 } else if (err.status === 500) {
                     return fail(err.status, {
@@ -131,6 +135,7 @@ export const actions = {
                         message: 'Failed to register user. Please try again. If this error persists, contact support.',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 }
             } else {

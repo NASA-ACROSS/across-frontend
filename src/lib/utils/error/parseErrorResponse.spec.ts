@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import parseErrorResponse, { DEFAULT_ERROR_MESSAGE } from './parseErrorResponse';
-import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
+import type { AcrossApiErrorResponseBody } from '#lib/types/error/AcrossApiErrorResponseBody.js';
 
 describe('parseErrorResponse', () => {
     it('should return the detail string if detail is a string', () => {

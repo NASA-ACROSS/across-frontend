@@ -1,13 +1,14 @@
-import type { Handle, HandleFetch, HandleServerError, ServerInit } from '@sveltejs/kit';
-import { handleLogout } from '$lib/handles/handleLogout';
-import { handleRedirect } from '$lib/handles/handleRedirect';
-import { getErrorCause } from '$lib/utils/error/getErrorCause';
-import { CONFIG } from '$config/config';
-import { webserverCredentialsManager } from '$lib/utils/across/auth/WebserverCredentialsManager';
-import { UserCredentialsManager } from '$lib/utils/across/auth/UserCredentialsManager';
-import { hydrateAuthUser } from '$lib/handles/hydrateAuthUser';
-import logger, { setLogLevel } from '$lib/logger';
-import { PUBLIC_CONFIG } from '$config/config.public';
+import type { Handle, HandleFetch, HandleServerError, ServerInit } from '@sveltejs/kit/hooks';
+import { handleLogout } from '#lib/handles/handleLogout.ts';
+import { handleRedirect } from '#lib/handles/handleRedirect.ts';
+import { getErrorCause } from '#lib/utils/error/getErrorCause.ts';
+import { CONFIG } from '#config';
+import { webserverCredentialsManager } from '#lib/utils/across/auth/WebserverCredentialsManager.ts';
+import { UserCredentialsManager } from '#lib/utils/across/auth/UserCredentialsManager.ts';
+import { hydrateAuthUser } from '#lib/handles/hydrateAuthUser.ts';
+import logger, { setLogLevel } from '#lib/logger/index.ts';
+import { PUBLIC_CONFIG } from '#config/config.public.ts';
+import { HTTP_CODES } from '#lib';
 
 export const init: ServerInit = async () => {
     setLogLevel(PUBLIC_CONFIG.RUNTIME_ENV);
@@ -79,27 +80,49 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
     return fetch(request);
 };
 
-export const handleError: HandleServerError = ({ error, event, message, status }) => {
-    const errorId = crypto.randomUUID();
-
-    // undefined for some errors, present for others
-    const errorCause = getErrorCause(error);
-
-    logger.error(
-        {
-            err: error,
-            errorCause,
-            errorId,
-            url: event?.url?.href,
-            clientIP: event?.getClientAddress(),
-            status,
-        },
-        message
-    );
-
-    return {
-        message,
-        errorId,
-        code: 'UNKNOWN_ERROR',
+export const handleError: HandleServerError = ({ error, kind, event }) => {
+    // default to unknown error
+    const appError: App.Error = {
+        errorId: crypto.randomUUID(),
+        status: 500,
+        message: 'Unknown Error',
+        code: HTTP_CODES[0],
     };
+
+    switch (kind) {
+        case 'app':
+            appError.errorId = error.errorId;
+            appError.message = error.message;
+            appError.code = HTTP_CODES[error.status] || HTTP_CODES[0];
+            appError.status = error.status;
+            break;
+        case 'framework':
+            appError.message = error.message;
+            appError.status = error.status;
+            appError.code = HTTP_CODES[error.status] || HTTP_CODES[0];
+            break;
+
+        case 'validation':
+            appError.code = HTTP_CODES[error.status] || HTTP_CODES[0];
+            appError.message = error.message;
+            break;
+
+        case 'unknown':
+            // undefined for some errors, present for others
+            const errorCause = getErrorCause(error);
+            if (errorCause) appError.message = errorCause;
+            break;
+    }
+
+    logger.error({
+        msg: appError.message,
+        err: error,
+        errorId: appError.errorId,
+        url: event?.url?.href,
+        clientIP: event?.getClientAddress(),
+        status: appError.status,
+        code: appError.code,
+    });
+
+    return appError;
 };

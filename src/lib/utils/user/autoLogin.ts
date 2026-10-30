@@ -1,5 +1,5 @@
-import { PUBLIC_CONFIG } from '$config/config.public';
-import type { MagicLinkDTO } from '$lib/types/auth/MagicLinkDTO';
+import { PUBLIC_CONFIG } from '#config/config.public.js';
+import type { MagicLinkDTO } from '#lib/types/auth/MagicLinkDTO.js';
 import { redirect } from '@sveltejs/kit';
 
 /**

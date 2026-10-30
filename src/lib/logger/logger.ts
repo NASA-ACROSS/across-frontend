@@ -1,5 +1,5 @@
-import { browser } from '$app/environment';
-import { type RuntimeEnv, PUBLIC_CONFIG } from '$config/config.public';
+import { browser } from '$app/env';
+import { type RuntimeEnv, PUBLIC_CONFIG } from '#config/config.public.js';
 import pino, { type Logger, type LoggerOptions } from 'pino';
 
 const logger: Logger = (() => {
@@ -24,7 +24,7 @@ const logger: Logger = (() => {
 
         if (PUBLIC_CONFIG.PRETTY_LOGS === 1) {
             options.transport = {
-                target: 'pino-pretty',
+                target: import.meta.resolve('pino-pretty'),
                 options: {
                     colorize: true, // show colors in log
                     levelFirst: true, // show levels first in log

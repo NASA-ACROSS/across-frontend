@@ -1,15 +1,15 @@
 <script lang="ts">
-    import LabeledValue from '$lib/components/LabeledValue.svelte';
-    import Fieldset from '$lib/components/Fieldset.svelte';
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
-    import type { Version } from '$lib/types/across/ObservationRequest';
-    import type { Telescope } from '$lib/types/across/Telescope';
+    import LabeledValue from '#lib/components/LabeledValue.svelte';
+    import Fieldset from '#lib/components/Fieldset.svelte';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import type { Version } from '#lib/types/across/ObservationRequest.js';
+    import type { Telescope } from '#lib/types/across/Telescope.js';
     import type { PageData } from './$types';
-    import { prettyUTC } from '$lib/utils/datetime/prettyUTC';
+    import { prettyUTC } from '#lib/utils/datetime/prettyUTC.js';
     import { goto } from '$app/navigation';
     import { resolve } from '$app/paths';
-    import Alert from '$lib/components/Alert.svelte';
+    import Alert from '#lib/components/Alert.svelte';
     interface Props {
         data: PageData;
     }
@@ -68,7 +68,7 @@
                 }),
                 {
                     replaceState: true,
-                    noScroll: true,
+                    reset: false,
                 }
             );
         }

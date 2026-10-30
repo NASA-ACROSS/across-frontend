@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { ServiceAccountSecret } from '$lib/types/User/ServiceAccountSecret';
-    import { downloadJSON } from '$lib/utils/download/downloadJSON';
+    import type { ServiceAccountSecret } from '#lib/types/User/ServiceAccountSecret.js';
+    import { downloadJSON } from '#lib/utils/download/downloadJSON.js';
 
     interface Props {
         isOpen?: boolean;

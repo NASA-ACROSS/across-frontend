@@ -1,5 +1,5 @@
-import type { Schedule } from '$lib/types/across/Schedule';
-import type { Paginate } from '$lib/types/Paginate';
+import type { Schedule } from '#lib/types/across/Schedule.js';
+import type { Paginate } from '#lib/types/Paginate.js';
 import searchParams from '../searchParams/searchParams';
 
 import { callApi } from './callApi';

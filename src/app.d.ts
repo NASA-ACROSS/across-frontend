@@ -1,12 +1,11 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { TokensCookie, UserCredentialsCookie } from '$lib/types/User/UserCredentialsCookie';
+import type { TokensCookie, UserCredentialsCookie } from '#lib/types/User/UserCredentialsCookie.js';
 
 // for information about these interfaces
 declare global {
     namespace App {
         interface Error {
-            message: string;
             errorId: string;
             /** Error Code matched to HTTP_CODES using HTTP status */
             code: string;

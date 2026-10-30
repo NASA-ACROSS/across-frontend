@@ -1,9 +1,9 @@
-import type { Telescope } from '$lib/types/across/Telescope';
-import { getObservationRequests } from '$lib/utils/across/getObservationRequests';
-import { getTelescopes } from '$lib/utils/across/getTelescopes';
+import type { Telescope } from '#lib/types/across/Telescope.js';
+import { getObservationRequests } from '#lib/utils/across/getObservationRequests.js';
+import { getTelescopes } from '#lib/utils/across/getTelescopes.js';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad, RequestEvent } from './$types';
-import { HTTP_CODES } from '$lib';
+import { HTTP_CODES } from '#lib';
 
 export const load: PageServerLoad = async ({ params, fetch }: RequestEvent) => {
     const { items: observationRequests } = await getObservationRequests(fetch, {
@@ -11,8 +11,7 @@ export const load: PageServerLoad = async ({ params, fetch }: RequestEvent) => {
         include_versions: true,
     });
     if (!observationRequests?.length) {
-        error(404, {
-            message: 'Observation Request Not Found',
+        error(404, 'Observation Request Not Found', {
             errorId: crypto.randomUUID(),
             code: HTTP_CODES[404],
         });

@@ -1,17 +1,17 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
     import type { PageData } from './$types';
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
-    import Alert from '$lib/components/Alert.svelte';
-    import Fieldset from '$lib/components/Fieldset.svelte';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import Alert from '#lib/components/Alert.svelte';
+    import Fieldset from '#lib/components/Fieldset.svelte';
     import { DateTime } from 'luxon';
-    import Collapse from '$lib/components/Collapse.svelte';
-    import { getGroupsFromRoles } from '$lib/utils/user/getGroupsFromRoles.js';
-    import Spinner from '$lib/components/Spinner.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
+    import Collapse from '#lib/components/Collapse.svelte';
+    import { getGroupsFromRoles } from '#lib/utils/user/getGroupsFromRoles.js';
+    import Spinner from '#lib/components/Spinner.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
     import { enhance } from '$app/forms';
-    import { page } from '$app/stores';
+    import { page } from '$app/state';
 
     interface Props {
         data: PageData;
@@ -60,7 +60,7 @@
         const fresh = data.serviceAccount;
         serviceAccount = fresh;
         originalServiceAccount = structuredClone(fresh);
-        if ($page.form) {
+        if (page.form) {
             isUpdating = false;
         }
     });
@@ -69,9 +69,11 @@
 <Page title="Edit Service Account" icon="edit">
     {#snippet buttons()}
         <div>
-            <a class="btn btn-info text-lg" href={resolve('/user/service-accounts')}
-                >← <i class="bx bx-pen mx-2"></i>Manage Service Accounts</a
-            >
+            <a class="btn btn-info text-lg" href={resolve('user/service-accounts')}>
+                ←
+                <i class="bx bx-pen mx-2"></i>
+                Manage Service Accounts
+            </a>
         </div>
     {/snippet}
     <Section>
@@ -150,7 +152,7 @@
                         {#if !isUpdating}
                             Update {`${isServiceAccountExpired ? ' And Restore' : ''}`}
                         {:else}
-                            <Spinner></Spinner>
+                            <Spinner />
                         {/if}
                     </button>
                 </div>

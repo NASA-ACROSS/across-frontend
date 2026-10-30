@@ -3,5 +3,5 @@ import { redirect } from '@sveltejs/kit';
 
 export const load = () => {
     // we have no page for /user redirect to profile
-    redirect(302, resolve('/user/profile'));
+    redirect(302, resolve('user/profile'));
 };

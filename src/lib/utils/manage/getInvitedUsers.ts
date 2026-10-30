@@ -1,4 +1,4 @@
-import type { GroupInvite } from '$lib/types/User/GroupInvite';
+import type { GroupInvite } from '#lib/types/User/GroupInvite.js';
 import { callApi } from '../across/callApi';
 
 export const getInvitedUsers = async (fetch: typeof globalThis.fetch, groupId: string) => {

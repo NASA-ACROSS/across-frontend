@@ -1,6 +1,6 @@
 import { test, expect } from '../fixtures/mockserver.fixture';
-import type { Schedule } from '$lib/types/across/Schedule';
-import type { Paginate } from '$lib/types/Paginate';
+import type { Schedule } from '#lib/types/across/Schedule.js';
+import type { Paginate } from '#lib/types/Paginate.js';
 
 const TELESCOPE_PATH = '/v1/telescope';
 const SCHEDULE_PATH = '/v1/schedule';

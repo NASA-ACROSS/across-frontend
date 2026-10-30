@@ -1,5 +1,5 @@
 import { GetParameterCommand, PutParameterCommand, ParameterNotFound, ParameterType, SSMClient, type Parameter } from '@aws-sdk/client-ssm';
-import { CONFIG } from '$config/config';
+import { CONFIG } from '#config';
 
 export type ParameterWithValue = Parameter & { Value: string };
 

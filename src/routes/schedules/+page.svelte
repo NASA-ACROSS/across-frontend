@@ -1,17 +1,17 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { browser } from '$app/environment';
+    import { browser } from '$app/env';
     import { page } from '$app/state';
     import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
-    import ObservatoryTelescopeSelector from '$lib/components/ObservatoryTelescopeSelector.svelte';
-    import DateRangeInput from '$lib/components/datetime/DateRangeInput.svelte';
-    import Pagination from '$lib/components/Pagination.svelte';
-    import ArrowButton from '$lib/components/ArrowButton.svelte';
-    import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
-    import type { Telescope } from '$lib/types/across/Telescope';
-    import logger from '$lib/logger';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import ObservatoryTelescopeSelector from '#lib/components/ObservatoryTelescopeSelector.svelte';
+    import DateRangeInput from '#lib/components/datetime/DateRangeInput.svelte';
+    import Pagination from '#lib/components/Pagination.svelte';
+    import ArrowButton from '#lib/components/ArrowButton.svelte';
+    import type { TelescopeObservatory } from '#lib/types/across/TelescopeObservatory.js';
+    import type { Telescope } from '#lib/types/across/Telescope.js';
+    import logger from '#lib/logger/index.js';
 
     let { data } = $props();
 
@@ -27,7 +27,17 @@
     let totalPages = $derived(data.totalPages || 1);
     let telescopes = $derived(data.telescopes || []);
     let totalCount = $derived(data.totalCount || 0);
-    let currentSearchParams = $derived(new URLSearchParams(page.url.searchParams));
+    // sveltekit3 migration made searchParams readonly so this must be done for URLSearchParams instantiation
+    let paramsObj = $derived(
+        page.url.searchParams.entries().reduce(
+            (acc, [key, value]) => {
+                acc[key] = value;
+                return acc;
+            },
+            {} as Record<string, string>
+        )
+    );
+    let currentSearchParams = $derived(new URLSearchParams(paramsObj));
 
     // Observatory/Telescope selector state
     let selectedObservatories: TelescopeObservatory[] = $state([]);
@@ -59,8 +69,8 @@
 
     // Status options
     const statusOptions = ['planned', 'scheduled', 'unscheduled', 'performed', 'aborted'];
-    const fidelityOptions = ['low', 'high'];
 
+    const fidelityOptions = ['low', 'high'];
     let selectedFilter = $state('');
 
     onMount(() => {
@@ -151,7 +161,7 @@
         // Reset to first page on new search
         params.append('page', '1');
         currentSearchParams = params;
-        await goto(`?${params.toString()}`, { noScroll: true, invalidateAll: true });
+        await goto(`?${params.toString()}`, { reset: false, refreshAll: true });
     }
 
     async function saveColumnSelection() {
@@ -215,11 +225,15 @@
 
     let isLoading = false;
 
-    beforeNavigate(() => {
+    beforeNavigate(({ shallow, type }) => {
+        if (shallow && type === 'goto') return;
+
         isLoading = true;
     });
 
-    afterNavigate(() => {
+    afterNavigate(({ shallow, type }) => {
+        if (shallow && type === 'goto') return;
+
         isLoading = false;
     });
 </script>
@@ -396,6 +410,7 @@
                 {#key currentPage}
                     <Pagination {currentPage} {totalPages} searchParams={currentSearchParams} numButtons={PAGINATION_BUTTONS} />
                 {/key}
+
                 <button class="btn btn-sm btn-outline" onclick={() => (isCustomizeModalOpen = true)}>
                     Customize
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -403,7 +418,7 @@
                             fill-rule="evenodd"
                             d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
                             clip-rule="evenodd"
-                        />
+                        ></path>
                     </svg>
                 </button>
             </div>
@@ -530,7 +545,7 @@
                         fill-rule="evenodd"
                         d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
                         clip-rule="evenodd"
-                    />
+                    ></path>
                 </svg>
             </button>
         </div>

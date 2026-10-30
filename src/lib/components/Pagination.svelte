@@ -9,16 +9,27 @@
         searchParams: URLSearchParams;
     }
 
+    const symbols = {
+        first: '<<',
+        back: '<',
+        next: '>',
+        last: '>>',
+    };
+
     let { currentPage = 1, totalPages = 1, numButtons = 4, searchParams }: Props = $props();
 
     // Track if we're currently navigating
     let isLoading = $state(false);
 
-    beforeNavigate(() => {
+    beforeNavigate(({ shallow, type }) => {
+        if (shallow && type === 'goto') return;
+
         isLoading = true;
     });
 
-    afterNavigate(() => {
+    afterNavigate(({ shallow, type }) => {
+        if (shallow && type === 'goto') return;
+
         isLoading = false;
     });
 
@@ -55,7 +66,7 @@
 
         const length = Math.min(totalPages, pagesBefore + 1 + pagesAfter);
 
-        return Array.from({ length: length }, (_, i) => start + i);
+        return Array.from({ length }, (_, i) => start + i);
     }
 </script>
 
@@ -71,10 +82,9 @@
             ? 'pointer-events-none cursor-wait'
             : ''}"
         href={firstPageHref}
-        aria-disabled={currentPage == 1 || isLoading}
+        aria-disabled={currentPage == 1 || isLoading}>{symbols.first}</a
     >
-        &lt;&lt;
-    </a>
+
     <a
         data-sveltekit-noscroll
         data-sveltekit-preload-data="off"
@@ -82,10 +92,8 @@
             ? 'pointer-events-none cursor-wait'
             : ''}"
         href={prevPageHref}
-        aria-disabled={currentPage == 1 || isLoading}
+        aria-disabled={currentPage == 1 || isLoading}>{symbols.back}</a
     >
-        &lt;
-    </a>
 
     {#each pageHrefs as { pageNum, href }}
         {#if pageNum == currentPage}
@@ -112,10 +120,8 @@
             ? 'pointer-events-none cursor-wait'
             : ''}"
         href={nextPageHref}
-        aria-disabled={currentPage == totalPages || isLoading}
+        aria-disabled={currentPage == totalPages || isLoading}>{symbols.next}</a
     >
-        &gt;
-    </a>
 
     <a
         data-sveltekit-noscroll
@@ -124,8 +130,6 @@
             ? 'pointer-events-none cursor-wait'
             : ''}"
         href={lastPageHref}
-        aria-disabled={currentPage == totalPages || isLoading}
+        aria-disabled={currentPage == totalPages || isLoading}>{symbols.last}</a
     >
-        &gt;&gt;
-    </a>
 </div>

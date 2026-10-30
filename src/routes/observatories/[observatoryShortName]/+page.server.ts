@@ -1,9 +1,9 @@
-import { getObservatories } from '$lib/utils/across/getObservatories';
-import { getTelescopes } from '$lib/utils/across/getTelescopes';
+import { getObservatories } from '#lib/utils/across/getObservatories.js';
+import { getTelescopes } from '#lib/utils/across/getTelescopes.js';
 import type { PageServerLoad } from './$types';
-import type { Observatory } from '$lib/types/across/Observatory';
+import type { Observatory } from '#lib/types/across/Observatory.js';
 import { error } from '@sveltejs/kit';
-import { HTTP_CODES } from '$lib';
+import { HTTP_CODES } from '#lib';
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
     const observatories: Observatory[] = await getObservatories(fetch, {
@@ -11,8 +11,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     });
 
     if (!observatories.length) {
-        error(404, {
-            message: params?.observatoryShortName + ' Not Found',
+        error(404, params?.observatoryShortName + ' Not Found', {
             errorId: crypto.randomUUID(),
             code: HTTP_CODES[404],
         });

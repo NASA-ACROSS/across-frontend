@@ -48,7 +48,7 @@ describe('JwtRefresher', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        (callApi as Mock).mockResolvedValue(fakeTokenRes as unknown as Response);
+        (callApi as Mock).mockResolvedValue(fakeTokenRes);
     });
 
     describe('GetTokens', () => {

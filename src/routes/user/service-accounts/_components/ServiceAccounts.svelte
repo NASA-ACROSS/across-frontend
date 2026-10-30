@@ -1,12 +1,12 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
-    import Collapse from '$lib/components/Collapse.svelte';
-    import Fieldset from '$lib/components/Fieldset.svelte';
-    import Section from '$lib/components/Section.svelte';
-    import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
-    import type { User } from '$lib/types/User/User';
+    import Collapse from '#lib/components/Collapse.svelte';
+    import Fieldset from '#lib/components/Fieldset.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import type { ServiceAccountDetail } from '#lib/types/User/ServiceAccountDetail.js';
+    import type { User } from '#lib/types/User/User.js';
     import { DateTime } from 'luxon';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
 
     interface Props {
         user: User;

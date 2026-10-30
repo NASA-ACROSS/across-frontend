@@ -1,13 +1,13 @@
-import logger from '$lib/logger';
+import logger from '#lib/logger/index.js';
 import { fail, type ActionFailure, isHttpError, type RequestEvent } from '@sveltejs/kit';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import { callApi } from '$lib/utils/across/callApi';
-import type { ObservationRequestCreate } from '$lib/types/across/ObservationRequest';
-import { resolveObject } from '$lib/utils/across/resolveObject';
-import { getTelescopes } from '$lib/utils/across/getTelescopes';
-import type { Telescope } from '$lib/types/across/Telescope';
-import guards from '$lib/utils/guards/index.js';
-import type { TelescopeInstrument } from '$lib/types/across/TelescopeInstrument.js';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import { callApi } from '#lib/utils/across/callApi.js';
+import type { ObservationRequestCreate } from '#lib/types/across/ObservationRequest.js';
+import { resolveObject } from '#lib/utils/across/resolveObject.js';
+import { getTelescopes } from '#lib/utils/across/getTelescopes.js';
+import type { Telescope } from '#lib/types/across/Telescope.js';
+import guards from '#lib/utils/guards/index.js';
+import type { TelescopeInstrument } from '#lib/types/across/TelescopeInstrument.js';
 
 export async function load({ fetch, locals }: RequestEvent) {
     guards.requireUser(locals);
@@ -98,6 +98,7 @@ export const actions = {
                     errorId: err.body.errorId,
                     code: err.body.code,
                     message: err.body.message,
+                    status: err.status,
                 });
             }
 

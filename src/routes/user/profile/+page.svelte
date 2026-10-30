@@ -2,21 +2,20 @@
     import { resolve } from '$app/paths';
     import _ from 'lodash';
     import type { ActionData, PageData } from './$types';
-    import { browser } from '$app/environment';
-    import { frontendAlphaNumRegex } from '$lib/utils/regex/internationalAlphanumericRegex';
-    import { applyAction, enhance } from '$app/forms';
-    import { goto, invalidateAll } from '$app/navigation';
-    import type { SubmitFunction } from '@sveltejs/kit';
+    import { browser } from '$app/env';
+    import { frontendAlphaNumRegex } from '#lib/utils/regex/internationalAlphanumericRegex.js';
+    import { applyAction, enhance, type SubmitFunction } from '$app/forms';
+    import { goto, refreshAll } from '$app/navigation';
     import UserGroups from './_components/UserGroups.svelte';
     import UserGroupInvites from './_components/UserGroupInvites.svelte';
-    import type { UserGroup } from '$lib/types/User/UserGroup';
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
-    import Fieldset from '$lib/components/Fieldset.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
+    import type { UserGroup } from '#lib/types/User/UserGroup.js';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import Fieldset from '#lib/components/Fieldset.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
     import DangerZone from './_components/DangerZone.svelte';
-    import type { ServiceAccountDetail } from '$lib/types/User/ServiceAccountDetail';
-    import ArrowButton from '$lib/components/ArrowButton.svelte';
+    import type { ServiceAccountDetail } from '#lib/types/User/ServiceAccountDetail.js';
+    import ArrowButton from '#lib/components/ArrowButton.svelte';
 
     interface Props {
         form: ActionData;
@@ -81,10 +80,10 @@
         return async ({ result }) => {
             if (result.type === 'success') {
                 // rerun all `load` functions, following the successful update
-                await invalidateAll();
+                await refreshAll();
                 await applyAction(result);
             } else if (result.type === 'redirect') {
-                goto(result.location, { invalidateAll: true, noScroll: true });
+                goto(result.location, { refreshAll: true, reset: false });
             } else {
                 await applyAction(result);
             }
@@ -92,7 +91,7 @@
     };
 
     // Re-seed the editable copy whenever `load` hands us fresh user data (e.g. after a
-    // successful update calls invalidateAll). This replaces the old afterUpdate(), which
+    // successful update calls refreshAll). This replaces the old afterUpdate(), which
     // for `user` was effectively a self-assignment because `user` aliased `data.user`.
     // An $effect is warranted here specifically because we are syncing *editable local
     // state* from an external source; the purely-derived values above use $derived.
@@ -112,8 +111,9 @@
     -->
     {#snippet buttons()}
         <div>
-            <a data-sveltekit-preload-data="false" data-sveltekit-reload href={resolve('/user/logout')} class="btn btn-accent text-xl">
-                <i class="bx bx-door-open-alt opacity-70 me-2"></i>Logout
+            <a data-sveltekit-preload-data="false" data-sveltekit-reload href={resolve('user/logout')} class="btn btn-accent text-xl">
+                <i class="bx bx-door-open-alt opacity-70 me-2"></i>
+                Logout
             </a>
         </div>
     {/snippet}
@@ -191,12 +191,12 @@
     </Section>
 
     <UserGroupInvites {invitations} />
+
     <UserGroups {user} {userGroups} bind:leaveUserGroup {enhancedForm} />
 
-    <Section title="My Service Accounts" icon="server">
-        <ArrowButton href={resolve('/user/service-accounts/')}>Manage Service Accounts</ArrowButton>
-    </Section>
-
+    <Section title="My Service Accounts" icon="server"
+        ><ArrowButton href={resolve('user/service-accounts/')}>Manage Service Accounts</ArrowButton></Section
+    >
     <DangerZone />
 </Page>
 

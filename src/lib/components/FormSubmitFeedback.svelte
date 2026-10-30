@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { page } from '$app/stores';
-    import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
+    import { page } from '$app/state';
+    import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
 
     interface Props {
         action?: string | undefined;
@@ -8,7 +8,7 @@
 
     let { action = undefined }: Props = $props();
 
-    let formData = $derived($page.form as FormSubmitResult | null);
+    let formData = $derived(page.form as FormSubmitResult | null);
     let isMatch = $derived(action ? formData?._action === action : true);
 </script>
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-    import Section from '$lib/components/Section.svelte';
-    import Spinner from '$lib/components/Spinner.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import Spinner from '#lib/components/Spinner.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
 
     const COUNTDOWN_LENGTH = 3;
 

@@ -1,4 +1,4 @@
-import { loggedIn } from '$lib/stores/login.js';
+import { loggedIn } from '#lib/stores/login.js';
 import type { RequestEvent } from './$types';
 
 // client side load function which resets local store state boolean

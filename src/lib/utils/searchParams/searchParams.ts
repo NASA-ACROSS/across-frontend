@@ -93,7 +93,7 @@ const deserializeHandlers = {
 const deserialize = <T>(urlParams: URLSearchParams, paramTypes: ParamTypes<T> = {}): T => {
     return Array.from(urlParams.entries()).reduce((acc, [key, value]) => {
         const name = key as keyof T;
-        const expectedType = (paramTypes[name] ?? 'string') as ParamType;
+        const expectedType = paramTypes[name] ?? 'string';
 
         const handler = deserializeHandlers[expectedType];
         const parsed = handler(value);

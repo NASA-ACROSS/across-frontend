@@ -23,13 +23,12 @@
                 of polygon vertices. Upon data-ingestion, we accept a projected footprint for the instrument's observation FOV.
             </li>
             <li>
-                <strong>Visibility Constraints</strong> — a list of observing constraints (e.g. sun angle, moon angle, Earth limb exclusion)
-                used by the visibility calculator to determine when a target is observable by that instrument.
+                <strong>Visibility Constraints</strong> — a list of observing constraints (e.g. sun angle, moon angle, Earth limb exclusion) used
+                by the visibility calculator to determine when a target is observable by that instrument.
             </li>
             <li>
-                <strong>Bandpass Filters</strong> — a list of filters describing the wavelength, energy, or frequency regimes the instrument
-                can probe, covering both photometric (broadband filters) and spectroscopic (grisms, gratings) modes. Filter ranges are stored
-                in Angstroms.
+                <strong>Bandpass Filters</strong> — a list of filters describing the wavelength, energy, or frequency regimes the instrument can
+                probe, covering both photometric (broadband filters) and spectroscopic (grisms, gratings) modes. Filter ranges are stored in Angstroms.
             </li>
         </ul>
         <div class="bg-base-200 p-4 pb-6 mt-4 text-sm leading-relaxed">

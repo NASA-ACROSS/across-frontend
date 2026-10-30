@@ -30,7 +30,7 @@ describe('searchParams', () => {
             [[1, 2, 3], ['1', '2', '3'], { foo: 'array' }],
             [['red', 'blue', 'green'], ['red', 'blue', 'green'], { foo: 'array' }],
         ])('should serialize an object with %s as %s: "%s"', (value, expected, types) => {
-            const params = searchParams.serialize({ foo: value }, types as ParamTypes<unknown>);
+            const params = searchParams.serialize({ foo: value }, types as ParamTypes<{ foo: unknown }>);
 
             expect(params.getAll('foo')).toStrictEqual(expected);
         });

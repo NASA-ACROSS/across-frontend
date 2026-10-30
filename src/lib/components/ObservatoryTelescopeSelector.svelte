@@ -17,12 +17,12 @@
     // Derive observatories from telescope response
     let seenObservatories = new Set<string>();
     let observatories: TelescopeObservatory[] = telescopes.reduce((telescopes, telescope) => {
-            const obs = telescope.observatory;
-            if (!seenObservatories.has(obs.id)) {
-                seenObservatories.add(obs.id);
-                telescopes.push(obs);
-            }
-            return telescopes;
+        const obs = telescope.observatory;
+        if (!seenObservatories.has(obs.id)) {
+            seenObservatories.add(obs.id);
+            telescopes.push(obs);
+        }
+        return telescopes;
     }, [] as TelescopeObservatory[]);
 
     function mapToOption<T extends { id: string; name: string; short_name: string }>(item: T): Option<T> {
@@ -100,7 +100,7 @@
 
     onMount(() => {
         // Populate observatory/telescope/instrument selection
-        const telescopeIds = data?.queryParams?.telescope_ids as string[] || [] as string[];
+        const telescopeIds = (data?.queryParams?.telescope_ids as string[]) || ([] as string[]);
         if (telescopeIds.length > 0) {
             selectedTelescopes = telescopes.filter((tel) => telescopeIds.includes(tel.id));
 

@@ -25,12 +25,12 @@
     // Derive observatories and instruments from telescope response
     let seenObservatories = new Set<string>();
     let observatories: TelescopeObservatory[] = telescopes.reduce((telescopes, telescope) => {
-            const obs = telescope.observatory;
-            if (!seenObservatories.has(obs.id)) {
-                seenObservatories.add(obs.id);
-                telescopes.push(obs);
-            }
-            return telescopes;
+        const obs = telescope.observatory;
+        if (!seenObservatories.has(obs.id)) {
+            seenObservatories.add(obs.id);
+            telescopes.push(obs);
+        }
+        return telescopes;
     }, [] as TelescopeObservatory[]);
 
     let instruments: TelescopeInstrument[] = telescopes.flatMap((telescope) => telescope.instruments || []);

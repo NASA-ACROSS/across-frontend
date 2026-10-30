@@ -47,7 +47,7 @@ export async function load({ url, fetch }: RequestEvent) {
     const urlColumns = url.searchParams.get('columns')?.split(',') || [];
 
     // Build query params object for the API call
-    const queryParams: ScheduleQueryParams = {} as ScheduleQueryParams;
+    const queryParams: ScheduleQueryParams = {};
 
     // Single value params
     if (url.searchParams.has('external_id')) queryParams.external_id = url.searchParams.get('external_id');

@@ -50,8 +50,8 @@
         <ArrowButton
             href={resolve('user/register')}
             containerClasses="mt-6 text-right justify-self-end mb-10"
-            textClasses="text-sm text-right"
-        >Don't have an account? Register here</ArrowButton>
+            textClasses="text-sm text-right">Don't have an account? Register here</ArrowButton
+        >
 
         <NasaSecurityBanner />
     </Section>

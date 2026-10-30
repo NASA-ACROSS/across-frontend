@@ -38,7 +38,7 @@
         { href: '/about/contributing', label: 'Contributing' },
     ];
 
-    const normalizePath = (path: string) => path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path;
+    const normalizePath = (path: string) => (path.endsWith('/') && path.length > 1 ? path.slice(0, -1) : path);
 
     let currentPath = $state(normalizePath(page.url.pathname));
 

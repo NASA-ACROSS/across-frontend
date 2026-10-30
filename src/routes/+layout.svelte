@@ -26,7 +26,7 @@
             id: 'playground',
             label: 'Playground',
             href: resolve('playground'),
-            localOnly: true
+            localOnly: true,
         },
         {
             id: 'data',
@@ -35,20 +35,20 @@
                 {
                     id: 'schedules',
                     label: 'Schedules',
-                    href: resolve('schedules')
+                    href: resolve('schedules'),
                 },
                 {
                     id: 'observations',
                     label: 'Observations',
-                    href: resolve('observations')
+                    href: resolve('observations'),
                 },
 
                 {
                     id: 'observatories',
                     label: 'Observatories',
-                    href: resolve('observatories')
-                }
-            ]
+                    href: resolve('observatories'),
+                },
+            ],
         },
 
         {
@@ -58,14 +58,14 @@
                 {
                     id: 'data-ingestion-status',
                     label: 'Data Ingestion Status',
-                    href: resolve('ingestion-status')
+                    href: resolve('ingestion-status'),
                 },
                 {
                     id: 'visibility-calculator',
                     label: 'Visibility Calculator',
-                    href: resolve('visibility-calculator')
-                }
-            ]
+                    href: resolve('visibility-calculator'),
+                },
+            ],
         },
         { id: 'about', label: 'About', href: resolve('about') },
         {
@@ -97,10 +97,8 @@
     <USGOVAnalytics />
 {/if}
 
-<main
-    class="min-h-screen m-0 flex flex-col content-between bg-primary"
->
-    <Navigation navItems={navItems} user={data.user} />
+<main class="min-h-screen m-0 flex flex-col content-between bg-primary">
+    <Navigation {navItems} user={data.user} />
     {@render children?.({ testid: 'main-slot' })}
 
     <Footer />

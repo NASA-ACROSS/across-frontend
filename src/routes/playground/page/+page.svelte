@@ -9,12 +9,7 @@
     let showInfo = $state(false);
 </script>
 
-<Page
-    icon="server"
-    title="Page Title"
-    showMenu={showMenu}
-    showInfo={showInfo}
->
+<Page icon="server" title="Page Title" {showMenu} {showInfo}>
     <!-- Toggle buttons for demonstration purposes only -->
     {#snippet buttons()}
         <div class="flex gap-2 items-center">

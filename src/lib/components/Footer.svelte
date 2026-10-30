@@ -4,11 +4,7 @@
 
 <footer class="footer sm:footer-horizontal bg-primary text-primary-content p-10">
     <aside>
-        <img
-            src={asset('assets/img/custom/logo-nasa.svg')}
-            width="75"
-            alt="NASA logo"
-        />
+        <img src={asset('assets/img/custom/logo-nasa.svg')} width="75" alt="NASA logo" />
 
         <p class="my-5">
             National Aeronautics and Space Administration

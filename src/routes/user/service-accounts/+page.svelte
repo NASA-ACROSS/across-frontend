@@ -20,17 +20,11 @@
 <Page title="Manage Service Accounts" icon="pen">
     {#snippet buttons()}
         <div>
-            <a
-                class="btn btn-info text-lg"
-                href={resolve('user/profile')}
-            >← <i class="bx bx-user mx-2"></i>Profile</a>
+            <a class="btn btn-info text-lg" href={resolve('user/profile')}>← <i class="bx bx-user mx-2"></i>Profile</a>
         </div>
     {/snippet}
 
-    <ServiceAccountSecretModal
-        isOpen={serviceAccountSecret !== undefined}
-        bind:serviceAccountSecret
-    />
+    <ServiceAccountSecretModal isOpen={serviceAccountSecret !== undefined} bind:serviceAccountSecret />
 
-    <ServiceAccounts user={user} serviceAccounts={serviceAccounts} />
+    <ServiceAccounts {user} {serviceAccounts} />
 </Page>

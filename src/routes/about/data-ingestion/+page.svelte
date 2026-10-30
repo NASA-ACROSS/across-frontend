@@ -30,10 +30,10 @@
         <p class="leading-relaxed">
             A major caveat to how this is done is that if a given schedule is updated in-between cron tasks, there is a chance that the data
             repository might not capture that update. When a schedule is ingested, a <code class="bg-base-200 px-1 text-sm">checksum</code>
-            is generated based on common schedule metadata (date-range, status, type, telescope id, etc.). When a schedule is submitted, the
-            checksum ensures that the same schedule isn't duplicated. Note that this means older versions of a schedule are
-            <strong>retained</strong> — previously ingested schedules are not deleted when a newer version is added, preserving a historical
-            record of how schedules have changed over time.
+            is generated based on common schedule metadata (date-range, status, type, telescope id, etc.). When a schedule is submitted, the checksum
+            ensures that the same schedule isn't duplicated. Note that this means older versions of a schedule are
+            <strong>retained</strong> — previously ingested schedules are not deleted when a newer version is added, preserving a historical record
+            of how schedules have changed over time.
         </p>
         <div class="alert alert-warning alert-soft text-sm">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">

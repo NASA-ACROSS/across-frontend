@@ -24,16 +24,18 @@
 
     // Derive observatories and instruments from telescope response
     let seenObservatories = new Set<string>();
-    let observatories: TelescopeObservatory[] = telescopes.reduce((telescopes, telescope) => {
+    let observatories: TelescopeObservatory[] = $derived(
+        telescopes.reduce((telescopes, telescope) => {
             const obs = telescope.observatory;
             if (!seenObservatories.has(obs.id)) {
                 seenObservatories.add(obs.id);
                 telescopes.push(obs);
             }
             return telescopes;
-    }, [] as TelescopeObservatory[]);
+        }, [] as TelescopeObservatory[])
+    );
 
-    let instruments: TelescopeInstrument[] = telescopes.flatMap((telescope) => telescope.instruments || []);
+    let instruments: TelescopeInstrument[] = $derived(telescopes.flatMap((telescope) => telescope.instruments || []));
 
     function mapToOption<T extends { id: string; name: string; short_name: string }>(item: T): Option<T> {
         return {

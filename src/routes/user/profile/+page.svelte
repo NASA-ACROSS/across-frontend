@@ -22,7 +22,7 @@
         data: PageData;
     }
 
-    let { form, data }: Props = $props();
+    let { data }: Props = $props();
 
     let leaveUserGroup: UserGroup | undefined = $state();
 
@@ -32,8 +32,8 @@
     // has to be real $state rather than a $derived view of `data.user`. It is cloned so
     // editing the form no longer mutates the load data in place (which is what the old
     // `let user = data.user` alias did).
-    let originalUserData = $state(structuredClone(data.user));
-    let user = $state(structuredClone(data.user));
+    let originalUserData = $derived(structuredClone(data.user));
+    let user = $derived(structuredClone(data.user));
     let isUserDataUnchanged = $derived(_.isEqual(originalUserData, user));
 
     // safari browser should force a reload on cached navigation using back button

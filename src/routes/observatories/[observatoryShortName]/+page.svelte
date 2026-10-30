@@ -11,11 +11,8 @@
 
     const EXCLUDED_FILTER_PROPERTIES = ['reference_url'];
 
-    let observatory = $state(data.observatory);
-    let telescopes = data.telescopes;
-
-    // sort the ephemeris_types for display in order of priority
-    observatory.ephemeris_types = observatory.ephemeris_types.sort((a, b) => a.priority - b.priority);
+    let observatory = $derived(data.observatory);
+    let telescopes = $derived(data.telescopes);
 </script>
 
 <Page title="Observatory Metadata" icon="database">

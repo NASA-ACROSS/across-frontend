@@ -69,11 +69,8 @@
 <Page title="Edit Service Account" icon="edit">
     {#snippet buttons()}
         <div>
-            <a
-                class="btn btn-info text-lg"
-                href={resolve('user/service-accounts')}
-            >
-                ← 
+            <a class="btn btn-info text-lg" href={resolve('user/service-accounts')}>
+                ←
                 <i class="bx bx-pen mx-2"></i>
                 Manage Service Accounts
             </a>
@@ -150,7 +147,7 @@
                         type="submit"
                         class="btn text-lg self-end {`${isServiceAccountExpired ? 'btn-warning' : 'btn-info'}`}"
                         disabled={!isServiceAccountExpired && disableUpdate}
-                        onclick={() => isUpdating = true}
+                        onclick={() => (isUpdating = true)}
                     >
                         {#if !isUpdating}
                             Update {`${isServiceAccountExpired ? ' And Restore' : ''}`}

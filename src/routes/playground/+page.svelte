@@ -87,5 +87,5 @@
         </form>
     </Section>
 
-    <Section title="Error Handling"><ErrorHandling form={form} /></Section>
+    <Section title="Error Handling"><ErrorHandling {form} /></Section>
 </Page>

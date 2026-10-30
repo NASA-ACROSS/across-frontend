@@ -3,7 +3,13 @@
  *
  * PUBLIC_BUILD_VERSION=local npm run build
  */
-import { PUBLIC_BUILD_VERSION, PUBLIC_RUNTIME_ENV, PUBLIC_DEFAULT_LOG_LEVEL, PUBLIC_PRETTY_LOGS } from '$app/env/public';
+import {
+    PUBLIC_BUILD_VERSION,
+    PUBLIC_RUNTIME_ENV,
+    PUBLIC_DEFAULT_LOG_LEVEL,
+    PUBLIC_PRETTY_LOGS,
+    PUBLIC_DEFAULT_PAGE_LIMIT,
+} from '$app/env/public';
 
 import { type Level } from 'pino';
 
@@ -37,7 +43,7 @@ class PublicConfiguration {
     public DEFAULT_LOG_LEVEL: Level = (PUBLIC_DEFAULT_LOG_LEVEL as Level) || 'debug';
     public PRETTY_LOGS: number = PUBLIC_PRETTY_LOGS ? parseInt(PUBLIC_PRETTY_LOGS) : 0;
 
-    public DEFAULT_PAGE_LIMIT: number = env.PUBLIC_DEFAULT_PAGE_LIMIT ? Number(env.PUBLIC_DEFAULT_PAGE_LIMIT) : 100;
+    public DEFAULT_PAGE_LIMIT: number = PUBLIC_DEFAULT_PAGE_LIMIT ? Number(PUBLIC_DEFAULT_PAGE_LIMIT) : 100;
 }
 
 export const PUBLIC_CONFIG = new PublicConfiguration();

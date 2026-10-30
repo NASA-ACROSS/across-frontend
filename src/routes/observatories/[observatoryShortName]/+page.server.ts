@@ -19,6 +19,8 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 
     // pull the first observatory since there is only one per name. (as of writing this)
     const observatory: Observatory = observatories[0];
+    // ensure ephemeris types are sorted by priority for consistent display
+    observatory.ephemeris_types = observatory.ephemeris_types.sort((a, b) => a.priority - b.priority);
 
     const telescopes = await getTelescopes(fetch, {
         observatory_id: observatory.id,

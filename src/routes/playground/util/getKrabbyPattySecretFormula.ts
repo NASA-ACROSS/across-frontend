@@ -1,5 +1,4 @@
-import { callApi } from '#lib/utils/across/callApi.js';
-import type { AcrossApiErrorResponseBody } from '#lib/types/error/AcrossApiErrorResponseBody.js';
+import { callApi } from '#lib/utils/across/callApi.ts';
 
 const mappedErrors: Record<number, string> = {
     401: "You're definitely not Mr. Krabs.",
@@ -58,7 +57,7 @@ const overrideFetch: typeof window.fetch = (input: RequestInfo | URL): Promise<R
         case 500:
             const errorMsg = mappedErrors[status];
             return Promise.resolve(
-                new Response(JSON.stringify({ detail: errorMsg } as AcrossApiErrorResponseBody), {
+                new Response(JSON.stringify({ detail: errorMsg }), {
                     status,
                     headers: { 'Content-Type': 'application/json' },
                 })

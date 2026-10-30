@@ -3,15 +3,19 @@ import { PrivateConfiguration } from './config';
 
 const fakeEnv = vi.hoisted(() => ({
     ACROSS_SERVER_HOST: 'http://mockserver-host',
-    ACROSS_SERVER_PORT: 8000,
+    ACROSS_SERVER_PORT: '8000',
     ACROSS_SERVER_DOCS_HOST: 'https://public-facing-host',
     ACROSS_SERVER_ROOT_PATH: '/across/api',
     ACROSS_SERVER_VERSION: '/v1',
 }));
 
-vi.mock('$env/dynamic/private', () => ({
-    env: fakeEnv,
-}));
+vi.mock(import('$app/env/private'), async (importOriginal) => {
+    const actual = await importOriginal();
+    return Object.assign(fakeEnv, {
+        ...actual,
+        ...fakeEnv,
+    });
+});
 
 describe('PrivateConfiguration', () => {
     describe('ACROSS_SERVER_DOCS_URL', () => {
@@ -38,7 +42,7 @@ describe('PrivateConfiguration', () => {
     describe('ACROSS_SERVER_URL', () => {
         it.beforeEach(() => {
             fakeEnv.ACROSS_SERVER_HOST = 'http://mockserver-host';
-            fakeEnv.ACROSS_SERVER_PORT = 8000;
+            fakeEnv.ACROSS_SERVER_PORT = '8000';
         });
         it('should add the port when the server is not local', () => {
             const config = new PrivateConfiguration();

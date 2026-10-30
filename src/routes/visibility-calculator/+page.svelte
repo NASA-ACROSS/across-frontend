@@ -32,16 +32,16 @@
     let selectedInstruments: TelescopeInstrument[] = $state([]);
 
     // Coordinate inputs
-    let ra = $state(String(data.queryParams?.ra || ''));
-    let dec = $state(String(data.queryParams?.dec || ''));
+    let ra = $derived(String(data.queryParams?.ra || ''));
+    let dec = $derived(String(data.queryParams?.dec || ''));
 
     // Date range inputs
-    let dateRangeBegin = $state(data.queryParams?.date_range_begin || '');
-    let dateRangeEnd = $state(data.queryParams?.date_range_end || '');
+    let dateRangeBegin = $derived(data.queryParams?.date_range_begin || '');
+    let dateRangeEnd = $derived(data.queryParams?.date_range_end || '');
 
     // Optional parameters
-    let hiRes = $state(data.queryParams?.hi_res || false);
-    let minVisibilityDuration = $state(String(data.queryParams?.min_visibility_duration || ''));
+    let hiRes = $derived(data.queryParams?.hi_res || false);
+    let minVisibilityDuration = $derived(String(data.queryParams?.min_visibility_duration || ''));
 
     let qps = $derived([ra, dec, dateRangeBegin, dateRangeEnd, selectedInstruments, hiRes, minVisibilityDuration]);
 

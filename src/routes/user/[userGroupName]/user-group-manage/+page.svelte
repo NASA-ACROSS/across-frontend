@@ -42,23 +42,20 @@
     -->
     {#snippet buttons()}
         <div>
-            <a
-                class="btn btn-info text-lg"
-                href={resolve('user/profile')}
-            >← <i class="bx bx-user mx-2"></i>Profile</a>
+            <a class="btn btn-info text-lg" href={resolve('user/profile')}>← <i class="bx bx-user mx-2"></i>Profile</a>
         </div>
     {/snippet}
 
-    <InviteUser group={group} form={form} />
-    <InvitedUsers invitedUsers={invitedUsers} />
+    <InviteUser {group} {form} />
+    <InvitedUsers {invitedUsers} />
 
     <Section title="User Role Management" icon="shield-quarter">
         <div class="flex gap-5">
-            <GroupUsers users={users} bind:selectedUserId />
+            <GroupUsers {users} bind:selectedUserId />
 
-            <UserDetailCard selectedUser={selectedUser} group={group} />
+            <UserDetailCard {selectedUser} {group} />
 
-            <AssignRole user={selectedUser} group={group} />
+            <AssignRole user={selectedUser} {group} />
         </div>
     </Section>
 </Page>

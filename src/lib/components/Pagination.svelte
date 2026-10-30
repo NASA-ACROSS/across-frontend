@@ -17,7 +17,7 @@
         last: '>>',
     };
 
-    let { currentPage = 1, totalPages = 1, numButtons = 4, searchParams }: Props = $props();
+    let { id = '', currentPage = 1, totalPages = 1, numButtons = 4, searchParams }: Props = $props();
 
     // Track if we're currently navigating
     let isLoading = $state(false);
@@ -36,15 +36,17 @@
     });
 
     // Make all hrefs reactive to searchParams, currentPage, and totalPages changes
-    const firstPageHref = buildHref(1, searchParams);
-    const prevPageHref = buildHref(currentPage - 1, searchParams);
-    const nextPageHref = buildHref(currentPage + 1, searchParams);
-    const lastPageHref = buildHref(totalPages, searchParams);
-    const pagesArray = createPagesArray(currentPage, totalPages, numButtons);
-    const pageHrefs = pagesArray.map((pageNum) => ({
-        pageNum,
-        href: buildHref(pageNum, searchParams),
-    }));
+    const firstPageHref = $derived(buildHref(1, searchParams));
+    const prevPageHref = $derived(buildHref(currentPage - 1, searchParams));
+    const nextPageHref = $derived(buildHref(currentPage + 1, searchParams));
+    const lastPageHref = $derived(buildHref(totalPages, searchParams));
+    const pagesArray = $derived(createPagesArray(currentPage, totalPages, numButtons));
+    const pageHrefs = $derived(
+        pagesArray.map((pageNum) => ({
+            pageNum,
+            href: buildHref(pageNum, searchParams),
+        }))
+    );
 
     function buildHref(newPage: number, params: URLSearchParams): string {
         const newParams = new URLSearchParams(params);

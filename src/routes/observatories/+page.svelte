@@ -6,7 +6,7 @@
 
     let { data } = $props();
 
-    let observatories = data.observatories;
+    let observatories = $derived(data.observatories);
 </script>
 
 <Page showInfo={true} showMenu={true} title="Observatories" icon="satellite-dish">

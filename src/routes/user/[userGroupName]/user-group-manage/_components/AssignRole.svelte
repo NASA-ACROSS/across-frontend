@@ -13,7 +13,7 @@
     }
 
     let { user, group }: Props = $props();
-    let roles: GroupRole[] = group.roles;
+    let roles: GroupRole[] = $derived(group.roles);
     // Svelte 5 migration: `$state()` with no argument is `undefined` until assigned,
     // and svelte-check 4 now types that honestly (`export let` used to launder it). The
     // annotation has to admit undefined; use sites guard with `?.`.

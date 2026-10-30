@@ -24,6 +24,7 @@ export default defineConfig({
 
             // poll every minute checking for new version, fixes buggy navigation see: https://kit.svelte.dev/docs/configuration#version
             version: { pollInterval: 60000 },
+            csrf: { trustedOrigins: ['https://science-dev.data.nasa.gov', 'https://science.data.nasa.gov'] },
         }),
         tailwindcss(),
     ],

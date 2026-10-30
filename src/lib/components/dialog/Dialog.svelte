@@ -36,7 +36,7 @@
     // annotation has to admit undefined; use sites guard with `?.`.
     let dialog: HTMLDialogElement | undefined = $state();
     let timeout: ReturnType<typeof setTimeout> | undefined = undefined;
-    let countdownRemaining = $state(confirmDelaySeconds ?? 0);
+    let countdownRemaining = $derived(confirmDelaySeconds ?? 0);
 
     // Tailwind doesn't support dynamic class names (they must be defined statically
     // somewhere in the project), so we have to map the colors manually.
@@ -111,7 +111,7 @@
 
             <!-- close button -->
             <div class="flex flex-end">
-                <button class="btn btn-xs btn-ghost" onclick={close} disabled={isConfirmDisabled}>
+                <button class="btn btn-xs btn-ghost" onclick={close} disabled={isConfirmDisabled} aria-label="close">
                     <i class="text-2xl bx bx-x h-max"></i>
                 </button>
             </div>

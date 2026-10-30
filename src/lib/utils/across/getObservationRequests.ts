@@ -12,7 +12,7 @@ export const getObservationRequests = async (
     fetch: typeof window.fetch,
     params?: GetObservationRequestParams
 ): Promise<Paginate<ObservationRequest>> => {
-    const path = '/observation-request/';
+    const path = '/observation-request';
     const qp = searchParams.serialize(params, { ids: 'array' });
     const route = `${qp.toString() ? `${path}?${qp}` : path}`;
 

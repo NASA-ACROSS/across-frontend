@@ -31,26 +31,17 @@
         }, [] as Telescope[])
     );
 
-    let versionsById: Version[] | undefined = $derived(
-        versions
-            ?.reduce((versions: { id: any; created_on: any }[], currentVersion: { id: any; created_on: any }) => {
-                // upcoming change to server will send version objects in this shape, using python snake case to reduce changes downstream later
-                const simpleVersion = { id: currentVersion.id, created_on: currentVersion.created_on };
-                versions.push(simpleVersion);
-                return versions;
-            }, [] as Version[])
-            // add the current version, can be removed when server sends current in versions list
-            .concat({ id: obsReq.id, created_on: obsReq.created_on })
-            // sort by created_on desc, can be removed when server sends versions in descending order
-            .sort((a, b) => (a.created_on > b.created_on ? -1 : 1))
-    );
-
     // fallback for rendering the option list
-    let currentVersion = $derived({ id: obsReq.id, number: 1, created_on: obsReq.created_on });
+    let currentVersion: Version = $derived({
+        id: obsReq.id,
+        number: 1,
+        created_on: obsReq.created_on,
+        modified_on: obsReq.modified_on || '',
+    });
 
     let numberedVersions = $derived(
-        versionsById?.map((version, index) => {
-            version.number = versionsById!.length - index;
+        versions?.map((version, index) => {
+            version.number = versions!.length - index;
             return version;
         }) || [currentVersion]
     );
@@ -97,7 +88,7 @@
                 <option value="" selected disabled hidden>No Revisions</option>
                 {#each numberedVersions as option}
                     <option value={option.id}>
-                        {`Rev ${option.number} - ${prettyUTC(option.created_on)}`}
+                        {`Rev ${option.number} - ${prettyUTC(option.modified_on ?? option.created_on)}`}
                     </option>
                 {/each}
             </select>

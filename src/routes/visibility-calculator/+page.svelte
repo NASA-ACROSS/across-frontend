@@ -15,6 +15,7 @@
     import type { SubmitFunction } from '@sveltejs/kit';
     import searchParams from '$lib/utils/searchParams/searchParams';
     import { type VisibilityWindow } from '$lib/types/across/VisibilityWindow';
+    import Alert from '$lib/components/Alert.svelte';
 
     interface Props {
         data: JointVisibilityPageData;
@@ -121,7 +122,17 @@
     }
 </script>
 
-<Page title="Joint Visibility Calculator" icon="calendar">
+{#snippet VisCalcAlert()}
+    <Alert id="vis-calc-alert" vertical type="warning" soft={false}>
+        <p>
+            These visibility windows are calculated based on publicly available ephemerides and observatory constraints. As a result, they
+            are rough estimates and will not perfectly reflect the target visibility for each observatory. For detailed visibility windows,
+            we recommend visiting the observatory website or requesting information from the individual science teams.
+        </p>
+    </Alert>
+{/snippet}
+
+<Page title="Joint Visibility Calculator" icon="calendar" alert={VisCalcAlert}>
     <Section>
         <div class="lg:w-5/6 xl:w-3/4 self-center">
             <form method="POST" use:enhance={calculateVisibility} action="?/calculateVisibilityWindows">

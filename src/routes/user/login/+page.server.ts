@@ -11,6 +11,7 @@ import logger from '$lib/logger';
 import { callApi } from '$lib/utils/across/callApi';
 import HTTP_CODES from '$lib/utils/HttpCodes';
 import { type MagicLinkDTO } from '$lib/types/auth/MagicLinkDTO';
+import { verifyCaptcha } from '$lib/utils/altcha/verifyCaptcha';
 
 type LoginResult = FormSubmitResult & {
     email?: string;
@@ -40,6 +41,11 @@ const limiter = new RetryAfterRateLimiter({
 export const actions = {
     default: async (event: RequestEvent): Promise<LoginResult | ActionFailure<FormSubmitResult>> => {
         const { request, fetch } = event;
+
+        // Check the captcha before any other work.
+        const captchaFailure = await verifyCaptcha(event, '/login');
+        if (captchaFailure) return captchaFailure;
+
         clearAuth(event);
 
         const data = await request.formData();

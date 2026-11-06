@@ -10,12 +10,24 @@ process.loadEnvFile('.env.test');
 
 export default defineConfig({
     globalSetup: './tests/integration/globalSetup.ts',
-    webServer: {
-        command: 'npm run build && npm run preview',
-        port: 4173,
-        stdout: Number(process.env.DEBUG) ? 'pipe' : 'ignore',
-        stderr: Number(process.env.DEBUG) ? 'pipe' : 'ignore',
-    },
+    webServer: [
+        {
+            command: 'npm run build && npm run preview',
+            port: 4173,
+            stdout: Number(process.env.DEBUG) ? 'pipe' : 'ignore',
+            stderr: Number(process.env.DEBUG) ? 'pipe' : 'ignore',
+        },
+        // Same build in local mode, for pages behind localOnlyRoute().
+        {
+            command: 'npm run preview -- --port 4174 --strictPort',
+            url: 'http://localhost:4174',
+            env: { PUBLIC_RUNTIME_ENV: 'local' },
+            stdout: Number(process.env.DEBUG) ? 'pipe' : 'ignore',
+            stderr: Number(process.env.DEBUG) ? 'pipe' : 'ignore',
+        },
+    ],
+    // Playwright only infers baseURL from a single web server.
+    use: { baseURL: 'http://localhost:4173' },
     testDir: 'tests',
     testMatch: /(.+\.)?(test|spec)\.[jt]s/,
     fullyParallel: true,

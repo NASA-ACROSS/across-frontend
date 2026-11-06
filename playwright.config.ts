@@ -11,7 +11,7 @@ process.loadEnvFile('.env.test');
 export default defineConfig({
     globalSetup: './tests/integration/globalSetup.ts',
     webServer: {
-        command: 'npm run build && npm run preview',
+        command: 'npm run build  && npm run preview',
         port: 4173,
         stdout: Number(process.env.DEBUG) ? 'pipe' : 'ignore',
         stderr: Number(process.env.DEBUG) ? 'pipe' : 'ignore',

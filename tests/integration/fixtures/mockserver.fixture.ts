@@ -1,6 +1,6 @@
 import { test as base, expect } from '@playwright/test';
 import { mockServerClient, type MockServerClient } from 'mockserver-client';
-import type { Paginate } from '$lib/types/Paginate';
+import type { Paginate } from '../../../src/lib/types/Paginate';
 
 type MockHttpOptions = {
     /** @default 'GET' */

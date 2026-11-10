@@ -1,12 +1,11 @@
 <script lang="ts">
-    import { applyAction, enhance } from '$app/forms';
-    import { goto, invalidateAll } from '$app/navigation';
-    import type { GroupUser } from '$lib/types/User/GroupUser';
-    import type { GroupRole } from '$lib/types/User/GroupRole';
-    import type { SubmitFunction } from '@sveltejs/kit';
-    import type { UserGroup } from '$lib/types/User/UserGroup';
-    import Spinner from '$lib/components/Spinner.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
+    import { applyAction, enhance, type SubmitFunction } from '$app/forms';
+    import { goto, refreshAll } from '$app/navigation';
+    import type { GroupUser } from '#lib/types/User/GroupUser.js';
+    import type { GroupRole } from '#lib/types/User/GroupRole.js';
+    import type { UserGroup } from '#lib/types/User/UserGroup.js';
+    import Spinner from '#lib/components/Spinner.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
 
     interface Props {
         user: GroupUser | undefined;
@@ -14,7 +13,7 @@
     }
 
     let { user, group }: Props = $props();
-    let roles: GroupRole[] = group.roles;
+    let roles: GroupRole[] = $derived(group.roles);
     // Svelte 5 migration: `$state()` with no argument is `undefined` until assigned,
     // and svelte-check 4 now types that honestly (`export let` used to launder it). The
     // annotation has to admit undefined; use sites guard with `?.`.
@@ -49,10 +48,10 @@
             isAssigningRole = false;
             if (result.status === 200) {
                 // rerun all `load` functions, following the successful update
-                await invalidateAll();
+                await refreshAll();
                 await applyAction(result);
             } else if (result.type === 'redirect') {
-                goto(result.location, { invalidateAll: true, noScroll: true });
+                goto(result.location, { refreshAll: true, reset: false });
             } else {
                 await applyAction(result);
             }

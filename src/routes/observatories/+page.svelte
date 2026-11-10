@@ -1,12 +1,12 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
-    import ArrowButton from '$lib/components/ArrowButton.svelte';
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
+    import ArrowButton from '#lib/components/ArrowButton.svelte';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
 
     let { data } = $props();
 
-    let observatories = data.observatories;
+    let observatories = $derived(data.observatories);
 </script>
 
 <Page showInfo={true} showMenu={true} title="Observatories" icon="satellite-dish">

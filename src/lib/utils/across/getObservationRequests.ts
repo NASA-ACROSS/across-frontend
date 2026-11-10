@@ -1,5 +1,5 @@
-import type { ObservationRequest } from '$lib/types/across/ObservationRequest';
-import type { Paginate } from '$lib/types/Paginate';
+import type { ObservationRequest } from '#lib/types/across/ObservationRequest.js';
+import type { Paginate } from '#lib/types/Paginate.js';
 import searchParams from '../searchParams/searchParams';
 import { callApi } from './callApi';
 

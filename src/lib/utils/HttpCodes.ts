@@ -4,9 +4,11 @@ export default {
     403: 'FORBIDDEN',
     404: 'NOT_FOUND',
     409: 'CONFLICT',
+    418: 'I_AM_A_TEAPOT',
     422: 'UNPROCESSABLE_ENTITY',
     429: 'TOO_MANY_REQUESTS',
     500: 'INTERNAL_SERVER_ERROR',
+    501: 'NOT_IMPLEMENTED',
     503: 'SERVICE_UNAVAILABLE',
     0: 'UNKNOWN_ERROR',
 } as Record<number, string>;

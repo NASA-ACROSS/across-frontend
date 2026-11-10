@@ -1,7 +1,7 @@
 <script lang="ts">
     import { afterNavigate } from '$app/navigation';
     import { page } from '$app/state';
-    import Page from '$lib/components/Page.svelte';
+    import Page from '#lib/components/Page.svelte';
     import type { Snippet } from 'svelte';
 
     interface Props {
@@ -42,7 +42,9 @@
 
     let currentPath = $state(normalizePath(page.url.pathname));
 
-    afterNavigate(() => {
+    afterNavigate(({ shallow, type }) => {
+        if (shallow && type === 'goto') return;
+
         currentPath = normalizePath(page.url.pathname);
     });
 </script>

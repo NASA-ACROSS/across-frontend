@@ -1,13 +1,13 @@
 <script lang="ts">
-    import Page from '$lib/components/Page.svelte';
-    import Section from '$lib/components/Section.svelte';
-    import type { Observatory } from '$lib/types/across/Observatory';
-    import type { TelescopeDict } from '$lib/types/across/Telescope';
+    import Page from '#lib/components/Page.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import type { Observatory } from '#lib/types/across/Observatory.js';
+    import type { TelescopeDict } from '#lib/types/across/Telescope.js';
     import { DateTime } from 'luxon';
     import type { PageData } from './$types';
     import { CronExpressionParser } from 'cron-parser';
     import cronstrue from 'cronstrue';
-    import ScheduleStatusBadge from '$lib/components/ScheduleStatusBadge.svelte';
+    import ScheduleStatusBadge from '#lib/components/ScheduleStatusBadge.svelte';
 
     interface Props {
         data: PageData;

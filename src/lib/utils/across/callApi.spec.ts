@@ -1,12 +1,12 @@
-import logger from '$lib/logger';
+import logger from '#lib/logger/index.js';
 import { error } from '@sveltejs/kit';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { callApi } from './callApi';
-import { HTTP_CODES } from '$lib';
+import { HTTP_CODES } from '#lib';
 
 const mockFetch = vi.fn();
 
-vi.mock('$lib/logger', () => {
+vi.mock('#lib/logger/index.js', () => {
     return {
         default: {
             warn: vi.fn(),
@@ -24,7 +24,7 @@ vi.mock('@sveltejs/kit', () => {
     };
 });
 
-vi.mock('$config/config', () => {
+vi.mock('#config', () => {
     return {
         CONFIG: {
             ACROSS_SERVER_URL: 'http://across-server.test',
@@ -42,7 +42,7 @@ const getFakeResponse = <T>({ ok, status, body }: { ok: boolean; status: number;
         res.text = vi.fn().mockResolvedValue(JSON.stringify(body));
         res.json = vi.fn().mockResolvedValue(body);
     } else {
-        res.text = vi.fn().mockResolvedValue(body as string);
+        res.text = vi.fn().mockResolvedValue(body);
         res.json = vi.fn().mockRejectedValue(new Error('Invalid JSON'));
     }
 
@@ -87,7 +87,7 @@ describe('callApi', () => {
                 ok: false,
                 status: 500,
                 body: { detail: 'Internal server error' },
-            }) as unknown as Response
+            })
         );
 
         await expect(
@@ -113,8 +113,7 @@ describe('callApi', () => {
             method: 'POST',
         }).catch(() => {});
 
-        expect(error).toHaveBeenCalledWith(400, {
-            message: 'Bad request from ACROSS API',
+        expect(error).toHaveBeenCalledWith(400, 'Bad request from ACROSS API', {
             code: 'BAD_REQUEST',
             errorId: 'existing-error-id',
         });
@@ -143,7 +142,7 @@ describe('callApi', () => {
         mockFetch.mockResolvedValue(
             getFakeResponse({
                 ok: false,
-                status: 418,
+                status: 999,
                 body: {},
             })
         );
@@ -152,8 +151,7 @@ describe('callApi', () => {
             method: 'GET',
         }).catch(() => {});
 
-        expect(error).toHaveBeenCalledWith(418, {
-            message: expect.stringContaining('unknown') as string,
+        expect(error).toHaveBeenCalledWith(999, expect.stringContaining('unknown') as string, {
             code: 'UNKNOWN_ERROR',
             errorId: fakeGeneratedId,
         });
@@ -174,8 +172,7 @@ describe('callApi', () => {
             method: 'GET',
         }).catch(() => {});
 
-        expect(error).toHaveBeenCalledWith(500, {
-            message: responseText,
+        expect(error).toHaveBeenCalledWith(500, responseText, {
             code: 'INTERNAL_SERVER_ERROR',
             errorId: fakeGeneratedId,
         });
@@ -218,14 +215,13 @@ describe('callApi', () => {
 
         expect(logger.error).toHaveBeenCalledWith(
             expect.objectContaining({
-                msg: 'ACROSS API request failed',
-                url: new URL('http://across-server.test/test'),
-                options: { method: 'POST' },
-                status: 400,
-                errorBody: {
-                    message: 'This is the parsed error message from the response.',
+                msg: responseBody.detail,
+                request: { url: new URL('http://across-server.test/test'), method: 'POST' },
+                error: {
+                    message: responseBody.detail,
                     code: HTTP_CODES[400],
                     errorId: 'existing-error-id',
+                    status: 400,
                 },
             })
         );

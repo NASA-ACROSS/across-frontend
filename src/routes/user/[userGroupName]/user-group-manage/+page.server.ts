@@ -2,14 +2,14 @@ import type { PageServerLoad, RequestEvent } from './$types';
 import { fail, isHttpError, redirect, type ActionFailure } from '@sveltejs/kit';
 
 import { resolve } from '$app/paths';
-import { getUserInfo } from '$lib/utils/user/getUserInfo';
-import { getInvitedUsers } from '$lib/utils/manage/getInvitedUsers';
-import { getGroupData } from '$lib/utils/manage/getGroupData';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import { isAdmin } from '$lib/utils/user/isAdmin';
-import guards from '$lib/utils/guards';
-import logger from '$lib/logger';
-import { callApi } from '$lib/utils/across/callApi';
+import { getUserInfo } from '#lib/utils/user/getUserInfo.js';
+import { getInvitedUsers } from '#lib/utils/manage/getInvitedUsers.js';
+import { getGroupData } from '#lib/utils/manage/getGroupData.js';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import { isAdmin } from '#lib/utils/user/isAdmin.js';
+import guards from '#lib/utils/guards/index.js';
+import logger from '#lib/logger/index.js';
+import { callApi } from '#lib/utils/across/callApi.js';
 
 export const load: PageServerLoad = async ({ locals, params, fetch }) => {
     guards.localOnlyRoute();
@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
 
     // redirect if we don't have necessary info or user lacks permission
     if (!user || !userGroup || !isAdmin(user, userGroup)) {
-        redirect(302, resolve('/user/profile'));
+        redirect(302, resolve('user/profile'));
     }
 
     const invitedUsers = await getInvitedUsers(fetch, userGroup.id);
@@ -74,6 +74,7 @@ export const actions = {
                         _action: 'inviteUser',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 } else {
                     return fail(err.status, {
@@ -82,6 +83,7 @@ export const actions = {
                         _action: 'inviteUser',
                         errorId: err.body.errorId,
                         code: err.body.code,
+                        status: err.status,
                     });
                 }
             }
@@ -115,6 +117,7 @@ export const actions = {
                     _action: 'deleteInvite',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
 
@@ -147,6 +150,7 @@ export const actions = {
                     _action: 'removeUser',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
 
@@ -180,6 +184,7 @@ export const actions = {
                     _action: 'assignRole',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
 
@@ -213,6 +218,7 @@ export const actions = {
                     _action: 'removeRole',
                     errorId: err.body.errorId,
                     code: err.body.code,
+                    status: err.status,
                 });
             }
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-    import ArrowButton from '$lib/components/ArrowButton.svelte';
-    import type { GroupUser } from '$lib/types/User/GroupUser';
+    import ArrowButton from '#lib/components/ArrowButton.svelte';
+    import type { GroupUser } from '#lib/types/User/GroupUser.js';
 
     // Svelte 5 migration: this used to bind the selected `GroupUser` *object* and
     // compare it by reference (`selectedUser == user`). That is precisely why the parent

@@ -8,4 +8,5 @@ function isErrorWithCause(error: unknown): error is ErrorWithCause {
 
 export function getErrorCause(error: unknown) {
     if (isErrorWithCause(error)) return error.cause || 'unknown cause';
+    else if (error instanceof Error) return error.message;
 }

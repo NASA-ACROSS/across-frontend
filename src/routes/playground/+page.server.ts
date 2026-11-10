@@ -1,9 +1,9 @@
-import guards from '$lib/utils/guards';
-import logger from '$lib/logger';
+import guards from '#lib/utils/guards/index.ts';
+import logger from '#lib/logger/index.ts';
 import { fail, type ActionFailure, type RequestEvent, isHttpError } from '@sveltejs/kit';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import searchParams from '$lib/utils/searchParams/searchParams';
-import HTTP_CODES from '$lib/utils/HttpCodes';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.ts';
+import searchParams from '#lib/utils/searchParams/searchParams.ts';
+import HTTP_CODES from '#lib/utils/HttpCodes.ts';
 import { getKrabbyPattySecretFormula } from './util/getKrabbyPattySecretFormula';
 
 const userFriendlyErrors: Record<number, string> = {
@@ -26,7 +26,9 @@ export const actions = {
         logger.debug({ msg: 'Debug log in Component Playground server page', foo: 'bar' });
         logger.info({ msg: 'Info log in Component Playground server page', foo: 'bar' });
         logger.warn({ msg: 'Warning log in Component Playground server page', foo: 'bar' });
-        logger.error({ foo: 'bar', err: new Error('This is a test error') }, 'Override server error message');
+        logger.error({ foo: 'bar', err: new Error('Error message is both log message and error.message') });
+        logger.error({ msg: 'this log msg Overrides error.message', foo: 'bar', err: new Error('This is a test error.message') });
+        logger.error({ foo: 'bar', err: new Error('This is a test error.message') }, 'second arg message overrides error.message');
 
         const childLogger = logger.child({ context: 'logTest' });
         childLogger.info({ msg: 'Info child log in Component Playground server page', fizz: 'buzz' });
@@ -54,6 +56,7 @@ export const actions = {
                     _action: 'mockFormSubmitFeedback',
                     errorId: crypto.randomUUID(),
                     code: HTTP_CODES[400],
+                    status: 400,
                 });
             default:
                 return fail(400, {
@@ -62,6 +65,7 @@ export const actions = {
                     _action: 'mockFormSubmitFeedback',
                     errorId: crypto.randomUUID(),
                     code: HTTP_CODES[400],
+                    status: 400,
                 });
         }
     },
@@ -85,6 +89,7 @@ export const actions = {
                 message: "That's not a valid status code or failure type. Pick one and try again.",
                 errorId: crypto.randomUUID(),
                 code: HTTP_CODES[400],
+                status: 400,
             });
         }
 
@@ -95,13 +100,13 @@ export const actions = {
 
             logger.info({ msg: 'Fake-Route API call successful', data });
 
-            return { type: 'success', data };
+            return { type: 'success', data, status: Number(status) };
         } catch (err: unknown) {
             if (isHttpError(err)) {
-                logger.error(err);
                 return fail(err.status, {
                     type: 'error',
                     errorId: err.body.errorId,
+                    status: err.status,
                     code: err.body.code,
                     message: userFriendlyErrors[err.status] || err.body.message,
                 });

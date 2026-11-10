@@ -1,4 +1,4 @@
-import { CONFIG } from '$config/config';
+import { CONFIG } from '#config';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = () => {

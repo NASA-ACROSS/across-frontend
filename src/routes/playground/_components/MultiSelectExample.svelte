@@ -1,5 +1,5 @@
 <script lang="ts">
-    import MultiSelect, { type Option } from '$lib/components/MultiSelect.svelte';
+    import MultiSelect, { type Option } from '#lib/components/MultiSelect.svelte';
 
     // Multiselect properties and testing custom onToggle
     type Fruit = { name: string; color: string };

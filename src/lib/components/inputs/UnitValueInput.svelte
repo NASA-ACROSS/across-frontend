@@ -49,10 +49,14 @@
     // (temporal dead zone), so reading `unitOptions` there threw a ReferenceError at
     // runtime every time this component rendered. It compiled cleanly; only svelte-check
     // caught it. They must live after $props().
+
     // `isOneOrNoOption` is $derived so it tracks `unitOptions` rather than freezing its
     // initial value; the `unit` default below stays a one-off init, as it was in Svelte 4.
     let isOneOrNoOption = $derived(unitOptions?.length == 1 || !unitOptions?.length);
-    if (unitOptions?.length == 1) unit = unitOptions[0];
+
+    $effect(() => {
+        if (unitOptions?.length === 1) unit = unitOptions[0];
+    });
 </script>
 
 <div data-testid={`UnitValueInput:${id}`} class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">

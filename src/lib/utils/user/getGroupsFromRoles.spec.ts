@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import { getGroupsFromRoles } from './getGroupsFromRoles';
-import type { GroupRole } from '$lib/types/User/GroupRole';
-import type { UserGroup } from '$lib/types/User/UserGroup';
+import type { GroupRole } from '#lib/types/User/GroupRole.js';
+import type { UserGroup } from '#lib/types/User/UserGroup.js';
 
 let groupRoles: GroupRole[];
 let userGroupRoles: UserGroup[];

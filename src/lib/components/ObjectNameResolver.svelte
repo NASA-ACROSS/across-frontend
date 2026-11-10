@@ -1,6 +1,6 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
-    import type { NameResolver } from '$lib/types/across/NameResolver';
+    import type { NameResolver } from '#lib/types/across/NameResolver.js';
 
     interface Props {
         /**

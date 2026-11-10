@@ -1,9 +1,9 @@
-import type { AcrossApiErrorResponseBody } from '$lib/types/error/AcrossApiErrorResponseBody';
+import type { AcrossApiErrorResponseBody } from '#lib/types/error/AcrossApiErrorResponseBody.js';
 import { error } from '@sveltejs/kit';
 import HTTP_CODES from '../HttpCodes';
-import logger from '$lib/logger';
+import logger from '#lib/logger/index.js';
 import parseErrorResponse from '../error/parseErrorResponse';
-import { CONFIG } from '$config/config';
+import { CONFIG } from '#config';
 
 type CallApiOptions = RequestInit & {
     responseType?: 'json' | 'text' | 'empty';
@@ -22,6 +22,7 @@ const getAppError = async (status: number, response: Response): Promise<App.Erro
         message: 'Unknown API error',
         code: HTTP_CODES[status] || HTTP_CODES[0],
         errorId: crypto.randomUUID(),
+        status,
     };
 
     const responseText = await response.text();
@@ -78,6 +79,7 @@ export async function callApi<T>(
     options: CallApiOptions = { method: 'GET', responseType: 'json' }
 ): Promise<Result<T>> {
     const responseType = options.responseType || 'json';
+    options.method = options.method || 'GET';
 
     const url = new URL(`${CONFIG.ACROSS_SERVER_URL}${route}`);
 
@@ -87,14 +89,15 @@ export async function callApi<T>(
         const errorBody = await getAppError(response.status, response);
 
         logger.error({
-            msg: 'ACROSS API request failed',
-            url,
-            options,
-            status: response.status,
-            errorBody,
+            msg: errorBody.message,
+            error: errorBody,
+            request: { url, method: options.method },
         });
 
-        error(response.status, errorBody);
+        error(response.status, errorBody.message, {
+            errorId: errorBody.errorId,
+            code: errorBody.code,
+        });
     }
 
     if (responseType === 'empty' || response.status === 204) {

@@ -1,7 +1,7 @@
 import { fail, isHttpError, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
-import type { NameResolver } from '$lib/types/across/NameResolver';
-import type { FormSubmitResult } from '$lib/types/form/FormSubmitResult';
-import HTTP_CODES from '$lib/utils/HttpCodes';
+import type { NameResolver } from '#lib/types/across/NameResolver.js';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+import HTTP_CODES from '#lib/utils/HttpCodes.js';
 import searchParams from '../searchParams/searchParams';
 import { callApi } from './callApi';
 
@@ -25,6 +25,7 @@ export const resolveObject = async ({ request, fetch }: RequestEvent): Promise<R
             message: 'Object name is required',
             errorId: crypto.randomUUID(),
             code: HTTP_CODES[400],
+            status: 400,
         });
     }
 
@@ -44,6 +45,7 @@ export const resolveObject = async ({ request, fetch }: RequestEvent): Promise<R
                 message: 'Failed to resolve object name.',
                 errorId: error.body.errorId,
                 code: error.body.code,
+                status: error.status,
             });
         }
 

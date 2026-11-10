@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type { Observatory } from '$lib/types/across/Observatory';
-    import type { Telescope } from '$lib/types/across/Telescope';
-    import type { TelescopeObservatory } from '$lib/types/across/TelescopeObservatory';
+    import type { Observatory } from '#lib/types/across/Observatory.js';
+    import type { Telescope } from '#lib/types/across/Telescope.js';
+    import type { TelescopeObservatory } from '#lib/types/across/TelescopeObservatory.js';
     import { onMount } from 'svelte';
     import MultiSelect, { type Option } from './MultiSelect.svelte';
-    import { page } from '$app/stores';
+    import { page } from '$app/state';
 
     interface Props {
         telescopes?: Telescope[];
@@ -16,14 +16,16 @@
 
     // Derive observatories from telescope response
     let seenObservatories = new Set<string>();
-    let observatories: TelescopeObservatory[] = telescopes.reduce((telescopes, telescope) => {
-        const obs = telescope.observatory;
-        if (!seenObservatories.has(obs.id)) {
-            seenObservatories.add(obs.id);
-            telescopes.push(obs);
-        }
-        return telescopes;
-    }, [] as TelescopeObservatory[]);
+    let observatories: TelescopeObservatory[] = $derived(
+        telescopes.reduce((telescopes, telescope) => {
+            const obs = telescope.observatory;
+            if (!seenObservatories.has(obs.id)) {
+                seenObservatories.add(obs.id);
+                telescopes.push(obs);
+            }
+            return telescopes;
+        }, [] as TelescopeObservatory[])
+    );
 
     function mapToOption<T extends { id: string; name: string; short_name: string }>(item: T): Option<T> {
         return {
@@ -112,7 +114,7 @@
             selectedObservatories = observatories.filter((obs) => selectedObservatoryIds.has(obs.id));
         }
     });
-    let data = $derived($page.data);
+    let data = $derived(page.data);
     let observatoryOptions = $derived(observatories.map(mapToOption));
     let telescopeOptions = $derived(telescopes.map(mapToOption));
     let selectedObservatoryOptions = $derived(selectedObservatories.map(mapToOption));

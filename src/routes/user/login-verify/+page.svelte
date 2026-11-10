@@ -1,9 +1,9 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
-    import ArrowButton from '$lib/components/ArrowButton.svelte';
-    import Section from '$lib/components/Section.svelte';
-    import Page from '$lib/components/Page.svelte';
-    import FormSubmitFeedback from '$lib/components/FormSubmitFeedback.svelte';
+    import ArrowButton from '#lib/components/ArrowButton.svelte';
+    import Section from '#lib/components/Section.svelte';
+    import Page from '#lib/components/Page.svelte';
+    import FormSubmitFeedback from '#lib/components/FormSubmitFeedback.svelte';
 
     let { form } = $props();
 </script>
@@ -14,17 +14,18 @@
             {#if !form}
                 <form method="post">
                     <div class="form-check">
-                        <label class="label text-primary mt-auto" for="remember-me-checkbox"
-                            ><input class="checkbox" type="checkbox" name="rememberMe" id="remember-me-checkbox" />Remember me on this
-                            computer</label
-                        >
+                        <label class="label text-primary mt-auto" for="remember-me-checkbox">
+                            <input class="checkbox" type="checkbox" name="rememberMe" id="remember-me-checkbox" />
+
+                            Remember me on this computer
+                        </label>
                     </div>
                     <FormSubmitFeedback />
                     <ArrowButton type="submit">Login</ArrowButton>
                 </form>
             {:else if form?.type === 'error'}
                 <FormSubmitFeedback />
-                <ArrowButton href={resolve('/user/login')}>Visit login to try again</ArrowButton>
+                <ArrowButton href={resolve('user/login')}>Visit login to try again</ArrowButton>
             {/if}
         </div>
     </Section>

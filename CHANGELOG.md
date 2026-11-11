@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.11.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.10.0...across-frontend-v1.11.0) (2026-11-11)
+
+
+### Features
+
+* observation request view page ([#390](https://github.com/NASA-ACROSS/across-frontend/issues/390)) ([8ff597d](https://github.com/NASA-ACROSS/across-frontend/commit/8ff597d3569cc0b4ce7c37e13585d1ee19ed8175))
+* **test:** add schedules page playwright tests ([#374](https://github.com/NASA-ACROSS/across-frontend/issues/374)) ([27cd4f4](https://github.com/NASA-ACROSS/across-frontend/commit/27cd4f4d8181355f7d91eb194d74686a0333bac1))
+
+
+### Bug Fixes
+
+* add banner to vis calc to warn about estimation ([#413](https://github.com/NASA-ACROSS/across-frontend/issues/413)) ([40c29a9](https://github.com/NASA-ACROSS/across-frontend/commit/40c29a93079996940978bd2f041486aad86e4642))
+* add observation tests and fake data fixtures ([#387](https://github.com/NASA-ACROSS/across-frontend/issues/387)) ([b5198bf](https://github.com/NASA-ACROSS/across-frontend/commit/b5198bfa851bae25d837adc87089ab95ec86c72c))
+* **env:** correct across-server port in example env file ([#407](https://github.com/NASA-ACROSS/across-frontend/issues/407)) ([4501c47](https://github.com/NASA-ACROSS/across-frontend/commit/4501c472fea8f319deedce77d94348598b1dc742))
+* **obsreq:** add modified_on to versions type, remove versionsById ([#405](https://github.com/NASA-ACROSS/across-frontend/issues/405)) ([0af0c88](https://github.com/NASA-ACROSS/across-frontend/commit/0af0c88a18902bfbff96159bd6e6833445d85849))
+* rm root_path usage ([#411](https://github.com/NASA-ACROSS/across-frontend/issues/411)) ([0656574](https://github.com/NASA-ACROSS/across-frontend/commit/06565748bba27e912c488ced207263eb8445f055))
+* set base path for rev proxy ([#395](https://github.com/NASA-ACROSS/across-frontend/issues/395)) ([42dec03](https://github.com/NASA-ACROSS/across-frontend/commit/42dec03d8e7f34bc20dc68df40e77ac7fe2359ad))
+* sveltekit3 migration ([#409](https://github.com/NASA-ACROSS/across-frontend/issues/409)) ([17709c5](https://github.com/NASA-ACROSS/across-frontend/commit/17709c5b0d95d96a67ef84bfb4107ac400c50199))
+
 ## [1.10.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.9.0...across-frontend-v1.10.0) (2026-09-29)
 
 

@@ -54,8 +54,17 @@ COPY . .
 FROM node:24-bookworm-slim AS deploy
 WORKDIR /app
 
-COPY --from=build /app/build /app/build
 COPY --from=build /app/package*.json ./
+# installs only external packages that are not bundled (omits dev dependencies)
+# e.g. pino is external due to it's worker threads usage and bundling requires additional
+# file generation, installing directly to node_modules is simplest.
+# see below for more details.
+# https://svelte.dev/docs/kit/adapter-node#Deploying
+# https://github.com/pinojs/pino/blob/main/docs/bundling.md
+# https://rolldown.rs/in-depth/external-modules
+RUN npm ci --omit=dev --ignore-scripts
+
+COPY --from=build /app/build /app/build
 
 ENV PORT=3000
 

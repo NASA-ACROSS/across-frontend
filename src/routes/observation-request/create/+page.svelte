@@ -13,6 +13,7 @@
     import type { Telescope } from '#lib/types/across/Telescope.js';
     import DateRangeInput from '#lib/components/datetime/DateRangeInput.svelte';
     import ProposalInfoInput from '../_components/ProposalInfoInput.svelte';
+    import ProperMotionInput from '../_components/ProperMotionInput.svelte';
     import UnitValueInput from '#lib/components/inputs/UnitValueInput.svelte';
     import { resolve } from '$app/paths';
     import ArrowButton from '#lib/components/ArrowButton.svelte';
@@ -40,13 +41,16 @@
     let objectName: string | undefined = $state();
     let ra: number | undefined = $state();
     let dec: number | undefined = $state();
+    let properMotionRa: number | undefined = $state();
+    let properMotionDec: number | undefined = $state();
+    let properMotionEpoch = $state();
     let positionOffset: number | undefined = $state();
     let brightness: number | undefined = $state();
     let brightnessUnit: string | undefined = $state();
 
     // Observation Window state
-    let dateRangeBegin: string | undefined = $state();
-    let dateRangeEnd: string | undefined = $state();
+    let dateRangeBegin: string | undefined = $state('');
+    let dateRangeEnd: string | undefined = $state('');
 
     // Observatory/Telescope/Instrument selector state
     // Only the first instrument in the list of selectedInstruments is sent to the server
@@ -71,6 +75,7 @@
         <Section>
             <Fieldset title="Object Information">
                 <CoordinateSearch bind:ra bind:dec bind:objectName required={true} />
+                <ProperMotionInput bind:properMotionRa bind:properMotionDec bind:properMotionEpoch />
                 <label class="input text-lg pe-0 w-full mb-4" for="offset-input">
                     Position offset:
                     <input
@@ -149,6 +154,9 @@
                 <input type="hidden" name="objectName" value={objectName?.trim()} />
                 <input type="hidden" name="ra" value={ra} />
                 <input type="hidden" name="dec" value={dec} />
+                <input type="hidden" name="properMotionRa" value={properMotionRa} />
+                <input type="hidden" name="properMotionDec" value={properMotionDec} />
+                <input type="hidden" name="properMotionEpoch" value={properMotionEpoch?.trim()} />
                 <input type="hidden" name="positionOffset" value={positionOffset} />
                 <input type="hidden" name="brightness" value={brightness} />
                 <input type="hidden" name="exposureTimeSeconds" value={exposureTimeSeconds} />

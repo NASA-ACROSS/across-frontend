@@ -43,7 +43,7 @@
     let dec: number | undefined = $state();
     let properMotionRa: number | undefined = $state();
     let properMotionDec: number | undefined = $state();
-    let properMotionEpoch = $state();
+    let properMotionEpoch: string = $state('');
     let positionOffset: number | undefined = $state();
     let brightness: number | undefined = $state();
     let brightnessUnit: string | undefined = $state();

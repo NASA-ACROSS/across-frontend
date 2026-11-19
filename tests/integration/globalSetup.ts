@@ -18,7 +18,7 @@ export default async function globalSetup() {
         .start();
 
     // Wipe previous test states via MockServer's internal API since the container stays alive
-    await fetch('http://localhost:1080/mockserver/reset', { method: 'PUT' });
+    await fetch(`http://localhost:${port}/mockserver/reset`, { method: 'PUT' });
 
     return async () => {
         await container.stop();

@@ -1,19 +1,19 @@
 import { test } from '../fixtures';
-import { expect } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 const TELESCOPE_PATH = '/v1/telescope';
 const SCHEDULE_PATH = '/v1/schedule';
 
 // key-value is column id: is selected by default
 const tableColumns = {
-    observatory_telescope: 1,
+    observatoryTelescope: 1,
     name: 1,
-    external_id: 0,
-    date_begin: 1,
-    date_end: 1,
+    externalId: 0,
+    dateBegin: 1,
+    dateEnd: 1,
     status: 1,
     fidelity: 1,
-    number_of_observations: 1,
+    numberOfObservations: 1,
 };
 
 const defaultCols = Object.entries(tableColumns)
@@ -34,39 +34,36 @@ test.describe('Initial Load without schedules', () => {
         await expect(page.getByTestId('no-schedules-row')).toBeVisible();
     });
 
-    test('table columns and customization', async ({ page }) => {
+    test.describe('table columns and customization', () => {
         for (const col of defaultCols) {
-            await test.step(`should render default table column ${col}`, async () => {
+            test(`should render default table column ${col}`, async ({ page }) => {
                 await expect(page.getByTestId(`TableHeader:${col}`)).toBeVisible();
             });
         }
 
         // common actions for customize dialog
-        const openCustomize = () => page.getByTestId('customize-columns-btn').click();
-        const saveColumnSelection = () => page.getByTestId('save-columns-btn').click();
-        const loadColumnSelection = () => page.getByTestId('load-columns-btn').click();
-        const checkDefaultColumns = async () => page.getByTestId('default-columns-btn').click();
-        const uncheckAllColumns = async () => {
+        const openCustomize = (page: Page) => page.getByTestId('customize-columns-btn').click();
+        const saveColumnSelection = (page: Page) => page.getByTestId('save-columns-btn').click();
+        const loadColumnSelection = (page: Page) => page.getByTestId('load-columns-btn').click();
+        const checkDefaultColumns = async (page: Page) => page.getByTestId('default-columns-btn').click();
+        const checkColumn = async (page: Page, col: keyof typeof tableColumns) => {
+            await page.getByTestId(`Checkbox:${col}`).check();
+        };
+        const uncheckAllColumns = async (page: Page) => {
             for (const col of Object.keys(tableColumns)) {
                 await page.getByTestId(`Checkbox:${col}`).uncheck();
             }
         };
 
-        await openCustomize();
-
-        await test.step('should render customize columns dialog', async () => {
+        test('should render customize columns dialog', async ({ page }) => {
+            await openCustomize(page);
             await expect(page.getByTestId('customize-columns-dialog')).toBeVisible();
         });
 
-        for (const col of defaultCols) {
-            await test.step(`should have default column ${col} checked`, async () => {
-                await expect.soft(page.getByTestId(`Checkbox:${col}`)).toBeChecked();
-            });
-        }
-
-        await test.step('should not render columns when unchecked.', async () => {
-            await uncheckAllColumns();
-            await saveColumnSelection();
+        test('should not render columns when unchecked.', async ({ page }) => {
+            await openCustomize(page);
+            await uncheckAllColumns(page);
+            await saveColumnSelection(page);
 
             for (const col of Object.keys(tableColumns)) {
                 await test.step(`should not render ${col}`, async () => {
@@ -75,9 +72,12 @@ test.describe('Initial Load without schedules', () => {
             }
         });
 
-        await page.reload();
+        test('should show default columns when reloaded and all unchecked', async ({ page }) => {
+            await openCustomize(page);
+            await uncheckAllColumns(page);
+            await saveColumnSelection(page);
+            await page.reload();
 
-        await test.step('should show default columns when reloaded and all unchecked', async () => {
             for (const col of defaultCols) {
                 await test.step(`should show table column ${col}`, async () => {
                     await expect.soft(page.getByTestId(`TableHeader:${col}`)).toBeVisible();
@@ -85,20 +85,33 @@ test.describe('Initial Load without schedules', () => {
             }
         });
 
-        await test.step('should load column selection from cookie', async () => {
-            await openCustomize();
-            await loadColumnSelection();
+        test('should load column selection from cookie', async ({ page }) => {
+            await openCustomize(page);
+            await uncheckAllColumns(page);
+            await checkColumn(page, 'observatoryTelescope');
+            await saveColumnSelection(page);
+
+            await page.reload();
+
+            await openCustomize(page);
+            await loadColumnSelection(page);
 
             for (const col of Object.keys(tableColumns)) {
                 await test.step(`should not render ${col} column when unchecked`, async () => {
-                    await expect.soft(page.getByTestId(`TableHeader:${col}`)).not.toBeVisible();
+                    if (col === 'observatoryTelescope') {
+                        await expect.soft(page.getByTestId(`TableHeader:${col}`)).toBeVisible();
+                    } else {
+                        await expect.soft(page.getByTestId(`TableHeader:${col}`)).not.toBeVisible();
+                    }
                 });
             }
         });
 
-        await test.step(`should reset to default columns when default columns are checked and saved`, async () => {
-            await checkDefaultColumns();
-            await saveColumnSelection();
+        test(`should reset to default columns when default columns are checked and saved`, async ({ page }) => {
+            await openCustomize(page);
+            await checkDefaultColumns(page);
+            await saveColumnSelection(page);
+            await page.reload();
 
             for (const col of defaultCols) {
                 await test.step(`should show default column ${col}`, async () => {
@@ -107,16 +120,7 @@ test.describe('Initial Load without schedules', () => {
             }
         });
 
-        await test.step('should use cookie for column selection when reloaded', async () => {
-            await openCustomize();
-            await page.getByTestId('Checkbox:observatory_telescope').uncheck();
-            await saveColumnSelection();
-            await page.reload();
-
-            await expect.soft(page.getByTestId('TableHeader:observatory_telescope')).not.toBeVisible();
-        });
-
-        await test.step('should resolve to default columns when deleting cookie', async () => {
+        test('should resolve to default columns when deleting cookie', async ({ page }) => {
             await page.context().clearCookies();
             await page.reload();
 

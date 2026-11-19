@@ -15,8 +15,6 @@ import {
     AWS_PROFILE,
 } from '$app/env/private';
 
-import { PUBLIC_CONFIG } from './config.public';
-
 /**
  * Config abstraction for dynamic environment variables
  */
@@ -63,7 +61,7 @@ export class PrivateConfiguration {
 
         // deployed environments requires specifying the port
         // explicitly for service connect.
-        if (!PUBLIC_CONFIG.IS_LOCAL) {
+        if (this.ACROSS_SERVER_PORT) {
             domain += `:${this.ACROSS_SERVER_PORT}`;
         }
 

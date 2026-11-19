@@ -6,30 +6,6 @@ import { test as fake } from './mocks/fake.fixture';
 
 const base = mergeTests(mockserver, fake);
 
-/**
- * Access token is a fake JWT with a fake payload since it needs to be decoded to extract a user ID.
- *
- * 100 years expiry. Hello from the past, future ACROSS engineers...or...bots, if you still exist.
- *
- * ```
- * {
- *  "sub": "user-1",
- *  "first_name": "Sandy",
- *  "last_name": "Cheeks",
- *  "username": "sandycheeks",
- *  "email": "sandy@treedome.space",
- *  "exp": 4922928000,
- *  "iat": 1516239022
- * }
- * ```
- */
-
-const FAKE_ACCESS_TOKEN =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEiLCJmaXJzdF9uYW1lIjoiU2FuZHkiLCJsYXN0X25hbWUiOiJDaGVla3MiLCJ1c2VybmFtZSI6InNhbmR5Y2hlZWtzIiwiZW1haWwiOiJzYW5keUB0cmVlZG9tZS5zcGFjZSIsImV4cCI6NDkyMjkyODAwMCwiaWF0IjoxNTE2MjM5MDIyfQ.kI1jKDYjTRr6QhEeOftktVs1EQWiJu2BnBpXIi8GIpw';
-
-/** The refresh token does not need to be decoded so it is a simple string */
-const FAKE_REFRESH_TOKEN = 'fake-refresh-token';
-
 type Fixtures = {
     login: () => Promise<void>;
 };
@@ -50,10 +26,10 @@ export const test = base.extend<Fixtures>({
                 statusCode: 200,
                 headers: {
                     'content-type': ['application/json'],
-                    'set-cookie': 'refresh_token=' + FAKE_REFRESH_TOKEN,
+                    'set-cookie': 'refresh_token=' + fake.tokens.refresh,
                 },
                 body: JSON.stringify({
-                    access_token: FAKE_ACCESS_TOKEN,
+                    access_token: fake.tokens.access,
                 }),
             },
             times: { remainingTimes: 1 },

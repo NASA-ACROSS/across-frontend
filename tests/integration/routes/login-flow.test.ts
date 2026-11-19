@@ -1,35 +1,11 @@
 import { test } from '../fixtures';
 import { expect } from '@playwright/test';
 import { type MockServerClient } from 'mockserver-client';
-
-const EMAIL = 'sandy@treedome.space';
-/**
- * Access token is a fake JWT with a fake payload since it needs to be decoded to extract a user ID.
- *
- * 100 years expiry. Hello from the past, future ACROSS engineers...or...bots, if you still exist.
- *
- * ```
- * {
- *  "sub": "user-1",
- *  "first_name": "Sandy",
- *  "last_name": "Cheeks",
- *  "username": "sandycheeks",
- *  "email": "sandy@treedome.space",
- *  "exp": 4922928000,
- *  "iat": 1516239022
- * }
- * ```
- */
-
-const FAKE_ACCESS_TOKEN =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEiLCJmaXJzdF9uYW1lIjoiU2FuZHkiLCJsYXN0X25hbWUiOiJDaGVla3MiLCJ1c2VybmFtZSI6InNhbmR5Y2hlZWtzIiwiZW1haWwiOiJzYW5keUB0cmVlZG9tZS5zcGFjZSIsImV4cCI6NDkyMjkyODAwMCwiaWF0IjoxNTE2MjM5MDIyfQ.kI1jKDYjTRr6QhEeOftktVs1EQWiJu2BnBpXIi8GIpw';
-
-/** The refresh token does not need to be decoded so it is a simple string */
-const FAKE_REFRESH_TOKEN = 'fake-refresh-token';
+const EMAIL = 'test@example.com';
 
 test.describe('User Login Flow', () => {
     /** Helper function to mock the verify endpoint as it should only be called once per link */
-    const mockVerifyEndpoint = async (client: MockServerClient, testId: string) => {
+    const mockVerifyEndpoint = async (client: MockServerClient, testId: string, tokens: { access: string; refresh: string }) => {
         await client.mockAnyResponse({
             namespace: testId,
             httpRequest: {
@@ -41,10 +17,10 @@ test.describe('User Login Flow', () => {
                 statusCode: 200,
                 headers: {
                     'content-type': ['application/json'],
-                    'set-cookie': 'refresh_token=' + FAKE_REFRESH_TOKEN,
+                    'set-cookie': 'refresh_token=' + tokens.refresh,
                 },
                 body: JSON.stringify({
-                    access_token: FAKE_ACCESS_TOKEN,
+                    access_token: tokens.access,
                 }),
             },
             times: { remainingTimes: 1 },
@@ -74,8 +50,8 @@ test.describe('User Login Flow', () => {
         await expect(page).toHaveURL(/\/user\/login-verify/);
     });
 
-    test('should log the user in to the user profile page', async ({ page, mockServer }, { testId }) => {
-        await mockVerifyEndpoint(mockServer.client, testId);
+    test('should log the user in to the user profile page', async ({ page, mockServer, fake }, { testId }) => {
+        await mockVerifyEndpoint(mockServer.client, testId, fake.tokens);
 
         await page.goto('/user/login-verify?token=abc123');
         await page.getByTestId('ArrowButton:login-verify').click();
@@ -83,10 +59,10 @@ test.describe('User Login Flow', () => {
         await expect(page).toHaveURL(/\/user\/profile/);
     });
 
-    test('should remember the user when the page is reloaded without "remember me" being checked', async ({ page, mockServer }, {
+    test('should remember the user when the page is reloaded without "remember me" being checked', async ({ page, mockServer, fake }, {
         testId,
     }) => {
-        await mockVerifyEndpoint(mockServer.client, testId);
+        await mockVerifyEndpoint(mockServer.client, testId, fake.tokens);
 
         await page.goto('/user/login-verify?token=abc123');
         await page.getByTestId('ArrowButton:login-verify').click();
@@ -99,8 +75,9 @@ test.describe('User Login Flow', () => {
         page,
         context,
         mockServer,
+        fake,
     }, { testId }) => {
-        await mockVerifyEndpoint(mockServer.client, testId);
+        await mockVerifyEndpoint(mockServer.client, testId, fake.tokens);
 
         await page.goto('/user/login-verify?token=abc123');
         await page.getByTestId('remember-me').check();
@@ -113,10 +90,10 @@ test.describe('User Login Flow', () => {
         await expect(newPage).toHaveURL(/\/user\/profile/);
     });
 
-    test('should remember the user when "remember me" is checked and login page is visited', async ({ page, context, mockServer }, {
+    test('should remember the user when "remember me" is checked and login page is visited', async ({ page, context, mockServer, fake }, {
         testId,
     }) => {
-        await mockVerifyEndpoint(mockServer.client, testId);
+        await mockVerifyEndpoint(mockServer.client, testId, fake.tokens);
 
         await page.goto('/user/login-verify?token=abc123');
         await page.getByTestId('remember-me').check();

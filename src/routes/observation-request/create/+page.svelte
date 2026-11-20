@@ -75,7 +75,7 @@
         <Section>
             <Fieldset title="Object Information">
                 <CoordinateSearch bind:ra bind:dec bind:objectName required={true} />
-                <ProperMotionInput bind:properMotionRa bind:properMotionDec bind:properMotionEpoch />
+                <ProperMotionInput bind:ra={properMotionRa} bind:dec={properMotionDec} bind:epoch={properMotionEpoch} />
                 <label class="input text-lg pe-0 w-full mb-4" for="offset-input">
                     Position offset:
                     <input

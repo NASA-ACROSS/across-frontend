@@ -2,12 +2,12 @@
     import UnitValueInput from '#lib/components/inputs/UnitValueInput.svelte';
 
     interface Props {
-        properMotionRa: number | undefined;
-        properMotionDec: number | undefined;
-        properMotionEpoch: string;
+        ra: number | undefined;
+        dec: number | undefined;
+        epoch: string;
     }
 
-    let { properMotionRa = $bindable(), properMotionDec = $bindable(), properMotionEpoch = $bindable() }: Props = $props();
+    let { ra = $bindable(), dec = $bindable(), epoch = $bindable() }: Props = $props();
 </script>
 
 <div>
@@ -15,7 +15,7 @@
         required={true}
         id="proper-motion-ra"
         displayName="Proper Motion RA"
-        bind:value={properMotionRa}
+        bind:value={ra}
         unit="mas/yr"
         placeholder="decimal"
     />
@@ -23,22 +23,29 @@
         required={true}
         id="proper-motion-dec"
         displayName="Proper Motion Dec"
-        bind:value={properMotionDec}
+        bind:value={dec}
         unit="mas/yr"
         placeholder="decimal"
     />
-    <label class="input text-lg pe-0 w-full mb-4" for="proper-motion-epoch-input">
-        Proper Motion Epoch:
-        <input
-            id="proper-motion-epoch-input"
-            class="input validator input-bordered text-lg w-full"
-            type="text"
-            required
-            minlength="1"
-            maxlength="16"
-            bind:value={properMotionEpoch}
-            placeholder="J2000"
-        />
-        <p class="hidden validator-hint mt-18" style="position: absolute;">Must be between 1 and 16 characters</p>
-    </label>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+        <div>
+            <label class="label text-lg" for="proper-motion-epoch-input">
+                <span class="label-text">Proper Motion Epoch</span>
+            </label>
+            <label class="input text-lg w-full"
+                >Value:
+                <input
+                    id="proper-motion-epoch-input"
+                    class="input validator input-bordered text-lg w-full"
+                    type="text"
+                    required
+                    minlength="1"
+                    maxlength="16"
+                    bind:value={epoch}
+                    placeholder="J2000"
+                />
+                <p class="hidden validator-hint mt-18" style="position: absolute;">Must be between 1 and 16 characters</p>
+            </label>
+        </div>
+    </div>
 </div>

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.11.0...across-frontend-v1.12.0) (2026-11-20)
+
+
+### Features
+
+* add proper motion fields to obs req create and view ([#418](https://github.com/NASA-ACROSS/across-frontend/issues/418)) ([72508fd](https://github.com/NASA-ACROSS/across-frontend/commit/72508fd5953f9fbbe22c3d655cb61af89762f557))
+
 ## [1.11.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.10.0...across-frontend-v1.11.0) (2026-11-20)
 
 

@@ -48,6 +48,11 @@ export const actions = {
                 ra: Number(form.get('ra')),
                 dec: Number(form.get('dec')),
             },
+            proper_motion: {
+                ra: Number(form.get('properMotionRa')),
+                dec: Number(form.get('properMotionDec')),
+                epoch: form.get('properMotionEpoch') as string,
+            },
             object_brightness: {
                 value: Number(form.get('brightness')),
                 unit: form.get('brightnessUnit') as string,

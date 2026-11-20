@@ -113,7 +113,12 @@
                 <LabeledValue name="Object Name" value={obsReq?.object_name} />
                 <div class="flex flex-row w-full">
                     <LabeledValue name="RA" value={obsReq.object_coordinates.ra} />
-                    <LabeledValue name="DEC" value={obsReq.object_coordinates.dec} />
+                    <LabeledValue name="Dec" value={obsReq.object_coordinates.dec} />
+                </div>
+                <div class="flex flex-row w-full">
+                    <LabeledValue name="Proper Motion RA (mas/yr)" value={obsReq.proper_motion.ra} />
+                    <LabeledValue name="Proper Motion Dec (mas/yr)" value={obsReq.proper_motion.dec} />
+                    <LabeledValue name="Proper Motion Epoch" value={obsReq.proper_motion.epoch} />
                 </div>
                 {#if obsReq.object_position_error}
                     <LabeledValue name="Position Offset Degrees" value={obsReq.object_position_error} />

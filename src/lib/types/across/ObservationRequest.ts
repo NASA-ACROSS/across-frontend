@@ -3,6 +3,12 @@ interface Coordinate {
     dec: number;
 }
 
+interface ProperMotion {
+    ra: number;
+    dec: number;
+    epoch: string;
+}
+
 interface UnitValue {
     value: number;
     unit: string;
@@ -31,6 +37,7 @@ export type ObservationRequestCreate = {
     object_name: string;
     object_coordinates: Coordinate;
     object_brightness: UnitValue;
+    proper_motion: ProperMotion;
     object_position_error?: number | null;
     observation_window: NullableEndDateRange;
     exposure_time: number;
@@ -47,6 +54,7 @@ export type ObservationRequest = {
     object_name: string;
     object_coordinates: Coordinate;
     object_brightness: UnitValue;
+    proper_motion: ProperMotion;
     observation_window: NullableEndDateRange;
     exposure_time: number;
     anonymize: boolean;

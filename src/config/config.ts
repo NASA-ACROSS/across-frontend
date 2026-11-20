@@ -15,8 +15,6 @@ import {
     AWS_PROFILE,
 } from '$app/env/private';
 
-import { PUBLIC_CONFIG } from './config.public';
-
 /**
  * Config abstraction for dynamic environment variables
  */
@@ -27,7 +25,7 @@ export class PrivateConfiguration {
      * Locally, the the server is behind the local nginx proxy.
      * Deployed envs will use the service-connect alias for the ACROSS server.
      */
-    public ACROSS_SERVER_HOST: string = ACROSS_SERVER_HOST || 'localhost/across/api';
+    public ACROSS_SERVER_HOST: string = ACROSS_SERVER_HOST || 'localhost';
     public ACROSS_SERVER_ROOT_PATH: string = ACROSS_SERVER_ROOT_PATH || '/across/api';
     public ACROSS_SERVER_VERSION: string = ACROSS_SERVER_VERSION || '/v1';
     public ACROSS_SERVER_PORT: string = ACROSS_SERVER_PORT || '8000';
@@ -63,7 +61,7 @@ export class PrivateConfiguration {
 
         // deployed environments requires specifying the port
         // explicitly for service connect.
-        if (!PUBLIC_CONFIG.IS_LOCAL) {
+        if (this.ACROSS_SERVER_PORT) {
             domain += `:${this.ACROSS_SERVER_PORT}`;
         }
 

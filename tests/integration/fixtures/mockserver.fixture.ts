@@ -1,5 +1,5 @@
 import { test as base, expect } from '@playwright/test';
-import { mockServerClient, type MockServerClient } from 'mockserver-client';
+import { mockServerClient, type KeyToMultiValue, type MockServerClient } from 'mockserver-client';
 import type { Paginate } from '../../../src/lib/types/Paginate';
 
 type MockHttpOptions = {
@@ -17,6 +17,7 @@ type MockOptions = {
      * @default true
      */
     useNamespace?: boolean;
+    queryParams?: KeyToMultiValue;
 };
 
 export type MockServerFixture = {
@@ -108,6 +109,10 @@ export const test = base.extend<Fixtures>({
         await use(context);
     },
 
+    userAgent: async ({}, use, testInfo) => {
+        await use(`across-playwright-test/${testInfo.testId}`);
+    },
+
     mockServer: async ({}, use, testInfo) => {
         const port = process.env.ACROSS_SERVER_PORT;
 
@@ -117,7 +122,7 @@ export const test = base.extend<Fixtures>({
         const client = mockServerClient('localhost', Number(port));
 
         const mockJson: MockServerFixture['mockJson'] = async (path, body, mockOptions = {}, options = {}) => {
-            const { pagination = false, useNamespace = true } = mockOptions;
+            const { pagination = false, useNamespace = true, queryParams } = mockOptions;
 
             const namespace = useNamespace ? testId : undefined;
 
@@ -129,6 +134,7 @@ export const test = base.extend<Fixtures>({
                     httpRequest: {
                         method: options.method ?? 'GET',
                         path,
+                        queryStringParameters: queryParams,
                     },
                     httpResponse: {
                         statusCode: options.status ?? 200,

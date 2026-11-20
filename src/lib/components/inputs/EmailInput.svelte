@@ -35,7 +35,7 @@
 </script>
 
 <div>
-    <div class="join w-full mb-4">
+    <div class="join w-full mb-4" data-testid="EmailInput">
         <label class="input validator join-item w-full bg-nasa-white disabled:bg-nasa-green">
             <svg
                 class="h-[1em] opacity-50 {disabled ? 'text-secondary-content' : ''}"
@@ -59,7 +59,7 @@
             />
         </label>
         {#if includeButton}
-            <Button classes="btn-primary join-item" {isLoading} {disabled}>{btnTxt}</Button>
+            <Button id="email-submit" classes="btn-primary join-item" {isLoading} {disabled}>{btnTxt}</Button>
         {/if}
         <div class="validator-hint hidden text-left absolute mt-13">Enter valid email address</div>
     </div>

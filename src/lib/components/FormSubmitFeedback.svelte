@@ -1,19 +1,21 @@
 <script lang="ts">
     import { page } from '$app/state';
-    import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
+    import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.ts';
 
     interface Props {
-        action?: string | undefined;
+        id?: string;
+        action?: string;
     }
 
-    let { action = undefined }: Props = $props();
+    let { id, action }: Props = $props();
 
     let formData = $derived(page.form as FormSubmitResult | null);
     let isMatch = $derived(action ? formData?._action === action : true);
+    let testId = $derived(id ? `FormSubmitFeedback:${id}` : 'FormSubmitFeedback');
 </script>
 
 {#if isMatch && formData?.message}
-    <div class={formData.type === 'error' ? 'text-error' : formData.type === 'warning' ? 'text-warning' : 'text-info'}>
+    <div data-testid={testId} class={formData.type === 'error' ? 'text-error' : formData.type === 'warning' ? 'text-warning' : 'text-info'}>
         {#if formData.type === 'warning'}
             WARNING: {formData.message}
         {:else if formData.type === 'error'}

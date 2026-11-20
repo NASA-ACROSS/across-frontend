@@ -1,16 +1,17 @@
 import { fail, isHttpError, redirect, type ActionFailure, type RequestEvent } from '@sveltejs/kit';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 import { resolve } from '$app/paths';
-import { autoLogin } from '#lib/utils/user/autoLogin.js';
-import { emailRegex } from '#lib/utils/regex/emailRegex.js';
+import { autoLogin } from '#lib/utils/user/autoLogin.ts';
+import { emailRegex } from '#lib/utils/regex/emailRegex.ts';
 import type { Actions } from './$types';
-import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.js';
-import { clearAuth } from '#lib/handles/clearAuth.js';
-import guards from '#lib/utils/guards/index.js';
-import logger from '#lib/logger/index.js';
-import { callApi } from '#lib/utils/across/callApi.js';
-import HTTP_CODES from '#lib/utils/HttpCodes.js';
-import { type MagicLinkDTO } from '#lib/types/auth/MagicLinkDTO.js';
+import type { FormSubmitResult } from '#lib/types/form/FormSubmitResult.ts';
+import { clearAuth } from '#lib/handles/clearAuth.ts';
+import guards from '#lib/utils/guards/index.ts';
+import logger from '#lib/logger/index.ts';
+import { callApi } from '#lib/utils/across/callApi.ts';
+import HTTP_CODES from '#lib/utils/HttpCodes.ts';
+import { type MagicLinkDTO } from '#lib/types/auth/MagicLinkDTO.ts';
+import { CONFIG } from '#config/config.limiter.ts';
 
 type LoginResult = FormSubmitResult & {
     email?: string;
@@ -32,9 +33,9 @@ export function load({ locals }: RequestEvent) {
 // https://github.com/ciscoheat/sveltekit-rate-limiter?tab=readme-ov-file#valid-units
 const limiter = new RetryAfterRateLimiter({
     // IP + User Agent limiter, 5 login requests per 15 mins, resetting every 15 minutes
-    IPUA: [50, '15m'],
+    IPUA: [CONFIG.LOGIN_IPUA_LIMIT, CONFIG.LOGIN_IPUA_LIMIT_EVERY],
     // IP address limiter, triple the limit to ensure multiple users from the same IP don't become limited
-    IP: [150, '15m'],
+    IP: [CONFIG.LOGIN_IP_LIMIT, CONFIG.LOGIN_IP_LIMIT_EVERY],
 });
 
 export const actions = {

@@ -3,6 +3,7 @@
     import type { Snippet } from 'svelte';
 
     interface Props {
+        id?: string;
         name?: string;
         disabled?: boolean;
         isLoading: boolean;
@@ -10,10 +11,10 @@
         children?: Snippet;
     }
 
-    let { name = '', disabled = false, isLoading, classes = '', children }: Props = $props();
+    let { id = '', name = '', disabled = false, isLoading, classes = '', children }: Props = $props();
 </script>
 
-<button class="btn {classes}" {disabled}>
+<button data-testid="Button{id ? `:${id}` : ''}" class="btn {classes}" {disabled}>
     {#if isLoading}
         <Spinner />
     {:else if name}

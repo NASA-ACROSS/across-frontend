@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.12.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.11.0...across-frontend-v1.12.0) (2026-11-23)
+
+
+### Features
+
+* add proper motion fields to obs req create and view ([#418](https://github.com/NASA-ACROSS/across-frontend/issues/418)) ([72508fd](https://github.com/NASA-ACROSS/across-frontend/commit/72508fd5953f9fbbe22c3d655cb61af89762f557))
+
+
+### Bug Fixes
+
+* **config:** add port when exists regardless of env ([#422](https://github.com/NASA-ACROSS/across-frontend/issues/422)) ([af82993](https://github.com/NASA-ACROSS/across-frontend/commit/af829936eea95c0fd1e65407a30cb2a7d21425a3))
+* **config:** add port when it exists for across server url regardless of local ([af82993](https://github.com/NASA-ACROSS/across-frontend/commit/af829936eea95c0fd1e65407a30cb2a7d21425a3))
+
 ## [1.11.0](https://github.com/NASA-ACROSS/across-frontend/compare/across-frontend-v1.10.0...across-frontend-v1.11.0) (2026-11-20)
 
 

@@ -40,6 +40,15 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
         const ip = event.getClientAddress();
         request.headers.set('x-real-ip', ip);
 
+        const headers = Array.from(event.request.headers.entries().flatMap(([k, v]) => [`${k}: ${v}`]));
+
+        logger.debug({
+            msg: 'Internal API Request',
+            url: request.url,
+            clientIP: ip,
+            headers,
+        });
+
         // test-only: forward MockServer's namespace header so Playwright tests can scope
         // expectations to a single test (via MockServer's built-in multi-tenancy feature)
         // without colliding with other tests running in parallel against the same instance.
@@ -58,19 +67,19 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }): Promi
         await hydrateAuthUser(event);
 
         const tokens = event.locals.tokens;
-        let access_token: string | undefined;
+        let accessToken: string | undefined;
 
         // check if the request is from the client or server and use the appropriate strategy
         if (tokens) {
             // client will have the token in the cookie
-            access_token = await UserCredentialsManager.GetAccessToken(fetch, event.cookies, tokens);
+            accessToken = await UserCredentialsManager.GetAccessToken(fetch, event.cookies, tokens);
         } else {
             // this is for server-side requests that need to authenticate with the API, such as login and registering
-            access_token = await webserverCredentialsManager.getAccessToken(fetch);
+            accessToken = await webserverCredentialsManager.getAccessToken(fetch);
         }
 
-        if (access_token) {
-            request.headers.set('Authorization', `Bearer ${access_token}`);
+        if (accessToken) {
+            request.headers.set('Authorization', `Bearer ${accessToken}`);
         }
     }
 

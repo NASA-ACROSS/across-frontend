@@ -45,7 +45,7 @@
                 includeButton={true}
                 isLoading={isLoggingIn && form?.type !== 'success'}
             />
-            <FormSubmitFeedback />
+            <FormSubmitFeedback id="login" />
         </form>
         <ArrowButton
             href={resolve('user/register')}

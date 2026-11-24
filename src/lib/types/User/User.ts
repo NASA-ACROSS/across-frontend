@@ -9,7 +9,6 @@ export type User = {
     username: string;
     email: string;
     rememberMe: boolean;
-    message: string;
     received_invites: UserInvite[];
     groups: UserGroup[];
     group_roles: GroupRole[];

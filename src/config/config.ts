@@ -25,7 +25,7 @@ export class PrivateConfiguration {
      * Locally, the the server is behind the local nginx proxy.
      * Deployed envs will use the service-connect alias for the ACROSS server.
      */
-    public ACROSS_SERVER_HOST: string = ACROSS_SERVER_HOST || 'localhost/across/api';
+    public ACROSS_SERVER_HOST: string = ACROSS_SERVER_HOST || 'localhost';
     public ACROSS_SERVER_ROOT_PATH: string = ACROSS_SERVER_ROOT_PATH || '/across/api';
     public ACROSS_SERVER_VERSION: string = ACROSS_SERVER_VERSION || '/v1';
     public ACROSS_SERVER_PORT: string = ACROSS_SERVER_PORT || '8000';

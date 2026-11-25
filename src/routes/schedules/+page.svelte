@@ -121,8 +121,6 @@
         if (!browser) return;
 
         const selectedColumnIds = availableColumns.filter((col) => col.selected).map((col) => col.id);
-
-        console.log('Selected column IDs:', selectedColumnIds);
         const value = encodeURIComponent(JSON.stringify(selectedColumnIds));
         document.cookie = `${SCHEDULE_COLUMNS_COOKIE}=${value}; path=/; max-age=31536000`;
     }

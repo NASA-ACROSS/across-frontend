@@ -17,7 +17,7 @@
 
     let error = $derived(data.error);
 
-    const DEFAULT_COLUMNS = ['observatory_telescope', 'name', 'date_begin', 'date_end', 'status', 'fidelity', 'number_of_observations'];
+    const DEFAULT_COLUMNS = ['observatoryTelescope', 'name', 'dateBegin', 'dateEnd', 'status', 'fidelity', 'numberOfObservations'];
     const SCHEDULE_COLUMNS_COOKIE = 'schedule_columns';
     const PAGINATION_BUTTONS = 4;
 
@@ -53,14 +53,14 @@
 
     // Column customization
     let availableColumns = $state([
-        { id: 'observatory_telescope', label: 'Observatory/Telescope', selected: true },
+        { id: 'observatoryTelescope', label: 'Observatory/Telescope', selected: true },
         { id: 'name', label: 'Name', selected: true },
-        { id: 'date_begin', label: 'Date Begin', selected: true },
-        { id: 'date_end', label: 'Date End', selected: true },
+        { id: 'dateBegin', label: 'Date Begin', selected: true },
+        { id: 'dateEnd', label: 'Date End', selected: true },
         { id: 'status', label: 'Status', selected: true },
         { id: 'fidelity', label: 'Fidelity', selected: true },
-        { id: 'number_of_observations', label: '# Observations', selected: true },
-        { id: 'external_id', label: 'External ID', selected: false },
+        { id: 'numberOfObservations', label: '# Observations', selected: true },
+        { id: 'externalId', label: 'External ID', selected: false },
     ]);
 
     let selectedColumns = $derived(availableColumns.filter((col) => col.selected));
@@ -121,7 +121,6 @@
         if (!browser) return;
 
         const selectedColumnIds = availableColumns.filter((col) => col.selected).map((col) => col.id);
-
         const value = encodeURIComponent(JSON.stringify(selectedColumnIds));
         document.cookie = `${SCHEDULE_COLUMNS_COOKIE}=${value}; path=/; max-age=31536000`;
     }
@@ -510,7 +509,7 @@
                             <tr data-testid="schedule-row:{schedule.id}" class="hover:bg-base-200">
                                 {#each selectedColumns as column}
                                     <td class="">
-                                        {#if column.id === 'observatory_telescope'}
+                                        {#if column.id === 'observatoryTelescope'}
                                             {#each getTelescope(schedule?.telescope_id) as telescope_info}
                                                 <p class="font-bold max-w-70 text-wrap">
                                                     {telescope_info?.observatoryName}
@@ -519,11 +518,11 @@
                                                     {telescope_info?.telescopeName}
                                                 </p>
                                             {/each}
-                                        {:else if column.id === 'date_begin'}
+                                        {:else if column.id === 'dateBegin'}
                                             <p class="text-xs w-max">
                                                 {new Date(schedule.date_range?.begin + 'Z').toISOString().slice(0, -5).replace('T', ' ')}
                                             </p>
-                                        {:else if column.id === 'date_end'}
+                                        {:else if column.id === 'dateEnd'}
                                             <p class="text-xs w-max">
                                                 {new Date(schedule.date_range?.end + 'Z').toISOString().slice(0, -5).replace('T', ' ')}
                                             </p>
@@ -533,9 +532,9 @@
                                             {schedule.status || '-'}
                                         {:else if column.id === 'fidelity'}
                                             {schedule.fidelity || '-'}
-                                        {:else if column.id === 'number_of_observations'}
+                                        {:else if column.id === 'numberOfObservations'}
                                             {schedule.observation_count || '-'}
-                                        {:else if column.id === 'external_id'}
+                                        {:else if column.id === 'externalId'}
                                             {schedule.external_id || '-'}
                                         {:else}
                                             -
